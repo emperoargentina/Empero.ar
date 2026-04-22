@@ -3,7 +3,6 @@
 // =============================================================================
 
 import { useState, useEffect } from 'react';
-import { ChefHat } from 'lucide-react';
 import { companyConfig } from '@/data/company';
 
 interface PreloaderProps {
@@ -43,8 +42,12 @@ export function Preloader({ onComplete }: PreloaderProps) {
           {/* Inner ring */}
           <div className="absolute inset-2 rounded-full border border-white/5" />
           {/* Icon container */}
-          <div className="absolute inset-3 bg-gradient-to-br from-[#e53935] to-[#b71c1c] rounded-full flex items-center justify-center shadow-lg shadow-red-900/50">
-            <ChefHat className="w-8 h-8 text-white" />
+          <div className="absolute inset-3 bg-white rounded-full flex items-center justify-center shadow-lg shadow-red-900/50 overflow-hidden p-1">
+            <img
+              src="/images/logo/Logo.png"
+              alt={companyConfig.name}
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
       </div>

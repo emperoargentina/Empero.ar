@@ -3,12 +3,11 @@
 // =============================================================================
 
 import { useState, useEffect } from 'react';
-import { 
-  Menu, 
-  X, 
-  MessageCircle, 
-  ChevronDown, 
-  ChefHat, 
+import {
+  Menu,
+  X,
+  MessageCircle,
+  ChevronDown,
   ClipboardList,
   Plus,
   Minus,
@@ -172,31 +171,19 @@ export function Navigation({
         <div className="container-custom">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a 
-              href="#" 
+            <a
+              href="#"
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-3"
+              className="flex items-center"
             >
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-                isScrolled ? 'bg-[#d32f2f]' : 'bg-white/20 backdrop-blur-sm'
-              }`}>
-                <ChefHat className={`w-6 h-6 ${isScrolled ? 'text-white' : 'text-white'}`} />
-              </div>
-              <div className="hidden sm:block">
-                <span className={`font-bold text-lg leading-tight transition-colors ${
-                  isScrolled ? 'text-gray-900' : 'text-white'
-                }`}>
-                  {companyConfig.name}
-                </span>
-                <span className={`block text-xs transition-colors ${
-                  isScrolled ? 'text-gray-500' : 'text-white/80'
-                }`}>
-                  Equipamiento Industrial
-                </span>
-              </div>
+              <img
+                src="/images/logo/Logo.png"
+                alt={companyConfig.name}
+                className={`h-12 w-auto transition-all duration-300 ${isScrolled ? '' : 'brightness-0 invert'}`}
+              />
             </a>
 
             {/* Desktop Navigation */}

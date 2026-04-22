@@ -2,7 +2,7 @@
 // Footer Component - Estilo senior premium
 // =============================================================================
 
-import { ChefHat, MapPin, Phone, Mail, Clock, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
 import { categories } from '@/data/products';
 import { companyConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
@@ -54,14 +54,12 @@ export function Footer() {
           {/* Brand Column */}
           <AnimatedSection direction="up" className="lg:col-span-5">
             <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 bg-gradient-to-br from-[#d32f2f] to-[#b71c1c] rounded-xl flex items-center justify-center shadow-lg shadow-red-500/20">
-                  <ChefHat className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <span className="font-bold text-xl tracking-tight">{companyConfig.name}</span>
-                  <span className="block text-xs text-gray-500 font-medium tracking-wide uppercase">Equipamiento Industrial</span>
-                </div>
+              <div className="flex items-center">
+                <img
+                  src="/images/logo/Logo.png"
+                  alt={companyConfig.name}
+                  className="h-14 w-auto brightness-0 invert"
+                />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
                 Líderes en equipamiento gastronómico industrial. Más de {companyConfig.stats.years} años 
