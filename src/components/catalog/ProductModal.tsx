@@ -1,18 +1,10 @@
-// =============================================================================
-// ProductModal Component - Modal de detalle de producto
-// =============================================================================
-
-import { Calculator, Check, Package, Tag, Layers, Plus } from 'lucide-react';
+import { Check, MessageCircle, Plus, X, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { type Product } from '@/data/products';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getProductImage } from '@/utils/productImage';
+import { whatsappConfig } from '@/data/company';
 
 interface ProductModalProps {
   product: Product | null;
@@ -22,158 +14,179 @@ interface ProductModalProps {
   isInQuoteList?: boolean;
 }
 
-export function ProductModal({ 
-  product, 
-  isOpen, 
-  onClose, 
+export function ProductModal({
+  product,
+  isOpen,
+  onClose,
   onAddToQuote,
-  isInQuoteList = false 
+  isInQuoteList = false,
 }: ProductModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setImageLoaded(false);
-    }
-  }, [isOpen, product]);
+    if (isOpen) setImageLoaded(false);
+  }, [isOpen, product?.id]);
 
   if (!product) return null;
 
-  // Generar imagen placeholder basada en categoría
-  const getPlaceholderImage = (category: string) => {
-    const categoryImages: Record<string, string> = {
-      'Lavado': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
-      'Refrigeración': 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=800&h=600&fit=crop',
-      'Distribución y Autoservicio': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop',
-      'Hornos': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=600&fit=crop',
-      'Freidoras': 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=600&fit=crop',
-      'Planchas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=600&fit=crop',
-      'Cocinas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=600&fit=crop',
-      'Parrillas': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&h=600&fit=crop',
-      'Cucipastas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
-      'Hornos a Gas Bajo Mostrador': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=600&fit=crop',
-      'Superficies': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
-      'Elaboración': 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=800&h=600&fit=crop',
-      'Mesas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop',
-    };
-    return categoryImages[category] || 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop';
-  };
+  const imageUrl = getProductImage(product.category, 900, 700);
 
-  const imageUrl = getPlaceholderImage(product.category);
+  const handleWhatsApp = () => {
+    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.name));
+    window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0">
-        <div className="grid md:grid-cols-2 gap-0">
-          {/* Image Section */}
-          <div className="relative aspect-square md:aspect-auto md:h-full bg-gray-100 min-h-[300px]">
+      <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] p-0 gap-0 overflow-hidden rounded-md border-0 shadow-2xl">
+        <div className="grid md:grid-cols-[1.1fr_1fr] h-full max-h-[90vh]">
+
+          {/* Image panel */}
+          <div className="relative bg-gray-950 min-h-[260px] md:min-h-0 overflow-hidden">
             {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-gray-300 border-t-[#d32f2f] rounded-full animate-spin" />
-              </div>
+              <div className="absolute inset-0 bg-gray-900 animate-pulse" />
             )}
+
             <img
               src={imageUrl}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-90"
               onLoad={() => setImageLoaded(true)}
             />
-            
-            {/* Category Badge */}
+
+            {/* Heavy gradient for text legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+            {/* Category — top left */}
             <div className="absolute top-4 left-4">
-              <Badge className="badge-category text-sm px-4 py-1.5">
+              <span className="text-[9px] font-black uppercase tracking-[0.16em] text-white/60 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-sm">
                 {product.category}
-              </Badge>
+              </span>
             </div>
 
-            {/* Added indicator */}
-            {isInQuoteList && (
-              <div className="absolute top-4 right-4 px-3 py-1.5 bg-green-500 text-white rounded-full text-sm font-medium flex items-center gap-1">
-                <Check className="w-4 h-4" />
-                En tu lista
-              </div>
-            )}
+            {/* In-list badge */}
+            <AnimatePresence>
+              {isInQuoteList && (
+                <motion.div
+                  className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 bg-emerald-400 text-black rounded-sm text-[9px] font-black"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+                >
+                  <Check className="w-3 h-3" />
+                  En tu lista
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* SKU bottom-left */}
+            <div className="absolute bottom-4 left-4">
+              <span className="text-[9px] font-mono text-white/40 tracking-widest">
+                #{product.sku}
+              </span>
+            </div>
           </div>
 
-          {/* Content Section */}
-          <div className="p-6 md:p-8 space-y-5">
-            <DialogHeader className="space-y-3">
-              {/* SKU */}
-              <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Tag className="w-4 h-4" />
-                <span>SKU: {product.sku}</span>
-              </div>
-              
-              {/* Title */}
-              <DialogTitle className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                {product.name}
-              </DialogTitle>
-              
-              {/* Subcategory */}
-              <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#d32f2f]" />
-                <span className="text-sm font-medium text-[#d32f2f]">
-                  {product.subcategory}
-                </span>
-              </div>
-            </DialogHeader>
+          {/* Content panel */}
+          <div className="flex flex-col overflow-y-auto max-h-[90vh] bg-white">
 
-            {/* Description */}
-            <div className="space-y-2">
-              <h4 className="font-semibold text-gray-900">Descripción</h4>
-              <p className="text-gray-600 leading-relaxed text-sm">
-                {product.description}
-              </p>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-2">
-              <h4 className="font-semibold text-gray-900 flex items-center gap-2 text-sm">
-                <Package className="w-4 h-4" />
-                Características
-              </h4>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {product.features.map((feature, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-2 text-sm text-gray-600"
-                  >
-                    <Check className="w-4 h-4 text-[#d32f2f] mt-0.5 flex-shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="pt-4 border-t border-gray-100 space-y-3">
-              <Button
-                className="w-full btn-primary py-3"
-                onClick={() => onAddToQuote?.(product)}
-                disabled={isInQuoteList}
-              >
-                {isInQuoteList ? (
-                  <>
-                    <Check className="w-5 h-5 mr-2" />
-                    Producto agregado
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-5 h-5 mr-2" />
-                    Agregar a mi lista
-                  </>
-                )}
-              </Button>
-
-              <Button
-                className="w-full btn-whatsapp py-3 text-base"
+            {/* Close */}
+            <div className="flex justify-end p-4 pb-0 flex-shrink-0">
+              <button
                 onClick={onClose}
+                className="w-7 h-7 flex items-center justify-center rounded-sm text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
               >
-                <Calculator className="w-5 h-5 mr-2" />
-                Seguir viendo productos
-              </Button>
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="px-6 pb-6 pt-3 flex flex-col flex-1">
+
+              {/* Header */}
+              <div className="mb-5">
+                <p className="text-[9px] font-black text-[#d32f2f] uppercase tracking-[0.16em] mb-1.5">
+                  {product.subcategory}
+                </p>
+                <h2 className="text-xl md:text-2xl font-black text-gray-950 leading-tight tracking-tight">
+                  {product.name}
+                </h2>
+              </div>
+
+              <div className="h-px bg-gray-100 mb-5" />
+
+              {/* Description */}
+              <div className="mb-5">
+                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.12em] mb-2">
+                  Descripción
+                </p>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {product.description}
+                </p>
+              </div>
+
+              {/* Features */}
+              <div className="mb-6">
+                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.12em] mb-3">
+                  Características
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.features.map((f, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-100 text-gray-700 text-[11px] font-semibold rounded-sm"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-[#d32f2f] flex-shrink-0" />
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex-1" />
+
+              {/* CTA */}
+              <div className="pt-5 border-t border-gray-100 space-y-2">
+                <motion.button
+                  className={`w-full h-11 rounded-sm text-sm font-black flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer tracking-wide ${
+                    isInQuoteList
+                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                      : 'text-white'
+                  }`}
+                  style={!isInQuoteList ? {
+                    background: '#d32f2f',
+                    boxShadow: '0 2px 12px rgba(211,47,47,0.25)',
+                  } : {}}
+                  onClick={() => !isInQuoteList && onAddToQuote?.(product)}
+                  whileTap={isInQuoteList ? {} : { scale: 0.97 }}
+                  whileHover={!isInQuoteList ? { background: '#b71c1c' } : {}}
+                >
+                  {isInQuoteList ? (
+                    <><Check className="w-4 h-4" /> Producto en tu lista</>
+                  ) : (
+                    <><Plus className="w-4 h-4" /> Agregar a mi lista</>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  className="w-full h-11 rounded-sm text-sm font-black flex items-center justify-center gap-2 text-white cursor-pointer tracking-wide"
+                  style={{
+                    background: '#25d366',
+                    boxShadow: '0 2px 12px rgba(37,211,102,0.22)',
+                  }}
+                  onClick={handleWhatsApp}
+                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ background: '#1ebe5d' }}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Consultar por WhatsApp
+                  <ArrowRight className="w-3.5 h-3.5 ml-auto" />
+                </motion.button>
+              </div>
+
             </div>
           </div>
+
         </div>
       </DialogContent>
     </Dialog>

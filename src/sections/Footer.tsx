@@ -45,10 +45,10 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-white relative overflow-hidden">
-      {/* Decorative gradient */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-      
+    <footer className="bg-gray-950 text-white relative overflow-hidden">
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+
       <div className="container-custom py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           {/* Brand Column */}
@@ -58,11 +58,11 @@ export function Footer() {
                 <img
                   src="/images/logo/Logo.png"
                   alt={companyConfig.name}
-                  className="h-14 w-auto brightness-0 invert"
+                  className="h-12 w-auto brightness-0 invert"
                 />
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-                Líderes en equipamiento gastronómico industrial. Más de {companyConfig.stats.years} años 
+              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
+                Líderes en equipamiento gastronómico industrial. Más de {companyConfig.stats.years} años
                 brindando soluciones profesionales para restaurantes, hoteles y negocios gastronómicos.
               </p>
               {/* Social Links */}
@@ -74,9 +74,9 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 bg-white/5 hover:bg-[#d32f2f] border border-white/10 hover:border-[#d32f2f] rounded-lg flex items-center justify-center transition-colors duration-300"
-                    whileHover={{ y: -3 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                    className="w-9 h-9 bg-white/[0.06] hover:bg-[#d32f2f] border border-white/[0.08] hover:border-[#d32f2f] rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer"
+                    whileHover={{ y: -2 }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 20 }}
                   >
                     <social.icon className="w-4 h-4" />
                   </motion.a>
@@ -87,15 +87,15 @@ export function Footer() {
 
           {/* Quick Links */}
           <AnimatedSection direction="up" delay={0.1} className="lg:col-span-2 lg:col-start-7">
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-5">Enlaces</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-[11px] uppercase tracking-[0.1em] text-gray-500 mb-5">Enlaces</h4>
+            <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <motion.button
                     onClick={() => scrollToSection(link.href)}
-                    className="text-gray-500 hover:text-white transition-colors text-sm"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    className="text-gray-400 hover:text-white transition-colors text-sm font-medium cursor-pointer"
+                    whileHover={{ x: 3 }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 25 }}
                   >
                     {link.name}
                   </motion.button>
@@ -106,15 +106,15 @@ export function Footer() {
 
           {/* Categories */}
           <AnimatedSection direction="up" delay={0.2} className="lg:col-span-2">
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-5">Categorías</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-[11px] uppercase tracking-[0.1em] text-gray-500 mb-5">Categorías</h4>
+            <ul className="space-y-2.5">
               {categories.slice(0, 5).map((category) => (
                 <li key={category.id}>
                   <motion.button
                     onClick={() => scrollToSection('#catalogo')}
-                    className="text-gray-500 hover:text-white transition-colors text-sm"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    className="text-gray-400 hover:text-white transition-colors text-sm font-medium cursor-pointer"
+                    whileHover={{ x: 3 }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 25 }}
                   >
                     {category.name}
                   </motion.button>
@@ -125,12 +125,12 @@ export function Footer() {
 
           {/* Contact Info */}
           <AnimatedSection direction="up" delay={0.3} className="lg:col-span-3">
-            <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-300 mb-5">Contacto</h4>
-            <ul className="space-y-3.5">
+            <h4 className="font-bold text-[11px] uppercase tracking-[0.1em] text-gray-500 mb-5">Contacto</h4>
+            <ul className="space-y-3">
               {contactInfo.map((item, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <item.icon className="w-4 h-4 text-[#d32f2f] mt-0.5 flex-shrink-0 opacity-80" />
-                  <span className="text-gray-500 text-sm leading-relaxed">{item.text}</span>
+                  <item.icon className="w-4 h-4 text-[#d32f2f] mt-0.5 flex-shrink-0 opacity-70" />
+                  <span className="text-gray-400 text-sm leading-relaxed">{item.text}</span>
                 </li>
               ))}
             </ul>
@@ -138,22 +138,23 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-14 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-600 text-sm">
+        <div className="mt-14 pt-8 border-t border-white/[0.08] flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-gray-600 text-sm font-medium">
             © {new Date().getFullYear()} {companyConfig.name}. Todos los derechos reservados.
           </p>
-          <div className="flex items-center gap-6">
-            <button className="text-gray-600 hover:text-gray-400 text-sm transition-colors">
-              Política de privacidad
+          <div className="flex items-center gap-5">
+            <button className="text-gray-600 hover:text-gray-400 text-sm font-medium transition-colors cursor-pointer">
+              Privacidad
             </button>
-            <button className="text-gray-600 hover:text-gray-400 text-sm transition-colors">
-              Términos de uso
+            <button className="text-gray-600 hover:text-gray-400 text-sm font-medium transition-colors cursor-pointer">
+              Términos
             </button>
             <motion.button
               onClick={scrollToTop}
-              className="w-9 h-9 bg-white/5 hover:bg-[#d32f2f] border border-white/10 hover:border-[#d32f2f] rounded-lg flex items-center justify-center transition-colors duration-300"
-              whileHover={{ y: -3 }}
-              whileTap={{ scale: 0.95 }}
+              aria-label="Volver arriba"
+              className="w-9 h-9 bg-white/[0.06] hover:bg-[#d32f2f] border border-white/[0.08] hover:border-[#d32f2f] rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.93 }}
             >
               <ArrowUp className="w-4 h-4" />
             </motion.button>

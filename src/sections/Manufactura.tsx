@@ -1,229 +1,169 @@
-// =============================================================================
-// Manufactura Section - Rediseñado con estilo senior premium
-// =============================================================================
-
-import { 
-  Factory, 
-  Shield, 
-  Award, 
-  CheckCircle2,
-  Sparkles,
-  Zap,
-  TrendingUp,
-  Users,
-  Gem
-} from 'lucide-react';
+import { Check, Award, Users, Shield, Zap } from 'lucide-react';
 import { companyConfig } from '@/data/company';
-import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
+import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { motion } from 'framer-motion';
 
-export function Manufactura() {
-  const processSteps = [
-    {
-      icon: Sparkles,
-      title: 'Diseño',
-      description: 'Ingenieros especializados diseñan cada producto pensando en la funcionalidad y durabilidad que el sector gastronómico exige.',
-    },
-    {
-      icon: Factory,
-      title: 'Fabricación',
-      description: 'Procesos de manufactura con maquinaria de última generación y control de calidad en cada etapa del proceso.',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Ensamblaje',
-      description: 'Montaje preciso por técnicos certificados con años de experiencia en el rubro gastronómico industrial.',
-    },
-    {
-      icon: Shield,
-      title: 'Control de Calidad',
-      description: 'Cada producto pasa por rigurosas pruebas antes de salir de nuestra planta productiva.',
-    },
-  ];
+const IMAGES = {
+  main:    'https://images.unsplash.com/photo-1581349485608-9469926a8e5e?w=900&h=1100&fit=crop',
+  topRight:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=500&fit=crop',
+  botRight:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=600&h=500&fit=crop',
+  gal1:    'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=700&h=500&fit=crop',
+  gal2:    'https://images.unsplash.com/photo-1544025162-d76694265947?w=700&h=500&fit=crop',
+  gal3:    'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=700&h=500&fit=crop',
+};
 
-  const features = [
-    { icon: Gem, text: 'Materiales de primera calidad' },
-    { icon: Sparkles, text: 'Acabados profesionales' },
-    { icon: Zap, text: 'Tecnología de vanguardia' },
-    { icon: Shield, text: 'Garantía extendida' },
-  ];
+const stats = [
+  { value: `${companyConfig.stats.years}+`, label: 'Años de experiencia', icon: Award },
+  { value: `${companyConfig.stats.products}+`, label: 'Productos', icon: Zap },
+  { value: `${companyConfig.stats.clients}+`, label: 'Clientes', icon: Users },
+  { value: '100%', label: 'Compromiso', icon: Shield },
+];
 
+export function Nosotros() {
   return (
-    <section id="manufactura" className="py-20 lg:py-28 bg-gray-50/50 overflow-hidden">
-      <div className="container-custom">
+    <section id="nosotros" className="py-20 lg:py-28 bg-white relative">
+      <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
+
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
+
         {/* Header */}
-        <div className="text-center mb-16 lg:mb-20">
+        <div className="text-center mb-14">
           <AnimatedSection direction="up">
-            <span className="inline-block px-4 py-1.5 bg-red-50 text-red-600 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">
-              Nuestro Proceso
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fff5f5] text-[#d32f2f] text-[11px] font-bold uppercase tracking-[0.1em] rounded-full mb-5 border border-[#fecaca]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#d32f2f] inline-block" />
+              Nosotros
             </span>
           </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.1}>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
-              Manufactura de <span className="text-[#d32f2f]">Excelencia</span>
+          <AnimatedSection direction="up" delay={0.08}>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-950 tracking-tight">
+              Quiénes <span className="text-[#d32f2f]">somos</span>
             </h2>
           </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.2}>
-            <p className="text-gray-500 mt-5 max-w-2xl mx-auto text-lg leading-relaxed">
-              {companyConfig.description}
+          <AnimatedSection direction="up" delay={0.14}>
+            <p className="text-gray-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">
+              Más de {companyConfig.stats.years} años equipando restaurantes, hoteles y negocios gastronómicos de Argentina.
             </p>
           </AnimatedSection>
         </div>
 
-        {/* Process Steps */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-20 lg:mb-24" staggerDelay={0.12}>
-          {processSteps.map((step, index) => (
-            <StaggerItem key={step.title}>
-              <motion.div 
-                className="relative group h-full"
-                whileHover={{ y: -6 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              >
-                {/* Step Number */}
-                <div className="absolute -top-3 left-5 w-8 h-8 bg-[#d32f2f] text-white rounded-lg flex items-center justify-center text-sm font-bold z-10 shadow-lg shadow-red-500/20">
-                  {index + 1}
-                </div>
-                
-                <div className="card-premium rounded-2xl p-7 pt-8 h-full bg-white">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-50 to-red-100/50 rounded-xl flex items-center justify-center mb-5 group-hover:from-red-100 group-hover:to-red-200/50 transition-all duration-300">
-                    <step.icon className="w-5 h-5 text-[#d32f2f]" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
-                </div>
-              </motion.div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {/* Main split: mosaic + story */}
+        <div className="grid lg:grid-cols-2 gap-8 xl:gap-14 mb-12 items-start">
 
-        {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-5 mb-20">
-          <AnimatedSection direction="left" delay={0}>
-            <motion.div 
-              className="card-premium rounded-2xl p-8 lg:p-10 bg-white h-full"
-              whileHover={{ y: -4 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            >
-              <div className="w-14 h-14 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl flex items-center justify-center mb-6">
-                <Award className="w-6 h-6 text-[#d32f2f]" />
+          {/* Image mosaic */}
+          <AnimatedSection direction="left">
+            <div className="grid grid-cols-2 gap-3 h-[480px] sm:h-[540px]">
+              {/* Tall left */}
+              <div className="row-span-2 overflow-hidden rounded-2xl bg-gray-100">
+                <img
+                  src={IMAGES.main}
+                  alt="Cocina industrial Empero"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Nuestra Misión</h3>
-              <p className="text-gray-500 leading-relaxed">
+              {/* Top right */}
+              <div className="overflow-hidden rounded-2xl bg-gray-100">
+                <img
+                  src={IMAGES.topRight}
+                  alt="Horno industrial"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
+              </div>
+              {/* Bottom right */}
+              <div className="overflow-hidden rounded-2xl bg-gray-100">
+                <img
+                  src={IMAGES.botRight}
+                  alt="Equipamiento profesional"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </AnimatedSection>
+
+          {/* Story */}
+          <AnimatedSection direction="right" delay={0.1}>
+            <div className="flex flex-col justify-center lg:pt-4">
+              <p className="text-[10px] font-black text-[#d32f2f] uppercase tracking-[0.18em] mb-4">
+                Nuestra historia
+              </p>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-gray-950 tracking-tight leading-tight mb-6">
+                Líderes en equipamiento gastronómico profesional
+              </h3>
+              <p className="text-gray-500 leading-relaxed mb-5 text-[15px]">
+                {companyConfig.description}
+              </p>
+              <p className="text-gray-500 leading-relaxed mb-8 text-[15px]">
                 {companyConfig.mission}
               </p>
-            </motion.div>
-          </AnimatedSection>
 
-          <AnimatedSection direction="right" delay={0.15}>
-            <motion.div 
-              className="card-premium rounded-2xl p-8 lg:p-10 bg-white h-full"
-              whileHover={{ y: -4 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            >
-              <div className="w-14 h-14 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl flex items-center justify-center mb-6">
-                <TrendingUp className="w-6 h-6 text-[#d32f2f]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Nuestra Visión</h3>
-              <p className="text-gray-500 leading-relaxed">
-                {companyConfig.vision}
-              </p>
-            </motion.div>
-          </AnimatedSection>
-        </div>
-
-        {/* Features Banner */}
-        <AnimatedSection direction="up" delay={0}>
-          <motion.div 
-            className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 md:p-12 lg:p-14 relative overflow-hidden"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#d32f2f]/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#d32f2f]/5 rounded-full blur-2xl" />
-            
-            <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
-                ¿Por qué elegir <span className="text-red-400">{companyConfig.name}</span>?
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                {features.map((feature, index) => (
-                  <motion.div 
-                    key={feature.text} 
-                    className="text-center"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 * index, duration: 0.5 }}
-                  >
-                    <motion.div 
-                      className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/5"
-                      whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.15)' }}
-                      transition={{ type: 'spring', stiffness: 400 }}
-                    >
-                      <feature.icon className="w-6 h-6 text-red-400" />
-                    </motion.div>
-                    <p className="text-white/90 font-medium text-sm">{feature.text}</p>
-                  </motion.div>
+              {/* Values grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {companyConfig.values.map((val) => (
+                  <div key={val} className="flex items-center gap-2.5">
+                    <div className="w-5 h-5 bg-red-50 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="w-2.5 h-2.5 text-[#d32f2f]" />
+                    </div>
+                    <span className="text-sm text-gray-700 font-medium leading-snug">{val}</span>
+                  </div>
                 ))}
               </div>
             </div>
-          </motion.div>
-        </AnimatedSection>
-
-        {/* Values */}
-        <div className="mt-16 lg:mt-20">
-          <AnimatedSection direction="up">
-            <h3 className="text-2xl font-bold text-gray-900 text-center mb-10">
-              Nuestros Valores
-            </h3>
           </AnimatedSection>
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3" staggerDelay={0.08}>
-            {companyConfig.values.map((value) => (
-              <StaggerItem key={value}>
-                <motion.div 
-                  className="flex items-center gap-3 bg-white rounded-xl p-4 border border-gray-100/80 shadow-sm"
-                  whileHover={{ 
-                    borderColor: 'rgba(211, 47, 47, 0.2)',
-                    y: -2,
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.05)'
-                  }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                >
-                  <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#d32f2f]" />
-                  </div>
-                  <span className="text-gray-700 font-medium text-sm">{value}</span>
-                </motion.div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
         </div>
 
-        {/* Stats Row */}
-        <AnimatedSection direction="up" delay={0.2} className="mt-16 lg:mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { value: companyConfig.stats.years, label: 'Años de experiencia', icon: Award },
-              { value: companyConfig.stats.products, label: 'Productos', icon: Zap },
-              { value: companyConfig.stats.clients, label: 'Clientes', icon: Users },
-              { value: '100%', label: 'Compromiso', icon: Shield },
-            ].map((stat) => (
-              <motion.div 
-                key={stat.label}
-                className="text-center p-6 bg-white rounded-2xl border border-gray-100/80"
-                whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(0,0,0,0.06)' }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              >
-                <stat.icon className="w-5 h-5 text-[#d32f2f] mx-auto mb-3 opacity-60" />
-                <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-xs text-gray-500 mt-1 font-medium">{stat.label}</div>
-              </motion.div>
+        {/* Gallery strip */}
+        <AnimatedSection direction="up" delay={0.1}>
+          <div className="grid grid-cols-3 gap-3 h-52 sm:h-64 mb-14">
+            {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((src, i) => (
+              <div key={i} className="overflow-hidden rounded-2xl bg-gray-100">
+                <img
+                  src={src}
+                  alt={`Imagen ${i + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  loading="lazy"
+                />
+              </div>
             ))}
           </div>
         </AnimatedSection>
+
+        {/* Stats dark banner */}
+        <AnimatedSection direction="up">
+          <div className="bg-gray-950 rounded-3xl p-10 md:p-14 relative overflow-hidden">
+            <div className="absolute -top-20 right-0 w-96 h-96 bg-[#d32f2f]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 left-0 w-72 h-72 bg-[#d32f2f]/7 rounded-full blur-3xl pointer-events-none" />
+            <div
+              className="absolute inset-0 opacity-[0.025] pointer-events-none"
+              style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
+                backgroundSize: '40px 40px',
+              }}
+            />
+
+            <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.08 * i, duration: 0.4 }}
+                >
+                  <div className="w-10 h-10 bg-white/[0.07] border border-white/[0.1] rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <stat.icon className="w-4.5 h-4.5 text-red-400" />
+                  </div>
+                  <div className="text-4xl font-black text-white tracking-tight leading-none mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-white/45 font-medium">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </AnimatedSection>
+
       </div>
     </section>
   );

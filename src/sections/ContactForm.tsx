@@ -3,12 +3,10 @@
 // =============================================================================
 
 import { useState } from 'react';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
-  Send, 
+import {
+  Phone,
+  Mail,
+  Send,
   CheckCircle2,
   MessageCircle,
   User,
@@ -16,7 +14,6 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import { companyConfig, whatsappConfig } from '@/data/company';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -60,65 +57,56 @@ export function ContactForm() {
   };
 
   const contactInfo = [
-    { 
-      icon: MapPin, 
-      label: 'Dirección', 
-      value: companyConfig.contact.address,
-      color: 'bg-red-50 text-red-600'
-    },
-    { 
-      icon: Phone, 
-      label: 'Teléfono', 
+    {
+      icon: Phone,
+      label: 'Teléfono',
       value: companyConfig.contact.phone,
       color: 'bg-blue-50 text-blue-600'
     },
-    { 
-      icon: Mail, 
-      label: 'Email', 
+    {
+      icon: Mail,
+      label: 'Email',
       value: companyConfig.contact.email,
       color: 'bg-amber-50 text-amber-600'
-    },
-    { 
-      icon: Clock, 
-      label: 'Horario', 
-      value: companyConfig.contact.hours,
-      color: 'bg-emerald-50 text-emerald-600'
     },
   ];
 
   return (
-    <section id="contacto" className="py-20 lg:py-28 bg-white overflow-hidden">
+    <section id="contacto" className="py-20 lg:py-28 bg-gray-50/60 overflow-hidden relative">
+      <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
       <div className="container-custom max-w-6xl">
         {/* Header */}
         <AnimatedSection direction="up" className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-red-50 text-red-600 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fff5f5] text-[#d32f2f] text-[11px] font-bold uppercase tracking-[0.1em] rounded-full mb-5 border border-[#fecaca]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#d32f2f] inline-block" />
             Contacto
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-950 tracking-tight">
             ¿Necesitas una <span className="text-[#d32f2f]">cotización?</span>
           </h2>
-          <p className="text-gray-500 mt-4 max-w-lg mx-auto text-lg leading-relaxed">
-            Completa el formulario y te responderemos en menos de 24 horas.
+          <p className="text-gray-500 mt-4 max-w-lg mx-auto text-base leading-relaxed">
+            Completá el formulario y te respondemos en menos de 24 horas.
           </p>
         </AnimatedSection>
 
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Contact Info - Left Side */}
           <div className="lg:col-span-5">
-            <StaggerContainer className="space-y-4" staggerDelay={0.1}>
+            <StaggerContainer className="space-y-3" staggerDelay={0.1}>
               {contactInfo.map((item) => (
                 <StaggerItem key={item.label}>
-                  <motion.div 
-                    className="flex items-start gap-4 p-5 card-premium rounded-2xl group"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  <motion.div
+                    className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-gray-100/80 group cursor-default"
+                    whileHover={{ x: 3, borderColor: 'rgba(211,47,47,0.15)', boxShadow: '0 4px 16px rgba(0,0,0,0.05)' }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                    style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}
                   >
-                    <div className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110`}>
-                      <item.icon className="w-5 h-5" />
+                    <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                      <item.icon className="w-4 h-4" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">{item.label}</p>
-                      <p className="text-gray-900 font-medium text-sm leading-relaxed">{item.value}</p>
+                    <div className="min-w-0 pt-0.5">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-0.5">{item.label}</p>
+                      <p className="text-gray-900 font-semibold text-sm leading-relaxed">{item.value}</p>
                     </div>
                   </motion.div>
                 </StaggerItem>
@@ -154,7 +142,7 @@ export function ContactForm() {
 
           {/* Form - Right Side */}
           <AnimatedSection direction="right" delay={0.2} className="lg:col-span-7">
-            <div className="bg-gray-50/70 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-gray-100">
+            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-100/80" style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.04)' }}>
               {isSubmitted ? (
                 <motion.div 
                   className="text-center py-16"
@@ -273,32 +261,33 @@ export function ContactForm() {
                     />
                   </div>
 
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-150 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                    style={{
+                      background: '#d32f2f',
+                      boxShadow: '0 1px 2px rgba(211,47,47,0.2), 0 4px 16px rgba(211,47,47,0.2)',
+                    }}
+                    whileHover={!isSubmitting ? { scale: 1.005, background: '#c62828' } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.995 } : {}}
                   >
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-[#d32f2f] hover:bg-[#c62828] text-white py-4 h-auto rounded-xl text-sm font-medium tracking-wide transition-all duration-300 shadow-lg shadow-red-500/20 hover:shadow-red-500/30"
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center gap-2">
-                          <motion.div 
-                            className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
-                          />
-                          Enviando...
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          <Send className="w-4 h-4" />
-                          Enviar mensaje
-                        </span>
-                      )}
-                    </Button>
-                  </motion.div>
+                    {isSubmitting ? (
+                      <>
+                        <motion.div
+                          className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 0.75, ease: 'linear' }}
+                        />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Enviar mensaje
+                      </>
+                    )}
+                  </motion.button>
 
                   <p className="text-center text-xs text-gray-400">
                     Al enviar, aceptas nuestra política de privacidad. No compartimos tus datos.

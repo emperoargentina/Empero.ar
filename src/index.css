@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,opsz,wght@0,6..18,300;0,6..18,400;0,6..18,500;0,6..18,600;0,6..18,700;0,6..18,800;1,6..18,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -71,18 +71,24 @@
   }
 
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--page-bg);
     color: var(--gray-900);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
     text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  button {
+    cursor: pointer;
   }
 
   ::selection {
@@ -94,86 +100,83 @@
 @layer components {
   /* Button styles */
   .btn-primary {
-    @apply px-6 py-3 text-sm font-medium tracking-wide transition-all duration-300 rounded-lg;
-    background: linear-gradient(135deg, var(--red-600) 0%, var(--red-800) 100%);
+    @apply px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200 rounded-xl cursor-pointer;
+    background: #d32f2f;
     color: white;
-    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    box-shadow: 0 1px 2px rgba(211,47,47,0.2), 0 4px 12px rgba(211,47,47,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
   .btn-primary:hover {
-    background: linear-gradient(135deg, var(--red-700) 0%, var(--red-900) 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(211, 47, 47, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+    background: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(211,47,47,0.2), 0 8px 24px rgba(211,47,47,0.28), inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
   .btn-primary:active {
     transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(211,47,47,0.2), inset 0 1px 2px rgba(0,0,0,0.1);
   }
 
   .btn-secondary {
-    @apply px-6 py-3 text-sm font-medium tracking-wide transition-all duration-300 rounded-lg border-2;
+    @apply px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200 rounded-xl border cursor-pointer;
     background-color: transparent;
-    border-color: var(--red-700);
+    border-color: rgba(211,47,47,0.3);
     color: var(--red-700);
   }
 
   .btn-secondary:hover {
     background-color: var(--red-50);
-    transform: translateY(-2px);
+    border-color: rgba(211,47,47,0.5);
+    transform: translateY(-1px);
   }
 
   .btn-whatsapp {
-    @apply px-6 py-3 text-sm font-medium tracking-wide transition-all duration-300 rounded-full;
-    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    @apply px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200 rounded-xl cursor-pointer;
+    background: #25d366;
     color: white;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 1px 2px rgba(37,211,102,0.2), 0 4px 12px rgba(37,211,102,0.18), inset 0 1px 0 rgba(255,255,255,0.15);
   }
 
   .btn-whatsapp:hover {
-    background: linear-gradient(135deg, #22c55e 0%, #0f766e 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    background: #22c55e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(37,211,102,0.2), 0 8px 24px rgba(37,211,102,0.28), inset 0 1px 0 rgba(255,255,255,0.15);
   }
 
   .btn-whatsapp:active {
     transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(37,211,102,0.2), inset 0 1px 2px rgba(0,0,0,0.08);
   }
 
-  /* Card styles - Premium */
+  /* Card styles - Product catalog */
   .card-product {
-    @apply bg-white rounded-2xl border overflow-hidden transition-all duration-300;
-    border-color: rgba(0, 0, 0, 0.06);
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.04),
-      0 2px 8px rgba(0, 0, 0, 0.03),
-      inset 0 1px 0 rgba(255,255,255,0.8);
+    @apply bg-white rounded-2xl border overflow-hidden transition-all duration-200 cursor-pointer;
+    border-color: rgba(0, 0, 0, 0.07);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
   }
 
   .card-product:hover {
-    transform: translateY(-6px);
-    box-shadow:
-      0 16px 48px rgba(0, 0, 0, 0.10),
-      0 4px 16px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255,255,255,0.8);
     border-color: rgba(211, 47, 47, 0.18);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
   }
 
   /* Premium card style for info cards */
   .card-premium {
-    @apply bg-white rounded-2xl border transition-all duration-300;
-    border-color: rgba(0, 0, 0, 0.06);
+    @apply bg-white rounded-2xl border transition-all duration-200;
+    border-color: rgba(0, 0, 0, 0.07);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.04),
       0 4px 16px rgba(0, 0, 0, 0.03),
       inset 0 1px 0 rgba(255,255,255,0.9);
   }
 
   .card-premium:hover {
     box-shadow:
-      0 10px 36px rgba(0, 0, 0, 0.08),
-      0 2px 8px rgba(0, 0, 0, 0.04),
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 12px 36px rgba(0, 0, 0, 0.05),
       inset 0 1px 0 rgba(255,255,255,0.9);
-    border-color: rgba(211, 47, 47, 0.14);
+    border-color: rgba(211, 47, 47, 0.16);
   }
 
   /* Badge styles */
@@ -185,14 +188,15 @@
 
   /* Premium input style */
   .input-premium {
-    @apply w-full px-5 py-4 bg-gray-50/50 border border-gray-200/80 rounded-xl text-sm transition-all duration-300;
-    font-family: 'Inter', sans-serif;
+    @apply w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm transition-all duration-200;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
 
   .input-premium:focus {
-    @apply outline-none bg-white;
-    border-color: var(--red-300);
-    box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    @apply outline-none;
+    border-color: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1), 0 1px 2px rgba(0,0,0,0.04);
   }
 
   .input-premium::placeholder {
@@ -201,12 +205,13 @@
 
   /* Input styles */
   .input-search {
-    @apply w-full px-4 py-3 pl-11 bg-white border border-gray-200 rounded-lg text-sm transition-all duration-300;
+    @apply w-full px-4 py-3 pl-11 bg-white border border-gray-200 rounded-xl text-sm transition-all duration-200;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
 
   .input-search:focus {
     @apply outline-none border-[#d32f2f];
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1), 0 1px 2px rgba(0,0,0,0.04);
   }
 
   /* Fade-up animation */
@@ -297,6 +302,21 @@
   .hero-kenburns {
     animation: hero-breathe 20s ease-in-out infinite;
   }
+
+  /* Marquee animations */
+  @keyframes marquee-scroll-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-33.333%); }
+  }
+  @keyframes marquee-scroll-right {
+    from { transform: translateX(-33.333%); }
+    to   { transform: translateX(0); }
+  }
+  .marquee-left  { animation: marquee-scroll-left  40s linear infinite; }
+  .marquee-right { animation: marquee-scroll-right 50s linear infinite; }
+
+  /* Hero pre-animate (hidden before GSAP entrance) */
+  .hero-entrance { opacity: 0; }
 
   /* Preloader animation */
   @keyframes preloader-fade {

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Read(//c/Users/djuan/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"kitchen equipment gastronomy industrial ecommerce B2B professional premium\" --design-system -p \"Empero\" -f markdown)",
+      "Bash(py scripts/search.py \"kitchen equipment gastronomy industrial ecommerce B2B professional premium\" --design-system -p \"Empero\" -f markdown)",
+      "Bash(py scripts/search.py \"animation accessibility touch mobile\" --domain ux)",
+      "Bash(py scripts/search.py \"ecommerce B2B industrial\" --domain color)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)"
+    ]
+  }
+}

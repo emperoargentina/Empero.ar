@@ -6,14 +6,16 @@ import { useState, useCallback } from 'react';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
 import { ProductCatalog } from './sections/ProductCatalog';
-import { Manufactura } from './sections/Manufactura';
+import { Nosotros } from './sections/Manufactura';
 import { ContactForm } from './sections/ContactForm';
 import { Footer } from './sections/Footer';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Preloader } from './components/Preloader';
 import { useQuoteList } from './hooks/useQuoteList';
+import { useLenis } from './hooks/useLenis';
 
 function App() {
+  useLenis();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
@@ -65,14 +67,14 @@ function App() {
 
         <main>
           <Hero isReady={!isLoading} />
-          
+
           <ProductCatalog 
             initialCategory={selectedCategory}
             onAddToQuote={handleAddToQuote}
             quoteListIds={quoteListIds}
           />
           
-          <Manufactura />
+          <Nosotros />
           
           <ContactForm />
         </main>

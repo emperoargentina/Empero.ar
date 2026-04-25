@@ -1,17 +1,7 @@
-// =============================================================================
-// SearchFilters Component - Búsqueda y filtros de productos
-// =============================================================================
-
-import { Search, X, ChevronDown } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import { categories, subcategories } from '@/data/products';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SearchFiltersProps {
   searchQuery: string;
@@ -38,12 +28,9 @@ export function SearchFilters({
 }: SearchFiltersProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
-  // Debounce search
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onSearchChange(localSearch);
-    }, 300);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => onSearchChange(localSearch), 300);
+    return () => clearTimeout(t);
   }, [localSearch, onSearchChange]);
 
   const handleClear = useCallback(() => {
@@ -52,179 +39,120 @@ export function SearchFilters({
   }, [onClearFilters]);
 
   const hasActiveFilters = selectedCategory || selectedSubcategory || searchQuery;
+  const availableSubcategories = selectedCategory ? subcategories[selectedCategory] || [] : [];
 
-  const availableSubcategories = selectedCategory 
-    ? subcategories[selectedCategory] || []
-    : [];
-
-  const selectedCategoryName = selectedCategory
-    ? categories.find(c => c.id === selectedCategory)?.name
-    : null;
+  const allTabs = [{ id: null, name: 'Todos' }, ...categories.map(c => ({ id: c.id, name: c.name }))];
 
   return (
-    <div className="w-full space-y-4">
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          value={localSearch}
-          onChange={(e) => setLocalSearch(e.target.value)}
-          className="input-search w-full py-3.5 text-base"
-        />
-        {localSearch && (
-          <button
-            onClick={() => setLocalSearch('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <X className="w-4 h-4 text-gray-400" />
-          </button>
-        )}
+    <div className="w-full">
+
+      {/* Search row */}
+      <div className="flex items-center gap-4 mb-5">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="w-full pl-5 pr-8 py-2 bg-transparent border-0 border-b border-gray-200 focus:border-[#d32f2f] text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none transition-colors duration-200"
+          />
+          <AnimatePresence>
+            {localSearch && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.6 }}
+                transition={{ duration: 0.1 }}
+                onClick={() => setLocalSearch('')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <span className="text-xs font-mono text-gray-400 hidden sm:block">
+            <span className="text-gray-700 font-bold">{resultCount}</span>
+            <span className="text-gray-300 mx-1">/</span>
+            {totalCount}
+          </span>
+          <AnimatePresence>
+            {hasActiveFilters && (
+              <motion.button
+                initial={{ opacity: 0, x: 4 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 4 }}
+                onClick={handleClear}
+                className="text-[11px] font-bold text-gray-400 hover:text-[#d32f2f] transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <X className="w-3 h-3" />
+                Limpiar
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Filters Row */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Category Filter */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
-                selectedCategory
-                  ? 'border-[#d32f2f] bg-[#ffebee] text-[#d32f2f]'
-                  : 'border-gray-200 hover:border-gray-300'
+      {/* Category tabs */}
+      <div className="flex overflow-x-auto border-b border-gray-100 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {allTabs.map(({ id, name }) => {
+          const isActive = selectedCategory === id;
+          return (
+            <button
+              key={id ?? 'all'}
+              onClick={() => { onCategoryChange(id); onSubcategoryChange(null); }}
+              className={`relative flex-shrink-0 px-3.5 py-2.5 text-[11px] font-black uppercase tracking-[0.08em] transition-colors duration-150 whitespace-nowrap cursor-pointer ${
+                isActive ? 'text-[#d32f2f]' : 'text-gray-400 hover:text-gray-700'
               }`}
             >
-              <span className="text-sm">
-                {selectedCategoryName || 'Todas las categorías'}
-              </span>
-              <ChevronDown className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 max-h-80 overflow-auto">
-            <DropdownMenuItem
-              onClick={() => {
-                onCategoryChange(null);
-                onSubcategoryChange(null);
-              }}
-              className={!selectedCategory ? 'bg-[#ffebee] text-[#d32f2f]' : ''}
-            >
-              Todas las categorías
-            </DropdownMenuItem>
-            {categories.map((category) => (
-              <DropdownMenuItem
-                key={category.id}
-                onClick={() => {
-                  onCategoryChange(category.id);
-                  onSubcategoryChange(null);
-                }}
-                className={selectedCategory === category.id ? 'bg-[#ffebee] text-[#d32f2f]' : ''}
-              >
-                {category.name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Subcategory Filter - Only show if category selected */}
-        {selectedCategory && availableSubcategories.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${
-                  selectedSubcategory
-                    ? 'border-[#d32f2f] bg-[#ffebee] text-[#d32f2f]'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <span className="text-sm">
-                  {selectedSubcategory || 'Todos los tipos'}
-                </span>
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuItem
-                onClick={() => onSubcategoryChange(null)}
-                className={!selectedSubcategory ? 'bg-[#ffebee] text-[#d32f2f]' : ''}
-              >
-                Todos los tipos
-              </DropdownMenuItem>
-              {availableSubcategories.map((sub) => (
-                <DropdownMenuItem
-                  key={sub}
-                  onClick={() => onSubcategoryChange(sub)}
-                  className={selectedSubcategory === sub ? 'bg-[#ffebee] text-[#d32f2f]' : ''}
-                >
-                  {sub}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-
-        {/* Clear Filters */}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            onClick={handleClear}
-            className="flex items-center gap-2 text-gray-500 hover:text-[#d32f2f] hover:bg-[#ffebee]"
-          >
-            <X className="w-4 h-4" />
-            <span className="text-sm">Limpiar filtros</span>
-          </Button>
-        )}
-
-        {/* Results Count */}
-        <div className="ml-auto text-sm text-gray-500">
-          Mostrando <span className="font-medium text-gray-900">{resultCount}</span> de{' '}
-          <span className="font-medium text-gray-900">{totalCount}</span> productos
-        </div>
+              {name}
+              {isActive && (
+                <motion.div
+                  layoutId="catUnderline"
+                  className="absolute bottom-0 inset-x-0 h-0.5 bg-[#d32f2f]"
+                  transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Active Filters Tags */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2">
-          {selectedCategory && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ffebee] text-[#d32f2f] text-sm rounded-full">
-              {selectedCategoryName}
-              <button
-                onClick={() => {
-                  onCategoryChange(null);
-                  onSubcategoryChange(null);
-                }}
-                className="p-0.5 hover:bg-[#d32f2f]/10 rounded-full transition-colors"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </span>
-          )}
-          {selectedSubcategory && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ffebee] text-[#d32f2f] text-sm rounded-full">
-              {selectedSubcategory}
-              <button
-                onClick={() => onSubcategoryChange(null)}
-                className="p-0.5 hover:bg-[#d32f2f]/10 rounded-full transition-colors"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </span>
-          )}
-          {searchQuery && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#ffebee] text-[#d32f2f] text-sm rounded-full">
-              Búsqueda: "{searchQuery}"
-              <button
-                onClick={() => setLocalSearch('')}
-                className="p-0.5 hover:bg-[#d32f2f]/10 rounded-full transition-colors"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </span>
-          )}
-        </div>
-      )}
+      {/* Subcategory row */}
+      <AnimatePresence>
+        {selectedCategory && availableSubcategories.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            <div className="flex gap-2 pt-3 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {availableSubcategories.map((sub) => {
+                const active = selectedSubcategory === sub;
+                return (
+                  <button
+                    key={sub}
+                    onClick={() => onSubcategoryChange(active ? null : sub)}
+                    className={`flex-shrink-0 px-3 py-1 text-[10px] font-bold uppercase tracking-widest border transition-all duration-150 cursor-pointer rounded-sm ${
+                      active
+                        ? 'border-[#d32f2f] text-[#d32f2f] bg-[#fff5f5]'
+                        : 'border-gray-200 text-gray-500 bg-white hover:border-gray-400 hover:text-gray-700'
+                    }`}
+                  >
+                    {sub}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
