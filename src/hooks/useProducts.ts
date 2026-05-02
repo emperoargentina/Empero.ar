@@ -11,6 +11,9 @@ import {
   type Product 
 } from '@/data/products';
 
+export type SortOption = 'default' | 'price-asc' | 'price-desc';
+export type AvailabilityFilter = 'all' | 'en-stock' | 'por-encargo';
+
 interface UseProductsReturn {
   // Data
   allProducts: Product[];
@@ -22,11 +25,15 @@ interface UseProductsReturn {
   searchQuery: string;
   selectedCategory: string | null;
   selectedSubcategory: string | null;
+  sortOption: SortOption;
+  availabilityFilter: AvailabilityFilter;
   
   // Actions
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
   setSelectedSubcategory: (subcategory: string | null) => void;
+  setSortOption: (sort: SortOption) => void;
+  setAvailabilityFilter: (availability: AvailabilityFilter) => void;
   clearFilters: () => void;
   
   // Pagination
@@ -46,6 +53,8 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [sortOption, setSortOption] = useState<SortOption>('default');
+  const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
   // Filter products based on search and filters
@@ -70,8 +79,20 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
       result = result.filter(p => p.subcategory === selectedSubcategory);
     }
 
+    // Apply availability filter
+    if (availabilityFilter !== 'all') {
+      result = result.filter(p => p.availability === availabilityFilter);
+    }
+
+    // Apply sorting
+    if (sortOption === 'price-asc') {
+      result = [...result].sort((a, b) => a.price - b.price);
+    } else if (sortOption === 'price-desc') {
+      result = [...result].sort((a, b) => b.price - a.price);
+    }
+
     return result;
-  }, [searchQuery, selectedCategory, selectedSubcategory]);
+  }, [searchQuery, selectedCategory, selectedSubcategory, sortOption, availabilityFilter]);
 
   // Pagination
   const totalPages = useMemo(() => 
@@ -90,6 +111,8 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
     setSearchQuery('');
     setSelectedCategory(null);
     setSelectedSubcategory(null);
+    setSortOption('default');
+    setAvailabilityFilter('all');
     setCurrentPage(1);
   }, []);
 
@@ -104,11 +127,15 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
     searchQuery,
     selectedCategory,
     selectedSubcategory,
+    sortOption,
+    availabilityFilter,
     
     // Actions
     setSearchQuery,
     setSelectedCategory,
     setSelectedSubcategory,
+    setSortOption,
+    setAvailabilityFilter,
     clearFilters,
     
     // Pagination

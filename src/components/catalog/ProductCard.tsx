@@ -20,10 +20,12 @@ export function ProductCard({
 
   return (
     <motion.article
-      className="group relative cursor-pointer overflow-hidden bg-gray-950 rounded-md"
+      className="group relative cursor-pointer overflow-hidden bg-[#141210] rounded-md border border-[#242220]"
       onClick={() => onViewDetails(product)}
       whileHover={{ scale: 1.015 }}
       transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+      style={{ boxShadow: 'none' }}
+      whileInView={undefined}
     >
       {/* Image */}
       <div className="aspect-[3/4] overflow-hidden">
@@ -35,21 +37,28 @@ export function ProductCard({
         />
       </div>
 
-      {/* Gradient overlay — stronger at bottom */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent pointer-events-none" />
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
 
-      {/* Red accent overlay on hover */}
+      {/* Gold hover accent */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
-        style={{ background: 'linear-gradient(to top, rgba(211,47,47,0.25) 0%, transparent 50%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(196,27,46,0.18) 0%, transparent 55%)' }}
+      />
+
+      {/* Border gold glow on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-md pointer-events-none border border-transparent"
+        whileHover={{ borderColor: 'rgba(196,27,46,0.25)' }}
+        transition={{ duration: 0.2 }}
       />
 
       {/* Category tag */}
       <div className="absolute top-2.5 left-2.5">
-        <span className="text-[8px] font-black uppercase tracking-[0.16em] text-white/60 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-sm">
+        <span className="text-[8px] font-semibold uppercase tracking-[0.16em] text-white/55 bg-black/45 backdrop-blur-sm px-2 py-0.5 rounded-sm">
           {product.category}
         </span>
       </div>
@@ -58,7 +67,7 @@ export function ProductCard({
       <AnimatePresence>
         {isInQuoteList && (
           <motion.div
-            className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black rounded-sm text-[8px] font-black"
+            className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black rounded-sm text-[8px] font-bold"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
@@ -72,18 +81,18 @@ export function ProductCard({
 
       {/* Bottom content */}
       <div className="absolute bottom-0 inset-x-0 p-3">
-        <p className="text-[9px] font-semibold text-white/40 uppercase tracking-[0.1em] mb-0.5 truncate">
+        <p className="text-[9px] font-medium text-[#C41B2E]/50 uppercase tracking-[0.1em] mb-0.5 truncate">
           {product.subcategory}
         </p>
-        <h3 className="font-black text-white text-[12px] leading-snug tracking-tight line-clamp-2 mb-2.5">
+        <h3 className="font-semibold text-white text-[12px] leading-snug tracking-tight line-clamp-2 mb-2.5">
           {product.name}
         </h3>
 
         <button
-          className={`w-full py-1.5 rounded-sm text-[10px] font-black tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
+          className={`w-full py-1.5 rounded-sm text-[10px] font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
             isInQuoteList
               ? 'bg-emerald-400 text-black'
-              : 'bg-[#d32f2f] text-white hover:bg-[#b71c1c]'
+              : 'bg-[#C41B2E] text-white hover:bg-[#B51426]'
           }`}
           onClick={(e) => {
             e.stopPropagation();

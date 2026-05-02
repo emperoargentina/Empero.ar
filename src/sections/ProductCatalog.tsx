@@ -24,9 +24,13 @@ export function ProductCatalog({
     searchQuery,
     selectedCategory,
     selectedSubcategory,
+    sortOption,
+    availabilityFilter,
     setSearchQuery,
     setSelectedCategory,
     setSelectedSubcategory,
+    setSortOption,
+    setAvailabilityFilter,
     clearFilters,
     currentPage,
     setCurrentPage,
@@ -65,26 +69,30 @@ export function ProductCatalog({
   }, [setCurrentPage]);
 
   return (
-    <section id="catalogo" className="py-20 lg:py-24 bg-white overflow-hidden relative">
+    <section id="catalogo" className="py-20 lg:py-24 bg-[#FAFAF8] overflow-hidden relative">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
 
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-12">
           <AnimatedSection direction="up">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fff5f5] text-[#d32f2f] text-[11px] font-bold uppercase tracking-[0.1em] rounded-full mb-5 border border-[#fecaca]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#d32f2f] inline-block" />
-              Catálogo Completo
-            </span>
+            {/* Ornament divider */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C41B2E]">
+                Catálogo completo
+              </span>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
+            </div>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.08}>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-950 tracking-tight">
-              Nuestros <span className="text-[#d32f2f]">productos</span>
+            <h2 className="text-4xl md:text-5xl font-serif font-normal text-[#1A1613]">
+              Nuestros <em className="not-italic text-[#C41B2E]">productos</em>
             </h2>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">
+            <p className="text-[#9E9080] mt-4 max-w-xl mx-auto text-base leading-relaxed">
               Explorá {totalProducts}+ productos. Agregá los que te interesan y cotizá por WhatsApp.
             </p>
           </AnimatedSection>
@@ -100,6 +108,10 @@ export function ProductCatalog({
               onCategoryChange={handleCategorySelect}
               selectedSubcategory={selectedSubcategory}
               onSubcategoryChange={(sub) => { setSelectedSubcategory(sub); setCurrentPage(1); }}
+              sortOption={sortOption}
+              onSortChange={(s) => { setSortOption(s); setCurrentPage(1); }}
+              availabilityFilter={availabilityFilter}
+              onAvailabilityChange={(a) => { setAvailabilityFilter(a); setCurrentPage(1); }}
               onClearFilters={clearFilters}
               resultCount={filteredCount}
               totalCount={totalProducts}
@@ -140,16 +152,16 @@ export function ProductCatalog({
         ) : (
           <AnimatedSection direction="up">
             <div className="text-center py-24">
-              <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center mx-auto mb-5">
-                <Package className="w-7 h-7 text-gray-300" />
+              <div className="w-16 h-16 bg-white border border-[#EBE5DC] rounded-xl flex items-center justify-center mx-auto mb-5">
+                <Package className="w-7 h-7 text-[#C0B5A8]" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2 tracking-tight">Sin resultados</h3>
-              <p className="text-gray-400 mb-7 max-w-xs mx-auto text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-[#1A1613] mb-2">Sin resultados</h3>
+              <p className="text-[#9E9080] mb-7 max-w-xs mx-auto text-sm leading-relaxed">
                 Ningún producto coincide con tu búsqueda o filtros.
               </p>
               <button
                 onClick={clearFilters}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-950 text-white text-sm font-semibold rounded-lg hover:bg-[#d32f2f] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#C41B2E] text-sm font-medium rounded-lg border border-[rgba(196,27,46,0.3)] hover:bg-[rgba(196,27,46,0.04)] transition-colors cursor-pointer"
               >
                 <Filter className="w-4 h-4" />
                 Limpiar filtros

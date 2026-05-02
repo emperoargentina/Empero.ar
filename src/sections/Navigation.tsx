@@ -123,21 +123,21 @@ export function Navigation({
 
   return (
     <>
-      {/* ── Navbar ─────────────────────────────────────── */}
+      {/* ── Navbar ─────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50">
         <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'px-3 pt-3 sm:px-5 sm:pt-4' : ''}`}>
           <motion.div
             animate={isScrolled ? {
-              backgroundColor: 'rgba(255,255,255,1)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)',
-              borderColor: 'rgba(209,213,219,0.7)',
+              backgroundColor: 'rgba(250,250,248,0.97)',
+              boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 4px 24px rgba(26,22,19,0.06)',
+              borderColor: 'rgba(196,27,46,0.18)',
             } : {
-              backgroundColor: 'rgba(255,255,255,0)',
+              backgroundColor: 'rgba(0,0,0,0)',
               boxShadow: '0 0 0 rgba(0,0,0,0)',
-              borderColor: 'rgba(209,213,219,0)',
+              borderColor: 'rgba(196,27,46,0)',
             }}
-            transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`border ${
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className={`border backdrop-blur-md ${
               isScrolled
                 ? 'max-w-[1280px] mx-auto rounded-2xl px-4 sm:px-6 py-3'
                 : 'container-custom py-5'
@@ -154,7 +154,9 @@ export function Navigation({
                 <img
                   src="/images/logo/Logo.png"
                   alt={companyConfig.name}
-                  className={`transition-all duration-300 w-auto ${isScrolled ? 'h-9' : 'h-12 brightness-0 invert'}`}
+                  className={`transition-all duration-300 w-auto ${
+                    isScrolled ? 'h-9' : 'h-12 brightness-0 invert'
+                  }`}
                 />
               </a>
 
@@ -169,10 +171,10 @@ export function Navigation({
                       onMouseLeave={() => setIsProductsOpen(false)}
                     >
                       <button
-                        className={`flex items-center gap-1 text-sm font-semibold px-3.5 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
+                        className={`flex items-center gap-1 text-sm font-medium px-3.5 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
                           isScrolled
-                            ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                            : 'text-white/85 hover:text-white hover:bg-white/10'
+                            ? 'text-[#6B6159] hover:text-[#1A1613] hover:bg-[#F4F0E8]'
+                            : 'text-white/80 hover:text-white hover:bg-white/10'
                         }`}
                         onClick={() => scrollToSection('catalogo')}
                       >
@@ -180,23 +182,22 @@ export function Navigation({
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProductsOpen ? 'rotate-180' : ''}`} />
                       </button>
 
-                      {/* Custom dropdown — no body lock */}
                       {isProductsOpen && (
                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-                          <div className="w-52 bg-white rounded-xl border border-gray-100 shadow-xl shadow-black/[0.08] py-1.5 overflow-hidden">
+                          <div className="w-54 bg-white rounded-xl border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.08)] py-1.5 overflow-hidden">
                             <button
                               onClick={() => { scrollToSection('catalogo'); setIsProductsOpen(false); }}
-                              className="w-full text-left px-4 py-2 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-colors"
+                              className="w-full text-left px-4 py-2 text-sm font-semibold text-[#1A1613] hover:bg-[#F4F0E8] transition-colors"
                             >
                               Ver todos los productos
                             </button>
-                            <div className="h-px bg-gray-100 my-1 mx-3" />
+                            <div className="h-px bg-[#EBE5DC] my-1 mx-3" />
                             <div className="max-h-64 overflow-y-auto">
                               {categories.map((cat) => (
                                 <button
                                   key={cat.id}
                                   onClick={() => { handleCategoryClick(cat.id); setIsProductsOpen(false); }}
-                                  className="w-full text-left px-4 py-1.5 text-sm text-gray-600 hover:text-[#d32f2f] hover:bg-red-50 transition-colors"
+                                  className="w-full text-left px-4 py-1.5 text-sm text-[#6B6159] hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors"
                                 >
                                   {cat.name}
                                 </button>
@@ -210,10 +211,10 @@ export function Navigation({
                     <button
                       key={link.name}
                       onClick={link.action}
-                      className={`text-sm font-semibold px-3.5 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
+                      className={`text-sm font-medium px-3.5 py-2 rounded-lg transition-all duration-150 cursor-pointer ${
                         isScrolled
-                          ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                          : 'text-white/85 hover:text-white hover:bg-white/10'
+                          ? 'text-[#6B6159] hover:text-[#1A1613] hover:bg-[#F4F0E8]'
+                          : 'text-white/80 hover:text-white hover:bg-white/10'
                       }`}
                     >
                       {link.name}
@@ -224,33 +225,31 @@ export function Navigation({
 
               {/* Right actions */}
               <div className="flex items-center justify-end gap-2">
-                {/* Quote button desktop */}
+                {/* Quote button */}
                 <button
                   onClick={() => setIsQuoteOpen(true)}
-                  className={`hidden lg:flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150 cursor-pointer ${
+                  className={`hidden lg:flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150 cursor-pointer border ${
                     isScrolled
-                      ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                      : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/10'
+                      ? 'bg-[#F4F0E8] hover:bg-[#EBE5DC] text-[#6B6159] border-[#EBE5DC]'
+                      : 'bg-white/10 hover:bg-white/20 text-white border-white/15 backdrop-blur-sm'
                   }`}
                 >
                   <div className="relative">
                     <ClipboardList className="w-4 h-4" />
                     {totalQuoteItems > 0 && (
-                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-[#d32f2f] text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
                         {totalQuoteItems}
                       </span>
                     )}
                   </div>
-                  <span className="text-sm font-semibold">Mi lista</span>
+                  <span className="text-sm font-medium">Mi lista</span>
                 </button>
 
-                {/* CTA desktop */}
+                {/* CTA */}
                 <button
                   onClick={handleWhatsAppClick}
-                  className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer bg-[#d32f2f] text-white hover:bg-[#c62828]"
-                  style={{
-                    boxShadow: '0 1px 2px rgba(211,47,47,0.2), 0 4px 12px rgba(211,47,47,0.18)',
-                  }}
+                  className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer bg-[#C41B2E] text-white hover:bg-[#B51426]"
+                  style={{ boxShadow: '0 2px 12px rgba(196,27,46,0.25)' }}
                 >
                   <MessageCircle className="w-4 h-4" />
                   Cotizar
@@ -262,11 +261,11 @@ export function Navigation({
                     <button
                       onClick={() => setIsQuoteOpen(true)}
                       className={`relative p-2 rounded-xl transition-colors cursor-pointer ${
-                        isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                        isScrolled ? 'text-[#6B6159] hover:bg-[#F4F0E8]' : 'text-white hover:bg-white/10'
                       }`}
                     >
                       <ClipboardList className="w-5 h-5" />
-                      <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#d32f2f] text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                      <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
                         {totalQuoteItems}
                       </span>
                     </button>
@@ -274,7 +273,7 @@ export function Navigation({
                   <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     className={`p-2 rounded-xl transition-colors cursor-pointer ${
-                      isScrolled ? 'text-gray-900 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                      isScrolled ? 'text-[#1A1613] hover:bg-[#F4F0E8]' : 'text-white hover:bg-white/10'
                     }`}
                   >
                     {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -287,92 +286,83 @@ export function Navigation({
         </div>
       </nav>
 
-      {/* ── Quote Sheet ───────────────────────────────── */}
+      {/* ── Quote Sheet ─────────────────────────────────────────── */}
       <Sheet open={isQuoteOpen} onOpenChange={setIsQuoteOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col overflow-hidden">
+        <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col overflow-hidden bg-white border-[#EBE5DC]">
 
-          {/* Header */}
-          <SheetHeader className="px-5 py-4 border-b border-gray-100 flex-shrink-0">
+          <SheetHeader className="px-5 py-4 border-b border-[#EBE5DC] flex-shrink-0">
             <SheetTitle className="flex items-center gap-2.5">
-              <ClipboardList className="w-4 h-4 text-[#d32f2f]" />
-              <span className="font-black text-gray-950 tracking-tight text-base">Mi lista</span>
+              <ClipboardList className="w-4 h-4 text-[#C41B2E]" />
+              <span className="font-semibold text-[#1A1613] tracking-tight text-base">Mi lista</span>
               {totalQuoteItems > 0 && (
-                <span className="ml-auto text-[11px] font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-sm">
+                <span className="ml-auto text-[11px] font-medium text-[#9E9080] bg-[#F4F0E8] px-2.5 py-1 rounded-sm border border-[#EBE5DC]">
                   {totalQuoteItems} {totalQuoteItems === 1 ? 'producto' : 'productos'}
                 </span>
               )}
             </SheetTitle>
           </SheetHeader>
 
-          {/* Body */}
           <div className="flex-1 overflow-y-auto px-5 py-5">
             {quoteItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                <div className="w-14 h-14 border border-gray-200 rounded-sm flex items-center justify-center mb-4">
-                  <ClipboardList className="w-6 h-6 text-gray-300" />
+                <div className="w-14 h-14 border border-[#EBE5DC] rounded-sm flex items-center justify-center mb-4">
+                  <ClipboardList className="w-6 h-6 text-[#C0B5A8]" />
                 </div>
-                <p className="text-sm font-black text-gray-900 mb-1 tracking-tight">Lista vacía</p>
-                <p className="text-xs text-gray-400 max-w-[200px] leading-relaxed">
+                <p className="text-sm font-semibold text-[#1A1613] mb-1">Lista vacía</p>
+                <p className="text-xs text-[#9E9080] max-w-[200px] leading-relaxed">
                   Explorá el catálogo y agregá productos para cotizar juntos.
                 </p>
               </div>
             ) : (
               <div className="space-y-2.5">
                 {quoteItems.map((item) => (
-                  <div
-                    key={item.product.id}
-                    className="border border-gray-100 rounded-sm overflow-hidden bg-white"
-                  >
-                    {/* Product row */}
+                  <div key={item.product.id} className="border border-[#EBE5DC] rounded-sm overflow-hidden bg-[#FAF8F4]">
                     <div className="flex gap-3 p-3">
                       <img
                         src={getCategoryImage(item.product.category)}
                         alt={item.product.name}
-                        className="w-14 h-14 object-cover rounded-sm flex-shrink-0 bg-gray-100"
+                        className="w-14 h-14 object-cover rounded-sm flex-shrink-0 bg-[#EBE5DC]"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] font-black text-[#d32f2f] uppercase tracking-[0.12em] mb-0.5">
+                        <p className="text-[9px] font-semibold text-[#C41B2E] uppercase tracking-[0.12em] mb-0.5">
                           {item.product.category}
                         </p>
-                        <h4 className="text-[12px] font-black text-gray-900 leading-snug line-clamp-2 tracking-tight">
+                        <h4 className="text-[12px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
                           {item.product.name}
                         </h4>
-                        <p className="text-[10px] font-mono text-gray-400 mt-0.5">#{item.product.sku}</p>
+                        <p className="text-[10px] font-mono text-[#9E9080] mt-0.5">#{item.product.sku}</p>
                       </div>
                       <button
                         onClick={() => onRemoveFromQuote?.(item.product.id)}
-                        className="p-1.5 text-gray-300 hover:text-[#d32f2f] transition-colors cursor-pointer flex-shrink-0 self-start"
+                        className="p-1.5 text-[#C0B5A8] hover:text-[#C41B2E] transition-colors cursor-pointer flex-shrink-0 self-start"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
 
-                    {/* Controls row */}
-                    <div className="flex items-center gap-3 px-3 pb-3 border-t border-gray-50 pt-2.5">
-                      {/* Quantity */}
-                      <div className="flex items-center border border-gray-200 rounded-sm overflow-hidden">
+                    <div className="flex items-center gap-3 px-3 pb-3 border-t border-[#EBE5DC] pt-2.5">
+                      <div className="flex items-center border border-[#EBE5DC] rounded-sm overflow-hidden bg-white">
                         <button
                           onClick={() => onUpdateQuantity?.(item.product.id, item.quantity - 1)}
                           disabled={item.quantity <= 1}
-                          className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                          className="w-7 h-7 flex items-center justify-center text-[#9E9080] hover:bg-[#F4F0E8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-8 text-center text-xs font-black text-gray-900 border-x border-gray-200">
+                        <span className="w-8 text-center text-xs font-semibold text-[#1A1613] border-x border-[#EBE5DC]">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => onUpdateQuantity?.(item.product.id, item.quantity + 1)}
-                          className="w-7 h-7 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors cursor-pointer"
+                          className="w-7 h-7 flex items-center justify-center text-[#9E9080] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
 
-                      {/* Notes toggle */}
                       <button
                         onClick={() => setExpandedItem(expandedItem === item.product.id ? null : item.product.id)}
-                        className="text-[11px] font-bold text-gray-400 hover:text-[#d32f2f] transition-colors cursor-pointer flex items-center gap-1"
+                        className="text-[11px] font-medium text-[#9E9080] hover:text-[#C41B2E] transition-colors cursor-pointer flex items-center gap-1"
                       >
                         {expandedItem === item.product.id ? (
                           <><ChevronUp className="w-3 h-3" /> Ocultar notas</>
@@ -382,14 +372,13 @@ export function Navigation({
                       </button>
                     </div>
 
-                    {/* Notes */}
                     {expandedItem === item.product.id && (
                       <div className="px-3 pb-3">
                         <Textarea
                           placeholder="Especificaciones, consultas..."
                           value={item.notes}
                           onChange={(e) => onUpdateNotes?.(item.product.id, e.target.value)}
-                          className="text-xs resize-none rounded-sm border-gray-200 focus:border-[#d32f2f] focus:ring-[#d32f2f]/10"
+                          className="text-xs resize-none rounded-sm border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus:border-[#C41B2E]"
                           rows={2}
                         />
                       </div>
@@ -400,13 +389,12 @@ export function Navigation({
             )}
           </div>
 
-          {/* Footer CTAs */}
           {quoteItems.length > 0 && (
-            <div className="px-5 py-4 border-t border-gray-100 flex-shrink-0 space-y-2 bg-white">
+            <div className="px-5 py-4 border-t border-[#EBE5DC] flex-shrink-0 space-y-2 bg-white">
               <button
                 onClick={handleSendQuote}
-                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-black text-white rounded-sm transition-colors cursor-pointer"
-                style={{ background: '#25d366', boxShadow: '0 2px 12px rgba(37,211,102,0.22)' }}
+                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-sm transition-colors cursor-pointer"
+                style={{ background: '#25d366', boxShadow: '0 2px 16px rgba(37,211,102,0.2)' }}
               >
                 <MessageCircle className="w-4 h-4" />
                 Enviar lista por WhatsApp
@@ -414,14 +402,14 @@ export function Navigation({
               <div className="flex gap-2">
                 <button
                   onClick={onClearQuote}
-                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-[#d32f2f] border border-gray-200 rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#9E9080] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-3 h-3" />
                   Vaciar
                 </button>
                 <button
                   onClick={() => setIsQuoteOpen(false)}
-                  className="flex-1 h-9 text-[11px] font-bold text-gray-400 hover:text-gray-700 border border-gray-200 rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 text-[11px] font-medium text-[#9E9080] hover:text-[#1A1613] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
                 >
                   Seguir viendo
                 </button>
@@ -432,31 +420,31 @@ export function Navigation({
         </SheetContent>
       </Sheet>
 
-      {/* ── Mobile menu ──────────────────────────────── */}
+      {/* ── Mobile menu ─────────────────────────────────────────── */}
       <div className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
         <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div
-          className={`absolute top-0 right-0 w-full max-w-xs h-full bg-white shadow-2xl transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute top-0 right-0 w-full max-w-xs h-full bg-white border-l border-[#EBE5DC] shadow-2xl transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <div className="p-5 pt-20 flex flex-col h-full">
             <button
               onClick={() => { setIsMobileMenuOpen(false); setIsQuoteOpen(true); }}
-              className="flex items-center gap-3 w-full p-3.5 bg-gray-50 hover:bg-gray-100 rounded-sm mb-5 transition-colors cursor-pointer border border-gray-100"
+              className="flex items-center gap-3 w-full p-3.5 bg-[#FAF8F4] hover:bg-[#F4F0E8] rounded-sm mb-5 transition-colors cursor-pointer border border-[#EBE5DC]"
             >
-              <div className="relative w-9 h-9 border border-gray-200 rounded-sm flex items-center justify-center flex-shrink-0">
-                <ClipboardList className="w-4 h-4 text-[#d32f2f]" />
+              <div className="relative w-9 h-9 border border-[#EBE5DC] rounded-sm flex items-center justify-center flex-shrink-0">
+                <ClipboardList className="w-4 h-4 text-[#C41B2E]" />
                 {totalQuoteItems > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#d32f2f] text-white text-[9px] font-black rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#C41B2E] text-white text-[9px] font-black rounded-full flex items-center justify-center">
                     {totalQuoteItems}
                   </span>
                 )}
               </div>
               <div className="text-left">
-                <span className="font-black text-gray-900 text-sm tracking-tight">Mi lista de cotización</span>
-                <span className="block text-[11px] text-gray-400 mt-0.5">
+                <span className="font-semibold text-[#1A1613] text-sm">Mi lista de cotización</span>
+                <span className="block text-[11px] text-[#9E9080] mt-0.5">
                   {totalQuoteItems > 0 ? `${totalQuoteItems} producto${totalQuoteItems !== 1 ? 's' : ''}` : 'Sin productos aún'}
                 </span>
               </div>
@@ -469,7 +457,7 @@ export function Navigation({
                     <div>
                       <button
                         onClick={() => scrollToSection('catalogo')}
-                        className="flex items-center w-full text-base font-black text-gray-900 px-3 py-3 rounded-sm hover:bg-gray-50 tracking-tight transition-colors cursor-pointer"
+                        className="flex items-center w-full text-base font-medium text-[#1A1613] px-3 py-3 rounded-sm hover:bg-[#F4F0E8] hover:text-[#C41B2E] transition-colors cursor-pointer"
                       >
                         {link.name}
                       </button>
@@ -478,7 +466,7 @@ export function Navigation({
                           <button
                             key={cat.id}
                             onClick={() => handleCategoryClick(cat.id)}
-                            className="block w-full text-left text-sm text-gray-500 px-3 py-2 rounded-sm hover:text-[#d32f2f] hover:bg-red-50 transition-colors cursor-pointer"
+                            className="block w-full text-left text-sm text-[#9E9080] px-3 py-2 rounded-sm hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer"
                           >
                             {cat.name}
                           </button>
@@ -488,7 +476,7 @@ export function Navigation({
                   ) : (
                     <button
                       onClick={link.action}
-                      className="flex items-center w-full text-base font-black text-gray-900 px-3 py-3 rounded-sm hover:bg-gray-50 tracking-tight transition-colors cursor-pointer"
+                      className="flex items-center w-full text-base font-medium text-[#1A1613] px-3 py-3 rounded-sm hover:bg-[#F4F0E8] hover:text-[#C41B2E] transition-colors cursor-pointer"
                     >
                       {link.name}
                     </button>
@@ -497,10 +485,10 @@ export function Navigation({
               ))}
             </div>
 
-            <div className="pt-5 border-t border-gray-100 space-y-2">
+            <div className="pt-5 border-t border-[#EBE5DC] space-y-2">
               <button
                 onClick={handleWhatsAppClick}
-                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-black text-white rounded-sm cursor-pointer"
+                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-sm cursor-pointer"
                 style={{ background: '#25d366' }}
               >
                 <MessageCircle className="w-4 h-4" />
@@ -508,7 +496,7 @@ export function Navigation({
               </button>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full py-2.5 text-sm font-bold text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                className="w-full py-2.5 text-sm font-medium text-[#9E9080] hover:text-[#1A1613] transition-colors cursor-pointer"
               >
                 Cerrar
               </button>

@@ -16,7 +16,6 @@ export function Hero({ isReady = false }: HeroProps) {
   });
   const statsAnimated = useRef(false);
 
-  // ── Entrance timeline (fires once isReady = true) ────────────────────────
   useEffect(() => {
     if (!isReady) return;
 
@@ -24,7 +23,7 @@ export function Hero({ isReady = false }: HeroProps) {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
         .fromTo('.hero-badge',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 })
         .fromTo('.hero-tag',    { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 }, '-=0.2')
-        .fromTo('.hero-title',  { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.45 }, '-=0.2')
+        .fromTo('.hero-title',  { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.55 }, '-=0.2')
         .fromTo('.hero-desc',   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 }, '-=0.2')
         .fromTo('.hero-cta',    { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 }, '-=0.2')
         .fromTo('.hero-stats',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 },  '-=0.15')
@@ -34,7 +33,6 @@ export function Hero({ isReady = false }: HeroProps) {
     return () => ctx.revert();
   }, [isReady]);
 
-  // ── Scroll-exit: parallax bg + fade/scale/blur content ───────────────────
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.to(bgRef.current, {
@@ -69,7 +67,6 @@ export function Hero({ isReady = false }: HeroProps) {
     };
   }, []);
 
-  // ── Counter animation (IntersectionObserver + rAF) ───────────────────────
   const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -95,7 +92,6 @@ export function Hero({ isReady = false }: HeroProps) {
           years: Math.floor(targets.years * ease),
           clients: Math.floor(targets.clients * ease),
         };
-        // Update DOM directly to avoid re-render on each frame
         document.querySelectorAll('[data-count]').forEach(el => {
           const key = el.getAttribute('data-count') as keyof typeof countRefs.current;
           el.textContent = String(countRefs.current[key]);
@@ -132,10 +128,11 @@ export function Hero({ isReady = false }: HeroProps) {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/90" />
+        {/* Subtle gold glow at top-left */}
         <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-[#d32f2f]/20 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#d32f2f]/15 rounded-full blur-[100px]" />
+          <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#C41B2E]/[0.06] rounded-full blur-[140px]" />
+          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#C41B2E]/[0.04] rounded-full blur-[120px]" />
         </div>
       </div>
 
@@ -145,31 +142,31 @@ export function Hero({ isReady = false }: HeroProps) {
 
           {/* Badge */}
           <div className="hero-entrance hero-badge mb-7">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/[0.14]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/[0.07] backdrop-blur-md rounded-full border border-white/[0.1]">
               <span className="relative flex h-2 w-2 flex-shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
               </span>
-              <ChefHat className="w-4 h-4 text-red-200" />
-              <span className="text-white font-bold text-sm tracking-tight">{companyConfig.name}</span>
+              <ChefHat className="w-4 h-4 text-[#C41B2E]" />
+              <span className="text-white font-medium text-sm tracking-tight">{companyConfig.name}</span>
               <span className="w-px h-3.5 bg-white/20" />
-              <span className="text-white/60 text-xs font-medium">Disponible ahora</span>
+              <span className="text-white/50 text-xs font-medium">Disponible ahora</span>
             </div>
           </div>
 
           {/* Tagline */}
           <div className="hero-entrance hero-tag mb-5">
-            <p className="text-red-100/80 text-base md:text-lg font-medium tracking-wide">
+            <p className="text-[#C8BFB5]/70 text-base md:text-lg font-light tracking-wide">
               {companyConfig.tagline}
             </p>
           </div>
 
-          {/* Title */}
+          {/* Title — Instrument Serif for editorial feel */}
           <div className="hero-entrance hero-title mb-7">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-[-0.03em]">
+            <h1 className="text-5xl md:text-[5.5rem] lg:text-[6.5rem] font-serif font-normal text-white leading-[1.0] tracking-[-0.025em]">
               Equipamiento
               <br />
-              <span className="text-red-100">gastronómico</span>
+              <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>
               <br />
               profesional
             </h1>
@@ -177,9 +174,9 @@ export function Hero({ isReady = false }: HeroProps) {
 
           {/* Description */}
           <div className="hero-entrance hero-desc mb-10">
-            <p className="text-base md:text-lg text-gray-300 max-w-xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg text-white/50 max-w-xl mx-auto leading-relaxed font-light">
               Más de {companyConfig.stats.products} productos de las mejores marcas para restaurantes,
-              hoteles y negocios gastronómicos. Calidad garantizada.
+              hoteles y negocios gastronómicos.
             </p>
           </div>
 
@@ -188,39 +185,32 @@ export function Hero({ isReady = false }: HeroProps) {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={scrollToCatalog}
-                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold rounded-xl w-full sm:w-auto cursor-pointer transition-all duration-150"
-                style={{
-                  background: 'rgba(255,255,255,1)',
-                  color: '#111827',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.12)',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#f3f4f6')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#ffffff')}
+                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold rounded-xl w-full sm:w-auto cursor-pointer transition-all duration-200 border border-[rgba(196,27,46,0.3)] text-[#C41B2E] bg-[rgba(196,27,46,0.07)] hover:bg-[rgba(196,27,46,0.12)] hover:border-[rgba(196,27,46,0.5)]"
               >
                 <Package className="w-4 h-4" />
                 Ver catálogo
               </button>
               <button
                 onClick={handleWhatsAppClick}
-                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold rounded-xl w-full sm:w-auto btn-whatsapp cursor-pointer"
+                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold rounded-xl w-full sm:w-auto btn-whatsapp cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 Cotizar ahora
               </button>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-6">
-              <span className="flex items-center gap-1.5 text-white/45 text-xs font-medium">
-                <Shield className="w-3.5 h-3.5 text-white/35" />
+              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
+                <Shield className="w-3.5 h-3.5 text-white/25" />
                 Garantía certificada
               </span>
-              <span className="w-px h-3 bg-white/15 hidden sm:block" />
-              <span className="flex items-center gap-1.5 text-white/45 text-xs font-medium">
-                <Zap className="w-3.5 h-3.5 text-white/35" />
+              <span className="w-px h-3 bg-white/10 hidden sm:block" />
+              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
+                <Zap className="w-3.5 h-3.5 text-white/25" />
                 Respuesta inmediata
               </span>
-              <span className="w-px h-3 bg-white/15 hidden sm:block" />
-              <span className="flex items-center gap-1.5 text-white/45 text-xs font-medium">
-                <Star className="w-3.5 h-3.5 text-white/35" />
+              <span className="w-px h-3 bg-white/10 hidden sm:block" />
+              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
+                <Star className="w-3.5 h-3.5 text-white/25" />
                 +5000 clientes satisfechos
               </span>
             </div>
@@ -236,17 +226,17 @@ export function Hero({ isReady = false }: HeroProps) {
               ].map(({ key, suffix, label, icon: Icon }) => (
                 <div
                   key={key}
-                  className="text-center px-3 py-4 md:py-5 backdrop-blur-md rounded-2xl border border-white/[0.12]"
-                  style={{ background: 'rgba(255,255,255,0.07)' }}
+                  className="text-center px-3 py-4 md:py-5 backdrop-blur-md rounded-2xl border border-[rgba(196,27,46,0.12)]"
+                  style={{ background: 'rgba(196,27,46,0.04)' }}
                 >
-                  <div className="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center mx-auto mb-2.5">
-                    <Icon className="w-3.5 h-3.5 text-red-200" />
+                  <div className="w-7 h-7 bg-[rgba(196,27,46,0.1)] rounded-lg flex items-center justify-center mx-auto mb-2.5">
+                    <Icon className="w-3.5 h-3.5 text-[#C41B2E]" />
                   </div>
                   <div className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
                     <span data-count={key}>0</span>
-                    <span className="text-red-200">{suffix}</span>
+                    <span className="text-[#C41B2E]">{suffix}</span>
                   </div>
-                  <div className="text-[11px] text-white/45 mt-1.5 font-semibold">{label}</div>
+                  <div className="text-[11px] text-white/35 mt-1.5 font-medium">{label}</div>
                 </div>
               ))}
             </div>
@@ -258,10 +248,10 @@ export function Hero({ isReady = false }: HeroProps) {
       <div className="hero-entrance hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2">
         <button
           onClick={scrollToCatalog}
-          className="flex flex-col items-center gap-2 text-white/50 hover:text-white/90 transition-colors group"
+          className="flex flex-col items-center gap-2 text-white/35 hover:text-[#C41B2E] transition-colors group"
         >
           <span className="text-xs font-medium tracking-widest uppercase">Explorar</span>
-          <div className="w-6 h-9 rounded-full border border-white/20 flex items-start justify-center pt-1.5 group-hover:border-white/40 transition-colors">
+          <div className="w-6 h-9 rounded-full border border-white/15 flex items-start justify-center pt-1.5 group-hover:border-[rgba(196,27,46,0.4)] transition-colors">
             <ArrowDown className="w-2.5 h-2.5 animate-bounce" />
           </div>
         </button>

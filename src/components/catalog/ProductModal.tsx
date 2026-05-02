@@ -38,28 +38,27 @@ export function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] p-0 gap-0 overflow-hidden rounded-md border-0 shadow-2xl">
+      <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] p-0 gap-0 overflow-hidden rounded-2xl border border-[#EBE5DC] shadow-2xl shadow-black/10 bg-white">
         <div className="grid md:grid-cols-[1.1fr_1fr] h-full max-h-[90vh]">
 
           {/* Image panel */}
-          <div className="relative bg-gray-950 min-h-[260px] md:min-h-0 overflow-hidden">
+          <div className="relative bg-[#F4F0E8] min-h-[260px] md:min-h-0 overflow-hidden">
             {!imageLoaded && (
-              <div className="absolute inset-0 bg-gray-900 animate-pulse" />
+              <div className="absolute inset-0 bg-[#EBE5DC] animate-pulse" />
             )}
 
             <img
               src={imageUrl}
               alt={product.name}
-              className="w-full h-full object-cover opacity-90"
+              className="w-full h-full object-cover"
               onLoad={() => setImageLoaded(true)}
             />
 
-            {/* Heavy gradient for text legibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
-            {/* Category — top left */}
+            {/* Category tag */}
             <div className="absolute top-4 left-4">
-              <span className="text-[9px] font-black uppercase tracking-[0.16em] text-white/60 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-sm">
+              <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/80 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-sm">
                 {product.category}
               </span>
             </div>
@@ -68,7 +67,7 @@ export function ProductModal({
             <AnimatePresence>
               {isInQuoteList && (
                 <motion.div
-                  className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 bg-emerald-400 text-black rounded-sm text-[9px] font-black"
+                  className="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 bg-emerald-400 text-black rounded-sm text-[9px] font-bold"
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0, opacity: 0 }}
@@ -80,9 +79,9 @@ export function ProductModal({
               )}
             </AnimatePresence>
 
-            {/* SKU bottom-left */}
+            {/* SKU */}
             <div className="absolute bottom-4 left-4">
-              <span className="text-[9px] font-mono text-white/40 tracking-widest">
+              <span className="text-[9px] font-mono text-white/50 tracking-widest">
                 #{product.sku}
               </span>
             </div>
@@ -95,7 +94,7 @@ export function ProductModal({
             <div className="flex justify-end p-4 pb-0 flex-shrink-0">
               <button
                 onClick={onClose}
-                className="w-7 h-7 flex items-center justify-center rounded-sm text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer"
+                className="w-7 h-7 flex items-center justify-center rounded-lg text-[#C0B5A8] hover:text-[#1A1613] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -105,38 +104,58 @@ export function ProductModal({
 
               {/* Header */}
               <div className="mb-5">
-                <p className="text-[9px] font-black text-[#d32f2f] uppercase tracking-[0.16em] mb-1.5">
+                <p className="text-[9px] font-semibold text-[#C41B2E] uppercase tracking-[0.16em] mb-1.5">
                   {product.subcategory}
                 </p>
-                <h2 className="text-xl md:text-2xl font-black text-gray-950 leading-tight tracking-tight">
+                <h2 className="text-xl md:text-2xl font-serif font-normal text-[#1A1613] leading-tight">
                   {product.name}
                 </h2>
               </div>
 
-              <div className="h-px bg-gray-100 mb-5" />
+              <div className="h-px bg-[#EBE5DC] mb-5" />
+
+              {/* Price & Availability */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex-1">
+                  <p className="text-[9px] font-semibold text-[#C0B5A8] uppercase tracking-[0.12em] mb-1">Precio ref.</p>
+                  <p className="text-lg font-semibold text-[#1A1613]">
+                    ${product.price.toLocaleString('es-AR')}
+                  </p>
+                </div>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[10px] font-bold uppercase tracking-wider ${
+                  product.availability === 'en-stock'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    product.availability === 'en-stock' ? 'bg-emerald-500' : 'bg-amber-500'
+                  }`} />
+                  {product.availability === 'en-stock' ? 'En stock' : 'Por encargo'}
+                </span>
+              </div>
 
               {/* Description */}
               <div className="mb-5">
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.12em] mb-2">
+                <p className="text-[9px] font-semibold text-[#C0B5A8] uppercase tracking-[0.12em] mb-2">
                   Descripción
                 </p>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-[#6B6159] text-sm leading-relaxed">
                   {product.description}
                 </p>
               </div>
 
               {/* Features */}
               <div className="mb-6">
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.12em] mb-3">
+                <p className="text-[9px] font-semibold text-[#C0B5A8] uppercase tracking-[0.12em] mb-3">
                   Características
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {product.features.map((f, i) => (
                     <span
                       key={i}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-100 text-gray-700 text-[11px] font-semibold rounded-sm"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F4F0E8] border border-[#EBE5DC] text-[#4A4540] text-[11px] font-medium rounded-sm"
                     >
-                      <span className="w-1 h-1 rounded-full bg-[#d32f2f] flex-shrink-0" />
+                      <span className="w-1 h-1 rounded-full bg-[#C41B2E] flex-shrink-0" />
                       {f}
                     </span>
                   ))}
@@ -145,21 +164,17 @@ export function ProductModal({
 
               <div className="flex-1" />
 
-              {/* CTA */}
-              <div className="pt-5 border-t border-gray-100 space-y-2">
+              {/* CTAs */}
+              <div className="pt-5 border-t border-[#EBE5DC] space-y-2">
                 <motion.button
-                  className={`w-full h-11 rounded-sm text-sm font-black flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer tracking-wide ${
+                  className={`w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer tracking-wide ${
                     isInQuoteList
                       ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                      : 'text-white'
+                      : 'bg-[#1A1613] text-white'
                   }`}
-                  style={!isInQuoteList ? {
-                    background: '#d32f2f',
-                    boxShadow: '0 2px 12px rgba(211,47,47,0.25)',
-                  } : {}}
                   onClick={() => !isInQuoteList && onAddToQuote?.(product)}
                   whileTap={isInQuoteList ? {} : { scale: 0.97 }}
-                  whileHover={!isInQuoteList ? { background: '#b71c1c' } : {}}
+                  whileHover={!isInQuoteList ? { backgroundColor: '#2D2925' } : {}}
                 >
                   {isInQuoteList ? (
                     <><Check className="w-4 h-4" /> Producto en tu lista</>
@@ -169,14 +184,14 @@ export function ProductModal({
                 </motion.button>
 
                 <motion.button
-                  className="w-full h-11 rounded-sm text-sm font-black flex items-center justify-center gap-2 text-white cursor-pointer tracking-wide"
+                  className="w-full h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 text-white cursor-pointer tracking-wide"
                   style={{
                     background: '#25d366',
-                    boxShadow: '0 2px 12px rgba(37,211,102,0.22)',
+                    boxShadow: '0 2px 16px rgba(37,211,102,0.2)',
                   }}
                   onClick={handleWhatsApp}
                   whileTap={{ scale: 0.97 }}
-                  whileHover={{ background: '#1ebe5d' }}
+                  whileHover={{ backgroundColor: '#1EAF56' }}
                 >
                   <MessageCircle className="w-4 h-4" />
                   Consultar por WhatsApp

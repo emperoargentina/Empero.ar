@@ -1,23 +1,7 @@
-// =============================================================================
-// ContactForm Section - Rediseñado con estilo senior premium
-// =============================================================================
-
 import { useState } from 'react';
-import {
-  Phone,
-  Mail,
-  Send,
-  CheckCircle2,
-  MessageCircle,
-  User,
-  Building2,
-  ArrowUpRight
-} from 'lucide-react';
+import { Phone, Mail, Send, CheckCircle2, MessageCircle, ArrowUpRight } from 'lucide-react';
 import { companyConfig, whatsappConfig } from '@/data/company';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { AnimatedSection, StaggerContainer, StaggerItem } from '@/components/animations/AnimatedSection';
+import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { motion } from 'framer-motion';
 
 export function ContactForm() {
@@ -32,10 +16,7 @@ export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,225 +33,227 @@ export function ContactForm() {
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(whatsappConfig.defaultMessage);
-    const url = `https://wa.me/${whatsappConfig.phoneNumber}?text=${message}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${message}`, '_blank');
   };
 
-  const contactInfo = [
-    {
-      icon: Phone,
-      label: 'Teléfono',
-      value: companyConfig.contact.phone,
-      color: 'bg-blue-50 text-blue-600'
-    },
-    {
-      icon: Mail,
-      label: 'Email',
-      value: companyConfig.contact.email,
-      color: 'bg-amber-50 text-amber-600'
-    },
-  ];
-
   return (
-    <section id="contacto" className="py-20 lg:py-28 bg-gray-50/60 overflow-hidden relative">
+    <section id="contacto" className="py-20 lg:py-28 bg-[#F7F5F2] relative overflow-hidden">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
-      <div className="container-custom max-w-6xl">
-        {/* Header */}
-        <AnimatedSection direction="up" className="text-center mb-16">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fff5f5] text-[#d32f2f] text-[11px] font-bold uppercase tracking-[0.1em] rounded-full mb-5 border border-[#fecaca]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#d32f2f] inline-block" />
-            Contacto
-          </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-950 tracking-tight">
-            ¿Necesitas una <span className="text-[#d32f2f]">cotización?</span>
-          </h2>
-          <p className="text-gray-500 mt-4 max-w-lg mx-auto text-base leading-relaxed">
-            Completá el formulario y te respondemos en menos de 24 horas.
-          </p>
-        </AnimatedSection>
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Contact Info - Left Side */}
-          <div className="lg:col-span-5">
-            <StaggerContainer className="space-y-3" staggerDelay={0.1}>
-              {contactInfo.map((item) => (
-                <StaggerItem key={item.label}>
-                  <motion.div
-                    className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-gray-100/80 group cursor-default"
-                    whileHover={{ x: 3, borderColor: 'rgba(211,47,47,0.15)', boxShadow: '0 4px 16px rgba(0,0,0,0.05)' }}
-                    transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                    style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}
-                  >
-                    <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <item.icon className="w-4 h-4" />
-                    </div>
-                    <div className="min-w-0 pt-0.5">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-0.5">{item.label}</p>
-                      <p className="text-gray-900 font-semibold text-sm leading-relaxed">{item.value}</p>
-                    </div>
-                  </motion.div>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
+      {/* Subtle background texture */}
+      <div
+        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #C41B2E 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
 
-            {/* WhatsApp CTA Card */}
-            <AnimatedSection direction="up" delay={0.4} className="mt-6">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 relative">
+
+        <div className="grid lg:grid-cols-[5fr_7fr] gap-12 xl:gap-20 items-start">
+
+          {/* Left — info column */}
+          <AnimatedSection direction="left">
+            <div className="lg:sticky lg:top-28">
+
+              {/* Ornament label */}
+              <div className="flex items-center gap-4 mb-7">
+                <div className="h-px w-10 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C41B2E]">
+                  Contacto
+                </span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-serif font-normal text-[#1A1613] leading-tight mb-5">
+                ¿Hablemos<em className="not-italic text-[#C41B2E]">?</em>
+              </h2>
+
+              <p className="text-[#9E9080] text-[15px] leading-relaxed mb-10 max-w-xs">
+                Completá el formulario o escribinos directamente por WhatsApp. Te respondemos en menos de 24 horas.
+              </p>
+
+              {/* Contact info — minimal typography */}
+              <div className="space-y-5 mb-10">
+                <a
+                  href={`tel:${companyConfig.contact.phone}`}
+                  className="flex items-center gap-3.5 group"
+                >
+                  <div className="w-8 h-8 bg-white border border-[#EBE5DC] rounded-lg flex items-center justify-center flex-shrink-0 group-hover:border-[rgba(196,27,46,0.4)] transition-colors">
+                    <Phone className="w-3.5 h-3.5 text-[#C41B2E]" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#C0B5A8] mb-0.5">Teléfono</p>
+                    <p className="text-sm text-[#4A4540] font-medium group-hover:text-[#1A1613] transition-colors">
+                      {companyConfig.contact.phone}
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href={`mailto:${companyConfig.contact.email}`}
+                  className="flex items-center gap-3.5 group"
+                >
+                  <div className="w-8 h-8 bg-white border border-[#EBE5DC] rounded-lg flex items-center justify-center flex-shrink-0 group-hover:border-[rgba(196,27,46,0.4)] transition-colors">
+                    <Mail className="w-3.5 h-3.5 text-[#C41B2E]" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#C0B5A8] mb-0.5">Email</p>
+                    <p className="text-sm text-[#4A4540] font-medium group-hover:text-[#1A1613] transition-colors">
+                      {companyConfig.contact.email}
+                    </p>
+                  </div>
+                </a>
+              </div>
+
+              {/* WhatsApp CTA */}
               <motion.button
                 onClick={handleWhatsAppClick}
-                className="w-full p-6 bg-gradient-to-br from-[#25d366] to-[#128c7e] rounded-2xl text-white text-left relative overflow-hidden group"
+                className="w-full max-w-xs p-5 bg-gradient-to-br from-[#25d366] to-[#1aaf57] rounded-2xl text-white text-left relative overflow-hidden group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8 transition-transform duration-500 group-hover:scale-150" />
+                <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full -translate-y-6 translate-x-6 transition-transform duration-500 group-hover:scale-150 pointer-events-none" />
                 <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5" />
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                      <MessageCircle className="w-4.5 h-4.5" />
                     </div>
-                    <div className="flex items-center gap-1 text-white/80 text-sm">
+                    <span className="flex items-center gap-1 text-white/75 text-xs font-medium">
                       Respuesta inmediata
-                      <ArrowUpRight className="w-4 h-4" />
-                    </div>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </span>
                   </div>
-                  <h4 className="font-semibold text-lg">Cotizar por WhatsApp</h4>
-                  <p className="text-white/80 text-sm mt-1">Te respondemos en minutos</p>
+                  <p className="font-semibold text-base">Cotizar por WhatsApp</p>
+                  <p className="text-white/70 text-xs mt-0.5">Te respondemos en minutos</p>
                 </div>
               </motion.button>
-            </AnimatedSection>
-          </div>
 
-          {/* Form - Right Side */}
-          <AnimatedSection direction="right" delay={0.2} className="lg:col-span-7">
-            <div className="bg-white rounded-3xl p-8 md:p-10 border border-gray-100/80" style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.04)' }}>
-              {isSubmitted ? (
-                <motion.div 
-                  className="text-center py-16"
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            </div>
+          </AnimatedSection>
+
+          {/* Right — form */}
+          <AnimatedSection direction="right" delay={0.1}>
+            {isSubmitted ? (
+              <motion.div
+                className="flex flex-col items-center justify-center py-24 text-center"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              >
+                <motion.div
+                  className="w-20 h-20 bg-[rgba(196,27,46,0.08)] border border-[rgba(196,27,46,0.2)] rounded-full flex items-center justify-center mb-6"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
                 >
-                  <motion.div 
-                    className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
-                  >
-                    <CheckCircle2 className="w-10 h-10 text-green-500" />
-                  </motion.div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    ¡Mensaje enviado!
-                  </h3>
-                  <p className="text-gray-500">
-                    Gracias por contactarnos. Te responderemos pronto.
-                  </p>
+                  <CheckCircle2 className="w-9 h-9 text-[#C41B2E]" />
                 </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-                        Nombre completo
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                          placeholder="Juan Pérez"
-                          className="input-premium pl-11"
-                        />
-                      </div>
-                    </div>
+                <h3 className="text-2xl font-serif font-normal text-[#1A1613] mb-2">
+                  ¡Mensaje enviado!
+                </h3>
+                <p className="text-[#9E9080] text-sm">
+                  Gracias por contactarnos. Te responderemos pronto.
+                </p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-0">
 
-                    <div className="space-y-2">
-                      <Label htmlFor="company" className="text-sm font-medium text-gray-700">
-                        Empresa
-                      </Label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input
-                          id="company"
-                          name="company"
-                          type="text"
-                          value={formData.company}
-                          onChange={handleChange}
-                          placeholder="Tu empresa (opcional)"
-                          className="input-premium pl-11"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                        Email
-                      </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="juan@empresa.com"
-                          className="input-premium pl-11"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-                        Teléfono
-                      </Label>
-                      <div className="relative">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+54 11 1234-5678"
-                          className="input-premium pl-11"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm font-medium text-gray-700">
-                      Mensaje
-                    </Label>
-                    <Textarea
-                      id="message"
-                      name="message"
+                {/* Name + Company */}
+                <div className="grid sm:grid-cols-2 gap-x-8">
+                  <div className="border-b border-[#D8D0C6] pb-0 mb-8 focus-within:border-[#C41B2E] transition-colors">
+                    <label htmlFor="name" className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#C0B5A8] mb-2">
+                      Nombre completo *
+                    </label>
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
                       required
-                      value={formData.message}
+                      value={formData.name}
                       onChange={handleChange}
-                      placeholder="Cuéntanos qué productos te interesan..."
-                      rows={5}
-                      className="input-premium resize-none"
+                      placeholder="Juan Pérez"
+                      className="w-full bg-transparent text-sm text-[#1A1613] placeholder:text-[#D0C8BE] focus:outline-none pb-2.5"
                     />
                   </div>
 
+                  <div className="border-b border-[#D8D0C6] pb-0 mb-8 focus-within:border-[#C41B2E] transition-colors">
+                    <label htmlFor="company" className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#C0B5A8] mb-2">
+                      Empresa
+                    </label>
+                    <input
+                      id="company"
+                      name="company"
+                      type="text"
+                      value={formData.company}
+                      onChange={handleChange}
+                      placeholder="Opcional"
+                      className="w-full bg-transparent text-sm text-[#1A1613] placeholder:text-[#D0C8BE] focus:outline-none pb-2.5"
+                    />
+                  </div>
+                </div>
+
+                {/* Email + Phone */}
+                <div className="grid sm:grid-cols-2 gap-x-8">
+                  <div className="border-b border-[#D8D0C6] pb-0 mb-8 focus-within:border-[#C41B2E] transition-colors">
+                    <label htmlFor="email" className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#C0B5A8] mb-2">
+                      Email *
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="juan@empresa.com"
+                      className="w-full bg-transparent text-sm text-[#1A1613] placeholder:text-[#D0C8BE] focus:outline-none pb-2.5"
+                    />
+                  </div>
+
+                  <div className="border-b border-[#D8D0C6] pb-0 mb-8 focus-within:border-[#C41B2E] transition-colors">
+                    <label htmlFor="phone" className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#C0B5A8] mb-2">
+                      Teléfono
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="+54 11 1234-5678"
+                      className="w-full bg-transparent text-sm text-[#1A1613] placeholder:text-[#D0C8BE] focus:outline-none pb-2.5"
+                    />
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div className="border-b border-[#D8D0C6] pb-0 mb-10 focus-within:border-[#C41B2E] transition-colors">
+                  <label htmlFor="message" className="block text-[9px] font-semibold uppercase tracking-[0.16em] text-[#C0B5A8] mb-2">
+                    Mensaje *
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Contanos qué productos te interesan, cantidades estimadas o cualquier consulta..."
+                    rows={4}
+                    className="w-full bg-transparent text-sm text-[#1A1613] placeholder:text-[#D0C8BE] focus:outline-none resize-none pb-2.5"
+                  />
+                </div>
+
+                {/* Submit */}
+                <div className="flex items-center gap-5">
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-150 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
-                    style={{
-                      background: '#d32f2f',
-                      boxShadow: '0 1px 2px rgba(211,47,47,0.2), 0 4px 16px rgba(211,47,47,0.2)',
-                    }}
-                    whileHover={!isSubmitting ? { scale: 1.005, background: '#c62828' } : {}}
-                    whileTap={!isSubmitting ? { scale: 0.995 } : {}}
+                    className="flex items-center gap-2 px-8 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-150 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                    style={{ background: '#C41B2E' }}
+                    whileHover={!isSubmitting ? { scale: 1.02, backgroundColor: '#B8945E' } : {}}
+                    whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                   >
                     {isSubmitting ? (
                       <>
@@ -283,19 +266,21 @@ export function ContactForm() {
                       </>
                     ) : (
                       <>
-                        <Send className="w-4 h-4" />
+                        <Send className="w-3.5 h-3.5" />
                         Enviar mensaje
                       </>
                     )}
                   </motion.button>
 
-                  <p className="text-center text-xs text-gray-400">
-                    Al enviar, aceptas nuestra política de privacidad. No compartimos tus datos.
+                  <p className="text-xs text-[#C0B5A8] leading-relaxed">
+                    No compartimos tus datos con terceros.
                   </p>
-                </form>
-              )}
-            </div>
+                </div>
+
+              </form>
+            )}
           </AnimatedSection>
+
         </div>
       </div>
     </section>

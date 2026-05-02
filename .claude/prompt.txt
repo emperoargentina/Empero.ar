@@ -1,0 +1,33 @@
+Actúa como un desarrollador frontend experto y diseñador UI/UX. Utilizando tus skills globales descargadas y el contexto de este proyecto, necesito que realices una refactorización y mejora integral de la Landing Page para llevarla a un nivel altamente profesional.
+
+Tienes total libertad para utilizar, crear o modificar los componentes que consideres necesarios, siempre y cuando el resultado final sea intuitivo, moderno y con una excelente distribución del espacio.
+
+Por favor, implementa las siguientes mejoras:
+
+1. Reestructuración del Layout y Componentes:
+
+Mejora el layout general de la landing page y la disposición de todos los componentes existentes.
+
+Asegúrate de que la jerarquía visual guíe al usuario de forma natural a través del contenido.
+
+2. Navegación y Categorías:
+
+Agrega una nueva sección o barra de categorías en la parte superior de la página para facilitar la navegación principal.
+
+Rediseña la visualización de las categorías de productos que se encuentran debajo de la barra de búsqueda (searchbar) para que tengan un aspecto mucho más atractivo, moderno y clickeable.
+
+3. Sección de Contacto:
+
+Rediseña por completo la sección de contacto. Debe verse más limpia, confiable y estar mejor integrada con el resto de la página.
+
+4. Diseño Responsive:
+
+Realiza una auditoría y mejora del comportamiento responsive en toda la landing page. Debe verse y funcionar a la perfección en dispositivos móviles, tablets y pantallas grandes, ajustando márgenes, paddings y tamaños de tipografía según corresponda.
+
+5. Separadores de Sección (Section Dividers):
+
+Investiga, propón e implementa separadores visuales entre las distintas secciones de la landing.
+
+Estos separadores deben ser elegantes y encajar perfectamente con la estética y paleta de colores actual del proyecto (evita líneas sólidas aburridas; busca algo que le dé un toque premium a la web).
+
+Por favor, analiza el código actual, cuéntame brevemente qué enfoque tomarás y procede con los cambios paso a paso.

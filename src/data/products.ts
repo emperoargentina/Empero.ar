@@ -12,6 +12,8 @@ export interface Product {
   features: string[];
   image: string;
   sku: string;
+  price: number;
+  availability: 'en-stock' | 'por-encargo';
 }
 
 export interface Category {
@@ -176,6 +178,11 @@ const generateProducts = (): Product[] => {
       const shuffledFeatures = [...commonFeatures].sort(() => Math.random() - 0.5);
       const features = shuffledFeatures.slice(0, numFeatures);
       
+      // Generate a pseudo-random but deterministic price based on index
+      const basePrice = 50000 + ((globalIndex * 37 + 13) % 950000);
+      const roundedPrice = Math.round(basePrice / 1000) * 1000;
+      const availability: 'en-stock' | 'por-encargo' = (globalIndex % 3 === 0) ? 'por-encargo' : 'en-stock';
+
       products.push({
         id: `prod-${globalIndex + 1}`,
         name,
@@ -185,6 +192,8 @@ const generateProducts = (): Product[] => {
         features,
         image: `/images/products/${category.id}-${(i % 10) + 1}.jpg`,
         sku: generateSKU(category.id, i),
+        price: roundedPrice,
+        availability,
       });
       
       globalIndex++;
