@@ -124,7 +124,7 @@ export function Navigation({
   return (
     <>
       {/* ── Navbar ─────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50">
+      <nav className="fixed top-0 left-0 right-0 z-[60]">
         <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:px-3 lg:pt-3' : ''}`}>
           <motion.div
             animate={isScrolled ? {
@@ -137,31 +137,31 @@ export function Navigation({
               borderColor: 'rgba(196,27,46,0)',
             }}
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`border backdrop-blur-md ${
+            className={`border ${isScrolled ? 'backdrop-blur-md' : ''} ${
               isScrolled
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 py-3'
                 : 'container-custom py-5'
             }`}
           >
-            <div className="grid grid-cols-3 items-center">
+            <div className="flex items-center">
 
               {/* Logo */}
               <a
                 href="#"
                 onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="flex items-center"
+                className="flex items-center flex-shrink-0"
               >
                 <img
                   src="/images/logo/Logo.png"
                   alt={companyConfig.name}
                   className={`transition-all duration-300 w-auto ${
-                    isScrolled ? 'h-9' : 'h-12 brightness-0 invert'
+                    isScrolled ? 'h-7 lg:h-9' : 'h-8 lg:h-12 brightness-0 invert'
                   }`}
                 />
               </a>
 
               {/* Desktop links */}
-              <div className="hidden lg:flex items-center justify-center gap-0.5">
+              <div className="hidden lg:flex flex-1 items-center justify-center gap-0.5">
                 {navLinks.map((link) =>
                   link.hasDropdown ? (
                     <div
@@ -224,7 +224,7 @@ export function Navigation({
               </div>
 
               {/* Right actions */}
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center gap-2 ml-auto">
                 {/* Quote button */}
                 <button
                   onClick={() => setIsQuoteOpen(true)}
@@ -421,7 +421,7 @@ export function Navigation({
       </Sheet>
 
       {/* ── Mobile menu ─────────────────────────────────────────── */}
-      <div className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
+      <div className={`fixed inset-0 z-[55] lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
         <div
           className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setIsMobileMenuOpen(false)}

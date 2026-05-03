@@ -117,7 +117,7 @@ export function Hero({ isReady = false }: HeroProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-14 lg:pt-0"
     >
       {/* Background */}
       <div ref={bgRef} className="absolute inset-0 z-0">
