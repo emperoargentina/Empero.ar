@@ -125,7 +125,7 @@ export function Navigation({
     <>
       {/* ── Navbar ─────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50">
-        <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'px-3 pt-3 sm:px-5 sm:pt-4' : ''}`}>
+        <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:px-3 lg:pt-3' : ''}`}>
           <motion.div
             animate={isScrolled ? {
               backgroundColor: 'rgba(250,250,248,0.97)',
@@ -139,7 +139,7 @@ export function Navigation({
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             className={`border backdrop-blur-md ${
               isScrolled
-                ? 'max-w-[1280px] mx-auto rounded-2xl px-4 sm:px-6 py-3'
+                ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 py-3'
                 : 'container-custom py-5'
             }`}
           >
