@@ -35,7 +35,7 @@ export function Footer() {
       <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#C41B2E]/[0.07] to-transparent pointer-events-none" />
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-[#C41B2E]/[0.03] blur-[80px] pointer-events-none" />
 
-      <div className="container-custom py-14 lg:py-16 relative">
+      <div className="container-custom py-16 lg:py-20 relative">
 
         {/* Main row — 4 columns on desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
