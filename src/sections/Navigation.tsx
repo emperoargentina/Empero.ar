@@ -140,10 +140,11 @@ export function Navigation({
             className={`border ${isScrolled ? 'backdrop-blur-md' : ''} ${
               isScrolled
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 py-3'
-                : 'container-custom py-5'
+                : 'container-custom py-0 lg:py-5'
             }`}
           >
-            <div className="flex items-center">
+            {/* Fixed 64px height on mobile for perfect vertical rhythm */}
+            <div className="flex items-center h-16 lg:h-auto">
 
               {/* Logo */}
               <a
@@ -155,7 +156,7 @@ export function Navigation({
                   src="/images/logo/Logo.png"
                   alt={companyConfig.name}
                   className={`transition-all duration-300 w-auto ${
-                    isScrolled ? 'h-7 lg:h-9' : 'h-8 lg:h-12 brightness-0 invert'
+                    isScrolled ? 'h-9 lg:h-9' : 'h-10 lg:h-12 brightness-0 invert'
                   }`}
                 />
               </a>
@@ -255,28 +256,37 @@ export function Navigation({
                   Cotizar
                 </button>
 
-                {/* Mobile icons */}
-                <div className="lg:hidden flex items-center gap-1">
+                {/* Mobile icons — bigger when transparent (over hero) */}
+                <div className="lg:hidden flex items-center gap-0.5">
                   {totalQuoteItems > 0 && (
                     <button
                       onClick={() => setIsQuoteOpen(true)}
-                      className={`relative p-2 rounded-xl transition-colors cursor-pointer ${
-                        isScrolled ? 'text-[#6B6159] hover:bg-[#F4F0E8]' : 'text-white hover:bg-white/10'
+                      className={`relative flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
+                        isScrolled
+                          ? 'w-11 h-11 text-[#6B6159] hover:bg-[#F4F0E8]'
+                          : 'w-12 h-12 text-white hover:bg-white/10'
                       }`}
+                      aria-label="Mi lista de cotización"
                     >
-                      <ClipboardList className="w-5 h-5" />
-                      <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                      <ClipboardList className={isScrolled ? 'w-5 h-5' : 'w-6 h-6'} />
+                      <span className="absolute top-2 right-2 w-[17px] h-[17px] bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
                         {totalQuoteItems}
                       </span>
                     </button>
                   )}
                   <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className={`p-2 rounded-xl transition-colors cursor-pointer ${
-                      isScrolled ? 'text-[#1A1613] hover:bg-[#F4F0E8]' : 'text-white hover:bg-white/10'
+                    className={`flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
+                      isScrolled
+                        ? 'w-11 h-11 text-[#1A1613] hover:bg-[#F4F0E8]'
+                        : 'w-12 h-12 text-white hover:bg-white/10'
                     }`}
+                    aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
                   >
-                    {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                    {isMobileMenuOpen
+                      ? <X className={isScrolled ? 'w-6 h-6' : 'w-7 h-7'} />
+                      : <Menu className={isScrolled ? 'w-6 h-6' : 'w-7 h-7'} />
+                    }
                   </button>
                 </div>
               </div>
@@ -427,9 +437,24 @@ export function Navigation({
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div
-          className={`absolute top-0 right-0 w-full max-w-xs h-full bg-white border-l border-[#EBE5DC] shadow-2xl transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`absolute top-0 right-0 w-full max-w-[320px] h-full bg-white border-l border-[#EBE5DC] shadow-2xl transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
-          <div className="p-5 pt-20 flex flex-col h-full">
+          {/* Header del menú — 64px igual que la navbar */}
+          <div className="flex items-center justify-between h-16 px-5 border-b border-[#EBE5DC]">
+            <img
+              src="/images/logo/Logo.png"
+              alt={companyConfig.name}
+              className="h-7 w-auto"
+            />
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-9 h-9 flex items-center justify-center rounded-lg text-[#6B6159] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
+              aria-label="Cerrar menú"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="p-5 flex flex-col h-[calc(100%-64px)] overflow-y-auto">
             <button
               onClick={() => { setIsMobileMenuOpen(false); setIsQuoteOpen(true); }}
               className="flex items-center gap-3 w-full p-3.5 bg-[#FAF8F4] hover:bg-[#F4F0E8] rounded-sm mb-5 transition-colors cursor-pointer border border-[#EBE5DC]"
@@ -488,17 +513,11 @@ export function Navigation({
             <div className="pt-5 border-t border-[#EBE5DC] space-y-2">
               <button
                 onClick={handleWhatsAppClick}
-                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-sm cursor-pointer"
-                style={{ background: '#25d366' }}
+                className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-xl cursor-pointer"
+                style={{ background: '#25d366', boxShadow: '0 2px 12px rgba(37,211,102,0.25)' }}
               >
                 <MessageCircle className="w-4 h-4" />
                 Cotizar por WhatsApp
-              </button>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full py-2.5 text-sm font-medium text-[#9E9080] hover:text-[#1A1613] transition-colors cursor-pointer"
-              >
-                Cerrar
               </button>
             </div>
           </div>

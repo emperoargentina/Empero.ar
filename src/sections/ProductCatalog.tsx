@@ -38,7 +38,7 @@ export function ProductCatalog({
     paginatedProducts,
     totalProducts,
     filteredCount,
-  } = useProducts(20);
+  } = useProducts(window.innerWidth < 640 ? 12 : 20);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

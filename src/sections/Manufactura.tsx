@@ -13,10 +13,10 @@ const IMAGES = {
 };
 
 const stats = [
-  { value: `${companyConfig.stats.years}+`, label: 'Años de experiencia', icon: Award },
-  { value: `${companyConfig.stats.products}+`, label: 'Productos', icon: Zap },
-  { value: `${companyConfig.stats.clients}+`, label: 'Clientes', icon: Users },
-  { value: '100%', label: 'Compromiso', icon: Shield },
+  { value: '1983', label: 'Año de fundación', icon: Award },
+  { value: '3.000+', label: 'Tipos de productos', icon: Zap },
+  { value: '90+', label: 'Países de exportación', icon: Users },
+  { value: '60K m²', label: 'Planta de producción', icon: Shield },
 ];
 
 export function Nosotros() {
@@ -43,8 +43,9 @@ export function Nosotros() {
             </h2>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#9E9080] mt-4 max-w-xl mx-auto text-base leading-relaxed">
-              Más de {companyConfig.stats.years} años equipando restaurantes, hoteles y negocios gastronómicos de Argentina.
+            <p className="text-[#9E9080] mt-4 max-w-2xl mx-auto text-base leading-relaxed">
+              Somos distribuidores oficiales de <strong className="text-[#1A1613]">Empero</strong> en Argentina &mdash;
+              una de las marcas líder en equipamiento gastronómico industrial a nivel mundial, con más de 40 años de historia y presencia en más de 90 países.
             </p>
           </AnimatedSection>
         </div>
@@ -71,16 +72,16 @@ export function Nosotros() {
           <AnimatedSection direction="right" delay={0.1}>
             <div className="flex flex-col justify-center lg:pt-4">
               <p className="text-[10px] font-semibold text-[#C41B2E] uppercase tracking-[0.18em] mb-4">
-                Nuestra historia
+                Historia de la marca
               </p>
               <h3 className="text-2xl md:text-3xl font-serif font-normal text-[#1A1613] leading-tight mb-6">
-                Líderes en equipamiento gastronómico profesional
+                40 años fabricando equipamiento gastronómico de clase mundial
               </h3>
               <p className="text-[#9E9080] leading-relaxed mb-5 text-[15px]">
-                {companyConfig.description}
+                Empero nació en <strong className="text-[#4A4540]">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="text-[#4A4540]">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="text-[#4A4540]">Empero Group</strong>, consolidando una planta de producción de más de <strong className="text-[#4A4540]">60.000 m²</strong> en Konya, Turquía.
               </p>
               <p className="text-[#9E9080] leading-relaxed mb-8 text-[15px]">
-                {companyConfig.mission}
+                Hoy Empero fabrica más de <strong className="text-[#4A4540]">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="text-[#4A4540]">90 países</strong>. <strong className="text-[#1A1613]">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
               </p>
 
               {/* Values */}

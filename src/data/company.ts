@@ -4,21 +4,21 @@
 
 export const companyConfig = {
   name: 'Empero',
-  fullName: 'Empero Equipamiento Industrial',
-  tagline: 'Equipamiento gastronómico de excelencia',
-  description: 'Somos una empresa argentina con más de 20 años de experiencia en la fabricación y distribución de equipamiento gastronómico industrial de alta calidad. Nos especializamos en brindar soluciones integrales para restaurantes, hoteles, catering y todo tipo de negocios gastronómicos.',
-  mission: 'Proveer equipamiento gastronómico industrial de la más alta calidad, combinando tecnología de vanguardia con diseño funcional, para potenciar la eficiencia y productividad de nuestros clientes.',
-  vision: 'Ser la empresa líder en equipamiento gastronómico industrial de Latinoamérica, reconocida por la excelencia de nuestros productos y el servicio personalizado que ofrecemos.',
+  fullName: 'Empero Industrial Kitchen Equipment',
+  tagline: 'Más de 40 años equipando cocinas profesionales en el mundo',
+  description: 'Empero es una empresa turca de primer nivel especializada en equipamiento para cocinas industriales y profesionales. Sus orígenes se remontan a 1983, cuando nació como Ersöz Mutfak Makineleri, fabricando equipos de preparación de alimentos. En 2005, unificó cinco empresas productoras bajo el nombre Empero Group, consolidando su posición como líder del sector.',
+  mission: 'Fabricar más de 3.000 tipos de productos bajo un mismo techo, con tecnología de punta y los más altos estándares de calidad, para equipar restaurantes, hoteles, cadenas de catering y cualquier operación gastronómica a escala mundial.',
+  vision: 'Ser la empresa de equipamiento gastronómico de mayor crecimiento del mundo, exportando a más de 90 países y siendo sinonímia de calidad, innovación y confiabilidad en cada mercado donde opera.',
   values: [
-    'Calidad superior en cada producto',
-    'Innovación constante',
-    'Atención personalizada',
-    'Compromiso con el cliente',
-    'Garantía y soporte técnico'
+    'Fabricación propia en planta de 60.000 m²',
+    '+3.000 tipos de productos certificados',
+    'Exportación a más de 90 países',
+    'Red de servicio técnico autorizado',
+    'Respaldo de marca con más de 40 años'
   ],
   stats: {
-    years: 20,
-    products: 784,
+    years: 40,
+    products: 3000,
     categories: 13,
     clients: 5000
   },

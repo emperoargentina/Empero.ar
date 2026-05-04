@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
+import { Phone, Mail, Clock, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
 import { categories } from '@/data/products';
 import { companyConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
@@ -13,7 +13,6 @@ export function Footer() {
   ];
 
   const contactInfo = [
-    { icon: MapPin, text: companyConfig.contact.address },
     { icon: Phone, text: companyConfig.contact.phone },
     { icon: Mail, text: companyConfig.contact.email },
     { icon: Clock, text: companyConfig.contact.hours },

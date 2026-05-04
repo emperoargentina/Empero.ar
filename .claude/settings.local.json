@@ -13,7 +13,11 @@
       "Bash(python3 -c \"import json; data=json.load\\(open\\('D:/Juanchydo/Desktop/Trajabo empero/Empero.ar/Products.json', encoding='utf-8'\\)\\); print\\(f'Total products: {len\\(data\\)}'\\); cats = set\\(p.get\\('Categoria',''\\) for p in data\\); print\\(f'Categories \\({len\\(cats\\)}\\):'\\); [print\\(f'  - {c}'\\) for c in sorted\\(cats\\)]\")",
       "PowerShell($data = Get-Content \"D:\\\\Juanchydo\\\\Desktop\\\\Trajabo empero\\\\Empero.ar\\\\Products.json\" -Raw | ConvertFrom-Json; Write-Host \"Total: $\\($data.Count\\)\"; $cats = $data | ForEach-Object { $_.Categoria } | Sort-Object -Unique; Write-Host \"Categorias \\($\\($cats.Count\\)\\):\"; $cats | ForEach-Object { Write-Host \"  - $_\" })",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(python3 *)",
+      "Bash(python \"C:/Users/djuan/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"mobile navbar height touch target\" --domain ux -n 5)",
+      "Bash(py \"C:/Users/djuan/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"mobile navbar height touch target\" --domain ux -n 5)",
+      "Bash(py *)"
     ]
   }
 }

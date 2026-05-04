@@ -1,4 +1,4 @@
-import { Check, Plus } from 'lucide-react';
+import { Check, Plus, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Product } from '@/data/products';
 import { getProductImage } from '@/utils/productImage';
@@ -16,96 +16,80 @@ export function ProductCard({
   onAddToQuote,
   isInQuoteList = false,
 }: ProductCardProps) {
-  const imageUrl = getProductImage(product.category, 400, 520);
+  const imageUrl = getProductImage(product.category, 400, 300);
 
   return (
     <motion.article
-      className="group relative cursor-pointer overflow-hidden bg-[#141210] rounded-md border border-[#242220]"
+      className="group relative cursor-pointer bg-white rounded-xl border border-[#E8E2D9] overflow-hidden"
       onClick={() => onViewDetails(product)}
-      whileHover={{ scale: 1.015 }}
-      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-      style={{ boxShadow: 'none' }}
-      whileInView={undefined}
+      whileHover={{ y: -3, boxShadow: '0 8px 32px rgba(26,22,19,0.10)' }}
+      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
     >
       {/* Image */}
-      <div className="aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#F4F0E8]">
         <img
           src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
+
+        {/* Ver detalles overlay */}
+        <div className="absolute inset-0 bg-[#1A1613]/55 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+          <div className="flex items-center gap-1.5 text-white text-[11px] font-semibold bg-white/10 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-white/25 shadow-sm">
+            <Eye className="w-3.5 h-3.5" />
+            Ver detalles
+          </div>
+        </div>
+
+        {/* Category chip */}
+        <div className="absolute top-2 left-2">
+          <span className="text-[7px] font-bold uppercase tracking-[0.14em] text-white/90 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-sm">
+            {product.category}
+          </span>
+        </div>
+
+        {/* In-list badge */}
+        <AnimatePresence>
+          {isInQuoteList && (
+            <motion.div
+              className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-emerald-400 text-black rounded-sm text-[7px] font-bold uppercase tracking-wide"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 480, damping: 22 }}
+            >
+              <Check className="w-2.5 h-2.5" />
+              En lista
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none" />
-
-      {/* Gold hover accent */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.25 }}
-        style={{ background: 'linear-gradient(to top, rgba(196,27,46,0.18) 0%, transparent 55%)' }}
-      />
-
-      {/* Border gold glow on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-md pointer-events-none border border-transparent"
-        whileHover={{ borderColor: 'rgba(196,27,46,0.25)' }}
-        transition={{ duration: 0.2 }}
-      />
-
-      {/* Category tag */}
-      <div className="absolute top-2.5 left-2.5">
-        <span className="text-[8px] font-semibold uppercase tracking-[0.16em] text-white/55 bg-black/45 backdrop-blur-sm px-2 py-0.5 rounded-sm">
-          {product.category}
-        </span>
-      </div>
-
-      {/* In-list badge */}
-      <AnimatePresence>
-        {isInQuoteList && (
-          <motion.div
-            className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 bg-emerald-400 text-black rounded-sm text-[8px] font-bold"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 480, damping: 22 }}
-          >
-            <Check className="w-2.5 h-2.5" />
-            En lista
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Bottom content */}
-      <div className="absolute bottom-0 inset-x-0 p-3">
-        <p className="text-[9px] font-medium text-[#C41B2E]/50 uppercase tracking-[0.1em] mb-0.5 truncate">
-          {product.subcategory}
+      {/* Info */}
+      <div className="p-2.5 sm:p-3">
+        <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-0.5 truncate">
+          {product.subcategory || product.category}
         </p>
-        <h3 className="font-semibold text-white text-[12px] leading-snug tracking-tight line-clamp-2 mb-2.5">
+        <h3 className="text-[11px] sm:text-xs font-semibold text-[#1A1613] line-clamp-2 leading-snug mb-2">
           {product.name}
         </h3>
-
-        <button
-          className={`w-full py-1.5 rounded-sm text-[10px] font-semibold tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${
-            isInQuoteList
-              ? 'bg-emerald-400 text-black'
-              : 'bg-[#C41B2E] text-white hover:bg-[#B51426]'
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!isInQuoteList) onAddToQuote?.(product);
-          }}
-          disabled={isInQuoteList}
-        >
-          {isInQuoteList ? (
-            <><Check className="w-3 h-3" /> Agregado</>
-          ) : (
-            <><Plus className="w-3 h-3" /> Agregar</>
-          )}
-        </button>
+        <div className="flex items-center justify-end gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!isInQuoteList) onAddToQuote?.(product);
+            }}
+            disabled={isInQuoteList}
+            className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-150 cursor-pointer flex-shrink-0 ${
+              isInQuoteList
+                ? 'bg-emerald-50 text-emerald-500 border border-emerald-200'
+                : 'bg-[#1A1613] text-white hover:bg-[#C41B2E]'
+            }`}
+          >
+            {isInQuoteList ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+          </button>
+        </div>
       </div>
     </motion.article>
   );

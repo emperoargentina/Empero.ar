@@ -1,6 +1,6 @@
-import { ArrowDown, MessageCircle, ChefHat, Package, Award, Users, Shield, Zap, Star } from 'lucide-react';
+import { ArrowDown, Package, Award, Users, Shield, Zap, Star } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { companyConfig, whatsappConfig } from '@/data/company';
+import { companyConfig } from '@/data/company';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 interface HeroProps {
@@ -105,11 +105,6 @@ export function Hero({ isReady = false }: HeroProps) {
     return () => observer.disconnect();
   }, []);
 
-  const handleWhatsAppClick = () => {
-    const url = `https://wa.me/${whatsappConfig.phoneNumber}?text=${encodeURIComponent(whatsappConfig.defaultMessage)}`;
-    window.open(url, '_blank');
-  };
-
   const scrollToCatalog = () => {
     document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -117,19 +112,24 @@ export function Hero({ isReady = false }: HeroProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-14 lg:pt-0"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 lg:pt-0"
     >
       {/* Background */}
       <div ref={bgRef} className="absolute inset-0 z-0">
         <div className="absolute inset-0 hero-kenburns">
-          <img
-            src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=1920&h=1080&fit=crop"
-            alt="Cocina industrial profesional"
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            <source srcSet="/images/Visuales/HeroImage.webp" type="image/webp" />
+            <img
+              src="/images/Visuales/HeroImage.jpg"
+              alt="Cocina industrial profesional Empero"
+              className="w-full h-full object-cover"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/90" />
-        {/* Subtle gold glow at top-left */}
+        {/* Subtle red glow */}
         <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#C41B2E]/[0.06] rounded-full blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#C41B2E]/[0.04] rounded-full blur-[120px]" />
@@ -137,33 +137,26 @@ export function Hero({ isReady = false }: HeroProps) {
       </div>
 
       {/* Content */}
-      <div ref={contentRef} className="relative z-10 container-custom py-20">
+      <div ref={contentRef} className="relative z-10 w-full container-custom py-10 lg:py-20">
         <div className="max-w-4xl mx-auto text-center">
 
-          {/* Badge */}
-          <div className="hero-entrance hero-badge mb-7">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-white/[0.07] backdrop-blur-md rounded-full border border-white/[0.1]">
-              <span className="relative flex h-2 w-2 flex-shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+          {/* Ornament + tagline */}
+          <div className="hero-entrance hero-tag mb-6 lg:mb-8">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="h-px w-8 bg-gradient-to-r from-transparent to-[#C41B2E]/50" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#C41B2E]/80">
+                Distribuidor oficial &bull; Argentina
               </span>
-              <ChefHat className="w-4 h-4 text-[#C41B2E]" />
-              <span className="text-white font-medium text-sm tracking-tight">{companyConfig.name}</span>
-              <span className="w-px h-3.5 bg-white/20" />
-              <span className="text-white/50 text-xs font-medium">Disponible ahora</span>
+              <div className="h-px w-8 bg-gradient-to-l from-transparent to-[#C41B2E]/50" />
             </div>
-          </div>
-
-          {/* Tagline */}
-          <div className="hero-entrance hero-tag mb-5">
-            <p className="text-[#C8BFB5]/70 text-base md:text-lg font-light tracking-wide">
-              {companyConfig.tagline}
+            <p className="text-[#C8BFB5]/60 text-sm md:text-base font-light tracking-wide">
+              Marca turca. Presencia en más de 90 países.
             </p>
           </div>
 
-          {/* Title — Instrument Serif for editorial feel */}
-          <div className="hero-entrance hero-title mb-7">
-            <h1 className="text-5xl md:text-[5.5rem] lg:text-[6.5rem] font-serif font-normal text-white leading-[1.0] tracking-[-0.025em]">
+          {/* Title */}
+          <div className="hero-entrance hero-title mb-6 lg:mb-7">
+            <h1 className="text-[2.75rem] leading-[1.0] sm:text-5xl md:text-[5.5rem] lg:text-[6.5rem] font-serif font-normal text-white tracking-[-0.025em]">
               Equipamiento
               <br />
               <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>
@@ -173,79 +166,74 @@ export function Hero({ isReady = false }: HeroProps) {
           </div>
 
           {/* Description */}
-          <div className="hero-entrance hero-desc mb-10">
-            <p className="text-base md:text-lg text-white/50 max-w-xl mx-auto leading-relaxed font-light">
-              Más de {companyConfig.stats.products} productos de las mejores marcas para restaurantes,
-              hoteles y negocios gastronómicos.
+          <div className="hero-entrance hero-desc mb-8 lg:mb-10">
+            <p className="text-sm md:text-lg text-white/50 max-w-xl mx-auto leading-relaxed font-light px-2">
+              Distribuidores oficiales de Empero en Argentina &mdash; marca turca con más de 40 años,
+              más de 3.000 productos y presencia en 90+ países.
             </p>
           </div>
 
-          {/* CTAs */}
-          <div className="hero-entrance hero-cta mb-16">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                onClick={scrollToCatalog}
-                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold rounded-xl w-full sm:w-auto cursor-pointer transition-all duration-200 border border-[rgba(196,27,46,0.3)] text-[#C41B2E] bg-[rgba(196,27,46,0.07)] hover:bg-[rgba(196,27,46,0.12)] hover:border-[rgba(196,27,46,0.5)]"
-              >
-                <Package className="w-4 h-4" />
-                Ver catálogo
-              </button>
-              <button
-                onClick={handleWhatsAppClick}
-                className="flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold rounded-xl w-full sm:w-auto btn-whatsapp cursor-pointer"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Cotizar ahora
-              </button>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-6">
-              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
-                <Shield className="w-3.5 h-3.5 text-white/25" />
+          {/* CTA */}
+          <div className="hero-entrance hero-cta mb-10 lg:mb-16">
+            <button
+              onClick={scrollToCatalog}
+              className="inline-flex items-center gap-2.5 px-8 py-4 text-sm font-semibold rounded-xl cursor-pointer transition-all duration-200 bg-white text-[#1A1613] hover:bg-white/90"
+              style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.25)' }}
+            >
+              <Package className="w-4 h-4" />
+              Ver catálogo
+              <ArrowDown className="w-3.5 h-3.5 opacity-40" />
+            </button>
+
+            {/* Trust indicators */}
+            <div className="flex items-center justify-center gap-4 mt-6">
+              <span className="flex items-center gap-1.5 text-white/30 text-[11px] font-medium">
+                <Shield className="w-3 h-3 text-white/20" />
                 Garantía certificada
               </span>
-              <span className="w-px h-3 bg-white/10 hidden sm:block" />
-              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
-                <Zap className="w-3.5 h-3.5 text-white/25" />
-                Respuesta inmediata
+              <span className="w-px h-3 bg-white/10" />
+              <span className="flex items-center gap-1.5 text-white/30 text-[11px] font-medium">
+                <Zap className="w-3 h-3 text-white/20" />
+                Respuesta en 24h
               </span>
               <span className="w-px h-3 bg-white/10 hidden sm:block" />
-              <span className="flex items-center gap-1.5 text-white/35 text-xs font-medium">
-                <Star className="w-3.5 h-3.5 text-white/25" />
-                +5000 clientes satisfechos
+              <span className="hidden sm:flex items-center gap-1.5 text-white/30 text-[11px] font-medium">
+                <Star className="w-3 h-3 text-white/20" />
+                +5000 clientes
               </span>
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats — tiras compactas en mobile */}
           <div ref={statsRef} className="hero-entrance hero-stats">
-            <div className="grid grid-cols-3 gap-2 md:gap-4 max-w-lg mx-auto">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-[320px] sm:max-w-lg mx-auto">
               {[
-                { key: 'products', suffix: '+', label: 'Productos', icon: Package },
-                { key: 'years',    suffix: '+', label: 'Años',      icon: Award },
-                { key: 'clients',  suffix: '+', label: 'Clientes',  icon: Users },
-              ].map(({ key, suffix, label, icon: Icon }) => (
+                { key: 'years',    display: '40+',   label: 'Años de marca',   icon: Award },
+                { key: 'products', display: '3.000+', label: 'Tipos de productos', icon: Package },
+                { key: 'countries', display: '90+',  label: 'Países',           icon: Users },
+              ].map(({ key, display, label, icon: Icon }) => (
                 <div
                   key={key}
-                  className="text-center px-3 py-4 md:py-5 backdrop-blur-md rounded-2xl border border-[rgba(196,27,46,0.12)]"
+                  className="text-center px-2 py-3 sm:px-3 sm:py-4 md:py-5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[rgba(196,27,46,0.12)]"
                   style={{ background: 'rgba(196,27,46,0.04)' }}
                 >
-                  <div className="w-7 h-7 bg-[rgba(196,27,46,0.1)] rounded-lg flex items-center justify-center mx-auto mb-2.5">
-                    <Icon className="w-3.5 h-3.5 text-[#C41B2E]" />
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 bg-[rgba(196,27,46,0.1)] rounded-md sm:rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C41B2E]" />
                   </div>
-                  <div className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
-                    <span data-count={key}>0</span>
-                    <span className="text-[#C41B2E]">{suffix}</span>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
+                    {display}
                   </div>
-                  <div className="text-[11px] text-white/35 mt-1.5 font-medium">{label}</div>
+                  <div className="text-[10px] sm:text-[11px] text-white/35 mt-1 font-medium">{label}</div>
                 </div>
               ))}
             </div>
           </div>
+
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="hero-entrance hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2">
+      {/* Scroll indicator — oculto en mobile chico */}
+      <div className="hero-entrance hero-scroll absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 hidden sm:block">
         <button
           onClick={scrollToCatalog}
           className="flex flex-col items-center gap-2 text-white/35 hover:text-[#C41B2E] transition-colors group"

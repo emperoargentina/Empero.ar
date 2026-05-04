@@ -54,7 +54,7 @@ function App() {
     <>
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
 
-      <div className={`min-h-screen bg-[#FAFAF8] ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
+      <div className={`min-h-screen bg-[#FAFAF8] overflow-x-hidden ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
         <Navigation 
           onCategorySelect={handleCategorySelect}
           quoteItems={quoteItems}
