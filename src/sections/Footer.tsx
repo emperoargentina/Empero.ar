@@ -1,6 +1,6 @@
 import { Phone, Mail, Clock, Instagram, Facebook, ArrowUp } from 'lucide-react';
 import { categories } from '@/data/products';
-import { companyConfig, whatsappConfig } from '@/data/company';
+import { companyConfig } from '@/data/company';
 import { motion } from 'framer-motion';
 
 export function Footer() {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Phone, Mail, Send, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
+import { Phone, Mail, Send, CheckCircle2, ArrowRight } from 'lucide-react';
 import { companyConfig, whatsappConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { motion } from 'framer-motion';
