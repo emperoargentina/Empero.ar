@@ -11,6 +11,7 @@ import {
   Trash2,
   ChevronUp,
   ChevronDown as ChevronDownIcon,
+  Package,
 } from 'lucide-react';
 import { categories } from '@/data/products';
 import { whatsappConfig, companyConfig } from '@/data/company';
@@ -144,7 +145,7 @@ export function Navigation({
             }`}
           >
             {/* Fixed 64px height on mobile for perfect vertical rhythm */}
-            <div className="flex items-center h-16 lg:h-auto">
+            <div className="relative flex items-center h-16 lg:h-auto">
 
               {/* Logo */}
               <a
@@ -161,8 +162,8 @@ export function Navigation({
                 />
               </a>
 
-              {/* Desktop links */}
-              <div className="hidden lg:flex flex-1 items-center justify-center gap-0.5">
+              {/* Desktop links — absolutely centered relative to full navbar width */}
+              <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-0.5">
                 {navLinks.map((link) =>
                   link.hasDropdown ? (
                     <div
@@ -226,34 +227,32 @@ export function Navigation({
 
               {/* Right actions */}
               <div className="flex items-center gap-2 ml-auto">
-                {/* Quote button */}
+                {/* Quote button — icon only */}
                 <button
                   onClick={() => setIsQuoteOpen(true)}
-                  className={`hidden lg:flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150 cursor-pointer border ${
+                  aria-label="Mi lista de cotización"
+                  className={`hidden lg:flex relative items-center justify-center w-9 h-9 rounded-xl transition-all duration-150 cursor-pointer border ${
                     isScrolled
                       ? 'bg-[#F4F0E8] hover:bg-[#EBE5DC] text-[#6B6159] border-[#EBE5DC]'
                       : 'bg-white/10 hover:bg-white/20 text-white border-white/15 backdrop-blur-sm'
                   }`}
                 >
-                  <div className="relative">
-                    <ClipboardList className="w-4 h-4" />
-                    {totalQuoteItems > 0 && (
-                      <span className="absolute -top-2 -right-2 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
-                        {totalQuoteItems}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-sm font-medium">Mi lista</span>
+                  <ClipboardList className="w-4 h-4" />
+                  {totalQuoteItems > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
+                      {totalQuoteItems}
+                    </span>
+                  )}
                 </button>
 
-                {/* CTA */}
+                {/* CTA — Catálogo */}
                 <button
-                  onClick={handleWhatsAppClick}
+                  onClick={() => scrollToSection('catalogo')}
                   className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer bg-[#C41B2E] text-white hover:bg-[#B51426]"
                   style={{ boxShadow: '0 2px 12px rgba(196,27,46,0.25)' }}
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  Cotizar
+                  <Package className="w-4 h-4" />
+                  Catálogo
                 </button>
 
                 {/* Mobile icons — bigger when transparent (over hero) */}
