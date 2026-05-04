@@ -67,11 +67,11 @@ export function ProductCard({
       </div>
 
       {/* Info */}
-      <div className="p-2.5 sm:p-3">
-        <p className="text-[7px] sm:text-[8px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-0.5 truncate">
+      <div className="p-3 sm:p-3.5">
+        <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-1 truncate">
           {product.subcategory || product.category}
         </p>
-        <h3 className="text-[11px] sm:text-xs font-semibold text-[#1A1613] line-clamp-2 leading-snug mb-2">
+        <h3 className="font-serif text-sm sm:text-[15px] font-normal text-[#1A1613] line-clamp-2 leading-snug mb-2.5">
           {product.name}
         </h3>
         <div className="flex items-center justify-end gap-1">

@@ -138,12 +138,16 @@ export function Navigation({
               borderColor: 'rgba(196,27,46,0)',
             }}
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`border ${isScrolled ? 'backdrop-blur-md' : ''} ${
+            className={`relative border ${isScrolled ? 'backdrop-blur-md' : ''} ${
               isScrolled
-                ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 py-3'
+                ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5'
             }`}
           >
+            {/* Red bottom line — mobile only, transparent state only */}
+            {!isScrolled && (
+              <div className="lg:hidden absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+            )}
             {/* Fixed 64px height on mobile for perfect vertical rhythm */}
             <div className="relative flex items-center h-16 lg:h-auto">
 
@@ -227,17 +231,17 @@ export function Navigation({
 
               {/* Right actions */}
               <div className="flex items-center gap-2 ml-auto">
-                {/* Quote button — icon only */}
+                {/* Quote button */}
                 <button
                   onClick={() => setIsQuoteOpen(true)}
-                  aria-label="Mi lista de cotización"
-                  className={`hidden lg:flex relative items-center justify-center w-9 h-9 rounded-xl transition-all duration-150 cursor-pointer border ${
+                  className={`hidden lg:flex relative items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150 cursor-pointer border ${
                     isScrolled
                       ? 'bg-[#F4F0E8] hover:bg-[#EBE5DC] text-[#6B6159] border-[#EBE5DC]'
                       : 'bg-white/10 hover:bg-white/20 text-white border-white/15 backdrop-blur-sm'
                   }`}
                 >
                   <ClipboardList className="w-4 h-4" />
+                  <span className="text-sm font-medium">Mi lista</span>
                   {totalQuoteItems > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center">
                       {totalQuoteItems}

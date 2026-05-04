@@ -75,9 +75,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        serif:  ['"Instrument Serif"', 'Georgia', 'serif'],
-        sans:   ['"DM Sans"', 'system-ui', 'sans-serif'],
-        script: ['Qwitcher Grypen', 'cursive'],
+        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        serif:   ['"Instrument Serif"', 'Georgia', 'serif'],
+        sans:    ['"DM Sans"', 'system-ui', 'sans-serif'],
+        script:  ['Qwitcher Grypen', 'cursive'],
       },
       fontSize: {
         'display': ['5.5rem', { lineHeight: '1.05', letterSpacing: '-0.03em' }],
