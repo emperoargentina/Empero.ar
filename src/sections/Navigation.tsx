@@ -190,7 +190,7 @@ export function Navigation({
 
                       {isProductsOpen && (
                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-                          <div className="w-54 bg-white rounded-xl border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.08)] py-1.5 overflow-hidden">
+                          <div className="w-64 bg-white rounded-xl border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.08)] py-1.5 overflow-hidden">
                             <button
                               onClick={() => { scrollToSection('catalogo'); setIsProductsOpen(false); }}
                               className="w-full text-left px-4 py-2 text-sm font-semibold text-[#1A1613] hover:bg-[#F4F0E8] transition-colors"
