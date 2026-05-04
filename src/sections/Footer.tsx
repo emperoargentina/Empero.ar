@@ -1,7 +1,6 @@
-import { Phone, Mail, Clock, Instagram, Facebook, Linkedin, ArrowUp } from 'lucide-react';
+import { Phone, Mail, Clock, Instagram, Facebook, ArrowUp } from 'lucide-react';
 import { categories } from '@/data/products';
-import { companyConfig } from '@/data/company';
-import { AnimatedSection } from '@/components/animations/AnimatedSection';
+import { companyConfig, whatsappConfig } from '@/data/company';
 import { motion } from 'framer-motion';
 
 export function Footer() {
@@ -19,69 +18,84 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Instagram, href: companyConfig.social.instagram, label: 'Instagram' },
+    { icon: Instagram, href: 'https://www.instagram.com/empero.argentina', label: 'Instagram' },
     { icon: Facebook, href: companyConfig.social.facebook, label: 'Facebook' },
-    { icon: Linkedin, href: companyConfig.social.linkedin, label: 'LinkedIn' },
   ];
 
   const scrollToSection = (href: string) => {
-    if (href === '#') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    const section = document.querySelector(href);
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
+    if (href === '#') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <footer className="bg-[#080705] text-white relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(196,27,46,0.25)] to-transparent" />
+    <footer className="bg-[#0D0B09] text-white relative overflow-hidden">
+      {/* Separator */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C41B2E]/80 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#C41B2E]/25 to-transparent translate-y-[1px]" />
+      <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#C41B2E]/[0.07] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-[#C41B2E]/[0.03] blur-[80px] pointer-events-none" />
 
-      <div className="container-custom py-16 lg:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+      <div className="container-custom py-14 lg:py-16 relative">
+
+        {/* Main row — 4 columns on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
 
           {/* Brand */}
-          <AnimatedSection direction="up" className="lg:col-span-5">
-            <div className="space-y-6">
-              <div className="flex items-center">
-                <img
-                  src="/images/logo/Logo.png"
-                  alt={companyConfig.name}
-                  className="h-12 w-auto brightness-0 invert opacity-90"
-                />
-              </div>
-              <p className="text-[#6E6057] text-sm leading-relaxed max-w-sm">
-                Líderes en equipamiento gastronómico industrial. Más de {companyConfig.stats.years} años
-                brindando soluciones profesionales para restaurantes, hoteles y negocios gastronómicos.
-              </p>
-              <div className="flex gap-2">
-                {socialLinks.map((social) => (
-                  <motion.a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-9 h-9 bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.15)] border border-[#2E2B27] hover:border-[rgba(196,27,46,0.3)] rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer text-[#6E6057] hover:text-[#C41B2E]"
-                    whileHover={{ y: -2 }}
-                    transition={{ type: 'spring', stiffness: 420, damping: 20 }}
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </motion.a>
-                ))}
-              </div>
+          <div className="col-span-2 lg:col-span-4 flex flex-col gap-4">
+            <img
+              src="/images/logo/Logo.png"
+              alt={companyConfig.name}
+              className="h-11 w-auto object-contain object-left brightness-0 invert"
+            />
+            <p className="text-white/45 text-sm leading-relaxed max-w-xs">
+              Distribuidores oficiales de Empero en Argentina. Equipamiento gastronómico profesional
+              para restaurantes, hoteles y cocinas industriales.
+            </p>
+            <div className="flex gap-2 mt-1">
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-200 cursor-pointer text-white/35 hover:text-white"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  whileHover={{ y: -2, backgroundColor: 'rgba(196,27,46,0.15)', borderColor: 'rgba(196,27,46,0.3)' }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+                >
+                  <social.icon className="w-3.5 h-3.5" />
+                </motion.a>
+              ))}
             </div>
-          </AnimatedSection>
+          </div>
 
-          {/* Quick Links */}
-          <AnimatedSection direction="up" delay={0.1} className="lg:col-span-2 lg:col-start-7">
-            <h4 className="font-semibold text-[11px] uppercase tracking-[0.1em] text-[#4D4540] mb-5">Enlaces</h4>
+          {/* Contact */}
+          <div className="col-span-2 sm:col-span-1 lg:col-span-3">
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+              Contacto
+            </h4>
+            <ul className="space-y-3">
+              {contactInfo.map((item, index) => (
+                <li key={index} className="flex items-start gap-2.5">
+                  <item.icon className="w-3.5 h-3.5 text-[#C41B2E]/70 mt-0.5 flex-shrink-0" />
+                  <span className="text-white/55 text-sm leading-snug">{item.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Navigation */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+              Navegación
+            </h4>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <motion.button
                     onClick={() => scrollToSection(link.href)}
-                    className="text-[#6E6057] hover:text-[#C41B2E] transition-colors text-sm font-medium cursor-pointer"
+                    className="text-white/55 hover:text-white transition-colors text-sm font-medium cursor-pointer"
                     whileHover={{ x: 3 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 25 }}
                   >
@@ -90,17 +104,19 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </AnimatedSection>
+          </div>
 
           {/* Categories */}
-          <AnimatedSection direction="up" delay={0.2} className="lg:col-span-2">
-            <h4 className="font-semibold text-[11px] uppercase tracking-[0.1em] text-[#4D4540] mb-5">Categorías</h4>
+          <div className="lg:col-span-3">
+            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+              Categorías
+            </h4>
             <ul className="space-y-2.5">
               {categories.slice(0, 5).map((category) => (
                 <li key={category.id}>
                   <motion.button
                     onClick={() => scrollToSection('#catalogo')}
-                    className="text-[#6E6057] hover:text-[#C41B2E] transition-colors text-sm font-medium cursor-pointer"
+                    className="text-white/55 hover:text-white transition-colors text-sm font-medium cursor-pointer text-left"
                     whileHover={{ x: 3 }}
                     transition={{ type: 'spring', stiffness: 420, damping: 25 }}
                   >
@@ -109,45 +125,31 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </AnimatedSection>
+          </div>
 
-          {/* Contact */}
-          <AnimatedSection direction="up" delay={0.3} className="lg:col-span-3">
-            <h4 className="font-semibold text-[11px] uppercase tracking-[0.1em] text-[#4D4540] mb-5">Contacto</h4>
-            <ul className="space-y-3">
-              {contactInfo.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <item.icon className="w-4 h-4 text-[#C41B2E] mt-0.5 flex-shrink-0 opacity-60" />
-                  <span className="text-[#6E6057] text-sm leading-relaxed">{item.text}</span>
-                </li>
-              ))}
-            </ul>
-          </AnimatedSection>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-14 pt-8 border-t border-[#1C1A17] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[#4D4540] text-sm font-medium">
+        {/* Bottom bar */}
+        <div className="pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-white/25 text-xs">
             © {new Date().getFullYear()} {companyConfig.name}. Todos los derechos reservados.
           </p>
-          <div className="flex items-center gap-5">
-            <button className="text-[#4D4540] hover:text-[#9A8E82] text-sm font-medium transition-colors cursor-pointer">
-              Privacidad
-            </button>
-            <button className="text-[#4D4540] hover:text-[#9A8E82] text-sm font-medium transition-colors cursor-pointer">
-              Términos
-            </button>
+          <div className="flex items-center gap-4">
+            <button className="text-white/25 hover:text-white/55 text-xs transition-colors cursor-pointer">Privacidad</button>
+            <button className="text-white/25 hover:text-white/55 text-xs transition-colors cursor-pointer">Términos</button>
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Volver arriba"
-              className="w-9 h-9 bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.12)] border border-[#2E2B27] hover:border-[rgba(196,27,46,0.25)] rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer text-[#6E6057] hover:text-[#C41B2E]"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white/30 hover:text-white cursor-pointer"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.93 }}
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3.5 h-3.5" />
             </motion.button>
           </div>
         </div>
+
       </div>
     </footer>
   );
