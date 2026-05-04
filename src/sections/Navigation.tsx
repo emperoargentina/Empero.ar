@@ -75,29 +75,24 @@ export function Navigation({
   totalQuoteItems = 0,
 }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPastHero, setIsPastHero] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 50);
-      setIsPastHero(scrollY > window.innerHeight * 0.9);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Update theme-color only after fully scrolling past the hero
+  // Update theme-color dynamically based on scroll to match navbar
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', isPastHero ? '#FAFAF8' : '#000000');
+      metaThemeColor.setAttribute('content', isScrolled ? '#FAFAF8' : '#000000');
     }
-  }, [isPastHero]);
+  }, [isScrolled]);
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(whatsappConfig.defaultMessage);
@@ -156,7 +151,6 @@ export function Navigation({
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5'
             }`}
-            style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
           >
             {/* Red bottom line — mobile only, transparent state only */}
             {!isScrolled && (
