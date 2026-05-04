@@ -138,7 +138,7 @@ export function Navigation({
               borderColor: 'rgba(196,27,46,0)',
             }}
             transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`relative border ${isScrolled ? 'backdrop-blur-md' : ''} ${
+            className={`relative border-b lg:border ${isScrolled ? 'backdrop-blur-md' : ''} ${
               isScrolled
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5'
