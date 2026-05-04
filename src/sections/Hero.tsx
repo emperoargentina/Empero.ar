@@ -128,7 +128,7 @@ export function Hero({ isReady = false }: HeroProps) {
             />
           </picture>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black/90" />
         {/* Subtle red glow */}
         <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#C41B2E]/[0.06] rounded-full blur-[140px]" />

@@ -86,6 +86,14 @@ export function Navigation({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Update theme-color dynamically based on scroll to match navbar
+  useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', isScrolled ? '#FAFAF8' : '#000000');
+    }
+  }, [isScrolled]);
+
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(whatsappConfig.defaultMessage);
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${message}`, '_blank');
