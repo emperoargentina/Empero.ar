@@ -23,10 +23,9 @@ export const companyConfig = {
     clients: 5000
   },
   contact: {
-    phone: '+54 11 2345-6789',
-    whatsapp: '5491123456789',
-    email: 'info@empero.com',
-    address: 'Av. Industrial 1234, Buenos Aires, Argentina',
+    phone: '+54 9 11 3228-6523',
+    whatsapp: '5491132286523',
+    email: 'empero.argentina@gmail.com',
     hours: 'Lun - Vie: 9:00 - 18:00'
   },
   social: {
@@ -39,7 +38,7 @@ export const companyConfig = {
 // WhatsApp configuration
 export const whatsappConfig = {
   phoneNumber: companyConfig.contact.whatsapp,
-  messageTemplate: (productName: string) => 
+  messageTemplate: (productName: string) =>
     `Hola, quiero cotizar el producto: ${productName}`,
   defaultMessage: 'Hola, quiero cotizar sus productos.',
 };
