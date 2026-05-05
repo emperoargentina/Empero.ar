@@ -90,7 +90,7 @@ export function ProductModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-[96vw] p-0 gap-0 overflow-hidden rounded-2xl border border-[#EBE5DC] shadow-2xl shadow-black/20 bg-white">
+      <DialogContent className="max-w-5xl w-[96vw] p-0 gap-0 overflow-hidden rounded-2xl border border-[#EBE5DC] shadow-2xl shadow-black/20 bg-white">
 
         {/* Close */}
         <button
@@ -118,13 +118,17 @@ export function ProductModal({
 
             {/* Availability overlay badge */}
             <div className="absolute top-4 left-4">
-              <span className={`text-[9px] font-bold uppercase tracking-[0.14em] px-2.5 py-1.5 rounded-lg ${
-                enStock
-                  ? 'bg-emerald-500/90 text-white backdrop-blur-sm'
-                  : 'bg-[#1A1613]/70 text-white/90 backdrop-blur-sm'
-              }`}>
-                {enStock ? 'En stock' : 'Por encargo'}
-              </span>
+              {enStock ? (
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1.5 rounded-full bg-emerald-500 text-white shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/80 flex-shrink-0" />
+                  En stock
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1.5 rounded-full bg-amber-500 text-white shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/80 flex-shrink-0" />
+                  Por encargo
+                </span>
+              )}
             </div>
 
             {/* In-list badge */}
@@ -165,11 +169,6 @@ export function ProductModal({
                 <h2 className="text-xl sm:text-2xl font-serif font-normal text-[#1A1613] leading-tight pr-8 md:pr-2">
                   {product.nombre}
                 </h2>
-                {product.precio_usd != null && product.precio_usd > 0 && (
-                  <p className="mt-3 text-2xl font-bold text-[#1A1613] tabular-nums">
-                    US$ {Number(product.precio_usd).toLocaleString('es-AR')}
-                  </p>
-                )}
               </div>
 
               {/* Body */}
