@@ -26,10 +26,10 @@ import { Textarea } from '@/components/ui/textarea';
 interface QuoteItem {
   product: {
     id: string;
-    name: string;
-    sku: string;
-    category: string;
-    image: string;
+    nombre: string;
+    codigo: string;
+    categoria: string;
+    cloudinary_url: string | null;
   };
   quantity: number;
   notes: string;
@@ -128,7 +128,7 @@ export function Navigation({
     if (quoteItems.length === 0) return;
     let message = 'Hola, quiero cotizar los siguientes productos:\n\n';
     quoteItems.forEach((item, i) => {
-      message += `${i + 1}. ${item.product.name} (SKU: ${item.product.sku}) - Cant: ${item.quantity}`;
+      message += `${i + 1}. ${item.product.nombre} (Código: ${item.product.codigo}) - Cant: ${item.quantity}`;
       if (item.notes) message += ` - ${item.notes}`;
       message += '\n';
     });
@@ -357,18 +357,18 @@ export function Navigation({
                   <div key={item.product.id} className="border border-[#EBE5DC] rounded-sm overflow-hidden bg-[#FAF8F4]">
                     <div className="flex gap-3 p-3">
                       <img
-                        src={getCategoryImage(item.product.category)}
-                        alt={item.product.name}
+                        src={item.product.cloudinary_url ?? getCategoryImage(item.product.categoria)}
+                        alt={item.product.nombre}
                         className="w-14 h-14 object-cover rounded-sm flex-shrink-0 bg-[#EBE5DC]"
                       />
                       <div className="flex-1 min-w-0">
                         <p className="text-[9px] font-semibold text-[#C41B2E] uppercase tracking-[0.12em] mb-0.5">
-                          {item.product.category}
+                          {item.product.categoria}
                         </p>
                         <h4 className="text-[12px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
-                          {item.product.name}
+                          {item.product.nombre}
                         </h4>
-                        <p className="text-[10px] font-mono text-[#9E9080] mt-0.5">#{item.product.sku}</p>
+                        <p className="text-[10px] font-mono text-[#9E9080] mt-0.5">#{item.product.codigo}</p>
                       </div>
                       <button
                         onClick={() => onRemoveFromQuote?.(item.product.id)}

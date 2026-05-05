@@ -23,12 +23,12 @@ export function ProductCatalog({
   const {
     searchQuery,
     selectedCategory,
-    selectedSubcategory,
     sortOption,
     availabilityFilter,
+    loading,
+    error,
     setSearchQuery,
     setSelectedCategory,
-    setSelectedSubcategory,
     setSortOption,
     setAvailabilityFilter,
     clearFilters,
@@ -38,6 +38,7 @@ export function ProductCatalog({
     paginatedProducts,
     totalProducts,
     filteredCount,
+    refetch,
   } = useProducts(window.innerWidth < 640 ? 12 : 20);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -59,9 +60,8 @@ export function ProductCatalog({
 
   const handleCategorySelect = useCallback((categoryId: string | null) => {
     setSelectedCategory(categoryId);
-    setSelectedSubcategory(null);
     setCurrentPage(1);
-  }, [setSelectedCategory, setSelectedSubcategory, setCurrentPage]);
+  }, [setSelectedCategory, setCurrentPage]);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -93,7 +93,7 @@ export function ProductCatalog({
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
             <p className="text-[#9E9080] mt-4 max-w-xl mx-auto text-base leading-relaxed">
-              Explorá {totalProducts}+ productos. Agregá los que te interesan y cotizá por WhatsApp.
+              {loading ? 'Cargando productos...' : `${totalProducts}+ productos. Agregá los que te interesan y cotizá por WhatsApp.`}
             </p>
           </AnimatedSection>
         </div>
@@ -101,13 +101,22 @@ export function ProductCatalog({
         {/* Filters */}
         <AnimatedSection direction="up" delay={0.1}>
           <div className="mb-8">
+            {error ? (
+              <div className="flex flex-col items-center gap-3 py-6 text-center">
+                <p className="text-sm text-red-600 font-medium">Error al cargar productos: {error}</p>
+                <button
+                  onClick={refetch}
+                  className="text-xs px-4 py-1.5 border border-[#C41B2E] text-[#C41B2E] rounded-lg hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer"
+                >
+                  Reintentar
+                </button>
+              </div>
+            ) : (
             <SearchFilters
               searchQuery={searchQuery}
               onSearchChange={(q) => { setSearchQuery(q); setCurrentPage(1); }}
               selectedCategory={selectedCategory}
               onCategoryChange={handleCategorySelect}
-              selectedSubcategory={selectedSubcategory}
-              onSubcategoryChange={(sub) => { setSelectedSubcategory(sub); setCurrentPage(1); }}
               sortOption={sortOption}
               onSortChange={(s) => { setSortOption(s); setCurrentPage(1); }}
               availabilityFilter={availabilityFilter}
@@ -116,6 +125,7 @@ export function ProductCatalog({
               resultCount={filteredCount}
               totalCount={totalProducts}
             />
+            )}
           </div>
         </AnimatedSection>
 

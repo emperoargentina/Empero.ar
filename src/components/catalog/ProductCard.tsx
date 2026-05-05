@@ -16,7 +16,7 @@ export function ProductCard({
   onAddToQuote,
   isInQuoteList = false,
 }: ProductCardProps) {
-  const imageUrl = getProductImage(product.category, 400, 300);
+  const imageUrl = product.cloudinary_url ?? getProductImage(product.categoria, 400, 300);
 
   return (
     <motion.article
@@ -29,7 +29,7 @@ export function ProductCard({
       <div className="relative aspect-[4/3] overflow-hidden bg-[#F4F0E8]">
         <img
           src={imageUrl}
-          alt={product.name}
+          alt={product.nombre}
           className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
@@ -45,7 +45,7 @@ export function ProductCard({
         {/* Category chip */}
         <div className="absolute top-2 left-2">
           <span className="text-[7px] font-bold uppercase tracking-[0.14em] text-white/90 bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-sm">
-            {product.category}
+            {product.categoria}
           </span>
         </div>
 
@@ -69,10 +69,10 @@ export function ProductCard({
       {/* Info */}
       <div className="p-3 sm:p-3.5">
         <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-1 truncate">
-          {product.subcategory || product.category}
+          {product.categoria}
         </p>
         <h3 className="font-serif text-sm sm:text-[15px] font-normal text-[#1A1613] line-clamp-2 leading-snug mb-2.5">
-          {product.name}
+          {product.nombre}
         </h3>
         <div className="flex items-center justify-end gap-1">
           <button

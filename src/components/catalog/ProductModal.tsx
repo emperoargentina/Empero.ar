@@ -35,10 +35,10 @@ export function ProductModal({
 
   if (!product) return null;
 
-  const imageUrl = getProductImage(product.category, 900, 700);
+  const imageUrl = product.cloudinary_url ?? getProductImage(product.categoria, 900, 700);
 
   const handleWhatsApp = () => {
-    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.name));
+    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre));
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
   };
 
@@ -65,7 +65,7 @@ export function ProductModal({
             )}
             <img
               src={imageUrl}
-              alt={product.name}
+              alt={product.nombre}
               className="w-full h-full object-cover"
               onLoad={() => setImageLoaded(true)}
             />
@@ -74,7 +74,7 @@ export function ProductModal({
             {/* Category */}
             <div className="absolute top-4 left-4">
               <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/80 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-sm">
-                {product.category}
+                {product.categoria}
               </span>
             </div>
 
@@ -97,7 +97,7 @@ export function ProductModal({
             {/* SKU */}
             <div className="absolute bottom-3 left-4">
               <span className="text-[9px] font-mono text-white/40 tracking-widest">
-                #{product.sku}
+                #{product.codigo}
               </span>
             </div>
           </div>
@@ -111,10 +111,10 @@ export function ProductModal({
               {/* Header */}
               <div className="mb-4 pr-8 md:pr-2">
                 <p className="text-[9px] font-semibold text-[#C41B2E] uppercase tracking-[0.18em] mb-1.5">
-                  {product.subcategory || product.category}
+                  {product.categoria}
                 </p>
                 <h2 className="text-xl md:text-2xl font-serif font-normal text-[#1A1613] leading-tight">
-                  {product.name}
+                  {product.nombre}
                 </h2>
               </div>
 
@@ -123,14 +123,14 @@ export function ProductModal({
               {/* Availability */}
               <div className="mb-5">
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold ${
-                  product.availability === 'en-stock'
+                  product.modo_disponibilidad === 'en_stock'
                     ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
                     : 'bg-amber-50 text-amber-700 border border-amber-200/80'
                 }`}>
                   <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                    product.availability === 'en-stock' ? 'bg-emerald-500' : 'bg-amber-500'
+                    product.modo_disponibilidad === 'en_stock' ? 'bg-emerald-500' : 'bg-amber-500'
                   }`} />
-                  {product.availability === 'en-stock' ? 'En stock' : 'Por encargo'}
+                  {product.modo_disponibilidad === 'en_stock' ? 'En stock' : 'Por encargo'}
                 </span>
               </div>
 
@@ -145,12 +145,13 @@ export function ProductModal({
               </div>
 
               {/* Features */}
+              {product.caracteristicas_generales && product.caracteristicas_generales.length > 0 && (
               <div>
                 <p className="text-[8px] font-semibold text-[#C0B5A8] uppercase tracking-[0.14em] mb-2.5">
                   Características
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {product.features.map((f, i) => (
+                  {product.caracteristicas_generales.map((f, i) => (
                     <span
                       key={i}
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#F7F4F0] border border-[#EBE5DC] text-[#4A4540] text-[11px] font-medium rounded-lg"
@@ -161,6 +162,7 @@ export function ProductModal({
                   ))}
                 </div>
               </div>
+              )}
 
             </div>
 

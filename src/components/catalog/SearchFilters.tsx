@@ -1,6 +1,6 @@
 import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Package, Clock } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
-import { categories, subcategories } from '@/data/products';
+import { categories } from '@/data/products';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { SortOption, AvailabilityFilter } from '@/hooks/useProducts';
 
@@ -9,8 +9,6 @@ interface SearchFiltersProps {
   onSearchChange: (query: string) => void;
   selectedCategory: string | null;
   onCategoryChange: (category: string | null) => void;
-  selectedSubcategory: string | null;
-  onSubcategoryChange: (subcategory: string | null) => void;
   sortOption: SortOption;
   onSortChange: (sort: SortOption) => void;
   availabilityFilter: AvailabilityFilter;
@@ -28,8 +26,8 @@ const SORT_OPTIONS: { id: SortOption; label: string; icon: React.ReactNode }[] =
 
 const AVAILABILITY_OPTIONS: { id: AvailabilityFilter; label: string; icon: React.ReactNode }[] = [
   { id: 'all',         label: 'Todos',       icon: null },
-  { id: 'en-stock',    label: 'En stock',    icon: <Package className="w-3 h-3" /> },
-  { id: 'por-encargo', label: 'Por encargo', icon: <Clock   className="w-3 h-3" /> },
+  { id: 'en_stock',    label: 'En stock',    icon: <Package className="w-3 h-3" /> },
+  { id: 'por_encargo', label: 'Por encargo', icon: <Clock   className="w-3 h-3" /> },
 ];
 
 /** Tiny pill-style chip button */
@@ -81,8 +79,6 @@ export function SearchFilters({
   onSearchChange,
   selectedCategory,
   onCategoryChange,
-  selectedSubcategory,
-  onSubcategoryChange,
   sortOption,
   onSortChange,
   availabilityFilter,
@@ -105,12 +101,10 @@ export function SearchFilters({
 
   const hasActiveFilters =
     selectedCategory ||
-    selectedSubcategory ||
     searchQuery ||
     sortOption !== 'default' ||
     availabilityFilter !== 'all';
 
-  const availableSubcategories = selectedCategory ? subcategories[selectedCategory] || [] : [];
   const allTabs = [{ id: null, name: 'Todos' }, ...categories.map(c => ({ id: c.id, name: c.name }))];
 
   return (
@@ -247,35 +241,8 @@ export function SearchFilters({
         })}
       </div>
 
-      {/* ── Row 4: Subcategory pills ───────────────────────────────── */}
-      <AnimatePresence>
-        {selectedCategory && availableSubcategories.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.18 }}
-            className="overflow-hidden"
-          >
-            <div className="flex gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-0.5">
-              {availableSubcategories.map((sub) => {
-                const active = selectedSubcategory === sub;
-                return (
-                  <Chip
-                    key={sub}
-                    active={active}
-                    color="red"
-                    onClick={() => onSubcategoryChange(active ? null : sub)}
-                  >
-                    {sub}
-                  </Chip>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
+    
     </div>
   );
 }

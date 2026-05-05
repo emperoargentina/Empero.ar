@@ -73,8 +73,8 @@ export function useQuoteList(): UseQuoteListReturn {
     let message = 'Hola, quiero cotizar los siguientes productos:\n\n';
     
     items.forEach((item, index) => {
-      message += `${index + 1}. ${item.product.name}`;
-      message += ` (SKU: ${item.product.sku})`;
+      message += `${index + 1}. ${item.product.nombre}`;
+      message += ` (Código: ${item.product.codigo})`;
       message += ` - Cantidad: ${item.quantity}`;
       if (item.notes) {
         message += ` - Notas: ${item.notes}`;
