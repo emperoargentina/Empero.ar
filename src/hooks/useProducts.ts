@@ -67,6 +67,7 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
         const { data, error: sbError } = await supabase
           .from('products')
           .select('*')
+          .eq('disponible', true)
           .order('nombre', { ascending: true });
 
         if (sbError) throw sbError;

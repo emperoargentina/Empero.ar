@@ -26,6 +26,7 @@ export default async function handler(req: Request): Promise<Response> {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .eq('disponible', true)
     .order('nombre')
 
   if (error) {
