@@ -24,7 +24,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   const supabase = createClient(url, key)
   const { data, error } = await supabase
-    .from('productos')
+    .from('products')
     .select('*')
     .order('nombre')
 

@@ -52,7 +52,7 @@ export async function getProductos(force = false): Promise<{
   }
 
   const { data, error } = await supabase
-    .from('productos')
+    .from('products')
     .select('*')
     .order('nombre')
 

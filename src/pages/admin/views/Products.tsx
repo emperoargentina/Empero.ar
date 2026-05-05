@@ -101,7 +101,7 @@ export function Products() {
 
   const handleDelete = async (p: Producto) => {
     if (!confirm(`¿Eliminar "${p.nombre}"? Esta acción no se puede deshacer.`)) return
-    const { error } = await supabase.from('productos').delete().eq('id', p.id)
+    const { error } = await supabase.from('products').delete().eq('id', p.id)
     if (error) { toast.error('Error al eliminar: ' + error.message); return }
     toast.success('Producto eliminado')
     await reloadAfterMutation()
@@ -109,7 +109,7 @@ export function Products() {
 
   const handleToggleDisponible = async (p: Producto) => {
     const { error } = await supabase
-      .from('productos')
+      .from('products')
       .update({ disponible: !p.disponible })
       .eq('id', p.id)
     if (error) { toast.error('Error al actualizar: ' + error.message); return }

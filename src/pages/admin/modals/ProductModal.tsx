@@ -183,10 +183,10 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
 
     let error: unknown
     if (isEdit) {
-      const { error: e } = await supabase.from('productos').update(payload).eq('id', producto!.id)
+      const { error: e } = await supabase.from('products').update(payload).eq('id', producto!.id)
       error = e
     } else {
-      const { error: e } = await supabase.from('productos').insert(payload)
+      const { error: e } = await supabase.from('products').insert(payload)
       error = e
     }
 
