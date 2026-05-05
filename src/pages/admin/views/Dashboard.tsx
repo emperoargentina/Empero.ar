@@ -1,10 +1,10 @@
 // src/pages/admin/views/Dashboard.tsx
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { getProductos, getCacheAge } from '@/lib/productosCache'
 import { type Producto, LOW_STOCK_THRESHOLD } from '@/types/producto'
 import type { AdminView } from '../AdminPanel'
 import {
-  Package, TrendingDown, AlertTriangle, ShoppingCart, XCircle, ArrowRight,
+  Package, TrendingDown, AlertTriangle, ShoppingCart, XCircle, ArrowRight, Clock,
 } from 'lucide-react'
 
 interface Props { onNavigate: (v: AdminView) => void }
@@ -41,17 +41,27 @@ function StatCard({
 }
 
 export function Dashboard({ onNavigate }: Props) {
-  const [stats, setStats]     = useState<Stats | null>(null)
-  const [alerts, setAlerts]   = useState<Producto[]>([])
-  const [loading, setLoading] = useState(true)
+  const [stats, setStats]       = useState<Stats | null>(null)
+  const [alerts, setAlerts]     = useState<Producto[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState<string | null>(null)
+  const [fromCache, setFromCache] = useState(false)
+  const [cacheAge, setCacheAge] = useState<number | null>(null)
 
   useEffect(() => {
     async function load() {
-      const { data, error } = await supabase.from('productos').select('*')
+      setLoading(true)
+      setError(null)
 
-      if (error || !data) { setLoading(false); return }
+      const result = await getProductos()
 
-      const productos = data as Producto[]
+      if (result.error) {
+        setError(result.error)
+        setLoading(false)
+        return
+      }
+
+      const productos = result.data
       const enStock = productos.filter(p => p.modo_disponibilidad === 'en_stock')
 
       setStats({
@@ -69,6 +79,8 @@ export function Dashboard({ onNavigate }: Props) {
           .slice(0, 20),
       )
 
+      setFromCache(result.fromCache)
+      setCacheAge(getCacheAge())
       setLoading(false)
     }
     load()
@@ -82,16 +94,40 @@ export function Dashboard({ onNavigate }: Props) {
     )
   }
 
-  if (!stats) {
-    return <p className="text-[#6B6159] text-sm">Error cargando estadísticas.</p>
+  if (error && !stats) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-2xl px-5 py-4">
+        <p className="text-sm font-semibold text-red-700">Error al cargar datos</p>
+        <p className="text-xs text-red-500 mt-1 font-mono">{error}</p>
+        <p className="text-xs text-red-400 mt-2">
+          Verificá que la política RLS de Supabase permita acceso a usuarios autenticados.
+        </p>
+      </div>
+    )
   }
+
+  if (!stats) return null
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-semibold text-[#1A1613]">Dashboard</h1>
-        <p className="text-sm text-[#9E9080] mt-1">Resumen del inventario en tiempo real</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-[#1A1613]">Dashboard</h1>
+          <p className="text-sm text-[#9E9080] mt-1">Resumen del inventario en tiempo real</p>
+        </div>
+        {fromCache && cacheAge !== null && (
+          <div className="flex items-center gap-1.5 text-xs text-[#9E9080] bg-white border border-[#EBE5DC] rounded-lg px-2.5 py-1.5 flex-shrink-0">
+            <Clock className="w-3 h-3" />
+            Caché · hace {cacheAge} min
+          </div>
+        )}
       </div>
+
+      {error && (
+        <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+          {error}
+        </div>
+      )}
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
@@ -131,10 +167,10 @@ export function Dashboard({ onNavigate }: Props) {
           <div className="divide-y divide-[#F4F0E8]">
             {alerts.map(p => (
               <div key={p.id} className="flex items-center gap-4 px-5 py-3 hover:bg-[#FAF8F4] transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden">
+                <div className="w-10 h-10 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center">
                   {p.cloudinary_url
                     ? <img src={p.cloudinary_url} alt={p.nombre} className="w-full h-full object-cover" />
-                    : <Package className="w-5 h-5 text-[#C0B5A8] m-auto mt-2.5" />
+                    : <Package className="w-5 h-5 text-[#C0B5A8]" />
                   }
                 </div>
 
@@ -144,9 +180,7 @@ export function Dashboard({ onNavigate }: Props) {
                 </div>
 
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${
-                  p.stock === 0
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-amber-100 text-amber-700'
+                  p.stock === 0 ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
                 }`}>
                   {p.stock === 0 ? 'Sin stock' : `${p.stock} ud.`}
                 </span>
@@ -158,7 +192,7 @@ export function Dashboard({ onNavigate }: Props) {
 
       {alerts.length === 0 && stats.sinStock === 0 && (
         <div className="bg-green-50 border border-green-100 rounded-2xl px-5 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
             <Package className="w-4 h-4 text-green-600" />
           </div>
           <p className="text-sm text-green-700 font-medium">

@@ -1,11 +1,12 @@
 // src/pages/admin/views/Products.tsx
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
+import { getProductos, invalidateProductosCache, getCacheAge } from '@/lib/productosCache'
 import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto'
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
-  ChevronLeft, ChevronRight, Filter,
+  ChevronLeft, ChevronRight, Filter, Clock,
 } from 'lucide-react'
 import { ProductModal } from '../modals/ProductModal'
 
@@ -41,45 +42,69 @@ function StockBadge({ p }: { p: Producto }) {
 }
 
 export function Products() {
-  const [productos, setProductos]   = useState<Producto[]>([])
-  const [loading, setLoading]       = useState(true)
-  const [search, setSearch]         = useState('')
-  const [categoria, setCategoria]   = useState('')
-  const [modo, setModo]             = useState<'all' | 'en_stock' | 'por_encargo'>('all')
-  const [page, setPage]             = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
-  const [modalOpen, setModalOpen]   = useState(false)
-  const [editing, setEditing]       = useState<Producto | null>(null)
+  const [allProductos, setAllProductos] = useState<Producto[]>([])
+  const [loading, setLoading]           = useState(true)
+  const [error, setError]               = useState<string | null>(null)
+  const [fromCache, setFromCache]       = useState(false)
+  const [cacheAge, setCacheAge]         = useState<number | null>(null)
+  const [search, setSearch]             = useState('')
+  const [categoria, setCategoria]       = useState('')
+  const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
+  const [page, setPage]                 = useState(1)
+  const [modalOpen, setModalOpen]       = useState(false)
+  const [editing, setEditing]           = useState<Producto | null>(null)
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (force = false) => {
     setLoading(true)
-    let query = supabase
-      .from('productos')
-      .select('*', { count: 'exact' })
-      .order('nombre')
-      .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1)
+    setError(null)
 
-    if (search.trim()) query = query.ilike('nombre', `%${search.trim()}%`)
-    if (categoria)     query = query.eq('categoria', categoria)
-    if (modo !== 'all') query = query.eq('modo_disponibilidad', modo)
+    const result = await getProductos(force)
 
-    const { data, count, error } = await query
+    if (result.error) {
+      setError(result.error)
+      toast.error('Error al cargar productos: ' + result.error)
+    }
 
-    if (error) { toast.error('Error al cargar productos'); setLoading(false); return }
-    setProductos((data ?? []) as Producto[])
-    setTotalCount(count ?? 0)
+    setAllProductos(result.data)
+    setFromCache(result.fromCache)
+    setCacheAge(getCacheAge())
     setLoading(false)
-  }, [page, search, categoria, modo])
+  }, [])
 
   useEffect(() => { load() }, [load])
+
+  // Client-side filtering — zero extra Supabase calls
+  const filtered = useMemo(() => {
+    let list = allProductos
+    if (search.trim()) {
+      const q = search.trim().toLowerCase()
+      list = list.filter(p =>
+        p.nombre.toLowerCase().includes(q) ||
+        p.codigo.toLowerCase().includes(q)
+      )
+    }
+    if (categoria) list = list.filter(p => p.categoria === categoria)
+    if (modo !== 'all') list = list.filter(p => p.modo_disponibilidad === modo)
+    return list
+  }, [allProductos, search, categoria, modo])
+
   useEffect(() => { setPage(1) }, [search, categoria, modo])
+
+  const totalCount = filtered.length
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+  const pageItems  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  const reloadAfterMutation = async () => {
+    invalidateProductosCache()
+    await load(true)
+  }
 
   const handleDelete = async (p: Producto) => {
     if (!confirm(`¿Eliminar "${p.nombre}"? Esta acción no se puede deshacer.`)) return
     const { error } = await supabase.from('productos').delete().eq('id', p.id)
-    if (error) { toast.error('Error al eliminar producto'); return }
+    if (error) { toast.error('Error al eliminar: ' + error.message); return }
     toast.success('Producto eliminado')
-    load()
+    await reloadAfterMutation()
   }
 
   const handleToggleDisponible = async (p: Producto) => {
@@ -87,20 +112,25 @@ export function Products() {
       .from('productos')
       .update({ disponible: !p.disponible })
       .eq('id', p.id)
-    if (error) { toast.error('Error al actualizar disponibilidad'); return }
+    if (error) { toast.error('Error al actualizar: ' + error.message); return }
     toast.success(`Producto ${!p.disponible ? 'activado' : 'desactivado'}`)
-    load()
+    await reloadAfterMutation()
   }
-
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
 
   return (
     <div className="space-y-4 max-w-7xl">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold text-[#1A1613]">Productos</h1>
-          <p className="text-sm text-[#9E9080] mt-0.5">{totalCount} productos en total</p>
+          <p className="text-sm text-[#9E9080] mt-0.5">
+            {totalCount} producto{totalCount !== 1 ? 's' : ''} {search || categoria || modo !== 'all' ? 'filtrados' : 'en total'}
+            {fromCache && cacheAge !== null && (
+              <span className="inline-flex items-center gap-1 ml-2 text-[#C0B5A8]">
+                <Clock className="w-3 h-3" /> caché · {cacheAge} min
+              </span>
+            )}
+          </p>
         </div>
         <button
           onClick={() => { setEditing(null); setModalOpen(true) }}
@@ -111,6 +141,17 @@ export function Products() {
         </button>
       </div>
 
+      {/* Error banner */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          <p className="text-sm font-semibold text-red-700">Error al cargar productos</p>
+          <p className="text-xs text-red-500 mt-0.5 font-mono">{error}</p>
+          <p className="text-xs text-red-400 mt-1">
+            Verificá la política RLS en Supabase: debe permitir ALL para usuarios autenticados.
+          </p>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="bg-white rounded-2xl border border-[#EBE5DC] p-4 flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px]">
@@ -119,7 +160,7 @@ export function Products() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar por nombre..."
+            placeholder="Buscar por nombre o código..."
             className="w-full pl-9 pr-4 py-2 border border-[#EBE5DC] rounded-lg text-sm focus:outline-none focus:border-[#C41B2E] transition-colors"
           />
         </div>
@@ -153,7 +194,7 @@ export function Products() {
           <div className="flex items-center justify-center h-48">
             <div className="w-6 h-6 border-2 border-[#C41B2E] border-t-transparent rounded-full animate-spin" />
           </div>
-        ) : productos.length === 0 ? (
+        ) : pageItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 gap-3 text-[#9E9080]">
             <Package className="w-8 h-8" />
             <p className="text-sm">No se encontraron productos</p>
@@ -174,13 +215,13 @@ export function Products() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F4F0E8]">
-                {productos.map(p => (
+                {pageItems.map(p => (
                   <tr key={p.id} className="hover:bg-[#FAF8F4] transition-colors">
                     <td className="px-4 py-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden">
+                      <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center">
                         {p.cloudinary_url
                           ? <img src={p.cloudinary_url} alt={p.nombre} className="w-full h-full object-cover" />
-                          : <Package className="w-4 h-4 text-[#C0B5A8] m-auto mt-2.5" />
+                          : <Package className="w-4 h-4 text-[#C0B5A8]" />
                         }
                       </div>
                     </td>
@@ -263,7 +304,11 @@ export function Products() {
         producto={editing}
         open={modalOpen}
         onClose={() => { setModalOpen(false); setEditing(null) }}
-        onSaved={() => { setModalOpen(false); setEditing(null); load() }}
+        onSaved={async () => {
+          setModalOpen(false)
+          setEditing(null)
+          await reloadAfterMutation()
+        }}
       />
     </div>
   )

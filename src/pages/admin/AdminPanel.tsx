@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { Toaster } from 'sonner'
+import { invalidateProductosCache } from '@/lib/productosCache'
+import { Toaster, toast } from 'sonner'
 import {
   LayoutDashboard, Package, Menu, LogOut, ChevronRight, RefreshCw,
 } from 'lucide-react'
@@ -18,25 +19,34 @@ export function AdminPanel({ session }: Props) {
   const [view, setView]             = useState<AdminView>('dashboard')
   const [mobileOpen, setMobileOpen] = useState(false)
   const [purging, setPurging]       = useState(false)
+  // Incrementar para forzar remount de la vista activa tras reset
+  const [cacheKey, setCacheKey]     = useState(0)
 
   const handleLogout = () => supabase.auth.signOut()
 
   const handlePurgeCache = async () => {
     setPurging(true)
+
+    // 1. Invalidar caché local de localStorage
+    invalidateProductosCache()
+
+    // 2. Intentar purgar CDN de Vercel (no fatal si no hay token)
     try {
-      const { toast } = await import('sonner')
-      const res = await fetch('/api/revalidate', {
-        method: 'POST',
-        headers: { 'x-revalidate-secret': import.meta.env.VITE_REVALIDATE_SECRET ?? '' },
-      })
-      if (res.ok) toast.success('Caché de productos reseteado')
-      else        toast.error('No se pudo resetear el caché')
+      const secret = import.meta.env.VITE_REVALIDATE_SECRET
+      if (secret) {
+        await fetch('/api/revalidate', {
+          method: 'POST',
+          headers: { 'x-revalidate-secret': secret },
+        })
+      }
     } catch {
-      const { toast } = await import('sonner')
-      toast.error('Error al conectar con el servidor')
-    } finally {
-      setPurging(false)
+      // Non-fatal
     }
+
+    // 3. Forzar remount de la vista → refetch de Supabase
+    setCacheKey(k => k + 1)
+    toast.success('Caché reseteado · datos frescos de Supabase')
+    setPurging(false)
   }
 
   const navItems = [
@@ -141,10 +151,10 @@ export function AdminPanel({ session }: Props) {
           </div>
         </header>
 
-        {/* View content */}
+        {/* View content — key={cacheKey} fuerza remount tras reset */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {view === 'dashboard' && <Dashboard onNavigate={setView} />}
-          {view === 'products'  && <Products />}
+          {view === 'dashboard' && <Dashboard key={cacheKey} onNavigate={setView} />}
+          {view === 'products'  && <Products  key={cacheKey} />}
         </main>
       </div>
     </div>
