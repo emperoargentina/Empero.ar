@@ -19,15 +19,15 @@ interface SearchFiltersProps {
 }
 
 const SORT_OPTIONS: { id: SortOption; label: string; icon: React.ReactNode }[] = [
-  { id: 'default',    label: 'Relevancia',   icon: <ArrowUpDown className="w-3 h-3" /> },
-  { id: 'price-asc',  label: 'Menor precio', icon: <ArrowUp    className="w-3 h-3" /> },
-  { id: 'price-desc', label: 'Mayor precio', icon: <ArrowDown  className="w-3 h-3" /> },
+  { id: 'default', label: 'Relevancia', icon: <ArrowUpDown className="w-3 h-3" /> },
+  { id: 'price-asc', label: 'Menor precio', icon: <ArrowUp className="w-3 h-3" /> },
+  { id: 'price-desc', label: 'Mayor precio', icon: <ArrowDown className="w-3 h-3" /> },
 ];
 
 const AVAILABILITY_OPTIONS: { id: AvailabilityFilter; label: string; icon: React.ReactNode }[] = [
-  { id: 'all',         label: 'Todos',       icon: null },
-  { id: 'en_stock',    label: 'En stock',    icon: <Package className="w-3 h-3" /> },
-  { id: 'por_encargo', label: 'Por encargo', icon: <Clock   className="w-3 h-3" /> },
+  { id: 'all', label: 'Todos', icon: null },
+  { id: 'en_stock', label: 'En stock', icon: <Package className="w-3 h-3" /> },
+  { id: 'por_encargo', label: 'Por encargo', icon: <Clock className="w-3 h-3" /> },
 ];
 
 /** Tiny pill-style chip button */
@@ -43,7 +43,7 @@ function Chip({
   children: React.ReactNode;
 }) {
   const activeStyles = {
-    red:   'border-[#C41B2E]/35 text-[#C41B2E] bg-[rgba(196,27,46,0.06)]',
+    red: 'border-[#C41B2E]/35 text-[#C41B2E] bg-[rgba(196,27,46,0.06)]',
     green: 'border-emerald-300 text-emerald-700 bg-emerald-50',
     amber: 'border-amber-300   text-amber-700   bg-amber-50',
   };
@@ -196,8 +196,8 @@ export function SearchFilters({
           <div className="flex gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {AVAILABILITY_OPTIONS.map(({ id, label, icon }) => {
               const color =
-                id === 'en-stock'    ? 'green' :
-                id === 'por-encargo' ? 'amber' : 'red';
+                id === 'en_stock' ? 'green' :
+                  id === 'por_encargo' ? 'amber' : 'red';
               return (
                 <Chip
                   key={id}
@@ -220,7 +220,7 @@ export function SearchFilters({
           return (
             <button
               key={id ?? 'all'}
-              onClick={() => { onCategoryChange(id); onSubcategoryChange(null); }}
+              onClick={() => { onCategoryChange(id); }}
               className={`
                 relative flex-shrink-0 px-3.5 py-2.5
                 text-[11px] font-semibold uppercase tracking-[0.08em]
@@ -242,7 +242,7 @@ export function SearchFilters({
       </div>
 
 
-    
+
     </div>
   );
 }

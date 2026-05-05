@@ -135,6 +135,7 @@ export function ProductModal({
               </div>
 
               {/* Description */}
+              {product.description && (
               <div className="mb-5">
                 <p className="text-[8px] font-semibold text-[#C0B5A8] uppercase tracking-[0.14em] mb-2">
                   Descripción
@@ -143,6 +144,7 @@ export function ProductModal({
                   {product.description}
                 </p>
               </div>
+              )}
 
               {/* Features */}
               {product.caracteristicas_generales && product.caracteristicas_generales.length > 0 && (
