@@ -67,6 +67,13 @@ export function ProductModal({
   const hasCaract     = (product.caracteristicas_generales?.length ?? 0) > 0;
   const hasAccesorios = (product.accesorios_incluidos?.length ?? 0) > 0;
 
+  const caractLen     = product.caracteristicas_generales?.length ?? 0;
+  const accLen        = product.accesorios_incluidos?.length ?? 0;
+
+  // 2-col layout for long bullet lists
+  const caractTwoCols = caractLen > 5;
+  const accTwoCols    = accLen > 5;
+
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={onClose}>
       <DialogPrimitive.Portal>
@@ -75,16 +82,17 @@ export function ProductModal({
 
         {/* Modal */}
         <DialogPrimitive.Content
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 outline-none
-                     w-[calc(100vw-2.5rem)] max-w-[860px]
+          className="fixed left-1/2 -translate-x-1/2 z-50 outline-none
+                     w-[calc(100vw-2rem)]
                      data-[state=open]:animate-in data-[state=closed]:animate-out
                      data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
                      data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
                      duration-200"
+          style={{ top: '54%', transform: 'translate(-50%, -50%)', maxWidth: '920px' }}
         >
           <div
             className="relative w-full overflow-hidden rounded-2xl bg-white shadow-[0_32px_80px_rgba(0,0,0,0.35)]"
-            style={{ maxHeight: 'min(92vh, 880px)', display: 'flex', flexDirection: 'column' }}
+            style={{ height: 'min(84vh, 660px)', display: 'flex', flexDirection: 'column' }}
           >
 
             {/* Close */}
@@ -96,34 +104,30 @@ export function ProductModal({
               <X className="w-3.5 h-3.5" />
             </button>
 
-            {/* ── Grid layout: image | details ── */}
-            <div
-              className="flex flex-col sm:grid sm:grid-cols-[320px_1fr]"
-              style={{ flex: 1, minHeight: 0, maxHeight: 'min(92vh, 880px)' }}
-            >
+            {/* ── Grid: image | details ── */}
+            <div className="flex flex-col sm:grid sm:grid-cols-[340px_1fr]" style={{ flex: 1, minHeight: 0 }}>
 
-              {/* ── Image panel ── */}
-              <div className="relative bg-[#F0EBE2] h-[230px] sm:h-full overflow-hidden flex-shrink-0">
+              {/* ── Image panel — fills grid row height automatically ── */}
+              <div className="relative bg-[#F0EBE2] h-[180px] sm:h-auto overflow-hidden flex-shrink-0">
                 {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
                 <img
                   src={imageUrl}
                   alt={product.nombre}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                   onLoad={() => setImageLoaded(true)}
                 />
 
-                {/* Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-                {/* Availability badge */}
-                <div className="absolute top-4 left-4">
+                {/* Availability */}
+                <div className="absolute top-3.5 left-3.5">
                   {enStock ? (
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-3 py-1.5 rounded-full bg-emerald-500 text-white shadow-md">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-md">
                       <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                       En stock
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-3 py-1.5 rounded-full bg-amber-500 text-white shadow-md">
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-amber-500 text-white shadow-md">
                       <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
                       Por encargo
                     </span>
@@ -134,7 +138,7 @@ export function ProductModal({
                 <AnimatePresence>
                   {isInQuoteList && (
                     <motion.div
-                      className="absolute top-4 right-10 sm:right-4 flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
+                      className="absolute top-3.5 right-3.5 flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
@@ -146,9 +150,9 @@ export function ProductModal({
                   )}
                 </AnimatePresence>
 
-                {/* SKU + categoria at bottom */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <p className="text-[9px] font-bold text-white/50 uppercase tracking-[0.2em] mb-1">
+                {/* Category + SKU */}
+                <div className="absolute bottom-3 left-3.5 right-3.5">
+                  <p className="text-[9px] font-bold text-white/50 uppercase tracking-[0.2em] mb-0.5">
                     {product.categoria}
                   </p>
                   <span className="text-[8px] font-mono text-white/30 tracking-widest">
@@ -158,94 +162,94 @@ export function ProductModal({
               </div>
 
               {/* ── Details panel ── */}
-              <div className="flex flex-col min-h-0 bg-white">
+              <div className="flex flex-col min-h-0 overflow-hidden bg-white">
 
                 {/* Header */}
-                <div className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-[#F0EAE2]">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-0.5 h-3.5 rounded-full bg-[#C41B2E]" />
+                <div className="flex-shrink-0 px-5 pt-4 pb-3 border-b border-[#F0EAE2]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-0.5 h-3 rounded-full bg-[#C41B2E]" />
                     <span className="text-[9px] font-bold text-[#C41B2E] uppercase tracking-[0.22em]">
                       {product.categoria}
                     </span>
                   </div>
-                  <h2 className="font-semibold text-[#1A1613] text-[18px] leading-snug pr-8">
+                  <h2 className="font-semibold text-[#1A1613] text-[15px] leading-snug pr-8">
                     {product.nombre}
                   </h2>
                   {product.codigo && (
-                    <p className="text-[9px] font-mono text-[#C0B5A8] tracking-widest mt-1.5">
+                    <p className="text-[9px] font-mono text-[#C0B5A8] tracking-widest mt-0.5">
                       #{product.codigo}
                     </p>
                   )}
                 </div>
 
-                {/* Scrollable content */}
-                <div className="flex-1 overflow-y-auto min-h-0 px-6 py-5 space-y-5">
+                {/* Content — grows with product info, scroll only if exceeds max-height */}
+                <div className="flex-1 min-h-0 overflow-y-auto px-5 py-3 space-y-3">
 
                   {/* Description */}
                   {product.description && (
-                    <p className="text-[#6B6159] text-[12.5px] leading-relaxed border-l-2 border-[#EBE5DC] pl-3.5">
+                    <p className="text-[#6B6159] text-[11.5px] leading-relaxed">
                       {product.description}
                     </p>
                   )}
 
-                  {/* Specs */}
+                  {/* Specs — row table */}
                   {hasSpecs && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-3">
+                      <div className="flex items-center gap-1.5 mb-1.5">
                         <Settings className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="text-[8.5px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
+                        <span className="text-[8px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
                           Especificaciones técnicas
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 gap-px bg-[#EBE5DC] rounded-xl overflow-hidden border border-[#EBE5DC]">
-                        {specs.map(s => (
-                          <div key={s.label} className="bg-[#FAFAF8] px-3.5 py-2.5">
-                            <p className="text-[8px] font-semibold text-[#C0B5A8] uppercase tracking-[0.12em] mb-0.5">
-                              {s.label}
-                            </p>
-                            <p className="text-[12.5px] font-semibold text-[#1A1613]">{s.value}</p>
+                      <div className="divide-y divide-[#F0EAE2] rounded-xl overflow-hidden border border-[#EBE5DC]">
+                        {specs.map((s, i) => (
+                          <div
+                            key={s.label}
+                            className={`flex items-center justify-between px-3 py-1.5 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}
+                          >
+                            <span className="text-[10.5px] text-[#9A8E82] font-medium">{s.label}</span>
+                            <span className="text-[11px] font-semibold text-[#1A1613] text-right ml-3">{s.value}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Características */}
+                  {/* Características — checklist */}
                   {hasCaract && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-2.5">
+                      <div className="flex items-center gap-1.5 mb-1.5">
                         <Layers className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="text-[8.5px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
+                        <span className="text-[8px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
                           Características
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5">
+                      <ul className={caractTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : 'space-y-1'}>
                         {product.caracteristicas_generales!.map((f, i) => (
-                          <span
-                            key={i}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F7F4F0] border border-[#EBE5DC] text-[#4A4540] text-[10.5px] font-medium rounded-lg"
-                          >
-                            <span className="w-1 h-1 rounded-full bg-[#C41B2E] flex-shrink-0" />
+                          <li key={i} className="flex items-start gap-2 text-[11.5px] text-[#3A3530] leading-snug">
+                            <span className="w-3.5 h-3.5 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
+                              <Check className="w-2 h-2 text-[#C41B2E]" strokeWidth={2.5} />
+                            </span>
                             {f}
-                          </span>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
                     </div>
                   )}
 
                   {/* Accesorios */}
                   {hasAccesorios && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-2.5">
+                      <div className="flex items-center gap-1.5 mb-1.5">
                         <Package className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="text-[8.5px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
+                        <span className="text-[8px] font-bold text-[#B0A89E] uppercase tracking-[0.2em]">
                           Accesorios incluidos
                         </span>
                       </div>
-                      <ul className="grid grid-cols-1 gap-y-1.5">
+                      <ul className={accTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : 'space-y-1'}>
                         {product.accesorios_incluidos!.map((a, i) => (
-                          <li key={i} className="flex items-start gap-2 text-[12px] text-[#4A4540]">
-                            <span className="w-1 h-1 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[5px]" />
+                          <li key={i} className="flex items-start gap-2 text-[11.5px] text-[#3A3530] leading-snug">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
                             {a}
                           </li>
                         ))}
@@ -260,25 +264,25 @@ export function ProductModal({
                   )}
                 </div>
 
-                {/* ── CTAs ── */}
-                <div className="flex-shrink-0 px-6 py-4 border-t border-[#EBE5DC] bg-[#FAFAF8]">
-                  <div className="flex flex-col sm:flex-row gap-2.5">
+                {/* ── CTAs — side by side ── */}
+                <div className="flex-shrink-0 px-5 py-3 border-t border-[#EBE5DC] bg-[#FAFAF8]">
+                  <div className="flex gap-2">
                     <motion.button
-                      className="flex-1 h-11 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
+                      className="flex-1 h-10 rounded-xl text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
                       style={{
                         background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)',
-                        boxShadow: '0 4px 16px rgba(37,211,102,0.28)',
+                        boxShadow: '0 4px 14px rgba(37,211,102,0.28)',
                       }}
                       onClick={handleWhatsApp}
                       whileHover={{ scale: 1.015 }}
                       whileTap={{ scale: 0.97 }}
                     >
                       <WhatsAppSVG />
-                      Consultar por WhatsApp
+                      WhatsApp
                     </motion.button>
 
                     <motion.button
-                      className={`flex-1 h-11 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer border ${
+                      className={`flex-1 h-10 rounded-xl text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer border ${
                         isInQuoteList
                           ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
                           : 'bg-white text-[#1A1613] border-[#E0D9D0] hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
@@ -288,8 +292,8 @@ export function ProductModal({
                       whileTap={isInQuoteList ? {} : { scale: 0.97 }}
                     >
                       {isInQuoteList
-                        ? <><Check className="w-4 h-4" /> En tu lista</>
-                        : <><Plus className="w-4 h-4" /> Agregar a mi lista</>
+                        ? <><Check className="w-3.5 h-3.5" /> En tu lista</>
+                        : <><Plus className="w-3.5 h-3.5" /> Agregar a lista</>
                       }
                     </motion.button>
                   </div>
