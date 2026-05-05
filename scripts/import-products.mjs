@@ -18,7 +18,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // ── Leer el JSON ─────────────────────────────────────────────────────────────
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const raw = readFileSync(join(__dirname, '..', 'Products.json'), 'utf-8')
+const raw = readFileSync(join(__dirname, '..', 'Products_final.json'), 'utf-8')
 const products = JSON.parse(raw)
 
 console.log(`📦  ${products.length} productos encontrados en Products.json`)
@@ -31,9 +31,10 @@ function mapProduct(p) {
     nombre:                    p.Nombre,
     categoria:                 p.Categoria,
     precio_usd:                p.Precio_USD ?? null,
-    stock:                     0,           // default: sin stock cargado
+    stock:                     p.stock ?? 0,
+    modo_disponibilidad:       p.modo_disponibilidad ?? 'por_encargo',
     disponible:                true,
-    cloudinary_image_id:       null,        // se carga después desde Cloudinary
+    cloudinary_image_id:       null,
     cloudinary_url:            p.cloudinary_url ?? null,
     voltaje:                   p.Voltaje ?? null,
     peso_kg:                   p.Peso_kg ?? null,

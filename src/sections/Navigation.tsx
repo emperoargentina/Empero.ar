@@ -75,16 +75,30 @@ export function Navigation({
   totalQuoteItems = 0,
 }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [blurActive, setBlurActive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      const y = window.scrollY;
+      setIsScrolled(prev => (prev ? y > 10 : y > 50));
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Blur se activa inmediato al scrollear, pero se remueve DESPUÉS de que termine la animación de vuelta
+  useEffect(() => {
+    if (isScrolled) {
+      setBlurActive(true);
+      return;
+    }
+    const t = setTimeout(() => setBlurActive(false), 750);
+    return () => clearTimeout(t);
+  }, [isScrolled]);
 
   // Update theme-color dynamically based on scroll to match navbar
   useEffect(() => {
@@ -145,8 +159,11 @@ export function Navigation({
               boxShadow: '0 0 0 rgba(0,0,0,0)',
               borderColor: 'rgba(196,27,46,0)',
             }}
-            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className={`relative border-b lg:border ${isScrolled ? 'backdrop-blur-md' : ''} ${
+            transition={{
+              duration: isScrolled ? 0.4 : 0.8,
+              ease: isScrolled ? [0.25, 0.46, 0.45, 0.94] : [0.16, 1, 0.3, 1],
+            }}
+            className={`relative border-b lg:border ${blurActive ? 'backdrop-blur-md' : ''} ${
               isScrolled
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5'

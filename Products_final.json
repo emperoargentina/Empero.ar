@@ -1,0 +1,4353 @@
+[
+  {
+    "id": "emp-1000-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS DE CAPOTA",
+    "Nombre": "Lavavajillas de Capota Full 380V",
+    "Voltaje": "380V",
+    "Codigo": "EMP.1000-F",
+    "Precio_USD": 3874,
+    "Peso_kg": 112,
+    "Volumen_m3": 0.79,
+    "Capacidad": "1000 PLATOS POR HORA",
+    "Dimensiones_mm": {
+      "Ancho": 740,
+      "Profundidad": 830,
+      "Alto": 1485
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.55,
+      "Calentamiento_Tanque": 2.5,
+      "Calentador_Boiler": 6,
+      "Maxima": 9
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": "55-60",
+      "Enjuague": "80-85"
+    },
+    "Programas": {
+      "Cantidad": 4,
+      "Tiempos_segundos": [
+        60,
+        90,
+        120,
+        180
+      ]
+    },
+    "Dimensiones_Canasto_mm": "500 x 500",
+    "Accesorios_Incluidos": [
+      "CANASTO PARA CUBIERTOS",
+      "1 CANASTO PLANO",
+      "1 CANASTO PARA TAZAS"
+    ],
+    "Caracteristicas_Generales": [
+      "Consumo económico de agua, detergente y energía",
+      "Resistencias de acero inoxidable",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-1100-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS",
+    "Nombre": "Lavavajillas",
+    "Voltaje": null,
+    "Codigo": "EMP.1100-F",
+    "Precio_USD": 2623,
+    "Peso_kg": 43,
+    "Volumen_m3": 0.2,
+    "Capacidad": "1000 VASOS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 485,
+      "Profundidad": 580,
+      "Alto": 770
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.25,
+      "Calentamiento_Tanque": 2.5,
+      "Calentador_Boiler": 2,
+      "Maxima": 2.75
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": {
+      "Cantidad": 3,
+      "Tiempos_segundos": [
+        90,
+        120,
+        180
+      ]
+    },
+    "Dimensiones_Canasto_mm": "400 x 400",
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Bomba de desagote estándar",
+      "Consumo económico de agua, detergente y energía"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-500-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS BAJO MOSTRADOR",
+    "Nombre": "Lavavajillas Bajo Mostrador Completo 220V",
+    "Voltaje": "220V",
+    "Codigo": "EMP.500-F",
+    "Precio_USD": 2721,
+    "Peso_kg": 64,
+    "Volumen_m3": 0.33,
+    "Capacidad": "500 PLATOS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 590,
+      "Profundidad": 660,
+      "Alto": 830
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.55,
+      "Calentamiento_Tanque": 2.5,
+      "Calentador_Boiler": 5,
+      "Maxima": null
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": "55-60",
+      "Enjuague": "80-85"
+    },
+    "Programas": {
+      "Cantidad": 3,
+      "Tiempos_segundos": [
+        90,
+        120,
+        180
+      ]
+    },
+    "Dimensiones_Canasto_mm": "500 x 500",
+    "Accesorios_Incluidos": [
+      "1 CANASTO PARA CUBIERTOS",
+      "1 CANASTO PARA PLATOS",
+      "1 CANASTO PARA TAZAS"
+    ],
+    "Caracteristicas_Generales": [
+      "Bomba de desagote estándar",
+      "Consumo económico de agua, detergente y energía",
+      "Diámetro máximo de plato: 320 mm",
+      "Resistencias de acero inoxidable",
+      "Sensor magnético de seguridad de la cubierta",
+      "Cuerpo de acero inoxidable",
+      "Se requiere bomba de presión de agua para conexiones con presión inferior a 2,5 bar"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-3000-sol-l-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS DE TIPO CINTA TRANSPORTADORA (TÚNEL DE SECADO)",
+    "Nombre": "Lavavajillas de Cinta Transportadora con Túnel de Secado y Prelavado",
+    "Voltaje": "380V",
+    "Codigo": "EMP.3000-SOL-L-F",
+    "Precio_USD": 19028,
+    "Peso_kg": 405,
+    "Volumen_m3": 4.29,
+    "Capacidad": "200 / 3300 PLATOS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 2561,
+      "Profundidad": 837,
+      "Alto": 2000
+    },
+    "Potencias_kW": {
+      "Total": 48,
+      "Motor": null,
+      "Calentamiento_Tanque": 12,
+      "Calentador_Boiler": 24,
+      "Maxima": 36
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": "55-60",
+      "Enjuague": "80-85"
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": "500 x 500",
+    "Accesorios_Incluidos": [
+      "2 CANASTOS PARA CUBIERTOS",
+      "2 CANASTOS PARA PLATOS",
+      "2 CANASTOS PARA TAZAS"
+    ],
+    "Caracteristicas_Generales": [
+      "Con dosificador de detergente y abrillantador",
+      "Túnel de secado estándar",
+      "Cinta transportadora de 2 velocidades",
+      "2 motores de lavado",
+      "Bomba de desagote estándar",
+      "Consumo económico de agua, detergente y energía",
+      "Resistencias de acero inoxidable",
+      "Cubierta magnética de seguridad",
+      "Cuerpo de acero inoxidable",
+      "Potencia del túnel de secado: 9 kW"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-uw-80-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS INDUSTRIAL PARA OLLAS",
+    "Nombre": "Lavavajillas Industrial para Ollas – 80 Litros",
+    "Voltaje": null,
+    "Codigo": "EMP.UW-80-F",
+    "Precio_USD": 13388,
+    "Peso_kg": 210,
+    "Volumen_m3": 1.46,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 764,
+      "Profundidad": 960,
+      "Alto": 1985
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": [
+      "BOMBA DOSIFICADORA DE DETERGENTE",
+      "BOMBA DOSIFICADORA DE ABRILLANTADOR"
+    ],
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-uw-130-f",
+    "cloudinary_url": null,
+    "Categoria": "LAVAVAJILLAS INDUSTRIAL PARA OLLAS",
+    "Nombre": "Lavavajillas Industrial para Ollas – 130 Litros",
+    "Voltaje": "380V",
+    "Codigo": "EMP.UW-130-F",
+    "Precio_USD": 20279,
+    "Peso_kg": 300,
+    "Volumen_m3": 2.51,
+    "Capacidad": "480 PIEZAS POR HORA",
+    "Dimensiones_mm": {
+      "Ancho": 1360,
+      "Profundidad": 930,
+      "Alto": 1985
+    },
+    "Potencias_kW": {
+      "Total": 35,
+      "Motor": 1.5,
+      "Calentamiento_Tanque": 12,
+      "Calentador_Boiler": 18,
+      "Maxima": null
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": "55-60",
+      "Enjuague": "80-85"
+    },
+    "Programas": {
+      "Cantidad": 3,
+      "Tiempos_segundos": [
+        120,
+        240,
+        360
+      ]
+    },
+    "Dimensiones_Canasto_mm": "600 x 800",
+    "Accesorios_Incluidos": [
+      "BOMBA DOSIFICADORA DE DETERGENTE",
+      "BOMBA DOSIFICADORA DE ABRILLANTADOR"
+    ],
+    "Caracteristicas_Generales": [
+      "Bomba de drenaje estándar",
+      "Consumo optimizado de agua, detergente y energía",
+      "Sensor magnético de seguridad en la puerta",
+      "Resistencias de acero inoxidable",
+      "Construcción íntegra en acero inoxidable",
+      "Capacidad del tanque: 130 litros",
+      "Consumo de agua por ciclo: 7,5 litros",
+      "Capacidad de producción: 120 x 1/1 GN por hora",
+      "Potencia del motor: 1,5 kW – 2800 rpm (×2)",
+      "Alimentación eléctrica: 380 V – Trifásico",
+      "Altura útil de lavado en cámara: 70 cm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-bpr-002",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINAS SECADORAS DE VASOS",
+    "Nombre": "Máquina Secadora de Vasos",
+    "Voltaje": "220V",
+    "Codigo": "EMP.BPR.002",
+    "Precio_USD": 1633,
+    "Peso_kg": 20,
+    "Volumen_m3": 0.06,
+    "Capacidad": "300-360 VASOS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 325,
+      "Profundidad": 370,
+      "Alto": 505
+    },
+    "Potencias_kW": {
+      "Total": 2.62,
+      "Motor": 0.37,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "4 cepillos largos",
+      "Capacidad de secado: 600–720 vasos por hora (modelo EMP.BPR.001)"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-bpr-001",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINAS SECADORAS DE VASOS",
+    "Nombre": "Máquina Secadora de Vasos",
+    "Voltaje": "220V",
+    "Codigo": "EMP.BPR.001",
+    "Precio_USD": 2067,
+    "Peso_kg": 27,
+    "Volumen_m3": 0.1,
+    "Capacidad": "600-720 VASOS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 355,
+      "Profundidad": 595,
+      "Alto": 505
+    },
+    "Potencias_kW": {
+      "Total": 2.62,
+      "Motor": 0.37,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 2800,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "6 cepillos largos"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ckp-01",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINAS PULIDORAS DE CUBIERTOS",
+    "Nombre": "Máquina Pulidora de Cubiertos",
+    "Voltaje": "220V",
+    "Codigo": "EMP.CKP.01",
+    "Precio_USD": 2588,
+    "Peso_kg": 42,
+    "Volumen_m3": 0.14,
+    "Capacidad": "3000 PIEZAS/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 560,
+      "Profundidad": 590,
+      "Alto": 431
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.18,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 1500,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Lámpara ultravioleta",
+      "Cuerpo de acero inoxidable",
+      "Capacidad del material de pulido: 5 kg de granulado"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "jp-oyd-01",
+    "cloudinary_url": null,
+    "Categoria": "UNIDADES DE PRE-LAVADO",
+    "Nombre": "Unidad de prelavado montada sobre mostrador",
+    "Voltaje": null,
+    "Codigo": "JP.OYD.01",
+    "Precio_USD": 387,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": null,
+      "Profundidad": null,
+      "Alto": null
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Lavado sin manchas",
+      "Sistema de presión controlada",
+      "Estructura duradera"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-70-01",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.70.01",
+    "Precio_USD": 2663,
+    "Peso_kg": 115,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.14,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290",
+      "Densidad del gas: 40 g/m³",
+      "Sistema de enfriamiento y deshielo controlado digitalmente",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento con ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de cobre con aletas de aluminio",
+      "Patas regulables",
+      "Estructura exterior de acero inoxidable",
+      "Estantes regulables revestidos en plástico",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-70-01-4c",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 4 Cajones",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.70.01-4C",
+    "Precio_USD": 4059,
+    "Peso_kg": 160,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.17,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Cajones con capacidad GN 1/1 de 150 kg",
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290",
+      "Densidad del gas: 40 g/m³",
+      "Sistema de enfriamiento y deshielo controlado mediante display digital",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de CFC)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Cajones con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable en acero inoxidable",
+      "Estantes revestidos en plástico",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-160-70-01-s",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES BAJO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Bajo Mostrador con 4 Cajones",
+    "Voltaje": "220V",
+    "Codigo": "EMP.160.70.01-S",
+    "Precio_USD": 3370,
+    "Peso_kg": 135,
+    "Volumen_m3": 0.6,
+    "Capacidad": "4X1/1 GN 100",
+    "Dimensiones_mm": {
+      "Ancho": 1600,
+      "Profundidad": 700,
+      "Alto": 600
+    },
+    "Potencias_kW": {
+      "Total": 0.23,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-60-01",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 3 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.60.01",
+    "Precio_USD": 2941,
+    "Peso_kg": 135,
+    "Volumen_m3": 1,
+    "Capacidad": "400 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 600,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.16,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 40 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable en acero inoxidable",
+      "Estantes revestidos en plástico",
+      "Cuerpo de acero inoxidable",
+      "Sistema de refrigeración monoblock"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-70-01",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 3 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.70.01",
+    "Precio_USD": 3132,
+    "Peso_kg": 142,
+    "Volumen_m3": 1.2,
+    "Capacidad": "500 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.16,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable en acero inoxidable",
+      "Estantes revestidos en plástico",
+      "Cuerpo de acero inoxidable",
+      "Sistema de refrigeración monoblock"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-70-01-2c",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 2 Cajones + 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.70.01-2C",
+    "Precio_USD": 3810,
+    "Peso_kg": 163,
+    "Volumen_m3": 1.2,
+    "Capacidad": "500 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.16,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Cajones con capacidad GN 1/1 de 150 kg",
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Cajones y puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable en acero inoxidable",
+      "Estantes revestidos en plástico",
+      "Cuerpo de acero inoxidable",
+      "Sistema de refrigeración monoblock"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-70-01-4c",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Tipo Mostrador con 4 Cajones + 1 Puerta",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.70.01-4C",
+    "Precio_USD": 4505,
+    "Peso_kg": 182,
+    "Volumen_m3": 1.2,
+    "Capacidad": "500 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.16,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Cajones con capacidad GN 1/1 de 150 kg",
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Cajones y puerta con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable en acero inoxidable",
+      "Estantes revestidos en plástico",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-70-01-s",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES BAJO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador Bajo Mostrador con 6 Cajones",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.70.01-S",
+    "Precio_USD": 4169,
+    "Peso_kg": 173,
+    "Volumen_m3": 0.8,
+    "Capacidad": "6X1/1 GN 100",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 700,
+      "Alto": 600
+    },
+    "Potencias_kW": {
+      "Total": 0.23,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-70-01-ev",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES BAJO MESADA CON BACHA (REFRIGERACIÓN POR AIRE FORZADO)",
+    "Nombre": "Refrigerador Bajo Mesada con Bacha + 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.70.01-EV",
+    "Precio_USD": 2953,
+    "Peso_kg": 116,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.14,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Dimensiones de la bacha: 350 × 400 mm",
+      "Rango de temperatura de trabajo: 0 a +5 °C",
+      "Funcionamiento garantizado hasta 43 °C de temperatura ambiente (clima tropical)",
+      "Alimentación eléctrica: 220–230 V / 1N / 50 Hz",
+      "Refrigerante ecológico R-290 (libre de CFC)",
+      "Densidad del aislante: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Deshielo automático por evaporación del agua",
+      "Sistema de refrigeración por aire forzado (fan cooling)",
+      "Aislamiento con poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45°",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estantes regulables con estructura en acero inoxidable y superficie plástica",
+      "Construcción íntegra en acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-70-01-pso",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador para Pizza y topinera con 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.70.01-PSO",
+    "Precio_USD": 3323,
+    "Peso_kg": 130,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.25,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 g/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable",
+      "Cuerpo de acero inoxidable",
+      "Capacidad de ensaladera: 6 recipientes GN 1/4 – 100 mm de profundidad"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-70-01-pso",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador para Pizza y topinera con 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.70.01-PSO",
+    "Precio_USD": 4285,
+    "Peso_kg": 159,
+    "Volumen_m3": 1.2,
+    "Capacidad": "500 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.25,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estructura para estantes regulable",
+      "Cuerpo de acero inoxidable",
+      "Capacidad de ensaladera: 8 recipientes GN 1/4 – 100 mm de profundidad"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-200-80-01-psy",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador para Pizza y topinera alta con 3 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.200.80.01-PSY",
+    "Precio_USD": 4505,
+    "Peso_kg": 210,
+    "Volumen_m3": 1.2,
+    "Capacidad": "500 LT",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 800,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.17,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Capacidad de bandejas: 4 piezas de 400 × 600 mm en cada tapa",
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Cuerpo de acero inoxidable",
+      "Capacidad de ensaladera: 11 recipientes GN 1/4 – 100 mm de profundidad"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-80-01-psyg",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador para Pizza y topinera alta con 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.80.01-PSYG",
+    "Precio_USD": 4505,
+    "Peso_kg": 236,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 800,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.14,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Capacidad de refrigeración: 400 × 600 mm en cada compartimento",
+      "Rango de temperatura de trabajo: 0 a +5 °C",
+      "Funcionamiento garantizado hasta 43 °C de temperatura ambiente (clima tropical)",
+      "Alimentación eléctrica: 220–230 V / 1N / 50 Hz",
+      "Refrigerante ecológico R-290 (libre de CFC)",
+      "Densidad del aislante: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Deshielo automático por evaporación del agua",
+      "Sistema de refrigeración por aire forzado (fan cooling)",
+      "Aislamiento con poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45°",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Construcción íntegra en acero inoxidable",
+      "Tapa de trabajo en granito",
+      "Capacidad del saladero superior: 8 recipientes GN 1/4 – 100 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-150-80-01-psy",
+    "cloudinary_url": null,
+    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Nombre": "Refrigerador para Pizza y topinera alta con 2 Puertas",
+    "Voltaje": "220V",
+    "Codigo": "EMP.150.80.01-PSY",
+    "Precio_USD": 3665,
+    "Peso_kg": 170,
+    "Volumen_m3": 0.9,
+    "Capacidad": "300 LT",
+    "Dimensiones_mm": {
+      "Ancho": 1500,
+      "Profundidad": 800,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.14,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Capacidad de bandejas: 4 piezas de 400 × 600 mm cada una",
+      "Temperatura de trabajo: 0 / +5 °C a temperatura ambiente tropical de 43 °C",
+      "Potencia eléctrica: 220–230 V – 1+N – 50 Hz",
+      "Refrigerante: R290 (libre de CFC)",
+      "Densidad del gas: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Enfriamiento por ventilador",
+      "Refrigerante ecológico (libre de ozono)",
+      "Aislamiento de poliuretano inyectado de 60 mm de espesor",
+      "Puertas con cierre automático a 45 grados",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Cuerpo de acero inoxidable",
+      "Capacidad de ensaladera: 8 recipientes GN 1/4 – 100 mm de profundidad"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-dt-100-s-a",
+    "cloudinary_url": null,
+    "Categoria": "VITRINAS REFRIGERADAS PARA PASTELERÍA NEPTÜN",
+    "Nombre": "Vitrina Refrigerada para Pastelería Neptün",
+    "Voltaje": null,
+    "Codigo": "EMP.DT.100.S-A",
+    "Precio_USD": null,
+    "Peso_kg": 172,
+    "Volumen_m3": 1.01,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1000,
+      "Profundidad": 750,
+      "Alto": 1350
+    },
+    "Potencias_kW": {
+      "Total": 1.15,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Doble vidrio con bloqueo de condensación",
+      "Rango de temperatura de trabajo: 0 a +8 °C",
+      "Funcionamiento garantizado hasta 43 °C de temperatura ambiente",
+      "Sistema de refrigeración interna de ingeniería avanzada",
+      "Refrigeración por aire forzado (fan cooling)",
+      "Gas refrigerante ecológico R-290",
+      "Sistema de iluminación LED",
+      "Aislamiento con poliuretano de 40 kg/m³ de densidad",
+      "Construcción robusta y estética, ideal para exhibición profesional de pastelería",
+      "Color / acabado: marrón claro (Light Brown)"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-2-sv-02",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE SERVICIO",
+    "Nombre": "Carro de Servicio de 2 Niveles",
+    "Voltaje": null,
+    "Codigo": "EMP.2.SV.02",
+    "Precio_USD": 596,
+    "Peso_kg": 15,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 550,
+      "Profundidad": 860,
+      "Alto": 900
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Desmontable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-2-sv-03",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE SERVICIO",
+    "Nombre": "Carro de Servicio de 3 Niveles",
+    "Voltaje": null,
+    "Codigo": "EMP.2.SV.03",
+    "Precio_USD": 689,
+    "Peso_kg": 20,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 550,
+      "Profundidad": 860,
+      "Alto": 900
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Desmontable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-psv-02",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE SERVICIO DE PLÁSTICO",
+    "Nombre": "Carro de Servicio de Plástico de 2 Niveles",
+    "Voltaje": null,
+    "Codigo": "EMP.PSV.02",
+    "Precio_USD": 179,
+    "Peso_kg": 8.1,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 500,
+      "Profundidad": 800,
+      "Alto": 970
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-psv-03",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE SERVICIO DE PLÁSTICO",
+    "Nombre": "Carro de Servicio de Plástico de 3 Niveles",
+    "Voltaje": null,
+    "Codigo": "EMP.PSV.03",
+    "Precio_USD": 208,
+    "Peso_kg": 11,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 500,
+      "Profundidad": 800,
+      "Alto": 970
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ba-2-gn2-34",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE COCINA",
+    "Nombre": "Carro Gastronómico Alto Doble 2/1 GN",
+    "Voltaje": null,
+    "Codigo": "EMP.BA.2.GN2-34",
+    "Precio_USD": 955,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": "34 GN 2/1",
+    "Dimensiones_mm": {
+      "Ancho": 1150,
+      "Profundidad": 680,
+      "Alto": 1720
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ba-2-gn-34",
+    "cloudinary_url": null,
+    "Categoria": "CARROS DE COCINA",
+    "Nombre": "Carro Gastronómico Alto Doble para Bandejas GN 1/1",
+    "Voltaje": null,
+    "Codigo": "EMP.BA.2.GN-34",
+    "Precio_USD": 897,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": "34 GN 1/1",
+    "Dimensiones_mm": {
+      "Ancho": 740,
+      "Profundidad": 560,
+      "Alto": 1720
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-to-2432-i-2",
+    "cloudinary_url": null,
+    "Categoria": "DISPENSADORES DE PLATOS",
+    "Nombre": "Dispensador doble de platos",
+    "Voltaje": null,
+    "Codigo": "EMP.TO.2432-I-2",
+    "Precio_USD": 1343,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": "PLATE 24/32",
+    "Dimensiones_mm": {
+      "Ancho": 480,
+      "Profundidad": 1000,
+      "Alto": 900
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-bq1",
+    "cloudinary_url": null,
+    "Categoria": "CARROS TÉRMICOS PARA BANQUETERÍA",
+    "Nombre": "Carro Térmico para Banquetería",
+    "Voltaje": "220V",
+    "Codigo": "EMP.BQ1",
+    "Precio_USD": 2889,
+    "Peso_kg": 124,
+    "Volumen_m3": 1.21,
+    "Capacidad": "11X2/1 GN",
+    "Dimensiones_mm": {
+      "Ancho": 716,
+      "Profundidad": 888,
+      "Alto": 1835
+    },
+    "Potencias_kW": {
+      "Total": 3,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Tensión de funcionamiento: 220–240 V",
+      "Unidad de control con termostato digital",
+      "Indicador de calentamiento interior",
+      "Sistema de humidificación",
+      "Cierre magnético",
+      "Ruedas con freno que brindan estabilidad",
+      "Aislamiento de poliuretano de alta densidad (40 kg/m³)",
+      "Circulación de aire potente y optimizada, que garantiza un flujo homogéneo de abajo hacia arriba en todas las condiciones",
+      "Cuerpo de acero inoxidable",
+      "Temperatura de trabajo: 50 °C / 70 °C",
+      "Guías interiores de bandejas estampadas",
+      "Sistema de calefacción desmontable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-mf-20-t",
+    "cloudinary_url": null,
+    "Categoria": "CÁMARAS DE FERMENTACIÓN PROFESIONALES",
+    "Nombre": "Cámara de Fermentación con Ruedas y Encamisado Simple",
+    "Voltaje": "230V",
+    "Codigo": "EMP.MF.20-T",
+    "Precio_USD": 2194,
+    "Peso_kg": 80,
+    "Volumen_m3": 0.7,
+    "Capacidad": "16 BANDEJAS DE 40 × 60 cm",
+    "Dimensiones_mm": {
+      "Ancho": 500,
+      "Profundidad": 720,
+      "Alto": 1800
+    },
+    "Potencias_kW": {
+      "Total": 4,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de funcionamiento: 30 / 90 °C",
+      "Sistema electrónico de control de calentamiento con termostato",
+      "Ajuste de vapor",
+      "Cuerpo de acero inoxidable",
+      "Alimentación eléctrica: 230 V AC – N – Sección de cable (mm²): 3 × 1,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-bss-60",
+    "cloudinary_url": null,
+    "Categoria": "UNIDADES DE SERVICIO FRÍO",
+    "Nombre": "Unidad de Servicio Frío",
+    "Voltaje": "220V",
+    "Codigo": "EMP.BSS.60",
+    "Precio_USD": 3572,
+    "Peso_kg": 120,
+    "Volumen_m3": 1.2,
+    "Capacidad": "5 RECIPIENTES GN 5X1/1",
+    "Dimensiones_mm": {
+      "Ancho": 2000,
+      "Profundidad": 790,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 0.45,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Rango de temperatura de trabajo: 0 a +5 °C",
+      "Funcionamiento garantizado hasta 43 °C de temperatura ambiente (clima tropical)",
+      "Alimentación eléctrica: 220–230 V / 1N / 50–60 Hz",
+      "Refrigerante ecológico R-290 (libre de CFC)",
+      "Densidad del aislante: 40 kg/m³",
+      "Control digital de temperatura y deshielo",
+      "Deshielo automático por evaporación del agua",
+      "Sistema de refrigeración por aire forzado (fan cooling)",
+      "Aislamiento con poliuretano inyectado de 48 mm de espesor",
+      "Puertas con cierre automático a 45°",
+      "Evaporador de tubo de cobre con aletas de aluminio",
+      "Estantes regulables con estructura en acero inoxidable y superficie plástica",
+      "Construcción íntegra en acero inoxidable",
+      "Opción de frente en madera (opcional)",
+      "Iluminación LED"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ad-11060",
+    "cloudinary_url": null,
+    "Categoria": "UNIDADES DE EXHIBICIÓN CALIENTE (LÁMPARA HALÓGENA)",
+    "Nombre": "Unidad de Exhibición Caliente con Cuerpo de Madera",
+    "Voltaje": "220V",
+    "Codigo": "EMP.AD.11060",
+    "Precio_USD": 1945,
+    "Peso_kg": 35,
+    "Volumen_m3": 0.5,
+    "Capacidad": "3X1/1 GN",
+    "Dimensiones_mm": {
+      "Ancho": 1115,
+      "Profundidad": 600,
+      "Alto": 120
+    },
+    "Potencias_kW": {
+      "Total": 1.8,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Tensión de funcionamiento: 220 V",
+      "Protector antihigiénico (sneeze guard) desmontable",
+      "Patas regulables",
+      "Control digital",
+      "Temperatura de trabajo: 38 °C / 80 °C"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pd-8060",
+    "cloudinary_url": null,
+    "Categoria": "UNIDADES DE EXHIBICIÓN CALIENTE (LÁMPARA HALÓGENA)",
+    "Nombre": "Unidad de Exhibición Caliente con Cuerpo de Acero Inoxidable",
+    "Voltaje": null,
+    "Codigo": "EMP.PD.8060",
+    "Precio_USD": 1302,
+    "Peso_kg": 27,
+    "Volumen_m3": 0.36,
+    "Capacidad": "2X1/1 GN",
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 600,
+      "Alto": 120
+    },
+    "Potencias_kW": {
+      "Total": 1.3,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-psg-3",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS SALAMANDRA A GAS",
+    "Nombre": "Parrilla Salamandra a Gas de 3 Quemadores",
+    "Voltaje": null,
+    "Codigo": "EMP.PSG.3",
+    "Precio_USD": 1384,
+    "Peso_kg": 45,
+    "Volumen_m3": 0.22,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 804,
+      "Profundidad": 568,
+      "Alto": 580
+    },
+    "Potencias_kW": {
+      "Total": 10.5,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Las guías pueden ajustarse a diferentes alturas",
+      "La válvula de gas permite el control de la temperatura",
+      "Botón de humidificación accionado por la bandeja desmontable",
+      "Cuerpo de acero inoxidable",
+      "Consumo de gas natural (ng): 1,10 m³/h",
+      "Consumo GLP (lpg): 0,58 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-8-8",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS ELÉCTRICOS PARA PIZZA DE DOS CÁMARAS",
+    "Nombre": "Horno Eléctrico para Pizza de Dos Cámaras",
+    "Voltaje": "400V",
+    "Codigo": "EMP.8+8",
+    "Precio_USD": 3103,
+    "Peso_kg": 150,
+    "Volumen_m3": 0.66,
+    "Capacidad": "4+4 PIZZA Ø 330 MM",
+    "Dimensiones_mm": {
+      "Ancho": 965,
+      "Profundidad": 900,
+      "Alto": 760
+    },
+    "Potencias_kW": {
+      "Total": 11,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Indicador de temperatura interior",
+      "Temperatura máxima de trabajo: 400 °C",
+      "Regulación independiente de calor superior e inferior",
+      "Base de cocción en material refractario",
+      "Iluminación interior en cada cámara",
+      "Puertas frontales en acero inoxidable",
+      "Mecanismo de tapa superior robusto y duradero",
+      "Alimentación eléctrica: 400 V AC – Trifásico (3N + PE)",
+      "Sección del cable de alimentación (mm²): 5 × 4",
+      "Dimensiones interiores: 705 × 705 × 145 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "plf-pls-d5-b",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS DE PIZZA A GAS CON BASE DE PIEDRA",
+    "Nombre": "Horno de Pizza a Gas con Base de Piedra",
+    "Voltaje": null,
+    "Codigo": "PLF.PLS.D5-B",
+    "Precio_USD": 2038,
+    "Peso_kg": 117,
+    "Volumen_m3": 0.61,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 860,
+      "Profundidad": 990,
+      "Alto": 1760
+    },
+    "Potencias_kW": {
+      "Total": 11.95,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de cocción ajustable entre 0 y 400 °C",
+      "Diámetro interno: 600 × 600 mm",
+      "Altura interna: 385 mm",
+      "Dimensión de la puerta: 365 × 210 mm",
+      "Adaptable a GLP o Gas Natural",
+      "Depósito interno de acero inoxidable",
+      "Sistema de encendido piezoeléctrico",
+      "Indicador manual de temperatura interna",
+      "Válvula de seguridad magnética"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "plf-pls-d5-r",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS DE PIZZA A GAS CON BASE DE PIEDRA",
+    "Nombre": "Hornos de Pizza a Gas con Base de Piedra",
+    "Voltaje": null,
+    "Codigo": "PLF.PLS.D5-R",
+    "Precio_USD": 2038,
+    "Peso_kg": 117,
+    "Volumen_m3": 0.61,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 860,
+      "Profundidad": 990,
+      "Alto": 1760
+    },
+    "Potencias_kW": {
+      "Total": 11.95,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de cocción regulable entre 0 y 400 °C",
+      "Diámetro interior: 600 x 600 mm",
+      "Altura interior: 385 mm",
+      "Dimensiones de la puerta: 365 x 210 mm",
+      "Adaptable a GLP o Gas Natural",
+      "Depósito interno de acero inoxidable",
+      "Sistema de encendido piezoeléctrico",
+      "Indicador manual de temperatura interior",
+      "Válvula de seguridad magnética"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pkf-40-k",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Nombre": "Horno Profesional a Carbón – Color Rojo",
+    "Voltaje": null,
+    "Codigo": "EMP.PKF-40-K",
+    "Precio_USD": 7354,
+    "Peso_kg": 180,
+    "Volumen_m3": 0.68,
+    "Capacidad": "REJILLA DE PARRILLA: 560 × 524 MM",
+    "Dimensiones_mm": {
+      "Ancho": 740,
+      "Profundidad": 745,
+      "Alto": 650
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo de hasta 500 °C",
+      "Tamaño de la rejilla: 560 × 524 mm",
+      "Capacidad de producción: hasta 20 kg de carne por hora",
+      "Cajón recolector de cenizas",
+      "Campana estándar incluida",
+      "Construcción íntegra en acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pkf-50-s",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Nombre": "Horno Profesional a Carbón – Color Negro",
+    "Voltaje": null,
+    "Codigo": "EMP.PKF-50-S",
+    "Precio_USD": 7354,
+    "Peso_kg": 260,
+    "Volumen_m3": 0.97,
+    "Capacidad": "REJILLA DE PARRILLA: 740 × 650 MM",
+    "Dimensiones_mm": {
+      "Ancho": 920,
+      "Profundidad": 850,
+      "Alto": 650
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo de hasta 500 °C",
+      "Tamaño de la rejilla: 740 × 650 mm",
+      "Capacidad de producción: hasta 20 kg de carne por hora",
+      "Cajón recolector de cenizas",
+      "Campana estándar incluida",
+      "Construcción íntegra en acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7fg010",
+    "cloudinary_url": null,
+    "Categoria": "FREIDORAS A GAS CON GABINETE",
+    "Nombre": "Freidora a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7FG010",
+    "Precio_USD": 2293,
+    "Peso_kg": 63,
+    "Volumen_m3": 0.09,
+    "Capacidad": "16 LT",
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 17.41,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Canastos de acero inoxidable",
+      "Válvula de seguridad magnética para gas y termocupla",
+      "Válvula de seguridad para drenaje del aceite desde el fondo",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Consumo gas natural (ng): 1,84 m³/h",
+      "Consumo GLP (lpg): 0,91 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7fg020",
+    "cloudinary_url": null,
+    "Categoria": "FREIDORAS A GAS CON GABINETE",
+    "Nombre": "Freidora a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7FG020",
+    "Precio_USD": 4354,
+    "Peso_kg": 113,
+    "Volumen_m3": 0.18,
+    "Capacidad": "16+16 LT",
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 34.82,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Canastos de acero inoxidable",
+      "Válvula de seguridad magnética para gas y termocupla",
+      "Válvula de seguridad para el drenaje del aceite desde el fondo",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Consumo gas natural (ng): 3,68 m³/h",
+      "Consumo GLP (lpg): 1,82 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7fe010-d",
+    "cloudinary_url": null,
+    "Categoria": "FREIDORAS ELÉCTRICAS",
+    "Nombre": "Freidora Eléctrica con Gabinete",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7FE010-D",
+    "Precio_USD": 2119,
+    "Peso_kg": 44,
+    "Volumen_m3": 0.09,
+    "Capacidad": "14 LT",
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 10.5,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático",
+      "Canastos de acero inoxidable",
+      "Resistencias móviles que facilitan la limpieza",
+      "Válvula de seguridad para el drenaje del aceite desde el fondo",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Alimentación eléctrica: 400 V AC – 3N PE – Sección de cable (mm²): 5 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7fe010",
+    "cloudinary_url": null,
+    "Categoria": "FREIDORAS ELÉCTRICAS",
+    "Nombre": "Freidora Eléctrica",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7FE010",
+    "Precio_USD": 1609,
+    "Peso_kg": 27,
+    "Volumen_m3": 0.09,
+    "Capacidad": "14 LT",
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 10.5,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático",
+      "Canastos de acero inoxidable",
+      "Resistencias móviles que facilitan la limpieza",
+      "Rango de temperatura del aceite ajustable",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Alimentación eléctrica: 400 V AC – 3N PE – Sección de cable (mm²): 5 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ie010",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS A GAS",
+    "Nombre": "Plancha Eléctrica de Superficie Lisa",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7IE010",
+    "Precio_USD": 1210,
+    "Peso_kg": 55,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 4.2,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Entrada eléctrica: 400 V AC – Trifásico (3N + PE)",
+      "Sección del cable de alimentación (mm²): 5 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ie020",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS ELÉCTRICAS",
+    "Nombre": "Plancha Eléctrica de Superficie Lisa",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7IE020",
+    "Precio_USD": 2044,
+    "Peso_kg": 97,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 8.4,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Alimentación eléctrica: 400 V AC – Trifásico (3N + PE)",
+      "Sección del cable de alimentación (mm²): 5 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ig010",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS ELÉCTRICAS",
+    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7IG010",
+    "Precio_USD": 1146,
+    "Peso_kg": 51,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 8.67,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Consumo gas natural (GN): 0,91 m³/h",
+      "Consumo gas licuado (GLP): 0,51 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ig020",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS A GAS",
+    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7IG020",
+    "Precio_USD": 1928,
+    "Peso_kg": 90,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 17.34,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas natural (GN)",
+      "Válvula de seguridad con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Consumo gas natural (GN): 1,83 m³/h",
+      "Consumo gas licuado (GLP): 1,02 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ig021",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLA A GAS",
+    "Nombre": "Plancha a Gas con Superficie Acanalada (Rayada)",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7IG021",
+    "Precio_USD": 2200,
+    "Peso_kg": 90,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 17.34,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Construcción íntegra en acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ig030",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLA A GAS",
+    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7IG030",
+    "Precio_USD": 2773,
+    "Peso_kg": 133,
+    "Volumen_m3": 0.24,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 26,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Construcción íntegra en acero inoxidable",
+      "Consumo gas natural (GN): 2,74 m³/h",
+      "Consumo gas licuado (GLP): 1,53 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7kg010",
+    "cloudinary_url": null,
+    "Categoria": "COCINA A GAS",
+    "Nombre": "Cocina a Gas de 2 Quemadores",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7KG010",
+    "Precio_USD": 1198,
+    "Peso_kg": 34,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 14.3,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética y termocupla",
+      "Parrillas superiores de hierro fundido de alta resistencia",
+      "Quemadores de hierro fundido doble corona",
+      "Cajón recolector de grasa desmontable",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Consumo gas natural (GN): 1,51 m³/h",
+      "Consumo gas licuado (GLP): 1,19 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7kg020",
+    "cloudinary_url": null,
+    "Categoria": "COCINA A GAS",
+    "Nombre": "Cocina a Gas de 4 Quemadores",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7KG020",
+    "Precio_USD": 2206,
+    "Peso_kg": 69,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 28.66,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética y sistema de termocupla",
+      "Parrillas superiores de hierro fundido de alta resistencia",
+      "Quemadores de hierro fundido doble corona",
+      "Fácil limpieza y mantenimiento higiénico",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Consumo gas natural (GN): 3,03 m³/h",
+      "Consumo gas licuado (GLP): 2,38 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7kg030",
+    "cloudinary_url": null,
+    "Categoria": "COCINA A GAS",
+    "Nombre": "Cocina a Gas de 6 Quemadores",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7KG030",
+    "Precio_USD": 3184,
+    "Peso_kg": 101,
+    "Volumen_m3": 0.26,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 43,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética y sistema de termocupla",
+      "Parrillas superiores de hierro fundido de alta resistencia",
+      "Quemadores de hierro fundido doble corona",
+      "Fácil limpieza y mantenimiento higiénico",
+      "Construcción íntegra en acero inoxidable",
+      "Consumo gas natural (GN): 4,55 m³/h",
+      "Consumo gas licuado (GLP): 3,57 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7wk010",
+    "cloudinary_url": null,
+    "Categoria": "COCINAS WOK A GAS",
+    "Nombre": "Cocina Wok a Gas de 1 Quemador",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7WK010",
+    "Precio_USD": 1343,
+    "Peso_kg": 40,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 18,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Válvula de seguridad magnética para gas y termocupla",
+      "Superficie superior de hierro fundido de alta resistencia",
+      "Sistema de encendido piezoeléctrico para cada quemador",
+      "Quemadores de hierro fundido de alta potencia que permiten alcanzar temperaturas elevadas",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Consumo gas natural (ng): 1,9 m³/h",
+      "Consumo GLP (lpg): 1,05 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ke010-p",
+    "cloudinary_url": null,
+    "Categoria": "COCINAS ELÉCTRICAS (PLACA TIPO RUSA)",
+    "Nombre": "Cocina Eléctrica con 2 Placas Tipo Rusa",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7KE010-P",
+    "Precio_USD": 1192,
+    "Peso_kg": 5.6,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 5.6,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Dos placas eléctricas tipo rusa de alta resistencia (310 × 290 mm)",
+      "Interruptores de control con 3 posiciones",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Alimentación eléctrica: 400 V AC – Trifásico (N + PE)",
+      "Sección del cable de alimentación (mm²): 3 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ind010",
+    "cloudinary_url": null,
+    "Categoria": "COCINAS ELÉCTRICAS DE INDUCCIÓN",
+    "Nombre": "Cocina Eléctrica de Inducción – 2 Zonas",
+    "Voltaje": "230V",
+    "Codigo": "EMP.PLS.7IND010",
+    "Precio_USD": 1951,
+    "Peso_kg": 28,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 6,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Superficie de cocción en vidrio cerámico",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo fabricado íntegramente en acero inoxidable",
+      "Alimentación eléctrica: 230 V AC – Monofásico (N + PE)",
+      "Sección del cable de alimentación (mm²): 3 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7se010",
+    "cloudinary_url": null,
+    "Categoria": "BAÑO MARÍA ELÉCTRICO",
+    "Nombre": "Baño María Eléctrico",
+    "Voltaje": "230V",
+    "Codigo": "EMP.PLS.7SE010",
+    "Precio_USD": 1065,
+    "Peso_kg": 24,
+    "Volumen_m3": 0.09,
+    "Capacidad": "1 RECIPIENTE GN 1/1",
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 1.5,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático",
+      "Válvula de drenaje",
+      "Nivel de agua visible",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Entrada eléctrica: 230 V AC – N – PE",
+      "Sección de cable (mm²): 3 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-ktg-70",
+    "cloudinary_url": null,
+    "Categoria": "MARMITAS DE COCCIÓN (CALENTAMIENTO INDIRECTO)",
+    "Nombre": "Marmita a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.KTG.70",
+    "Precio_USD": 7354,
+    "Peso_kg": 105,
+    "Volumen_m3": 0.7,
+    "Capacidad": "70 LT",
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": 11.2,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Válvula de seguridad contra sobrepresión y manómetro",
+      "Válvula de entrada de agua",
+      "Válvula de drenaje",
+      "Tapa con contrapeso",
+      "Tapa articulada",
+      "Chaqueta doble (doble camisa)",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Funciona con GLP o gas natural",
+      "Válvula de seguridad para gas y termocupla",
+      "Termostato",
+      "Consumo gas natural (ng): 1,18 m³/h",
+      "Consumo GLP (lpg): 0,98 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-tdr-01",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS TANDOORI A GAS",
+    "Nombre": "Horno Tandoor a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.TDR.01",
+    "Precio_USD": 3937,
+    "Peso_kg": 291,
+    "Volumen_m3": 1.03,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 706,
+      "Profundidad": 1018,
+      "Alto": 1440
+    },
+    "Potencias_kW": {
+      "Total": 27,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": [
+      "PINCHOS",
+      "PIEDRAS DE LAVA"
+    ],
+    "Caracteristicas_Generales": [
+      "Adaptable a GLP o gas natural (GN)",
+      "Válvulas de seguridad magnéticas",
+      "Diámetro del horno (dorne): 66 cm",
+      "Cuerpo aislado",
+      "Bandeja extraíble para recolección de residuos",
+      "Cuerpo de acero inoxidable",
+      "Consumo gas natural (GN): 6,85 m³/h",
+      "Consumo gas GLP: 4,86 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-smo-g",
+    "cloudinary_url": null,
+    "Categoria": "HORNO AHUMADOR A LEÑA Y GAS",
+    "Nombre": "Horno Ahumador a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.SMO-G",
+    "Precio_USD": 6949,
+    "Peso_kg": 200,
+    "Volumen_m3": 1.19,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 729,
+      "Profundidad": 903,
+      "Alto": 1808
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Resistente al calor",
+      "Indicador de temperatura",
+      "Parrillas de asado",
+      "Control de flujo de aire y temperatura",
+      "Interior de acero inoxidable",
+      "Función de ahumado y cocción",
+      "Bandeja de agua de acero inoxidable",
+      "Capacidad de carne: 70 kg",
+      "Compatible con GLP y gas natural (NG)"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-70-95-01-fr",
+    "cloudinary_url": null,
+    "Categoria": "CÁMARA DE FERMENTACIÓN PROGRAMABLE AUTOMÁTICA (CALOR–FRÍO)",
+    "Nombre": "Cámara de Fermentación Programable Automática (Calor–Frío)",
+    "Voltaje": "220V",
+    "Codigo": "EMP.70.95.01-FR",
+    "Precio_USD": 7059,
+    "Peso_kg": 163,
+    "Volumen_m3": 1.2,
+    "Capacidad": "20 BANDEJAS (40 × 60 cm)",
+    "Dimensiones_mm": {
+      "Ancho": 700,
+      "Profundidad": 800,
+      "Alto": 2050
+    },
+    "Potencias_kW": {
+      "Total": 0.69,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Rango de funcionamiento: -18 / +80 °C",
+      "Posibilidad de uso únicamente como cámara de frío",
+      "Posibilidad de uso únicamente como cámara de fermentación",
+      "Uso combinado: solo frío durante un tiempo determinado y luego fermentación",
+      "Alimentación eléctrica: 220 V – 230 V – 1+N – 50–60 Hz",
+      "Refrigerante: R290",
+      "Densidad del gas: 40 kg/m³",
+      "Control electrónico de temperatura y deshielo",
+      "Evaporación automática del agua durante el deshielo",
+      "Compresor con sistema de enfriamiento por ventilador",
+      "Cuerpo de acero inoxidable",
+      "Gabinete ventilado desmontable",
+      "Tiempo máximo de interrupción del proceso de fermentación: 7 días",
+      "Capacidad de mantener constante la temperatura deseada una vez finalizado el proceso de fermentación"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7lg020",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLA A GAS CON PIEDRA LÁVICA",
+    "Nombre": "Parrilla a Gas con Piedra Lávica (Lavastone Grill)",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7LG020",
+    "Precio_USD": 2044,
+    "Peso_kg": 105,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 17.34,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Construcción íntegra en acero inoxidable",
+      "Parrillas superiores con piedras lávicas para una distribución uniforme del calor y sabor auténtico a la parrilla",
+      "Consumo gas natural (GN): 1,82 m³/h",
+      "Consumo gas licuado (GLP): 1,02 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7lg030",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLA A GAS CON PIEDRA LÁVICA",
+    "Nombre": "Parrilla a Gas con Piedra Lávica (Lavastone Grill)",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7LG030",
+    "Precio_USD": 3046,
+    "Peso_kg": 143,
+    "Volumen_m3": 0.24,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 26,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Sistema de encendido piezoeléctrico independiente para cada quemador",
+      "Cajón recolector de grasa desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Construcción íntegra en acero inoxidable",
+      "Parrillas superiores con piedras lávicas para una distribución uniforme del calor y sabor auténtico a la parrilla",
+      "Consumo gas natural (GN): 2,73 m³/h",
+      "Consumo gas licuado (GLP): 1,54 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-btg-02",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS A CARBÓN ELEVABLES",
+    "Nombre": "Parrilla a Carbón Elevable",
+    "Voltaje": null,
+    "Codigo": "EMP.BTG.02",
+    "Precio_USD": 4748,
+    "Peso_kg": 226,
+    "Volumen_m3": 1.69,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1340,
+      "Profundidad": 800,
+      "Alto": 900
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Sistema elevador de acero inoxidable resistente al calor",
+      "Cajón cenicero",
+      "Gabinete para almacenamiento de carbón",
+      "Entrada de aire regulable",
+      "Cuerpo de acero inoxidable",
+      "Medidas de la parrilla: 1060 × 530 mm",
+      "Dimensiones totales del equipo: 1080 × 220 mm (superficie de parrilla)"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pse020",
+    "cloudinary_url": null,
+    "Categoria": "PARRILLAS SALAMANDRA ELÉCTRICAS",
+    "Nombre": "Parrilla Salamandra Eléctrica",
+    "Voltaje": "230V",
+    "Codigo": "EMP.PSE020",
+    "Precio_USD": 1250,
+    "Peso_kg": 49,
+    "Volumen_m3": 0.17,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 650,
+      "Profundidad": 502,
+      "Alto": 517
+    },
+    "Potencias_kW": {
+      "Total": 3.4,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático",
+      "Las guías pueden ajustarse a diferentes alturas",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable",
+      "Alimentación eléctrica: 230 V AC – 1N – PE",
+      "Sección de cable (mm²): 3 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7me010",
+    "cloudinary_url": null,
+    "Categoria": "COCEDOR ELÉCTRICO DE PASTA – UNIDAD PARA PASTA Y FRITURAS (CHIPS SCUTTLE)",
+    "Nombre": "Cucipasta Eléctrico",
+    "Voltaje": "400V",
+    "Codigo": "EMP.PLS.7ME010",
+    "Precio_USD": 1887,
+    "Peso_kg": 36,
+    "Volumen_m3": 0.09,
+    "Capacidad": "10.5 LT",
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": 10.5,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Control termostático de temperatura",
+      "Canastillas de acero inoxidable",
+      "Grifo de carga de agua",
+      "Válvula de descarga",
+      "Sistema de drenaje por rebalse (overflow)",
+      "Fácil limpieza y máxima higiene",
+      "Construcción íntegra en acero inoxidable",
+      "Alimentación eléctrica: 400 V AC – Trifásico (3N + PE)",
+      "Sección del cable de alimentación (mm²): 5 × 2,5"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7mg010",
+    "cloudinary_url": null,
+    "Categoria": "COCEDOR ELÉCTRICO DE PASTA – UNIDAD PARA PASTA Y FRITURAS (CHIPS SCUTTLE)",
+    "Nombre": "Cucipasta a Gas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7MG010",
+    "Precio_USD": null,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": null,
+      "Profundidad": null,
+      "Alto": null
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7frg01",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
+    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7FRG01",
+    "Precio_USD": 1847,
+    "Peso_kg": 71,
+    "Volumen_m3": 0.27,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": 6.46,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Capacidad: 2 × 2/1 GN",
+      "Cámara interna de acero inoxidable",
+      "Control de temperatura del horno mediante válvula de gas termostática",
+      "Consumo gas natural (ng): 0,68 m³/h",
+      "Consumo GLP (lpg): 0,43 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7frg02",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
+    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7FRG02",
+    "Precio_USD": 2148,
+    "Peso_kg": 83,
+    "Volumen_m3": 0.41,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": 6.46,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Capacidad: 2 × 1/1 GN",
+      "Cámara interna de acero inoxidable",
+      "Control de temperatura del horno mediante válvula de gas termostática",
+      "Consumo gas natural (ng): 0,68 m³/h",
+      "Consumo GLP (lpg): 0,43 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7frg03",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
+    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7FRG03",
+    "Precio_USD": 2391,
+    "Peso_kg": 105,
+    "Volumen_m3": 0.41,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": 12.93,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Funciona con GLP o gas natural",
+      "Capacidad: 2 × 2/1 GN",
+      "Cámara interna de acero inoxidable",
+      "Control de temperatura del horno mediante válvula de gas termostática",
+      "Consumo gas natural (ng): 1,36 m³/h",
+      "Consumo GLP (lpg): 0,87 kg/h"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-as-8",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS DE PIZZA ELÉCTRICOS DE UNA CÁMARA",
+    "Nombre": "Base de horno pizzero a gas",
+    "Voltaje": null,
+    "Codigo": "EMP.AS.8",
+    "Precio_USD": 694,
+    "Peso_kg": 37,
+    "Volumen_m3": 0.65,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 965,
+      "Profundidad": 800,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ts020",
+    "cloudinary_url": null,
+    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Nombre": "Gabinete Bajo Mostrador con 2 Puertas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TS020",
+    "Precio_USD": 631,
+    "Peso_kg": 16,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Los gabinetes bajo mostrador son aptos para su uso debajo de cualquier equipo de la serie 700",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ts020-k",
+    "cloudinary_url": null,
+    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Nombre": "Gabinete Bajo Mostrador sin Puerta",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TS020-K",
+    "Precio_USD": 428,
+    "Peso_kg": 16,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Los gabinetes bajo mostrador son aptos para su uso debajo de cualquier equipo de la serie 700",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ts030",
+    "cloudinary_url": null,
+    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Nombre": "Gabinete Bajo Mostrador con 3 Puertas",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TS030",
+    "Precio_USD": 920,
+    "Peso_kg": 37,
+    "Volumen_m3": 0.26,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ts030-k",
+    "cloudinary_url": null,
+    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Nombre": "Gabinete Bajo Mostrador sin Puerta",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TS030-K",
+    "Precio_USD": 683,
+    "Peso_kg": 18,
+    "Volumen_m3": 0.26,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Los gabinetes bajo mostrador son aptos para su uso debajo de cualquier equipo de la serie 700",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ts010",
+    "cloudinary_url": null,
+    "Categoria": "MUEBLES BAJO MESADA",
+    "Nombre": "Gabinete Bajo Mesada con 1 Puerta",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TS010",
+    "Precio_USD": 411,
+    "Peso_kg": 17,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 620,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pkf-40-d",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Nombre": "Gabinete Inferior de Acero Inoxidable con Puertas",
+    "Voltaje": null,
+    "Codigo": "EMP.PKF-40-D",
+    "Precio_USD": 1123,
+    "Peso_kg": 43,
+    "Volumen_m3": 0.38,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 705,
+      "Profundidad": 690,
+      "Alto": 782
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pkf-50-d",
+    "cloudinary_url": null,
+    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Nombre": "Gabinete Inferior de Acero Inoxidable con Puertas",
+    "Voltaje": null,
+    "Codigo": "EMP.PKF-50-D",
+    "Precio_USD": 1297,
+    "Peso_kg": 52,
+    "Volumen_m3": 0.52,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 920,
+      "Profundidad": 845,
+      "Alto": 815
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Temperatura de trabajo: 500 °C",
+      "Medidas de la parrilla: 740 × 650 mm",
+      "Capacidad: 20 kg de carne por hora",
+      "Cajón cenicero",
+      "Campana estándar",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7tn010",
+    "cloudinary_url": null,
+    "Categoria": "SUPERFICIES DE TRABAJO",
+    "Nombre": "Superficie de Trabajo Módulo 1/2",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TN010",
+    "Precio_USD": 434,
+    "Peso_kg": 18,
+    "Volumen_m3": 0.09,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 400,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Fácil de limpiar y mantener higiene",
+      "Las superficies de trabajo son adecuadas para su uso entre cualquier tipo de equipos de la serie 700"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7tn020",
+    "cloudinary_url": null,
+    "Categoria": "SUPERFICIES DE TRABAJO",
+    "Nombre": "Superficie de Trabajo Módulo 1/2",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7TN020",
+    "Precio_USD": 735,
+    "Peso_kg": 26,
+    "Volumen_m3": 0.18,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 800,
+      "Profundidad": 730,
+      "Alto": 300
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Fácil de limpiar y mantener higiene",
+      "Las superficies de trabajo son adecuadas para su uso entre cualquier tipo de equipos de la serie 700"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-pls-7ctv280",
+    "cloudinary_url": null,
+    "Categoria": "LÍNEA CANTILEVER",
+    "Nombre": "Línea Cantilever",
+    "Voltaje": null,
+    "Codigo": "EMP.PLS.7CTV280",
+    "Precio_USD": 7597,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 2800,
+      "Profundidad": 1370,
+      "Alto": 550
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "sd-07",
+    "cloudinary_url": null,
+    "Categoria": "CUTTER MEZCLADORES VERTICALES",
+    "Nombre": "Cutter Mezclador Vertical",
+    "Voltaje": "380V",
+    "Codigo": "SD.07",
+    "Precio_USD": 3196,
+    "Peso_kg": 71,
+    "Volumen_m3": 0.4,
+    "Capacidad": "20 LT",
+    "Dimensiones_mm": {
+      "Ancho": 610,
+      "Profundidad": 645,
+      "Alto": 1045
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 1.5,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": 2.5
+    },
+    "Motor_RPM": 1500,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": "300 x 300",
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Fácil limpieza mediante bowl desmontable",
+      "Tapa desmontable para mantenimiento e higiene",
+      "Panel de control con temporizador regulable",
+      "Sensor de seguridad",
+      "Construcción íntegra en acero inoxidable (bowl y cuerpo)",
+      "Posibilidad de picado sin remover aceites ni jugos del producto, manteniendo su estructura",
+      "Operación simple y alta fiabilidad operativa",
+      "Interruptor de seguridad conectado a la tapa y a la cámara",
+      "Funcionamiento silencioso y sin vibraciones",
+      "Velocidad del motor: 750 / 1500 rpm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ha-02-y",
+    "cloudinary_url": null,
+    "Categoria": "LAMINADORAS DE MASA",
+    "Nombre": "Laminadora de Masa – 30 cm",
+    "Voltaje": "220V",
+    "Codigo": "EMP.HA.02.Y",
+    "Precio_USD": 1465,
+    "Peso_kg": 37,
+    "Volumen_m3": 0.15,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 430,
+      "Profundidad": 493,
+      "Alto": 710
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.25,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 1500,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Diámetro y espesor de la masa regulables",
+      "Cubierta de protección en plexiglás",
+      "Rodillos fabricados en Delrin",
+      "Botón de parada de emergencia",
+      "Construcción íntegra en acero inoxidable",
+      "Dimensión útil del rodillo: 400 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "sd-15",
+    "cloudinary_url": null,
+    "Categoria": "CORTADORAS MEZCLADORAS Y PICADORAS",
+    "Nombre": "Cutter Mezclador",
+    "Voltaje": "380V",
+    "Codigo": "SD.15",
+    "Precio_USD": 2449,
+    "Peso_kg": 46,
+    "Volumen_m3": 0.12,
+    "Capacidad": "15 LT",
+    "Dimensiones_mm": {
+      "Ancho": 470,
+      "Profundidad": 640,
+      "Alto": 545
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 1.75,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 1500,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": "300 x 220",
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Dimensiones del bowl (diámetro / profundidad): 300 × 220 mm",
+      "Bowl y tapa desmontables, de fácil limpieza",
+      "Panel de control doble circuito",
+      "Sensor de seguridad",
+      "Velocidad del motor: 750 / 1500 rpm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-ha-06-y",
+    "cloudinary_url": null,
+    "Categoria": "LAMINADORAS DE MASA",
+    "Nombre": "Laminadora de Masa – 46 cm",
+    "Voltaje": "220V",
+    "Codigo": "EMP.HA.06.Y",
+    "Precio_USD": 1679,
+    "Peso_kg": 46,
+    "Volumen_m3": 0.22,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 590,
+      "Profundidad": 485,
+      "Alto": 787
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.25,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 1500,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Diámetro y espesor de la masa regulables",
+      "Cubierta de protección en plexiglás",
+      "Rodillos fabricados en Delrin",
+      "Botón de parada de emergencia",
+      "Construcción íntegra en acero inoxidable",
+      "Dimensión útil del rodillo: 460 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-hkt-01",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINA DOSIFICADORA Y CORTADORA DE MASA",
+    "Nombre": "Máquina Cortadora y Dosificadora de Masa",
+    "Voltaje": null,
+    "Codigo": "EMP.HKT.01",
+    "Precio_USD": 5524,
+    "Peso_kg": 90,
+    "Volumen_m3": 0.31,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 475,
+      "Profundidad": 820,
+      "Alto": 790
+    },
+    "Potencias_kW": {
+      "Total": 0.46,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Función de corte y boleado de masa para pizza y panificados",
+      "Construcción íntegra en acero inoxidable",
+      "Tolva (bunker) de capacidad: 44 litros",
+      "Rango de peso regulable por pieza: 50–300 g",
+      "Capacidad de producción: hasta 400 kg/hora",
+      "Sistema de partición de nueva generación",
+      "Formación de bollos redondos y compactos",
+      "Alta precisión de pesado con tolerancia ±5 %",
+      "Capacidad operativa: 800 a 1200 bollos de masa por hora"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-hkt-02",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINA DOSIFICADORA DE MASA",
+    "Nombre": "Soporte Inferior de Máquina Cortadora",
+    "Voltaje": null,
+    "Codigo": "EMP.HKT.02",
+    "Precio_USD": 886,
+    "Peso_kg": 55,
+    "Volumen_m3": 0.6,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 695,
+      "Profundidad": 860,
+      "Alto": 1000
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Función de corte y boleado de masa para pizza y panificados",
+      "Construcción íntegra en acero inoxidable",
+      "Capacidad de la tolva (bunker): 44 litros",
+      "Rango de peso regulable por pieza: 50–300 g",
+      "Capacidad de producción: hasta 400 kg/hora",
+      "Sistema de partición de nueva generación",
+      "Formación de bollos redondos, lisos y compactos",
+      "Alta precisión de pesado con tolerancia ±5 %",
+      "Capacidad operativa: 800 a 1200 bollos de masa por hora"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-hkt-03",
+    "cloudinary_url": null,
+    "Categoria": "MÁQUINA DOSIFICADORA DE MASA",
+    "Nombre": "Máquina Dosificadora y Boleadora de merengue",
+    "Voltaje": null,
+    "Codigo": "EMP.HKT.03",
+    "Precio_USD": 2449,
+    "Peso_kg": 55,
+    "Volumen_m3": 0.23,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 430,
+      "Profundidad": 655,
+      "Alto": 805
+    },
+    "Potencias_kW": {
+      "Total": 0.27,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Función de corte, dosificado y boleado de masa para pizza y panificados",
+      "Construcción íntegra en acero inoxidable",
+      "Capacidad de la tolva (bunker): 44 litros",
+      "Rango de peso regulable por unidad: 50–300 g",
+      "Capacidad de producción: hasta 400 kg/hora",
+      "Sistema de partición de nueva generación",
+      "Formación de bollos redondos, lisos y compactos",
+      "Alta precisión de dosificado con tolerancia ±5 %",
+      "Capacidad operativa: 800 a 1200 bollos de masa por hora"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-300",
+    "cloudinary_url": null,
+    "Categoria": "CORTADORAS DE VERDURAS",
+    "Nombre": "Cortadora de Verduras",
+    "Voltaje": "220V",
+    "Codigo": "EMP.300",
+    "Precio_USD": 1957,
+    "Peso_kg": 35,
+    "Volumen_m3": 0.1,
+    "Capacidad": "300 KG/HORA",
+    "Dimensiones_mm": {
+      "Ancho": 295,
+      "Profundidad": 495,
+      "Alto": 674
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": 0.55,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": 1400,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Cuchillas de acero inoxidable",
+      "Cuchillas fácilmente desmontables para limpieza",
+      "Sensor de seguridad",
+      "Parte superior de aluminio",
+      "Cuerpo de acero inoxidable"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-att-70100",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
+    "Nombre": "Mesa de trabajo con estante inferior",
+    "Voltaje": null,
+    "Codigo": "EMP.ATT.70100",
+    "Precio_USD": 418,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1000,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Todos los productos son desmontables y de acero inoxidable",
+      "Las mesas se producen con respaldo trasero estándar",
+      "Indicar si no se desea respaldo trasero en la mesa",
+      "Todas las mesas cuentan con patas regulables",
+      "Indicar la orientación del respaldo al realizar el pedido"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-att-70140",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
+    "Nombre": "Mesa de trabajo con estante inferior",
+    "Voltaje": null,
+    "Codigo": "EMP.ATT.70140",
+    "Precio_USD": 535,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1400,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Todos los productos son desmontables y de acero inoxidable",
+      "Las mesas se producen con respaldo trasero estándar",
+      "Indicar si no se desea respaldo trasero en la mesa",
+      "Todas las mesas cuentan con patas regulables",
+      "Indicar la orientación del respaldo al realizar el pedido"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-att-70180",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
+    "Nombre": "Mesa de trabajo con estante inferior",
+    "Voltaje": null,
+    "Codigo": "EMP.ATT.70180",
+    "Precio_USD": 660,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1800,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Todos los productos son desmontables y de acero inoxidable",
+      "Las mesas se producen con respaldo trasero estándar",
+      "Indicar si no se desea respaldo trasero en la mesa",
+      "Todas las mesas cuentan con patas regulables",
+      "Indicar la orientación del respaldo al realizar el pedido"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-byc-75120-t-r",
+    "cloudinary_url": null,
+    "Categoria": "ENTRADA–SALIDA PARA LAVAVAJILLAS",
+    "Nombre": "Mesa de Salida para Lavavajillas con Estante Inferior (Derecha)",
+    "Voltaje": null,
+    "Codigo": "EMP.BYC.75120-T-R",
+    "Precio_USD": 654,
+    "Peso_kg": null,
+    "Volumen_m3": 0.8,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 750,
+      "Alto": 890
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-byg-75120-1et-l",
+    "cloudinary_url": null,
+    "Categoria": "ENTRADA–SALIDA PARA LAVAVAJILLAS",
+    "Nombre": "Mesa de Entrada para Lavavajillas con Bacha Simple y Estante Inferior (Izquierda)",
+    "Voltaje": null,
+    "Codigo": "EMP.BYG.75120-1ET-L",
+    "Precio_USD": 857,
+    "Peso_kg": null,
+    "Volumen_m3": 0.8,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1200,
+      "Profundidad": 750,
+      "Alto": 890
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-e-71485-1emt-l",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
+    "Nombre": "Bacha con 1 Cubeta Izquierda",
+    "Voltaje": null,
+    "Codigo": "EMP.E.71485-1EMT-L",
+    "Precio_USD": 906,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1400,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Las mesas se fabrican con respaldo trasero de serie",
+      "Dimensiones de la bacha: 500 × 500 × 300 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-e-71485-1emt-r",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
+    "Nombre": "Bacha con 1 Cubeta Derecha",
+    "Voltaje": null,
+    "Codigo": "EMP.E.71485-1EMT-R",
+    "Precio_USD": 906,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1400,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Las mesas se fabrican con respaldo trasero de serie",
+      "Dimensiones de la bacha: 500 × 500 × 300 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-e-71885-1emt-l",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
+    "Nombre": "Bacha con 1 Cubeta Izquierda",
+    "Voltaje": null,
+    "Codigo": "EMP.E.71885-1EMT-L",
+    "Precio_USD": 1037,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1800,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Las mesas se fabrican con respaldo trasero de serie",
+      "Dimensiones de la bacha: 500 × 500 × 300 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  },
+  {
+    "id": "emp-e-71885-1emt-r",
+    "cloudinary_url": null,
+    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
+    "Nombre": "Bacha con 1 Cubeta Derecha",
+    "Voltaje": null,
+    "Codigo": "EMP.E.71885-1EMT-R",
+    "Precio_USD": 1037,
+    "Peso_kg": null,
+    "Volumen_m3": null,
+    "Capacidad": null,
+    "Dimensiones_mm": {
+      "Ancho": 1800,
+      "Profundidad": 700,
+      "Alto": 850
+    },
+    "Potencias_kW": {
+      "Total": null,
+      "Motor": null,
+      "Calentamiento_Tanque": null,
+      "Calentador_Boiler": null,
+      "Maxima": null
+    },
+    "Motor_RPM": null,
+    "Temperaturas_C": {
+      "Lavado": null,
+      "Enjuague": null
+    },
+    "Programas": null,
+    "Dimensiones_Canasto_mm": null,
+    "Accesorios_Incluidos": null,
+    "Caracteristicas_Generales": [
+      "Acero inoxidable",
+      "Las mesas se fabrican con respaldo trasero de serie",
+      "Dimensiones de la bacha: 500 × 500 × 300 mm"
+    ],
+    "stock": 0,
+    "modo_disponibilidad": "por_encargo"
+  }
+]
