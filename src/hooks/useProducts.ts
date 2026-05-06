@@ -1,7 +1,3 @@
-// =============================================================================
-// useProducts Hook - Fetch de productos desde Supabase con filtros
-// =============================================================================
-
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { Product } from '@/data/products';

@@ -1,21 +1,20 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { Package, Filter, Search, X } from 'lucide-react';
+import {
+  Package, Filter, Search, X,
+  ChefHat, Utensils, Store, Settings2, Zap, Flame,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, LayoutGrid,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { ComponentType } from 'react';
 import { useProducts } from '@/hooks/useProducts';
-import { type Product } from '@/data/products';
+import type { AvailabilityFilter } from '@/hooks/useProducts';
+import { type Product, categories } from '@/data/products';
 import { CatalogSidebar } from '@/components/catalog/CatalogSidebar';
 import { ProductCard } from '@/components/catalog/ProductCard';
 import { ProductModal } from '@/components/catalog/ProductModal';
 import { Pagination } from '@/components/catalog/Pagination';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
-import { categories } from '@/data/products';
-import type { AvailabilityFilter } from '@/hooks/useProducts';
-import {
-  ChefHat, Utensils, Store, Settings2, Zap, Flame,
-  Droplets, Table2, Grid3X3, Snowflake, Layers, LayoutGrid,
-} from 'lucide-react';
-import type { ComponentType } from 'react';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
@@ -102,7 +101,6 @@ export function ProductCatalog({
   const [localSearch, setLocalSearch] = useState('');
   const catalogRef = useRef<HTMLElement>(null);
 
-  // Pagination derived values
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)),
     [filteredProducts.length]
@@ -114,12 +112,10 @@ export function ProductCatalog({
     return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredProducts, currentPage, totalPages]);
 
-  // Reset to page 1 whenever filters or search change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory, availabilityFilter]);
 
-  // Sync initial category once
   useEffect(() => {
     if (initialCategory && !selectedCategory) {
       setSelectedCategory(initialCategory);
@@ -127,7 +123,6 @@ export function ProductCatalog({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialCategory]);
 
-  // Debounced search
   useEffect(() => {
     const t = setTimeout(() => setSearchQuery(localSearch), 300);
     return () => clearTimeout(t);

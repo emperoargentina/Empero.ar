@@ -1,7 +1,3 @@
-// =============================================================================
-// App Component - Aplicación principal
-// =============================================================================
-
 import { useState, useCallback } from 'react';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
@@ -18,8 +14,7 @@ function App() {
   useLenis();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  
-  // Quote list functionality
+
   const {
     items: quoteItems,
     addItem,
@@ -36,18 +31,13 @@ function App() {
 
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId);
-    // Scroll to catalog
-    const catalogSection = document.getElementById('catalogo');
-    if (catalogSection) {
-      catalogSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const handleAddToQuote = useCallback((product: typeof quoteItems[0]['product']) => {
     addItem(product);
   }, [addItem]);
 
-  // Get quote list IDs for quick lookup
   const quoteListIds = quoteItems.map(item => item.product.id);
 
   return (
@@ -55,7 +45,7 @@ function App() {
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
 
       <div className={`min-h-screen bg-[#FAFAF8] ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
-        <Navigation 
+        <Navigation
           onCategorySelect={handleCategorySelect}
           quoteItems={quoteItems}
           onRemoveFromQuote={removeItem}
@@ -74,15 +64,14 @@ function App() {
             onRemoveFromQuote={removeItem}
             quoteListIds={quoteListIds}
           />
-          
+
           <Nosotros />
-          
+
           <ContactForm />
         </main>
 
         <Footer />
-        
-        {/* WhatsApp Float Button */}
+
         <WhatsAppFloat />
       </div>
     </>

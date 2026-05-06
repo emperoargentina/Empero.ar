@@ -3,8 +3,9 @@ import { Check, Plus, X, Settings, Package, Layers } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { type Product } from '@/data/products';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProductImage } from '@/utils/productImage';
 import { whatsappConfig } from '@/data/company';
+
+const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
 const WhatsAppSVG = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 flex-shrink-0" aria-hidden="true">
@@ -37,7 +38,8 @@ export function ProductModal({
 
   if (!product) return null;
 
-  const imageUrl = product.cloudinary_url ?? getProductImage(product.categoria, 900, 900);
+  const imageUrl = product.cloudinary_url ?? PLACEHOLDER;
+  const isPlaceholder = !product.cloudinary_url;
   const enStock = product.modo_disponibilidad === 'en_stock';
 
   const handleWhatsApp = () => {
@@ -138,7 +140,7 @@ export function ProductModal({
                 <img
                   src={imageUrl}
                   alt={product.nombre}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-8' : 'object-cover'} transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                   onLoad={() => setImageLoaded(true)}
                 />
 
