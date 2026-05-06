@@ -1,5 +1,5 @@
 // =============================================================================
-// useProducts Hook - Fetch de productos desde Supabase con filtros y paginación
+// useProducts Hook - Fetch de productos desde Supabase con filtros
 // =============================================================================
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
@@ -11,55 +11,36 @@ export type SortOption = 'default' | 'name-asc' | 'name-desc';
 export type AvailabilityFilter = 'all' | 'en_stock' | 'por_encargo';
 
 interface UseProductsReturn {
-  // Data
   allProducts: Product[];
   filteredProducts: Product[];
   categoryCounts: Record<string, number>;
-
-  // Status
   loading: boolean;
   error: string | null;
-
-  // Search & Filter state
   searchQuery: string;
   selectedCategory: string | null;
   sortOption: SortOption;
   availabilityFilter: AvailabilityFilter;
-
-  // Actions
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
   setSortOption: (sort: SortOption) => void;
   setAvailabilityFilter: (availability: AvailabilityFilter) => void;
   clearFilters: () => void;
   refetch: () => void;
-
-  // Pagination
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
-  itemsPerPage: number;
-  totalPages: number;
-  paginatedProducts: Product[];
-
-  // Stats
   totalProducts: number;
   filteredCount: number;
 }
 
-export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
+export function useProducts(): UseProductsReturn {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fetchTrigger, setFetchTrigger] = useState(0);
 
-  // Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortOption, setSortOption] = useState<SortOption>('default');
   const [availabilityFilter, setAvailabilityFilter] = useState<AvailabilityFilter>('all');
-  const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch all products from Supabase
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -87,11 +68,9 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
 
   const refetch = useCallback(() => setFetchTrigger(n => n + 1), []);
 
-  // Filter & sort products in the client
   const filteredProducts = useMemo(() => {
     let result = [...allProducts];
 
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(p =>
@@ -101,17 +80,14 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
       );
     }
 
-    // Category — exact match against DB value (preserves accents and casing)
     if (selectedCategory) {
       result = result.filter(p => p.categoria === selectedCategory);
     }
 
-    // Availability
     if (availabilityFilter !== 'all') {
       result = result.filter(p => p.modo_disponibilidad === availabilityFilter);
     }
 
-    // Sort
     if (sortOption === 'name-asc') {
       result = [...result].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
     } else if (sortOption === 'name-desc') {
@@ -121,31 +97,25 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
     return result;
   }, [allProducts, searchQuery, selectedCategory, availabilityFilter, sortOption]);
 
-  // Pagination
-  const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage)),
-    [filteredProducts.length, itemsPerPage]
-  );
-
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredProducts.slice(start, start + itemsPerPage);
-  }, [filteredProducts, currentPage, itemsPerPage]);
-
-  // Reset to page 1 when filters change
-  useEffect(() => { setCurrentPage(1); }, [searchQuery, selectedCategory, availabilityFilter, sortOption]);
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const p of allProducts) {
+      if (p.categoria) counts[p.categoria] = (counts[p.categoria] ?? 0) + 1;
+    }
+    return counts;
+  }, [allProducts]);
 
   const clearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory(null);
     setSortOption('default');
     setAvailabilityFilter('all');
-    setCurrentPage(1);
   }, []);
 
   return {
     allProducts,
     filteredProducts,
+    categoryCounts,
     loading,
     error,
     searchQuery,
@@ -158,11 +128,6 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
     setAvailabilityFilter,
     clearFilters,
     refetch,
-    currentPage,
-    setCurrentPage,
-    itemsPerPage,
-    totalPages,
-    paginatedProducts,
     totalProducts: allProducts.length,
     filteredCount: filteredProducts.length,
   };

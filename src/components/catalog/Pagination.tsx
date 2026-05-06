@@ -1,96 +1,51 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onPrev: () => void;
+  onNext: () => void;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else if (currentPage <= 3) {
-      for (let i = 1; i <= 5; i++) pages.push(i);
-      pages.push('...');
-      pages.push(totalPages);
-    } else if (currentPage >= totalPages - 2) {
-      pages.push(1);
-      pages.push('...');
-      for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
-    } else {
-      pages.push(1);
-      pages.push('...');
-      for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
-      pages.push('...');
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
-
+export function Pagination({ currentPage, totalPages, onPrev, onNext }: PaginationProps) {
   if (totalPages <= 1) return null;
 
-  const btnBase = 'p-0 rounded-lg font-medium';
-  const btnSize = 'w-8 h-8 sm:w-10 sm:h-10';
+  const btnBase =
+    'flex items-center justify-center w-10 h-10 rounded-xl border text-[13px] font-medium transition-all duration-150 cursor-pointer select-none';
 
   return (
-    <div className="flex items-center justify-center gap-1.5">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage - 1)}
+    <div className="flex items-center justify-center gap-4 py-2">
+      <button
+        onClick={onPrev}
         disabled={currentPage === 1}
-        className={`${btnBase} ${btnSize} border-gray-200 hover:border-[#C41B2E] hover:text-[#C41B2E] disabled:opacity-50`}
+        aria-label="Página anterior"
+        className={`${btnBase} ${
+          currentPage === 1
+            ? 'border-[#EBE5DC] text-[#C8BFB5] bg-white cursor-not-allowed'
+            : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+        }`}
       >
-        <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      </Button>
+        <ChevronLeft className="w-4 h-4" />
+      </button>
 
-      {/* Mobile: X / N */}
-      <div className="flex sm:hidden items-center gap-1.5 px-2">
-        <span className="text-sm font-semibold text-[#1A1613]">{currentPage}</span>
-        <span className="text-sm text-[#C0B5A8]">/</span>
-        <span className="text-sm text-[#9E9080]">{totalPages}</span>
-      </div>
+      <span className="text-[13px] font-medium text-[#3A3530] tabular-nums select-none min-w-[80px] text-center">
+        <span className="font-semibold text-[#1A1613]">{currentPage}</span>
+        <span className="text-[#C0B5A8] mx-1.5">/</span>
+        <span className="text-[#9A8E82]">{totalPages}</span>
+      </span>
 
-      {/* Desktop: full page numbers */}
-      <div className="hidden sm:flex items-center gap-1">
-        {getPageNumbers().map((page, index) => (
-          <div key={index}>
-            {page === '...' ? (
-              <span className="w-10 h-10 flex items-center justify-center text-[#C0B5A8] text-sm">
-                …
-              </span>
-            ) : (
-              <Button
-                variant={currentPage === page ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => onPageChange(page as number)}
-                className={`${btnBase} w-10 h-10 ${
-                  currentPage === page
-                    ? 'bg-[#C41B2E] hover:bg-[#B51426] text-white border-transparent'
-                    : 'border-gray-200 hover:border-[#C41B2E] hover:text-[#C41B2E]'
-                }`}
-              >
-                {page}
-              </Button>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage + 1)}
+      <button
+        onClick={onNext}
         disabled={currentPage === totalPages}
-        className={`${btnBase} ${btnSize} border-gray-200 hover:border-[#C41B2E] hover:text-[#C41B2E] disabled:opacity-50`}
+        aria-label="Página siguiente"
+        className={`${btnBase} ${
+          currentPage === totalPages
+            ? 'border-[#EBE5DC] text-[#C8BFB5] bg-white cursor-not-allowed'
+            : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+        }`}
       >
-        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      </Button>
+        <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }

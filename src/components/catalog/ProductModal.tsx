@@ -17,6 +17,7 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToQuote?: (product: Product) => void;
+  onRemoveFromQuote?: (productId: string) => void;
   isInQuoteList?: boolean;
 }
 
@@ -25,6 +26,7 @@ export function ProductModal({
   isOpen,
   onClose,
   onAddToQuote,
+  onRemoveFromQuote,
   isInQuoteList = false,
 }: ProductModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -41,6 +43,11 @@ export function ProductModal({
   const handleWhatsApp = () => {
     const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre));
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
+  };
+
+  const handleQuoteToggle = () => {
+    if (isInQuoteList) onRemoveFromQuote?.(product.id);
+    else onAddToQuote?.(product);
   };
 
   // ── Specs ───────────────────────────────────────────────────────
@@ -67,11 +74,26 @@ export function ProductModal({
   const hasCaract     = (product.caracteristicas_generales?.length ?? 0) > 0;
   const hasAccesorios = (product.accesorios_incluidos?.length ?? 0) > 0;
 
-  const caractLen     = product.caracteristicas_generales?.length ?? 0;
-  const accLen        = product.accesorios_incluidos?.length ?? 0;
+  const caractLen = product.caracteristicas_generales?.length ?? 0;
+  const accLen    = product.accesorios_incluidos?.length ?? 0;
+  const totalItems = specs.length + caractLen + accLen;
 
-  const totalItems    = specs.length + caractLen + accLen;
-  const isSparse      = totalItems <= 4;
+  // 3-level density: drives spacing/sizing throughout the content area
+  const density = totalItems <= 4 ? 'sparse' : totalItems <= 10 ? 'normal' : 'dense';
+
+  const d = {
+    padX:      density === 'dense'  ? 'px-4'       : 'px-5',
+    padY:      density === 'sparse' ? 'py-5'        : density === 'normal' ? 'py-4' : 'py-3',
+    spaceY:    density === 'sparse' ? 'space-y-5'   : density === 'normal' ? 'space-y-4' : 'space-y-3',
+    specRowPy: density === 'sparse' ? 'py-2.5'      : density === 'normal' ? 'py-2' : 'py-1.5',
+    labelTxt:  density === 'sparse' ? 'text-[12.5px]' : density === 'normal' ? 'text-[11.5px]' : 'text-[10.5px]',
+    valueTxt:  density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11px]',
+    listTxt:   density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11.5px]',
+    listGap:   density === 'sparse' ? 'space-y-2'     : density === 'normal' ? 'space-y-1.5'   : 'space-y-1',
+    sectionLbl: density === 'sparse' ? 'text-[11px]'  : density === 'normal' ? 'text-[10.5px]' : 'text-[10px]',
+    iconSz:    density === 'dense'  ? 'w-3 h-3'       : 'w-3.5 h-3.5',
+    mb2:       density === 'sparse' ? 'mb-2.5'         : 'mb-1.5',
+  } as const;
 
   // 2-col layout for long bullet lists
   const caractTwoCols = caractLen > 5;
@@ -110,7 +132,7 @@ export function ProductModal({
             {/* ── Grid: image | details ── */}
             <div className="flex flex-col sm:grid sm:grid-cols-[340px_1fr]" style={{ flex: 1, minHeight: 0 }}>
 
-              {/* ── Image panel — fills grid row height automatically ── */}
+              {/* ── Image panel ── */}
               <div className="relative bg-[#F0EBE2] h-[180px] sm:h-auto overflow-hidden flex-shrink-0">
                 {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
                 <img
@@ -125,14 +147,14 @@ export function ProductModal({
                 {/* Availability */}
                 <div className="absolute top-3.5 left-3.5">
                   {enStock ? (
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-md">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      En stock
+                    <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-emerald-700 border border-emerald-200/80 shadow-sm text-[10px] font-semibold px-3 py-1.5 rounded-full">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+                      En Stock
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-amber-500 text-white shadow-md">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
-                      Por encargo
+                    <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-amber-700 border border-amber-200/80 shadow-sm text-[10px] font-semibold px-3 py-1.5 rounded-full">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                      Por Encargo
                     </span>
                   )}
                 </div>
@@ -155,12 +177,8 @@ export function ProductModal({
 
                 {/* Category + SKU */}
                 <div className="modal-product-media-meta">
-                  <p className="modal-product-media-category">
-                    {product.categoria}
-                  </p>
-                  <span className="modal-product-media-code">
-                    #{product.codigo}
-                  </span>
+                  <p className="modal-product-media-category">{product.categoria}</p>
+                  <span className="modal-product-media-code">#{product.codigo}</span>
                 </div>
               </div>
 
@@ -171,36 +189,30 @@ export function ProductModal({
                 <div className="modal-product-header">
                   <div className="modal-product-header-category-row">
                     <div className="modal-product-header-accent" />
-                    <span className="modal-product-header-category">
-                      {product.categoria}
-                    </span>
+                    <span className="modal-product-header-category">{product.categoria}</span>
                   </div>
-                  <h2 className="modal-product-header-title">
-                    {product.nombre}
-                  </h2>
+                  <h2 className="modal-product-header-title">{product.nombre}</h2>
                   {product.codigo && (
-                    <p className="modal-product-header-code">
-                      #{product.codigo}
-                    </p>
+                    <p className="modal-product-header-code">#{product.codigo}</p>
                   )}
                 </div>
 
-                {/* Content — sparse products get larger text/spacing to fill the space */}
-                <div className={`flex-1 min-h-0 overflow-y-auto px-5 space-y-${isSparse ? '5' : '3'} ${isSparse ? 'py-5' : 'py-3'}`}>
+                {/* Scrollable content — density-aware spacing */}
+                <div className={`flex-1 min-h-0 overflow-y-auto ${d.padX} ${d.padY} ${d.spaceY}`}>
 
                   {/* Description */}
                   {product.description && (
-                    <p className={`modal-product-description ${isSparse ? 'modal-product-description-sparse' : ''}`}>
+                    <p className={`modal-product-description ${density === 'sparse' ? 'modal-product-description-sparse' : ''}`}>
                       {product.description}
                     </p>
                   )}
 
-                  {/* Specs — row table */}
+                  {/* Specs */}
                   {hasSpecs && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Settings className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="modal-product-section-label">
+                      <div className={`flex items-center gap-1.5 ${d.mb2}`}>
+                        <Settings className={`${d.iconSz} text-[#C41B2E]`} />
+                        <span className={`modal-product-section-label ${d.sectionLbl}`}>
                           Especificaciones técnicas
                         </span>
                       </div>
@@ -208,28 +220,28 @@ export function ProductModal({
                         {specs.map((s, i) => (
                           <div
                             key={s.label}
-                            className={`flex items-center justify-between px-3 ${isSparse ? 'py-3' : 'py-1.5'} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}
+                            className={`flex items-center justify-between px-3 ${d.specRowPy} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}
                           >
-                            <span className={`text-[#9A8E82] font-medium ${isSparse ? 'text-[12px]' : 'text-[10.5px]'}`}>{s.label}</span>
-                            <span className={`font-semibold text-[#1A1613] text-right ml-3 ${isSparse ? 'text-[13px]' : 'text-[11px]'}`}>{s.value}</span>
+                            <span className={`text-[#9A8E82] font-medium ${d.labelTxt}`}>{s.label}</span>
+                            <span className={`font-semibold text-[#1A1613] text-right ml-3 ${d.valueTxt}`}>{s.value}</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Características — checklist */}
+                  {/* Características */}
                   {hasCaract && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Layers className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="modal-product-section-label">
+                      <div className={`flex items-center gap-1.5 ${d.mb2}`}>
+                        <Layers className={`${d.iconSz} text-[#C41B2E]`} />
+                        <span className={`modal-product-section-label ${d.sectionLbl}`}>
                           Características
                         </span>
                       </div>
-                      <ul className={caractTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : `space-y-${isSparse ? '2' : '1'}`}>
+                      <ul className={caractTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : d.listGap}>
                         {product.caracteristicas_generales!.map((f, i) => (
-                          <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${isSparse ? 'text-[13px]' : 'text-[11.5px]'}`}>
+                          <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
                             <span className="w-3.5 h-3.5 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
                               <Check className="w-2 h-2 text-[#C41B2E]" strokeWidth={2.5} />
                             </span>
@@ -243,15 +255,15 @@ export function ProductModal({
                   {/* Accesorios */}
                   {hasAccesorios && (
                     <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Package className="w-3 h-3 text-[#C41B2E]" />
-                        <span className="modal-product-section-label">
+                      <div className={`flex items-center gap-1.5 ${d.mb2}`}>
+                        <Package className={`${d.iconSz} text-[#C41B2E]`} />
+                        <span className={`modal-product-section-label ${d.sectionLbl}`}>
                           Accesorios incluidos
                         </span>
                       </div>
-                      <ul className={accTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : `space-y-${isSparse ? '2' : '1'}`}>
+                      <ul className={accTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : d.listGap}>
                         {product.accesorios_incluidos!.map((a, i) => (
-                          <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${isSparse ? 'text-[13px]' : 'text-[11.5px]'}`}>
+                          <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
                             <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
                             {a}
                           </li>
@@ -267,7 +279,7 @@ export function ProductModal({
                   )}
                 </div>
 
-                {/* ── CTAs — side by side ── */}
+                {/* ── CTAs ── */}
                 <div className="flex-shrink-0 px-5 py-3 border-t border-[#EBE5DC] bg-[#FAFAF8]">
                   <div className="flex gap-2">
                     <motion.button
@@ -287,12 +299,12 @@ export function ProductModal({
                     <motion.button
                       className={`flex-1 h-10 rounded-xl text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer border ${
                         isInQuoteList
-                          ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
-                          : 'bg-white text-[#1A1613] border-[#E0D9D0] hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+                          ? 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
+                          : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
                       }`}
-                      onClick={() => !isInQuoteList && onAddToQuote?.(product)}
-                      whileHover={isInQuoteList ? {} : { scale: 1.015 }}
-                      whileTap={isInQuoteList ? {} : { scale: 0.97 }}
+                      onClick={handleQuoteToggle}
+                      whileHover={{ scale: 1.015 }}
+                      whileTap={{ scale: 0.97 }}
                     >
                       {isInQuoteList
                         ? <><Check className="w-3.5 h-3.5" /> En tu lista</>
