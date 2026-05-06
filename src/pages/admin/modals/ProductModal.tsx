@@ -1,6 +1,6 @@
 // src/pages/admin/modals/ProductModal.tsx
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
@@ -156,7 +156,7 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormValues>,
     defaultValues: {
       stock: 0,
       disponible: true,

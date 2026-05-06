@@ -1,12 +1,18 @@
-ayudame a corrregir estos errore que no permite que despliegue vercel:
+ayudame a corrregir estos errore que aparecen al deployear que no permite que despliegue vercel:
 
-src/pages/admin/modals/ProductModal.tsx(159,5): error TS2322: Type 'Resolver<{ nombre: string; codigo: string; categoria: string; modo_disponibilidad: "en_stock" | "por_encargo"; precio_usd?: unknown; stock?: unknown; disponible?: boolean | undefined; cloudinary_url?: string | null | undefined; ... 16 more ...; caracteristicas?: string | undefined; }, any, { ...; }>' is not assignable to type 'Resolver<{ nombre: string; codigo: string; categoria: string; stock: number; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: number | ... 1 more ... | undefined; ... 15 more ...; prog_cantidad?: number | ... 1 more ... | undefined; }, an...'.
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 2 cores, 8 GB
+Cloning github.com/emperoargentina/Empero.ar (Branch: main, Commit: 4b45e4f)
+Cloning completed: 616.000ms
+Restored build cache from previous deployment (5nYNQYW8sQKpV2Q4n2UxyJY1iFxn)
+Running "vercel build"
+Vercel CLI 51.6.1
+Installing dependencies...
+up to date in 2s
+70 packages are looking for funding
+  run `npm fund` for details
+Running "npm run build"
+> my-app@0.0.0 build
+> tsc -b && vite build
+src/pages/admin/modals/ProductModal.tsx(159,5): error TS2322: Type 'Resolver<{ nombre: string; codigo: string; categoria: string; stock: unknown; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: unknown; ... 15 more ...; prog_cantidad?: unknown; }, any, { ...; }>' is not assignable to type 'Resolver<{ nombre: string; codigo: string; categoria: string; stock: number; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: number | ... 1 more ... | undefined; ... 15 more ...; prog_cantidad?: number | ... 1 more ... | undefined; }, an...'.
   Types of parameters 'options' and 'options' are incompatible.
-    Type 'ResolverOptions<{ nombre: string; codigo: string; categoria: string; stock: number; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: number | ... 1 more ... | undefined; ... 15 more ...; prog_cantidad?: number | ... 1 more ... | undefined...' is not assignable to type 'ResolverOptions<{ nombre: string; codigo: string; categoria: string; modo_disponibilidad: "en_stock" | "por_encargo"; precio_usd?: unknown; stock?: unknown; disponible?: boolean | undefined; cloudinary_url?: string | null | undefined; ... 16 more ...; caracteristicas?: string | undefined; }>'.
-      Type 'unknown' is not assignable to type 'number'.
-src/pages/admin/modals/ProductModal.tsx(227,38): error TS2345: Argument of type '(values: FormValues) => Promise<void>' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
-  Types of parameters 'values' and 'data' are incompatible.
-    Type 'TFieldValues' is not assignable to type '{ nombre: string; codigo: string; categoria: string; stock: number; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: number | ... 1 more ... | undefined; ... 15 more ...; prog_cantidad?: number | ... 1 more ... | undefined; }'.
-      Type 'FieldValues' is missing the following properties from type '{ nombre: string; codigo: string; categoria: string; stock: number; disponible: boolean; modo_disponibilidad: "en_stock" | "por_encargo"; accesorios: string; caracteristicas: string; precio_usd?: number | ... 1 more ... | undefined; ... 15 more ...; prog_cantidad?: number | ... 1 more ... | undefined; }': nombre, codigo, categoria, stock, and 4 more.
-src/sections/Categories.tsx(97,31): error TS2339: Property 'productCount' does not exist on type 'Category'.
-Error: Command "npm run build" exited with 2
