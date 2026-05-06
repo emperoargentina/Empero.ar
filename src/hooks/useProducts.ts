@@ -7,13 +7,14 @@ import { supabase } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 
 export type { Product };
-export type SortOption = 'default' | 'price-asc' | 'price-desc';
+export type SortOption = 'default' | 'name-asc' | 'name-desc';
 export type AvailabilityFilter = 'all' | 'en_stock' | 'por_encargo';
 
 interface UseProductsReturn {
   // Data
   allProducts: Product[];
   filteredProducts: Product[];
+  categoryCounts: Record<string, number>;
 
   // Status
   loading: boolean;
@@ -100,11 +101,9 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
       );
     }
 
-    // Category
+    // Category — exact match against DB value (preserves accents and casing)
     if (selectedCategory) {
-      result = result.filter(p =>
-        p.categoria?.toLowerCase() === selectedCategory.toLowerCase()
-      );
+      result = result.filter(p => p.categoria === selectedCategory);
     }
 
     // Availability
@@ -113,10 +112,10 @@ export function useProducts(itemsPerPage: number = 24): UseProductsReturn {
     }
 
     // Sort
-    if (sortOption === 'price-asc') {
-      result = [...result].sort((a, b) => (a.precio_usd ?? 0) - (b.precio_usd ?? 0));
-    } else if (sortOption === 'price-desc') {
-      result = [...result].sort((a, b) => (b.precio_usd ?? 0) - (a.precio_usd ?? 0));
+    if (sortOption === 'name-asc') {
+      result = [...result].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+    } else if (sortOption === 'name-desc') {
+      result = [...result].sort((a, b) => b.nombre.localeCompare(a.nombre, 'es'));
     }
 
     return result;

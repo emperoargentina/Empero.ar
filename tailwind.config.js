@@ -78,6 +78,9 @@ module.exports = {
         display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         serif:   ['"Instrument Serif"', 'Georgia', 'serif'],
         sans:    ['"DM Sans"', 'system-ui', 'sans-serif'],
+        inter:   ['"Inter"', 'system-ui', 'sans-serif'],
+        jakarta: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        outfit:  ['"Outfit"', 'system-ui', 'sans-serif'],
         script:  ['Qwitcher Grypen', 'cursive'],
       },
       fontSize: {

@@ -1,9 +1,7 @@
 // =============================================================================
 // Product Data - Equipamiento Gastronómico Industrial
-// 784 productos organizados por categorías
 // =============================================================================
 
-// Tipo que refleja exactamente el esquema de la tabla "products" en Supabase
 export interface Product {
   id: string;
   codigo: string;
@@ -33,46 +31,85 @@ export interface Product {
 }
 
 export interface Category {
-  id: string;
+  id: string;        // exact value in DB `categoria` column
   name: string;
-  icon: string;
+  shortName: string;
+  icon: string;      // lucide icon name
   description: string;
-  productCount: number;
+  color: { bg: string; text: string; border: string };
 }
 
-// Categorías principales
+// Exact category names as stored in Supabase — must match character-for-character
 export const categories: Category[] = [
-  { id: 'lavado', name: 'Lavado', icon: 'Droplets', description: 'Lavavajillas, lavaderos y equipos de limpieza', productCount: 65 },
-  { id: 'refrigeracion', name: 'Refrigeración', icon: 'Snowflake', description: 'Heladeras, freezers y cámaras frigoríficas', productCount: 98 },
-  { id: 'distribucion', name: 'Distribución y Autoservicio', icon: 'Store', description: 'Vitrinas, mostradores y equipos de exhibición', productCount: 72 },
-  { id: 'hornos', name: 'Hornos', icon: 'Flame', description: 'Hornos industriales y profesionales', productCount: 85 },
-  { id: 'freidoras', name: 'Freidoras', icon: 'Flame', description: 'Freidoras eléctricas y a gas', productCount: 45 },
-  { id: 'planchas', name: 'Planchas', icon: 'Grid3X3', description: 'Planchas industriales y parrillas planas', productCount: 52 },
-  { id: 'cocinas', name: 'Cocinas', icon: 'ChefHat', description: 'Cocinas industriales y anafes', productCount: 78 },
-  { id: 'parrillas', name: 'Parrillas', icon: 'FlameKindling', description: 'Parrillas y asadores industriales', productCount: 43 },
-  { id: 'cucipastas', name: 'Cucipastas', icon: 'Utensils', description: 'Cocedores de pasta industriales', productCount: 28 },
-  { id: 'hornos-bajo-mostrador', name: 'Hornos a Gas Bajo Mostrador', icon: ' Oven', description: 'Hornos compactos para mostrador', productCount: 36 },
-  { id: 'superficies', name: 'Superficies', icon: 'Table2', description: 'Mesadas, estantes y superficies de trabajo', productCount: 92 },
-  { id: 'elaboracion', name: 'Elaboración', icon: 'Cog', description: 'Procesadoras, amasadoras y equipos de elaboración', productCount: 56 },
-  { id: 'mesas', name: 'Mesas', icon: 'Table', description: 'Mesas de trabajo y preparación', productCount: 34 },
+  {
+    id: 'Cocinas', name: 'Cocinas', shortName: 'Cocinas', icon: 'ChefHat',
+    description: 'Cocinas industriales y anafes',
+    color: { bg: '#FFF7ED', text: '#C2410C', border: '#FDBA74' },
+  },
+  {
+    id: 'Cucipastas', name: 'Cucipastas', shortName: 'Cucipastas', icon: 'Utensils',
+    description: 'Cocedores de pasta industriales',
+    color: { bg: '#FFFBEB', text: '#B45309', border: '#FCD34D' },
+  },
+  {
+    id: 'Distribución', name: 'Distribución', shortName: 'Distribución', icon: 'Store',
+    description: 'Vitrinas, mostradores y equipos de exhibición',
+    color: { bg: '#EFF6FF', text: '#1D4ED8', border: '#93C5FD' },
+  },
+  {
+    id: 'Elaboración', name: 'Elaboración', shortName: 'Elaboración', icon: 'Settings2',
+    description: 'Procesadoras, amasadoras y equipos de elaboración',
+    color: { bg: '#F5F3FF', text: '#6D28D9', border: '#C4B5FD' },
+  },
+  {
+    id: 'Freidoras', name: 'Freidoras', shortName: 'Freidoras', icon: 'Zap',
+    description: 'Freidoras eléctricas y a gas',
+    color: { bg: '#FFF1F2', text: '#BE123C', border: '#FDA4AF' },
+  },
+  {
+    id: 'Hornos', name: 'Hornos', shortName: 'Hornos', icon: 'Flame',
+    description: 'Hornos industriales y profesionales',
+    color: { bg: '#FEF2F2', text: '#B91C1C', border: '#FCA5A5' },
+  },
+  {
+    id: 'Hornos a Gas', name: 'Hornos a Gas', shortName: 'Hornos a Gas', icon: 'Flame',
+    description: 'Hornos a gas bajo mostrador y compactos',
+    color: { bg: '#FFF7ED', text: '#9A3412', border: '#FDBA74' },
+  },
+  {
+    id: 'Lavado', name: 'Lavado', shortName: 'Lavado', icon: 'Droplets',
+    description: 'Lavavajillas, lavaderos y equipos de limpieza',
+    color: { bg: '#ECFEFF', text: '#0E7490', border: '#67E8F9' },
+  },
+  {
+    id: 'Mesas', name: 'Mesas', shortName: 'Mesas', icon: 'Table2',
+    description: 'Mesas de trabajo y preparación',
+    color: { bg: '#F8FAFC', text: '#475569', border: '#CBD5E1' },
+  },
+  {
+    id: 'Parrillas', name: 'Parrillas', shortName: 'Parrillas', icon: 'Flame',
+    description: 'Parrillas y asadores industriales',
+    color: { bg: '#FEF3C7', text: '#92400E', border: '#FCD34D' },
+  },
+  {
+    id: 'Planchas', name: 'Planchas', shortName: 'Planchas', icon: 'Grid3X3',
+    description: 'Planchas industriales y parrillas planas',
+    color: { bg: '#FEFCE8', text: '#854D0E', border: '#FDE68A' },
+  },
+  {
+    id: 'Refrigeración', name: 'Refrigeración', shortName: 'Refrigeración', icon: 'Snowflake',
+    description: 'Heladeras, freezers y cámaras frigoríficas',
+    color: { bg: '#F0F9FF', text: '#0369A1', border: '#7DD3FC' },
+  },
+  {
+    id: 'Superficies', name: 'Superficies', shortName: 'Superficies', icon: 'Layers',
+    description: 'Mesadas, estantes y superficies de trabajo',
+    color: { bg: '#F9FAFB', text: '#4B5563', border: '#D1D5DB' },
+  },
 ];
 
-// Subcategorías por categoría
-export const subcategories: Record<string, string[]> = {
-  lavado: ['Lavavajillas', 'Lavaderos', 'Secadores', 'Dosificadores'],
-  refrigeracion: ['Heladeras', 'Freezers', 'Cámaras', 'Mostradores', 'Bajo Mostrador'],
-  distribucion: ['Vitrinas', 'Mostradores', 'Self Service', 'Buffet'],
-  hornos: ['Hornos Pizza', 'Hornos Panadería', 'Hornos Convector', 'Hornos Mixtos'],
-  freidoras: ['Freidoras Eléctricas', 'Freidoras a Gas', 'Freidoras Dobles'],
-  planchas: ['Planchas Lisas', 'Planchas Ranuradas', 'Planchas Mixtas'],
-  cocinas: ['Cocinas 4 Hornallas', 'Cocinas 6 Hornallas', 'Anafes', 'Cocinas con Horno'],
-  parrillas: ['Parrillas a Carbón', 'Parrillas a Gas', 'Parrillas Mixtas'],
-  cucipastas: ['Cucipastas Eléctricos', 'Cucipastas a Gas', 'Cocedores'],
-  'hornos-bajo-mostrador': ['Hornos Pizza Bajo', 'Hornos Calentadores', 'Hornos Exhibidores'],
-  superficies: ['Mesadas', 'Estantes', 'Repisas', 'Superficies Inox'],
-  elaboracion: ['Procesadoras', 'Amasadoras', 'Batidoras', 'Cutter'],
-  mesas: ['Mesas de Prep', 'Mesas con Estante', 'Mesas con Cajones'],
-};
+export function getCategoryMeta(categoryId: string): Category | undefined {
+  return categories.find(c => c.id === categoryId);
+}
 
-// WhatsApp configuration - Import from company config
 export { whatsappConfig } from './company';

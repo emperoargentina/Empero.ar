@@ -23,13 +23,11 @@ export function ProductCatalog({
   const {
     searchQuery,
     selectedCategory,
-    sortOption,
     availabilityFilter,
     loading,
     error,
     setSearchQuery,
     setSelectedCategory,
-    setSortOption,
     setAvailabilityFilter,
     clearFilters,
     currentPage,
@@ -100,7 +98,7 @@ export function ProductCatalog({
 
         {/* Filters */}
         <AnimatedSection direction="up" delay={0.1}>
-          <div className="mb-8">
+          <div className="mb-10">
             {error ? (
               <div className="flex flex-col items-center gap-3 py-6 text-center">
                 <p className="text-sm text-red-600 font-medium">Error al cargar productos: {error}</p>
@@ -117,8 +115,6 @@ export function ProductCatalog({
               onSearchChange={(q) => { setSearchQuery(q); setCurrentPage(1); }}
               selectedCategory={selectedCategory}
               onCategoryChange={handleCategorySelect}
-              sortOption={sortOption}
-              onSortChange={(s) => { setSortOption(s); setCurrentPage(1); }}
               availabilityFilter={availabilityFilter}
               onAvailabilityChange={(a) => { setAvailabilityFilter(a); setCurrentPage(1); }}
               onClearFilters={clearFilters}

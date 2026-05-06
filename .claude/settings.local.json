@@ -5,7 +5,9 @@
       "Bash(npx tsc *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(node -e \"require\\('@hookform/resolvers/zod'\\)\")"
+      "Bash(node -e \"require\\('@hookform/resolvers/zod'\\)\")",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
+      "Bash(xargs grep *)"
     ]
   }
 }

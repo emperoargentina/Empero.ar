@@ -2,7 +2,7 @@
   {
     "id": "emp-1000-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS DE CAPOTA",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas de Capota Full 380V",
     "Voltaje": "380V",
     "Codigo": "EMP.1000-F",
@@ -53,7 +53,7 @@
   {
     "id": "emp-1100-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas",
     "Voltaje": null,
     "Codigo": "EMP.1100-F",
@@ -98,7 +98,7 @@
   {
     "id": "emp-500-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS BAJO MOSTRADOR",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas Bajo Mostrador Completo 220V",
     "Voltaje": "220V",
     "Codigo": "EMP.500-F",
@@ -152,7 +152,7 @@
   {
     "id": "emp-3000-sol-l-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS DE TIPO CINTA TRANSPORTADORA (TÚNEL DE SECADO)",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas de Cinta Transportadora con Túnel de Secado y Prelavado",
     "Voltaje": "380V",
     "Codigo": "EMP.3000-SOL-L-F",
@@ -202,7 +202,7 @@
   {
     "id": "emp-uw-80-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS INDUSTRIAL PARA OLLAS",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas Industrial para Ollas – 80 Litros",
     "Voltaje": null,
     "Codigo": "EMP.UW-80-F",
@@ -240,7 +240,7 @@
   {
     "id": "emp-uw-130-f",
     "cloudinary_url": null,
-    "Categoria": "LAVAVAJILLAS INDUSTRIAL PARA OLLAS",
+    "Categoria": "Lavado",
     "Nombre": "Lavavajillas Industrial para Ollas – 130 Litros",
     "Voltaje": "380V",
     "Codigo": "EMP.UW-130-F",
@@ -297,8 +297,8 @@
   {
     "id": "emp-bpr-002",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINAS SECADORAS DE VASOS",
-    "Nombre": "Máquina Secadora de Vasos",
+    "Categoria": "Lavado",
+    "Nombre": "Máquina Secadora de Vasos – 4 Cepillos",
     "Voltaje": "220V",
     "Codigo": "EMP.BPR.002",
     "Precio_USD": 1633,
@@ -335,8 +335,8 @@
   {
     "id": "emp-bpr-001",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINAS SECADORAS DE VASOS",
-    "Nombre": "Máquina Secadora de Vasos",
+    "Categoria": "Lavado",
+    "Nombre": "Máquina Secadora de Vasos – 6 Cepillos",
     "Voltaje": "220V",
     "Codigo": "EMP.BPR.001",
     "Precio_USD": 2067,
@@ -372,7 +372,7 @@
   {
     "id": "emp-ckp-01",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINAS PULIDORAS DE CUBIERTOS",
+    "Categoria": "Lavado",
     "Nombre": "Máquina Pulidora de Cubiertos",
     "Voltaje": "220V",
     "Codigo": "EMP.CKP.01",
@@ -411,7 +411,7 @@
   {
     "id": "jp-oyd-01",
     "cloudinary_url": null,
-    "Categoria": "UNIDADES DE PRE-LAVADO",
+    "Categoria": "Lavado",
     "Nombre": "Unidad de prelavado montada sobre mostrador",
     "Voltaje": null,
     "Codigo": "JP.OYD.01",
@@ -450,7 +450,7 @@
   {
     "id": "emp-150-70-01",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Tipo Mostrador con 2 Puertas",
     "Voltaje": "220V",
     "Codigo": "EMP.150.70.01",
@@ -501,7 +501,7 @@
   {
     "id": "emp-150-70-01-4c",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Tipo Mostrador con 4 Cajones",
     "Voltaje": "220V",
     "Codigo": "EMP.150.70.01-4C",
@@ -552,7 +552,7 @@
   {
     "id": "emp-160-70-01-s",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES BAJO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Bajo Mostrador con 4 Cajones",
     "Voltaje": "220V",
     "Codigo": "EMP.160.70.01-S",
@@ -599,8 +599,8 @@
   {
     "id": "emp-200-60-01",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador Tipo Mostrador con 3 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Tipo Mostrador 3 Puertas – 400 Lt",
     "Voltaje": "220V",
     "Codigo": "EMP.200.60.01",
     "Precio_USD": 2941,
@@ -650,8 +650,8 @@
   {
     "id": "emp-200-70-01",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador Tipo Mostrador con 3 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Tipo Mostrador 3 Puertas – 500 Lt",
     "Voltaje": "220V",
     "Codigo": "EMP.200.70.01",
     "Precio_USD": 3132,
@@ -701,7 +701,7 @@
   {
     "id": "emp-200-70-01-2c",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Tipo Mostrador con 2 Cajones + 2 Puertas",
     "Voltaje": "220V",
     "Codigo": "EMP.200.70.01-2C",
@@ -753,7 +753,7 @@
   {
     "id": "emp-200-70-01-4c",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES TIPO MOSTRADOR CON CAJONES (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Tipo Mostrador con 4 Cajones + 1 Puerta",
     "Voltaje": "220V",
     "Codigo": "EMP.200.70.01-4C",
@@ -804,7 +804,7 @@
   {
     "id": "emp-200-70-01-s",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES BAJO MOSTRADOR (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Bajo Mostrador con 6 Cajones",
     "Voltaje": "220V",
     "Codigo": "EMP.200.70.01-S",
@@ -851,7 +851,7 @@
   {
     "id": "emp-150-70-01-ev",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES BAJO MESADA CON BACHA (REFRIGERACIÓN POR AIRE FORZADO)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador Bajo Mesada con Bacha + 2 Puertas",
     "Voltaje": "220V",
     "Codigo": "EMP.150.70.01-EV",
@@ -901,8 +901,8 @@
   {
     "id": "emp-150-70-01-pso",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador para Pizza y topinera con 2 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Pizza y Topinera 2 Puertas – 300 Lt",
     "Voltaje": "220V",
     "Codigo": "EMP.150.70.01-PSO",
     "Precio_USD": 3323,
@@ -951,8 +951,8 @@
   {
     "id": "emp-200-70-01-pso",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador para Pizza y topinera con 2 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Pizza y Topinera 2 Puertas – 500 Lt",
     "Voltaje": "220V",
     "Codigo": "EMP.200.70.01-PSO",
     "Precio_USD": 4285,
@@ -1001,7 +1001,7 @@
   {
     "id": "emp-200-80-01-psy",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
+    "Categoria": "Refrigeración",
     "Nombre": "Refrigerador para Pizza y topinera alta con 3 Puertas",
     "Voltaje": "220V",
     "Codigo": "EMP.200.80.01-PSY",
@@ -1051,8 +1051,8 @@
   {
     "id": "emp-150-80-01-psyg",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador para Pizza y topinera alta con 2 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Pizza y Topinera Alta 2 Puertas con Granito",
     "Voltaje": "220V",
     "Codigo": "EMP.150.80.01-PSYG",
     "Precio_USD": 4505,
@@ -1102,8 +1102,8 @@
   {
     "id": "emp-150-80-01-psy",
     "cloudinary_url": null,
-    "Categoria": "REFRIGERADORES PARA PREPARACIÓN DE PIZZA Y ENSALADAS (ENFRIAMIENTO POR VENTILADOR)",
-    "Nombre": "Refrigerador para Pizza y topinera alta con 2 Puertas",
+    "Categoria": "Refrigeración",
+    "Nombre": "Refrigerador Pizza y Topinera Alta 2 Puertas",
     "Voltaje": "220V",
     "Codigo": "EMP.150.80.01-PSY",
     "Precio_USD": 3665,
@@ -1152,7 +1152,7 @@
   {
     "id": "emp-dt-100-s-a",
     "cloudinary_url": null,
-    "Categoria": "VITRINAS REFRIGERADAS PARA PASTELERÍA NEPTÜN",
+    "Categoria": "Refrigeración",
     "Nombre": "Vitrina Refrigerada para Pastelería Neptün",
     "Voltaje": null,
     "Codigo": "EMP.DT.100.S-A",
@@ -1198,7 +1198,7 @@
   {
     "id": "emp-2-sv-02",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE SERVICIO",
+    "Categoria": "Distribución",
     "Nombre": "Carro de Servicio de 2 Niveles",
     "Voltaje": null,
     "Codigo": "EMP.2.SV.02",
@@ -1236,7 +1236,7 @@
   {
     "id": "emp-2-sv-03",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE SERVICIO",
+    "Categoria": "Distribución",
     "Nombre": "Carro de Servicio de 3 Niveles",
     "Voltaje": null,
     "Codigo": "EMP.2.SV.03",
@@ -1274,7 +1274,7 @@
   {
     "id": "emp-psv-02",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE SERVICIO DE PLÁSTICO",
+    "Categoria": "Distribución",
     "Nombre": "Carro de Servicio de Plástico de 2 Niveles",
     "Voltaje": null,
     "Codigo": "EMP.PSV.02",
@@ -1309,7 +1309,7 @@
   {
     "id": "emp-psv-03",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE SERVICIO DE PLÁSTICO",
+    "Categoria": "Distribución",
     "Nombre": "Carro de Servicio de Plástico de 3 Niveles",
     "Voltaje": null,
     "Codigo": "EMP.PSV.03",
@@ -1344,7 +1344,7 @@
   {
     "id": "emp-ba-2-gn2-34",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE COCINA",
+    "Categoria": "Distribución",
     "Nombre": "Carro Gastronómico Alto Doble 2/1 GN",
     "Voltaje": null,
     "Codigo": "EMP.BA.2.GN2-34",
@@ -1379,7 +1379,7 @@
   {
     "id": "emp-ba-2-gn-34",
     "cloudinary_url": null,
-    "Categoria": "CARROS DE COCINA",
+    "Categoria": "Distribución",
     "Nombre": "Carro Gastronómico Alto Doble para Bandejas GN 1/1",
     "Voltaje": null,
     "Codigo": "EMP.BA.2.GN-34",
@@ -1416,7 +1416,7 @@
   {
     "id": "emp-to-2432-i-2",
     "cloudinary_url": null,
-    "Categoria": "DISPENSADORES DE PLATOS",
+    "Categoria": "Distribución",
     "Nombre": "Dispensador doble de platos",
     "Voltaje": null,
     "Codigo": "EMP.TO.2432-I-2",
@@ -1453,7 +1453,7 @@
   {
     "id": "emp-bq1",
     "cloudinary_url": null,
-    "Categoria": "CARROS TÉRMICOS PARA BANQUETERÍA",
+    "Categoria": "Distribución",
     "Nombre": "Carro Térmico para Banquetería",
     "Voltaje": "220V",
     "Codigo": "EMP.BQ1",
@@ -1501,7 +1501,7 @@
   {
     "id": "emp-mf-20-t",
     "cloudinary_url": null,
-    "Categoria": "CÁMARAS DE FERMENTACIÓN PROFESIONALES",
+    "Categoria": "Distribución",
     "Nombre": "Cámara de Fermentación con Ruedas y Encamisado Simple",
     "Voltaje": "230V",
     "Codigo": "EMP.MF.20-T",
@@ -1542,7 +1542,7 @@
   {
     "id": "emp-bss-60",
     "cloudinary_url": null,
-    "Categoria": "UNIDADES DE SERVICIO FRÍO",
+    "Categoria": "Distribución",
     "Nombre": "Unidad de Servicio Frío",
     "Voltaje": "220V",
     "Codigo": "EMP.BSS.60",
@@ -1593,7 +1593,7 @@
   {
     "id": "emp-ad-11060",
     "cloudinary_url": null,
-    "Categoria": "UNIDADES DE EXHIBICIÓN CALIENTE (LÁMPARA HALÓGENA)",
+    "Categoria": "Distribución",
     "Nombre": "Unidad de Exhibición Caliente con Cuerpo de Madera",
     "Voltaje": "220V",
     "Codigo": "EMP.AD.11060",
@@ -1634,7 +1634,7 @@
   {
     "id": "emp-pd-8060",
     "cloudinary_url": null,
-    "Categoria": "UNIDADES DE EXHIBICIÓN CALIENTE (LÁMPARA HALÓGENA)",
+    "Categoria": "Distribución",
     "Nombre": "Unidad de Exhibición Caliente con Cuerpo de Acero Inoxidable",
     "Voltaje": null,
     "Codigo": "EMP.PD.8060",
@@ -1669,7 +1669,7 @@
   {
     "id": "emp-psg-3",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS SALAMANDRA A GAS",
+    "Categoria": "Hornos",
     "Nombre": "Parrilla Salamandra a Gas de 3 Quemadores",
     "Voltaje": null,
     "Codigo": "EMP.PSG.3",
@@ -1711,7 +1711,7 @@
   {
     "id": "emp-8-8",
     "cloudinary_url": null,
-    "Categoria": "HORNOS ELÉCTRICOS PARA PIZZA DE DOS CÁMARAS",
+    "Categoria": "Hornos",
     "Nombre": "Horno Eléctrico para Pizza de Dos Cámaras",
     "Voltaje": "400V",
     "Codigo": "EMP.8+8",
@@ -1757,7 +1757,7 @@
   {
     "id": "plf-pls-d5-b",
     "cloudinary_url": null,
-    "Categoria": "HORNOS DE PIZZA A GAS CON BASE DE PIEDRA",
+    "Categoria": "Hornos",
     "Nombre": "Horno de Pizza a Gas con Base de Piedra",
     "Voltaje": null,
     "Codigo": "PLF.PLS.D5-B",
@@ -1802,7 +1802,7 @@
   {
     "id": "plf-pls-d5-r",
     "cloudinary_url": null,
-    "Categoria": "HORNOS DE PIZZA A GAS CON BASE DE PIEDRA",
+    "Categoria": "Hornos",
     "Nombre": "Hornos de Pizza a Gas con Base de Piedra",
     "Voltaje": null,
     "Codigo": "PLF.PLS.D5-R",
@@ -1847,7 +1847,7 @@
   {
     "id": "emp-pkf-40-k",
     "cloudinary_url": null,
-    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Categoria": "Hornos",
     "Nombre": "Horno Profesional a Carbón – Color Rojo",
     "Voltaje": null,
     "Codigo": "EMP.PKF-40-K",
@@ -1889,7 +1889,7 @@
   {
     "id": "emp-pkf-50-s",
     "cloudinary_url": null,
-    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
+    "Categoria": "Hornos",
     "Nombre": "Horno Profesional a Carbón – Color Negro",
     "Voltaje": null,
     "Codigo": "EMP.PKF-50-S",
@@ -1931,8 +1931,8 @@
   {
     "id": "emp-pls-7fg010",
     "cloudinary_url": null,
-    "Categoria": "FREIDORAS A GAS CON GABINETE",
-    "Nombre": "Freidora a Gas",
+    "Categoria": "Freidoras",
+    "Nombre": "Freidora a Gas con Gabinete – Simple",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7FG010",
     "Precio_USD": 2293,
@@ -1976,8 +1976,8 @@
   {
     "id": "emp-pls-7fg020",
     "cloudinary_url": null,
-    "Categoria": "FREIDORAS A GAS CON GABINETE",
-    "Nombre": "Freidora a Gas",
+    "Categoria": "Freidoras",
+    "Nombre": "Freidora a Gas con Gabinete – Doble",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7FG020",
     "Precio_USD": 4354,
@@ -2021,7 +2021,7 @@
   {
     "id": "emp-pls-7fe010-d",
     "cloudinary_url": null,
-    "Categoria": "FREIDORAS ELÉCTRICAS",
+    "Categoria": "Freidoras",
     "Nombre": "Freidora Eléctrica con Gabinete",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7FE010-D",
@@ -2065,7 +2065,7 @@
   {
     "id": "emp-pls-7fe010",
     "cloudinary_url": null,
-    "Categoria": "FREIDORAS ELÉCTRICAS",
+    "Categoria": "Freidoras",
     "Nombre": "Freidora Eléctrica",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7FE010",
@@ -2109,8 +2109,8 @@
   {
     "id": "emp-pls-7ie010",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS A GAS",
-    "Nombre": "Plancha Eléctrica de Superficie Lisa",
+    "Categoria": "Planchas",
+    "Nombre": "Plancha Eléctrica de Superficie Lisa – Módulo 1/2",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7IE010",
     "Precio_USD": 1210,
@@ -2153,8 +2153,8 @@
   {
     "id": "emp-pls-7ie020",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS ELÉCTRICAS",
-    "Nombre": "Plancha Eléctrica de Superficie Lisa",
+    "Categoria": "Planchas",
+    "Nombre": "Plancha Eléctrica de Superficie Lisa – Módulo 1/1",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7IE020",
     "Precio_USD": 2044,
@@ -2196,8 +2196,8 @@
   {
     "id": "emp-pls-7ig010",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS ELÉCTRICAS",
-    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Categoria": "Planchas",
+    "Nombre": "Plancha a Gas de Superficie Lisa – Módulo 1/2",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7IG010",
     "Precio_USD": 1146,
@@ -2240,8 +2240,8 @@
   {
     "id": "emp-pls-7ig020",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS A GAS",
-    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Categoria": "Planchas",
+    "Nombre": "Plancha a Gas de Superficie Lisa – Módulo 1/1",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7IG020",
     "Precio_USD": 1928,
@@ -2284,7 +2284,7 @@
   {
     "id": "emp-pls-7ig021",
     "cloudinary_url": null,
-    "Categoria": "PARRILLA A GAS",
+    "Categoria": "Planchas",
     "Nombre": "Plancha a Gas con Superficie Acanalada (Rayada)",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7IG021",
@@ -2326,8 +2326,8 @@
   {
     "id": "emp-pls-7ig030",
     "cloudinary_url": null,
-    "Categoria": "PARRILLA A GAS",
-    "Nombre": "Plancha a Gas de Superficie Lisa",
+    "Categoria": "Planchas",
+    "Nombre": "Plancha a Gas de Superficie Lisa – Módulo 3/2",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7IG030",
     "Precio_USD": 2773,
@@ -2370,7 +2370,7 @@
   {
     "id": "emp-pls-7kg010",
     "cloudinary_url": null,
-    "Categoria": "COCINA A GAS",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina a Gas de 2 Quemadores",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7KG010",
@@ -2414,7 +2414,7 @@
   {
     "id": "emp-pls-7kg020",
     "cloudinary_url": null,
-    "Categoria": "COCINA A GAS",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina a Gas de 4 Quemadores",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7KG020",
@@ -2458,7 +2458,7 @@
   {
     "id": "emp-pls-7kg030",
     "cloudinary_url": null,
-    "Categoria": "COCINA A GAS",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina a Gas de 6 Quemadores",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7KG030",
@@ -2502,7 +2502,7 @@
   {
     "id": "emp-pls-7wk010",
     "cloudinary_url": null,
-    "Categoria": "COCINAS WOK A GAS",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina Wok a Gas de 1 Quemador",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7WK010",
@@ -2547,7 +2547,7 @@
   {
     "id": "emp-pls-7ke010-p",
     "cloudinary_url": null,
-    "Categoria": "COCINAS ELÉCTRICAS (PLACA TIPO RUSA)",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina Eléctrica con 2 Placas Tipo Rusa",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7KE010-P",
@@ -2589,7 +2589,7 @@
   {
     "id": "emp-pls-7ind010",
     "cloudinary_url": null,
-    "Categoria": "COCINAS ELÉCTRICAS DE INDUCCIÓN",
+    "Categoria": "Cocinas",
     "Nombre": "Cocina Eléctrica de Inducción – 2 Zonas",
     "Voltaje": "230V",
     "Codigo": "EMP.PLS.7IND010",
@@ -2630,7 +2630,7 @@
   {
     "id": "emp-pls-7se010",
     "cloudinary_url": null,
-    "Categoria": "BAÑO MARÍA ELÉCTRICO",
+    "Categoria": "Cocinas",
     "Nombre": "Baño María Eléctrico",
     "Voltaje": "230V",
     "Codigo": "EMP.PLS.7SE010",
@@ -2673,7 +2673,7 @@
   {
     "id": "emp-pls-ktg-70",
     "cloudinary_url": null,
-    "Categoria": "MARMITAS DE COCCIÓN (CALENTAMIENTO INDIRECTO)",
+    "Categoria": "Cocinas",
     "Nombre": "Marmita a Gas",
     "Voltaje": null,
     "Codigo": "EMP.PLS.KTG.70",
@@ -2722,7 +2722,7 @@
   {
     "id": "emp-tdr-01",
     "cloudinary_url": null,
-    "Categoria": "HORNOS TANDOORI A GAS",
+    "Categoria": "Hornos",
     "Nombre": "Horno Tandoor a Gas",
     "Voltaje": null,
     "Codigo": "EMP.TDR.01",
@@ -2769,7 +2769,7 @@
   {
     "id": "emp-smo-g",
     "cloudinary_url": null,
-    "Categoria": "HORNO AHUMADOR A LEÑA Y GAS",
+    "Categoria": "Hornos",
     "Nombre": "Horno Ahumador a Gas",
     "Voltaje": null,
     "Codigo": "EMP.SMO-G",
@@ -2814,7 +2814,7 @@
   {
     "id": "emp-70-95-01-fr",
     "cloudinary_url": null,
-    "Categoria": "CÁMARA DE FERMENTACIÓN PROGRAMABLE AUTOMÁTICA (CALOR–FRÍO)",
+    "Categoria": "Hornos",
     "Nombre": "Cámara de Fermentación Programable Automática (Calor–Frío)",
     "Voltaje": "220V",
     "Codigo": "EMP.70.95.01-FR",
@@ -2864,8 +2864,8 @@
   {
     "id": "emp-pls-7lg020",
     "cloudinary_url": null,
-    "Categoria": "PARRILLA A GAS CON PIEDRA LÁVICA",
-    "Nombre": "Parrilla a Gas con Piedra Lávica (Lavastone Grill)",
+    "Categoria": "Parrillas",
+    "Nombre": "Parrilla a Gas con Piedra Lávica – Módulo 1/1",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7LG020",
     "Precio_USD": 2044,
@@ -2910,8 +2910,8 @@
   {
     "id": "emp-pls-7lg030",
     "cloudinary_url": null,
-    "Categoria": "PARRILLA A GAS CON PIEDRA LÁVICA",
-    "Nombre": "Parrilla a Gas con Piedra Lávica (Lavastone Grill)",
+    "Categoria": "Parrillas",
+    "Nombre": "Parrilla a Gas con Piedra Lávica – Módulo 3/2",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7LG030",
     "Precio_USD": 3046,
@@ -2956,7 +2956,7 @@
   {
     "id": "emp-btg-02",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS A CARBÓN ELEVABLES",
+    "Categoria": "Parrillas",
     "Nombre": "Parrilla a Carbón Elevable",
     "Voltaje": null,
     "Codigo": "EMP.BTG.02",
@@ -2999,7 +2999,7 @@
   {
     "id": "emp-pse020",
     "cloudinary_url": null,
-    "Categoria": "PARRILLAS SALAMANDRA ELÉCTRICAS",
+    "Categoria": "Hornos",
     "Nombre": "Parrilla Salamandra Eléctrica",
     "Voltaje": "230V",
     "Codigo": "EMP.PSE020",
@@ -3041,7 +3041,7 @@
   {
     "id": "emp-pls-7me010",
     "cloudinary_url": null,
-    "Categoria": "COCEDOR ELÉCTRICO DE PASTA – UNIDAD PARA PASTA Y FRITURAS (CHIPS SCUTTLE)",
+    "Categoria": "Cucipastas",
     "Nombre": "Cucipasta Eléctrico",
     "Voltaje": "400V",
     "Codigo": "EMP.PLS.7ME010",
@@ -3086,7 +3086,7 @@
   {
     "id": "emp-pls-7mg010",
     "cloudinary_url": null,
-    "Categoria": "COCEDOR ELÉCTRICO DE PASTA – UNIDAD PARA PASTA Y FRITURAS (CHIPS SCUTTLE)",
+    "Categoria": "Cucipastas",
     "Nombre": "Cucipasta a Gas",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7MG010",
@@ -3121,8 +3121,8 @@
   {
     "id": "emp-pls-7frg01",
     "cloudinary_url": null,
-    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
-    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Categoria": "Hornos a Gas",
+    "Nombre": "Horno a Gas Bajo Mostrador – 1 Cámara",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7FRG01",
     "Precio_USD": 1847,
@@ -3163,8 +3163,8 @@
   {
     "id": "emp-pls-7frg02",
     "cloudinary_url": null,
-    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
-    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Categoria": "Hornos a Gas",
+    "Nombre": "Horno a Gas Bajo Mostrador – 1x1/1 GN",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7FRG02",
     "Precio_USD": 2148,
@@ -3205,8 +3205,8 @@
   {
     "id": "emp-pls-7frg03",
     "cloudinary_url": null,
-    "Categoria": "HORNOS A GAS BAJO MOSTRADOR",
-    "Nombre": "Horno a Gas Bajo Mostrador",
+    "Categoria": "Hornos a Gas",
+    "Nombre": "Horno a Gas Bajo Mostrador – 2x2/1 GN",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7FRG03",
     "Precio_USD": 2391,
@@ -3247,7 +3247,7 @@
   {
     "id": "emp-as-8",
     "cloudinary_url": null,
-    "Categoria": "HORNOS DE PIZZA ELÉCTRICOS DE UNA CÁMARA",
+    "Categoria": "Hornos",
     "Nombre": "Base de horno pizzero a gas",
     "Voltaje": null,
     "Codigo": "EMP.AS.8",
@@ -3282,7 +3282,7 @@
   {
     "id": "emp-pls-7ts020",
     "cloudinary_url": null,
-    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Categoria": "Superficies",
     "Nombre": "Gabinete Bajo Mostrador con 2 Puertas",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TS020",
@@ -3321,8 +3321,8 @@
   {
     "id": "emp-pls-7ts020-k",
     "cloudinary_url": null,
-    "Categoria": "GABINETES BAJO MOSTRADOR",
-    "Nombre": "Gabinete Bajo Mostrador sin Puerta",
+    "Categoria": "Superficies",
+    "Nombre": "Gabinete Bajo Mostrador sin Puerta – 2 Módulos",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TS020-K",
     "Precio_USD": 428,
@@ -3360,7 +3360,7 @@
   {
     "id": "emp-pls-7ts030",
     "cloudinary_url": null,
-    "Categoria": "GABINETES BAJO MOSTRADOR",
+    "Categoria": "Superficies",
     "Nombre": "Gabinete Bajo Mostrador con 3 Puertas",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TS030",
@@ -3395,8 +3395,8 @@
   {
     "id": "emp-pls-7ts030-k",
     "cloudinary_url": null,
-    "Categoria": "GABINETES BAJO MOSTRADOR",
-    "Nombre": "Gabinete Bajo Mostrador sin Puerta",
+    "Categoria": "Superficies",
+    "Nombre": "Gabinete Bajo Mostrador sin Puerta – 3 Módulos",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TS030-K",
     "Precio_USD": 683,
@@ -3434,7 +3434,7 @@
   {
     "id": "emp-pls-7ts010",
     "cloudinary_url": null,
-    "Categoria": "MUEBLES BAJO MESADA",
+    "Categoria": "Superficies",
     "Nombre": "Gabinete Bajo Mesada con 1 Puerta",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TS010",
@@ -3469,8 +3469,8 @@
   {
     "id": "emp-pkf-40-d",
     "cloudinary_url": null,
-    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
-    "Nombre": "Gabinete Inferior de Acero Inoxidable con Puertas",
+    "Categoria": "Hornos",
+    "Nombre": "Gabinete Inferior Acero Inox – Modelo PKF-40",
     "Voltaje": null,
     "Codigo": "EMP.PKF-40-D",
     "Precio_USD": 1123,
@@ -3504,8 +3504,8 @@
   {
     "id": "emp-pkf-50-d",
     "cloudinary_url": null,
-    "Categoria": "HORNOS PROFESIONALES A CARBÓN",
-    "Nombre": "Gabinete Inferior de Acero Inoxidable con Puertas",
+    "Categoria": "Hornos",
+    "Nombre": "Gabinete Inferior Acero Inox – Modelo PKF-50",
     "Voltaje": null,
     "Codigo": "EMP.PKF-50-D",
     "Precio_USD": 1297,
@@ -3546,8 +3546,8 @@
   {
     "id": "emp-pls-7tn010",
     "cloudinary_url": null,
-    "Categoria": "SUPERFICIES DE TRABAJO",
-    "Nombre": "Superficie de Trabajo Módulo 1/2",
+    "Categoria": "Superficies",
+    "Nombre": "Superficie de Trabajo – Módulo 1/2",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TN010",
     "Precio_USD": 434,
@@ -3584,8 +3584,8 @@
   {
     "id": "emp-pls-7tn020",
     "cloudinary_url": null,
-    "Categoria": "SUPERFICIES DE TRABAJO",
-    "Nombre": "Superficie de Trabajo Módulo 1/2",
+    "Categoria": "Superficies",
+    "Nombre": "Superficie de Trabajo – Módulo 1/1",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7TN020",
     "Precio_USD": 735,
@@ -3622,7 +3622,7 @@
   {
     "id": "emp-pls-7ctv280",
     "cloudinary_url": null,
-    "Categoria": "LÍNEA CANTILEVER",
+    "Categoria": "Superficies",
     "Nombre": "Línea Cantilever",
     "Voltaje": null,
     "Codigo": "EMP.PLS.7CTV280",
@@ -3657,7 +3657,7 @@
   {
     "id": "sd-07",
     "cloudinary_url": null,
-    "Categoria": "CUTTER MEZCLADORES VERTICALES",
+    "Categoria": "Elaboración",
     "Nombre": "Cutter Mezclador Vertical",
     "Voltaje": "380V",
     "Codigo": "SD.07",
@@ -3703,7 +3703,7 @@
   {
     "id": "emp-ha-02-y",
     "cloudinary_url": null,
-    "Categoria": "LAMINADORAS DE MASA",
+    "Categoria": "Elaboración",
     "Nombre": "Laminadora de Masa – 30 cm",
     "Voltaje": "220V",
     "Codigo": "EMP.HA.02.Y",
@@ -3745,7 +3745,7 @@
   {
     "id": "sd-15",
     "cloudinary_url": null,
-    "Categoria": "CORTADORAS MEZCLADORAS Y PICADORAS",
+    "Categoria": "Elaboración",
     "Nombre": "Cutter Mezclador",
     "Voltaje": "380V",
     "Codigo": "SD.15",
@@ -3786,7 +3786,7 @@
   {
     "id": "emp-ha-06-y",
     "cloudinary_url": null,
-    "Categoria": "LAMINADORAS DE MASA",
+    "Categoria": "Elaboración",
     "Nombre": "Laminadora de Masa – 46 cm",
     "Voltaje": "220V",
     "Codigo": "EMP.HA.06.Y",
@@ -3828,7 +3828,7 @@
   {
     "id": "emp-hkt-01",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINA DOSIFICADORA Y CORTADORA DE MASA",
+    "Categoria": "Elaboración",
     "Nombre": "Máquina Cortadora y Dosificadora de Masa",
     "Voltaje": null,
     "Codigo": "EMP.HKT.01",
@@ -3873,7 +3873,7 @@
   {
     "id": "emp-hkt-02",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINA DOSIFICADORA DE MASA",
+    "Categoria": "Elaboración",
     "Nombre": "Soporte Inferior de Máquina Cortadora",
     "Voltaje": null,
     "Codigo": "EMP.HKT.02",
@@ -3918,7 +3918,7 @@
   {
     "id": "emp-hkt-03",
     "cloudinary_url": null,
-    "Categoria": "MÁQUINA DOSIFICADORA DE MASA",
+    "Categoria": "Elaboración",
     "Nombre": "Máquina Dosificadora y Boleadora de merengue",
     "Voltaje": null,
     "Codigo": "EMP.HKT.03",
@@ -3963,7 +3963,7 @@
   {
     "id": "emp-300",
     "cloudinary_url": null,
-    "Categoria": "CORTADORAS DE VERDURAS",
+    "Categoria": "Elaboración",
     "Nombre": "Cortadora de Verduras",
     "Voltaje": "220V",
     "Codigo": "EMP.300",
@@ -4004,8 +4004,8 @@
   {
     "id": "emp-att-70100",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
-    "Nombre": "Mesa de trabajo con estante inferior",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa de Trabajo con Estante Inferior – Pequeña",
     "Voltaje": null,
     "Codigo": "EMP.ATT.70100",
     "Precio_USD": 418,
@@ -4045,8 +4045,8 @@
   {
     "id": "emp-att-70140",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
-    "Nombre": "Mesa de trabajo con estante inferior",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa de Trabajo con Estante Inferior – Mediana",
     "Voltaje": null,
     "Codigo": "EMP.ATT.70140",
     "Precio_USD": 535,
@@ -4086,8 +4086,8 @@
   {
     "id": "emp-att-70180",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON ESTANTE INFERIOR (DESMONTADAS)",
-    "Nombre": "Mesa de trabajo con estante inferior",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa de Trabajo con Estante Inferior – Grande",
     "Voltaje": null,
     "Codigo": "EMP.ATT.70180",
     "Precio_USD": 660,
@@ -4127,7 +4127,7 @@
   {
     "id": "emp-byc-75120-t-r",
     "cloudinary_url": null,
-    "Categoria": "ENTRADA–SALIDA PARA LAVAVAJILLAS",
+    "Categoria": "Lavado",
     "Nombre": "Mesa de Salida para Lavavajillas con Estante Inferior (Derecha)",
     "Voltaje": null,
     "Codigo": "EMP.BYC.75120-T-R",
@@ -4162,7 +4162,7 @@
   {
     "id": "emp-byg-75120-1et-l",
     "cloudinary_url": null,
-    "Categoria": "ENTRADA–SALIDA PARA LAVAVAJILLAS",
+    "Categoria": "Lavado",
     "Nombre": "Mesa de Entrada para Lavavajillas con Bacha Simple y Estante Inferior (Izquierda)",
     "Voltaje": null,
     "Codigo": "EMP.BYG.75120-1ET-L",
@@ -4197,8 +4197,8 @@
   {
     "id": "emp-e-71485-1emt-l",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
-    "Nombre": "Bacha con 1 Cubeta Izquierda",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa con Bacha 1 Cubeta Izquierda – Mediana",
     "Voltaje": null,
     "Codigo": "EMP.E.71485-1EMT-L",
     "Precio_USD": 906,
@@ -4236,8 +4236,8 @@
   {
     "id": "emp-e-71485-1emt-r",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
-    "Nombre": "Bacha con 1 Cubeta Derecha",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa con Bacha 1 Cubeta Derecha – Mediana",
     "Voltaje": null,
     "Codigo": "EMP.E.71485-1EMT-R",
     "Precio_USD": 906,
@@ -4275,8 +4275,8 @@
   {
     "id": "emp-e-71885-1emt-l",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
-    "Nombre": "Bacha con 1 Cubeta Izquierda",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa con Bacha 1 Cubeta Izquierda – Grande",
     "Voltaje": null,
     "Codigo": "EMP.E.71885-1EMT-L",
     "Precio_USD": 1037,
@@ -4314,8 +4314,8 @@
   {
     "id": "emp-e-71885-1emt-r",
     "cloudinary_url": null,
-    "Categoria": "MESAS DE TRABAJO CON 1 BACHA 700 (DESMONTADAS)",
-    "Nombre": "Bacha con 1 Cubeta Derecha",
+    "Categoria": "Mesas",
+    "Nombre": "Mesa con Bacha 1 Cubeta Derecha – Grande",
     "Voltaje": null,
     "Codigo": "EMP.E.71885-1EMT-R",
     "Precio_USD": 1037,

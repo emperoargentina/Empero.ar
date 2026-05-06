@@ -25,10 +25,18 @@ export function ProductCard({
         isInQuoteList ? 'border-emerald-300 shadow-sm shadow-emerald-100' : 'border-[#E8E2D9]'
       }`}
       onClick={() => onViewDetails(product)}
-      whileHover={{ y: -5, boxShadow: '0 16px 48px rgba(26,22,19,0.13)' }}
+      whileHover={{ y: -4, boxShadow: '0 20px 52px rgba(26,22,19,0.14)' }}
       transition={{ type: 'spring', stiffness: 360, damping: 28 }}
     >
-      {/* Image — portrait */}
+      {/* ── Full-card hover overlay ── */}
+      <div className="absolute inset-0 z-10 bg-[#1A1613]/48 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+        <span className="flex items-center gap-2 text-white text-[12px] font-semibold tracking-wide bg-white/15 backdrop-blur-sm px-5 py-2 rounded-full border border-white/30">
+          <Eye className="w-3.5 h-3.5" />
+          Ver detalles
+        </span>
+      </div>
+
+      {/* ── Image ── */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#F4F0E8] flex-shrink-0">
         <img
           src={imageUrl}
@@ -37,24 +45,15 @@ export function ProductCard({
           loading="lazy"
         />
 
-        {/* Hover gradient + pill */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1613]/65 via-[#1A1613]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="flex items-center gap-1.5 text-white text-[11px] font-semibold tracking-wide bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/25">
-            <Eye className="w-3.5 h-3.5" />
-            Ver detalles
-          </span>
-        </div>
-
         {/* Availability badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-2.5 left-2.5 z-20">
           {enStock ? (
-            <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-emerald-500 text-white shadow-sm shadow-emerald-900/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/80 flex-shrink-0" />
+            <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.08em] px-2 py-1 rounded-full bg-emerald-500 text-white shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse flex-shrink-0" />
               En stock
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full bg-amber-500 text-white shadow-sm shadow-amber-900/20">
+            <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.08em] px-2 py-1 rounded-full bg-amber-500 text-white shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-white/80 flex-shrink-0" />
               Por encargo
             </span>
@@ -65,7 +64,7 @@ export function ProductCard({
         <AnimatePresence>
           {isInQuoteList && (
             <motion.div
-              className="absolute top-3 right-3 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-md"
+              className="absolute top-2.5 right-2.5 z-20 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-md"
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
@@ -77,21 +76,22 @@ export function ProductCard({
         </AnimatePresence>
       </div>
 
-      {/* Info */}
-      <div className="flex flex-col flex-1 px-4 pt-3.5 pb-4">
+      {/* ── Info ── */}
+      <div className="flex flex-col flex-1 px-3 pt-2.5 pb-3 font-outfit">
+
         {/* Category */}
-        <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#C41B2E] mb-1.5 truncate">
+        <p className="text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-1 truncate">
           {product.categoria}
         </p>
 
-        {/* Name — DM Sans for legibility */}
-        <h3 className="font-sans font-medium text-[#1A1613] text-[13px] sm:text-sm leading-snug line-clamp-3 flex-1 min-h-[3.75em]">
+        {/* Name */}
+        <h3 className="product-card-title flex-1 whitespace-normal break-words">
           {product.nombre}
         </h3>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#F0EAE2] gap-2">
-          <span className="text-[9px] font-mono text-[#C0B5A8] tracking-wider truncate flex-1">
+        {/* Footer: code + add button */}
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
+          <span className="text-[8.5px] font-mono text-[#C0B5A8] tracking-wider truncate flex-1">
             {product.codigo}
           </span>
 
@@ -101,7 +101,7 @@ export function ProductCard({
               if (!isInQuoteList) onAddToQuote?.(product);
             }}
             disabled={isInQuoteList}
-            className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-150 cursor-pointer ${
+            className={`flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-semibold transition-all duration-150 cursor-pointer ${
               isInQuoteList
                 ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                 : 'bg-[#C41B2E] text-white hover:bg-[#B51426] shadow-sm shadow-red-900/15'
