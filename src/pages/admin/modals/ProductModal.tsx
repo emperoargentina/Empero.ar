@@ -16,8 +16,8 @@ const schema = z.object({
   codigo:                 z.string().min(1, 'Requerido'),
   categoria:              z.string().min(1, 'Requerido'),
   precio_usd:             z.coerce.number().nullable().optional(),
-  stock:                  z.coerce.number().int().min(0).default(0),
-  disponible:             z.boolean().default(true),
+  stock:                  z.coerce.number().int().min(0),
+  disponible:             z.boolean(),
   modo_disponibilidad:    z.enum(['en_stock', 'por_encargo']),
   cloudinary_url:         z.string().nullable().optional(),
   cloudinary_image_id:    z.string().nullable().optional(),
@@ -35,8 +35,8 @@ const schema = z.object({
   pot_total:              z.coerce.number().nullable().optional(),
   pot_motor:              z.coerce.number().nullable().optional(),
   prog_cantidad:          z.coerce.number().int().nullable().optional(),
-  accesorios:             z.string().default(''),
-  caracteristicas:        z.string().default(''),
+  accesorios:             z.string(),
+  caracteristicas:        z.string(),
 })
 
 type FormValues = z.infer<typeof schema>

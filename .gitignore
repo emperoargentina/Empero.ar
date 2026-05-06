@@ -30,4 +30,5 @@ npm-debug.log*
 # Vite
 vite.config.ts.timestamp-*
 
+prompt.txt
 notas.txt

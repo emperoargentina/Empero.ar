@@ -94,7 +94,7 @@ export function Categories({ onCategorySelect }: CategoriesProps) {
                     {category.name}
                   </h3>
                   <p className="text-xs text-gray-400 mb-3">
-                    {category.productCount} productos
+                    {category.description}
                   </p>
 
                   {/* Arrow */}
