@@ -75,7 +75,6 @@ export function Navigation({
   totalQuoteItems = 0,
 }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [blurActive, setBlurActive] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
@@ -89,16 +88,6 @@ export function Navigation({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Blur se activa inmediato al scrollear, pero se remueve DESPUÉS de que termine la animación de vuelta
-  useEffect(() => {
-    if (isScrolled) {
-      setBlurActive(true);
-      return;
-    }
-    const t = setTimeout(() => setBlurActive(false), 750);
-    return () => clearTimeout(t);
-  }, [isScrolled]);
 
   // Update theme-color dynamically based on scroll to match navbar
   useEffect(() => {
@@ -152,21 +141,25 @@ export function Navigation({
           <motion.div
             animate={isScrolled ? {
               backgroundColor: 'rgba(250,250,248,0.97)',
-              boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 4px 24px rgba(26,22,19,0.06)',
+              boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 6px 32px rgba(26,22,19,0.08)',
               borderColor: 'rgba(196,27,46,0.18)',
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
             } : {
               backgroundColor: 'rgba(0,0,0,0)',
               boxShadow: '0 0 0 rgba(0,0,0,0)',
               borderColor: 'rgba(196,27,46,0)',
+              backdropFilter: 'blur(0px)',
+              WebkitBackdropFilter: 'blur(0px)',
             }}
             transition={{
-              duration: isScrolled ? 0.4 : 0.8,
-              ease: isScrolled ? [0.25, 0.46, 0.45, 0.94] : [0.16, 1, 0.3, 1],
+              duration: isScrolled ? 0.45 : 0.7,
+              ease: [0.16, 1, 0.3, 1],
             }}
-            className={`relative border-b lg:border ${blurActive ? 'backdrop-blur-md' : ''} ${
+            className={`relative border-b lg:border transition-[border-radius,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isScrolled
                 ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
-                : 'container-custom py-0 lg:py-5'
+                : 'container-custom py-0 lg:py-5 lg:rounded-none'
             }`}
           >
             {/* Red bottom line — mobile only, transparent state only */}

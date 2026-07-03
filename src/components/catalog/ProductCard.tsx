@@ -1,6 +1,7 @@
 import { Check, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Product } from '@/data/products';
+import { AvailabilityBadge } from './AvailabilityBadge';
 
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
@@ -21,7 +22,6 @@ export function ProductCard({
 }: ProductCardProps) {
   const imageUrl = product.cloudinary_url ?? PLACEHOLDER;
   const isPlaceholder = !product.cloudinary_url;
-  const enStock = product.modo_disponibilidad === 'en_stock';
 
   return (
     <motion.article
@@ -49,17 +49,7 @@ export function ProductCard({
         />
 
         <div className="absolute bottom-2.5 left-2.5 z-20">
-          {enStock ? (
-            <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-emerald-700 border border-emerald-200/80 shadow-sm text-[9.5px] font-semibold px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-              En Stock
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-amber-700 border border-amber-200/80 shadow-sm text-[9.5px] font-semibold px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
-              Por Encargo
-            </span>
-          )}
+          <AvailabilityBadge modo={product.modo_disponibilidad} size="sm" />
         </div>
 
         <AnimatePresence>

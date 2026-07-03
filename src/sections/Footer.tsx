@@ -38,10 +38,10 @@ export function Footer() {
       <div className="container-custom py-16 lg:py-20 relative">
 
         {/* Main row — 4 columns on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
 
           {/* Brand */}
-          <div className="col-span-2 lg:col-span-4 flex flex-col gap-4">
+          <div className="col-span-2 sm:col-span-4 lg:col-span-4 flex flex-col gap-4">
             <img
               src="/images/logo/Logo.png"
               alt={companyConfig.name}
@@ -71,7 +71,7 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="col-span-2 sm:col-span-1 lg:col-span-3">
+          <div className="col-span-2 sm:col-span-2 lg:col-span-3">
             <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
               Contacto
             </h4>
@@ -86,7 +86,7 @@ export function Footer() {
           </div>
 
           {/* Navigation */}
-          <div className="lg:col-span-2">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
             <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
               Navegación
             </h4>
@@ -107,7 +107,7 @@ export function Footer() {
           </div>
 
           {/* Categories */}
-          <div className="lg:col-span-3">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3">
             <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
               Categorías
             </h4>

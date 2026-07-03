@@ -52,7 +52,7 @@ export const categories: Category[] = [
     color: { bg: '#FFFBEB', text: '#B45309', border: '#FCD34D' },
   },
   {
-    id: 'Distribución', name: 'Distribución', shortName: 'Distribución', icon: 'Store',
+    id: 'Distribución y Autoservicio', name: 'Distribución y Autoservicio', shortName: 'Distribución', icon: 'Store',
     description: 'Vitrinas, mostradores y equipos de exhibición',
     color: { bg: '#EFF6FF', text: '#1D4ED8', border: '#93C5FD' },
   },
@@ -72,7 +72,7 @@ export const categories: Category[] = [
     color: { bg: '#FEF2F2', text: '#B91C1C', border: '#FCA5A5' },
   },
   {
-    id: 'Hornos a Gas', name: 'Hornos a Gas', shortName: 'Hornos a Gas', icon: 'Flame',
+    id: 'Hornos a Gas Bajo Mostrador', name: 'Hornos a Gas Bajo Mostrador', shortName: 'Hornos a Gas', icon: 'Flame',
     description: 'Hornos a gas bajo mostrador y compactos',
     color: { bg: '#FFF7ED', text: '#9A3412', border: '#FDBA74' },
   },

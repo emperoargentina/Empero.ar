@@ -9,7 +9,7 @@
     <meta name="description" content="Distribuidores oficiales de Empero en Argentina. Más de 3.000 productos para cocinas industriales, restaurantes y hoteles. Marca turca con presencia en 90+ países." />
     <meta name="keywords" content="equipamiento gastronomico, cocina industrial, Empero Argentina, lavavajillas industrial, hornos profesionales, freidoras, refrigeración industrial" />
     <meta name="robots" content="index, follow" />
-    
+
     <!-- Mobile Status Bar Configuration -->
     <meta name="theme-color" content="#000000" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -21,8 +21,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_AR" />
 
-    <!-- Preload hero image (LCP optimization) -->
-    <link rel="preload" as="image" href="/images/Visuales/HeroImage.webp" type="image/webp" />
+    <!-- Critical asset preloads (LCP) -->
+    <link rel="preload" as="image" href="/images/Visuales/HeroImage.webp" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/logo/Logo.png" />
+
+    <!-- Google Fonts: preconnect first, then stylesheet (non-blocking vs CSS @import) -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />

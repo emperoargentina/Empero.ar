@@ -7,6 +7,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ComponentType } from 'react';
 import { useProducts } from '@/hooks/useProducts';
+import { getLenis } from '@/hooks/useLenis';
 import type { AvailabilityFilter } from '@/hooks/useProducts';
 import { type Product, categories } from '@/data/products';
 import { CatalogSidebar } from '@/components/catalog/CatalogSidebar';
@@ -28,22 +29,23 @@ const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: str
 ];
 
 const CATEGORY_ORDER = [
-  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas',
+  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas Bajo Mostrador',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
+  'Distribución y Autoservicio', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
 ];
 
 const orderedCategories = CATEGORY_ORDER
   .map(id => categories.find(c => c.id === id))
   .filter((c): c is (typeof categories)[number] => c !== undefined);
 
-const ITEMS_PER_PAGE = (() => {
+function getItemsPerPage(): number {
   const w = window.innerWidth;
-  if (w >= 1280) return 20;
-  if (w >= 1024) return 16;
-  if (w >= 768) return 8;
+  if (w >= 1536) return 20;
+  if (w >= 1280) return 16;
+  if (w >= 1024) return 12;
+  if (w >= 640)  return 8;
   return 4;
-})();
+}
 
 function SkeletonCard() {
   return (
@@ -99,22 +101,35 @@ export function ProductCatalog({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState('');
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage);
   const catalogRef = useRef<HTMLElement>(null);
 
+  useEffect(() => {
+    const handleResize = () => setItemsPerPage(getItemsPerPage());
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)),
-    [filteredProducts.length]
+    () => Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage)),
+    [filteredProducts.length, itemsPerPage]
   );
 
   const paginatedProducts = useMemo(() => {
-    const safePage = Math.min(currentPage, totalPages);
-    const start = (safePage - 1) * ITEMS_PER_PAGE;
-    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredProducts, currentPage, totalPages]);
+    const safePage = Math.min(Math.max(1, currentPage), totalPages);
+    const start = (safePage - 1) * itemsPerPage;
+    return filteredProducts.slice(start, start + itemsPerPage);
+  }, [filteredProducts, currentPage, totalPages, itemsPerPage]);
 
+  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory, availabilityFilter]);
+
+  // Clamp currentPage if totalPages shrinks (e.g. resize changes itemsPerPage)
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
 
   useEffect(() => {
     if (initialCategory && !selectedCategory) {
@@ -131,22 +146,27 @@ export function ProductCatalog({
   const scrollToCatalog = useCallback(() => {
     const el = catalogRef.current;
     if (!el) return;
-    const y = el.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -80, duration: 1.0, force: true });
+    } else {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }
   }, []);
 
-  const handlePrev = useCallback(() => {
-    setCurrentPage(p => Math.max(1, p - 1));
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
     scrollToCatalog();
   }, [scrollToCatalog]);
 
+  const handlePrev = useCallback(() => {
+    if (currentPage > 1) handlePageChange(currentPage - 1);
+  }, [currentPage, handlePageChange]);
+
   const handleNext = useCallback(() => {
-    setCurrentPage(p => {
-      const next = p + 1;
-      return next <= totalPages ? next : p;
-    });
-    scrollToCatalog();
-  }, [totalPages, scrollToCatalog]);
+    if (currentPage < totalPages) handlePageChange(currentPage + 1);
+  }, [currentPage, totalPages, handlePageChange]);
 
   const handleViewDetails = useCallback((product: Product) => {
     setSelectedProduct(product);
@@ -301,7 +321,7 @@ export function ProductCatalog({
             )}
 
             {loading && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
@@ -310,23 +330,27 @@ export function ProductCatalog({
 
             {!loading && paginatedProducts.length > 0 && (
               <>
-                <motion.div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-10"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {paginatedProducts.map(product => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      onViewDetails={handleViewDetails}
-                      onAddToQuote={onAddToQuote}
-                      onRemoveFromQuote={onRemoveFromQuote}
-                      isInQuoteList={quoteListIds.includes(product.id)}
-                    />
-                  ))}
-                </motion.div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentPage}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mb-10"
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {paginatedProducts.map(product => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        onViewDetails={handleViewDetails}
+                        onAddToQuote={onAddToQuote}
+                        onRemoveFromQuote={onRemoveFromQuote}
+                        isInQuoteList={quoteListIds.includes(product.id)}
+                      />
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
 
                 {totalPages > 1 && (
                   <Pagination
@@ -334,6 +358,7 @@ export function ProductCatalog({
                     totalPages={totalPages}
                     onPrev={handlePrev}
                     onNext={handleNext}
+                    onPageChange={handlePageChange}
                   />
                 )}
               </>

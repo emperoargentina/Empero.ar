@@ -1,7 +1,7 @@
 import { ArrowDown, Package, Award, Users, Shield, Zap, Star } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { companyConfig } from '@/data/company';
-import { gsap, ScrollTrigger } from '@/lib/gsap';
+import { gsap } from '@/lib/gsap';
 
 interface HeroProps {
   isReady?: boolean;
@@ -61,10 +61,7 @@ export function Hero({ isReady = false }: HeroProps) {
       });
     }, sectionRef);
 
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   const statsRef = useRef<HTMLDivElement>(null);
@@ -137,11 +134,11 @@ export function Hero({ isReady = false }: HeroProps) {
       </div>
 
       {/* Content */}
-      <div ref={contentRef} className="relative z-10 w-full container-custom py-10 lg:py-20">
+      <div ref={contentRef} className="relative z-10 w-full container-custom py-16 lg:py-24">
         <div className="max-w-4xl mx-auto text-center">
 
           {/* Ornament + tagline */}
-          <div className="hero-entrance hero-tag mb-7 lg:mb-10">
+          <div className="hero-entrance hero-tag mb-5 lg:mb-6">
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="h-px w-10 bg-gradient-to-r from-transparent to-[#C41B2E]/50" />
               <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C41B2E]/80">
@@ -149,14 +146,11 @@ export function Hero({ isReady = false }: HeroProps) {
               </span>
               <div className="h-px w-10 bg-gradient-to-l from-transparent to-[#C41B2E]/50" />
             </div>
-            <p className="text-[#C8BFB5]/85 text-base md:text-lg font-light tracking-wide">
-              Marca turca. Presencia en más de 90 países.
-            </p>
           </div>
 
           {/* Title */}
-          <div className="hero-entrance hero-title mb-7 lg:mb-9">
-            <h1 className="text-5xl leading-[1.0] sm:text-6xl md:text-[6.5rem] lg:text-[8rem] font-serif font-normal text-white tracking-[-0.025em]">
+          <div className="hero-entrance hero-title mb-5 lg:mb-6">
+            <h1 className="text-[2.8rem] leading-[1.0] sm:text-6xl md:text-[4.5rem] lg:text-[6.5rem] xl:text-[7.5rem] font-serif font-normal text-white tracking-[-0.025em]">
               Equipamiento
               <br />
               <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>
@@ -166,7 +160,7 @@ export function Hero({ isReady = false }: HeroProps) {
           </div>
 
           {/* Description */}
-          <div className="hero-entrance hero-desc mb-9 lg:mb-12">
+          <div className="hero-entrance hero-desc mb-6 lg:mb-7">
             <p className="text-base md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed font-light px-2">
               Distribuidores oficiales de Empero en Argentina &mdash; marca turca con más de 40 años,
               más de 3.000 productos y presencia en 90+ países.
@@ -174,7 +168,7 @@ export function Hero({ isReady = false }: HeroProps) {
           </div>
 
           {/* CTA */}
-          <div className="hero-entrance hero-cta mb-12 lg:mb-20">
+          <div className="hero-entrance hero-cta mb-7 lg:mb-10">
             <button
               onClick={scrollToCatalog}
               className="group inline-flex items-center gap-3 px-9 text-base font-semibold rounded-full cursor-pointer transition-all duration-300 bg-[#C41B2E] text-white hover:bg-[#E02035]"
@@ -205,7 +199,7 @@ export function Hero({ isReady = false }: HeroProps) {
           </div>
 
           {/* Stats */}
-          <div ref={statsRef} className="hero-entrance hero-stats">
+          <div ref={statsRef} className="hero-entrance hero-stats [@media(max-height:900px)]:hidden">
             <div className="grid grid-cols-3 gap-3 sm:gap-5 max-w-sm sm:max-w-xl mx-auto">
               {[
                 { key: 'years',    display: '40+',    label: 'Años de marca',       icon: Award },
@@ -232,18 +226,6 @@ export function Hero({ isReady = false }: HeroProps) {
         </div>
       </div>
 
-      {/* Scroll indicator — oculto en mobile chico */}
-      <div className="hero-entrance hero-scroll absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 hidden sm:block">
-        <button
-          onClick={scrollToCatalog}
-          className="flex flex-col items-center gap-2 text-white/35 hover:text-[#C41B2E] transition-colors group"
-        >
-          <span className="text-xs font-medium tracking-widest uppercase">Explorar</span>
-          <div className="w-6 h-9 rounded-full border border-white/15 flex items-start justify-center pt-1.5 group-hover:border-[rgba(196,27,46,0.4)] transition-colors">
-            <ArrowDown className="w-2.5 h-2.5 animate-bounce" />
-          </div>
-        </button>
-      </div>
     </section>
   );
 }

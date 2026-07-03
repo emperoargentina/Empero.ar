@@ -6,6 +6,25 @@ export type { Product };
 export type SortOption = 'default' | 'name-asc' | 'name-desc';
 export type AvailabilityFilter = 'all' | 'en_stock' | 'por_encargo';
 
+const CACHE_KEY = 'empero_public_v1'
+const CACHE_TTL = 30 * 60 * 1000
+
+function readCache(): { data: Product[]; timestamp: number } | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+function writeCache(data: Product[]) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }))
+  } catch {}
+}
+
 interface UseProductsReturn {
   allProducts: Product[];
   filteredProducts: Product[];
@@ -26,6 +45,21 @@ interface UseProductsReturn {
   filteredCount: number;
 }
 
+export async function prefetchProducts(): Promise<void> {
+  const cached = readCache();
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return;
+  try {
+    const { data } = await supabase
+      .from('products')
+      .select('*')
+      .eq('disponible', true)
+      .order('nombre', { ascending: true });
+    if (data) writeCache(data);
+  } catch {
+    // silent — ProductCatalog will retry
+  }
+}
+
 export function useProducts(): UseProductsReturn {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +73,15 @@ export function useProducts(): UseProductsReturn {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      if (fetchTrigger === 0) {
+        const cached = readCache()
+        if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+          setAllProducts(cached.data)
+          setLoading(false)
+          return
+        }
+      }
+
       setLoading(true);
       setError(null);
       try {
@@ -49,9 +92,15 @@ export function useProducts(): UseProductsReturn {
           .order('nombre', { ascending: true });
 
         if (sbError) throw sbError;
-        setAllProducts(data ?? []);
+        const products = data ?? [];
+        writeCache(products);
+        setAllProducts(products);
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'Error al cargar productos';
+        const stale = readCache()
+        if (stale) {
+          setAllProducts(stale.data)
+        }
         setError(msg);
         console.error('useProducts: error fetching from Supabase', err);
       } finally {

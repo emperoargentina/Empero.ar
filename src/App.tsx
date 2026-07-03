@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
 import { ProductCatalog } from './sections/ProductCatalog';
@@ -9,11 +10,18 @@ import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Preloader } from './components/Preloader';
 import { useQuoteList } from './hooks/useQuoteList';
 import { useLenis } from './hooks/useLenis';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { prefetchProducts } from './hooks/useProducts';
 
 function App() {
   useLenis();
   const [isLoading, setIsLoading] = useState(true);
+  const [isDataReady, setIsDataReady] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    prefetchProducts().finally(() => setIsDataReady(true));
+  }, []);
 
   const {
     items: quoteItems,
@@ -41,8 +49,16 @@ function App() {
   const quoteListIds = quoteItems.map(item => item.product.id);
 
   return (
-    <>
-      {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
+    <TooltipProvider>
+      <AnimatePresence>
+        {isLoading && (
+          <Preloader
+            key="preloader"
+            onComplete={handlePreloaderComplete}
+            isDataReady={isDataReady}
+          />
+        )}
+      </AnimatePresence>
 
       <div className={`min-h-screen bg-[#FAFAF8] ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
         <Navigation
@@ -74,7 +90,7 @@ function App() {
 
         <WhatsAppFloat />
       </div>
-    </>
+    </TooltipProvider>
   );
 }
 
