@@ -2,7 +2,9 @@ import { createPortal } from 'react-dom';
 import { Check, Plus, X, Settings, Package, Layers } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type TargetAndTransition } from 'framer-motion';
+
+type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
 import { whatsappConfig } from '@/data/company';
 import { AvailabilityBadge } from './AvailabilityBadge';
 import { getLenis } from '@/hooks/useLenis';
@@ -140,9 +142,9 @@ export function ProductModal({
           <motion.div
             className="fixed inset-0 z-[80] bg-black/60"
             style={{ backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' }}
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(7px)', WebkitBackdropFilter: 'blur(7px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' }}
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' } as WebkitBlurTarget}
+            animate={{ opacity: 1, backdropFilter: 'blur(7px)', WebkitBackdropFilter: 'blur(7px)' } as WebkitBlurTarget}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)' } as WebkitBlurTarget}
             transition={{ duration: 0.35, ease: 'easeOut' }}
             onClick={onClose}
           />
@@ -164,12 +166,16 @@ export function ProductModal({
               }}
               initial={{ opacity: 0, scale: 0.92, y: 32 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: -12 }}
+              exit={{
+                opacity: 0,
+                scale: 0.97,
+                y: -12,
+                transition: { duration: 0.22, ease: [0.5, 0, 0.75, 0] },
+              }}
               transition={{
                 duration: 0.45,
                 ease: [0.16, 1, 0.3, 1],
                 opacity: { duration: 0.3 },
-                exit: { duration: 0.22, ease: [0.5, 0, 0.75, 0] },
               }}
             >
               {/* Close */}

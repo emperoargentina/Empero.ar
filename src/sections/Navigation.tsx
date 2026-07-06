@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type TargetAndTransition } from 'framer-motion';
+
+type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
 import {
   Menu,
   X,
@@ -139,7 +141,7 @@ export function Navigation({
       <nav className="fixed top-0 left-0 right-0 z-[60]">
         <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:px-3 lg:pt-3' : ''}`}>
           <motion.div
-            animate={isScrolled ? {
+            animate={(isScrolled ? {
               backgroundColor: 'rgba(250,250,248,0.97)',
               boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 6px 32px rgba(26,22,19,0.08)',
               borderColor: 'rgba(196,27,46,0.18)',
@@ -151,7 +153,7 @@ export function Navigation({
               borderColor: 'rgba(196,27,46,0)',
               backdropFilter: 'blur(0px)',
               WebkitBackdropFilter: 'blur(0px)',
-            }}
+            }) as WebkitBlurTarget}
             transition={{
               duration: isScrolled ? 0.45 : 0.7,
               ease: [0.16, 1, 0.3, 1],
