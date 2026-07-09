@@ -12,6 +12,7 @@ import { useQuoteList } from './hooks/useQuoteList';
 import { useLenis } from './hooks/useLenis';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { prefetchProducts } from './hooks/useProducts';
+import { ScrollTrigger } from '@/lib/gsap';
 
 function App() {
   useLenis();
@@ -42,6 +43,21 @@ function App() {
   const handlePreloaderComplete = useCallback(() => {
     setIsLoading(false);
   }, []);
+
+  // ScrollTrigger midió posiciones mientras el wrapper tenía overflow-hidden
+  // (altura real ocultada durante el preload) — hay que recalcular una vez
+  // que el layout final queda visible, o el scroll queda desincronizado.
+  useEffect(() => {
+    if (isLoading) return;
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [isLoading]);
 
   const handleCategorySelect = useCallback((categoryId: string) => {
     setSelectedCategory(categoryId);

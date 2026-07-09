@@ -110,15 +110,21 @@ export function Nosotros() {
           </div>
         </AnimatedSection>
 
-        {/* Stats banner — dark contrast block */}
+        {/* Stats banner — brand red block */}
         <AnimatedSection direction="up">
-          <div className="bg-[#1A1613] rounded-3xl p-10 md:p-14 relative overflow-hidden">
-            <div className="absolute -top-20 right-0 w-96 h-96 bg-[#C41B2E]/[0.07] rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 left-0 w-72 h-72 bg-[#C41B2E]/[0.05] rounded-full blur-3xl pointer-events-none" />
+          <div
+            className="rounded-3xl p-10 md:p-14 relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, #D32638 0%, #C41B2E 45%, #97121F 100%)',
+              boxShadow: '0 20px 60px rgba(196,27,46,0.25), 0 1px 0 rgba(255,255,255,0.08) inset',
+            }}
+          >
+            <div className="absolute -top-24 -left-10 w-80 h-80 bg-white/[0.06] rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 right-0 w-96 h-96 bg-black/[0.12] rounded-full blur-3xl pointer-events-none" />
             <div
-              className="absolute inset-0 opacity-[0.018] pointer-events-none"
+              className="absolute inset-0 opacity-[0.05] pointer-events-none"
               style={{
-                backgroundImage: 'linear-gradient(rgba(196,27,46,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(196,27,46,0.8) 1px, transparent 1px)',
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
                 backgroundSize: '40px 40px',
               }}
             />
@@ -132,13 +138,16 @@ export function Nosotros() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.08 * i, duration: 0.4 }}
                 >
-                  <div className="w-10 h-10 bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.18)] rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <stat.icon className="w-4.5 h-4.5 text-[#C41B2E]" />
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4"
+                    style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)' }}
+                  >
+                    <stat.icon className="w-4.5 h-4.5 text-white" />
                   </div>
                   <div className="text-4xl font-serif font-[560] text-white tracking-tight leading-none mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-white/40 font-medium">{stat.label}</div>
+                  <div className="text-sm text-white/90 font-medium">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
