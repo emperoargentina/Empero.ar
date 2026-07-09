@@ -77,10 +77,10 @@ export function Nosotros() {
               <h3 className="text-2xl md:text-3xl font-serif font-[560] text-[#1A1613] leading-tight mb-6">
                 40 años fabricando equipamiento gastronómico de clase mundial
               </h3>
-              <p className="text-[#7B7064] leading-relaxed mb-5 text-[15px]">
+              <p className="text-[#7B7064] leading-relaxed mb-5 text-[15px] text-justify">
                 Empero nació en <strong className="text-[#4A4540]">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="text-[#4A4540]">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="text-[#4A4540]">Empero Group</strong>, consolidando una planta de producción de más de <strong className="text-[#4A4540]">60.000 m²</strong> en Konya, Turquía.
               </p>
-              <p className="text-[#7B7064] leading-relaxed mb-8 text-[15px]">
+              <p className="text-[#7B7064] leading-relaxed mb-8 text-[15px] text-justify">
                 Hoy Empero fabrica más de <strong className="text-[#4A4540]">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="text-[#4A4540]">90 países</strong>. <strong className="text-[#1A1613]">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
               </p>
 
