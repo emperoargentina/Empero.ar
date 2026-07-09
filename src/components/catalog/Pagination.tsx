@@ -45,7 +45,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
         page === null ? (
           <span
             key={`ellipsis-${i}`}
-            className="w-9 h-9 flex items-center justify-center text-[#C0B5A8] text-[13px] select-none"
+            className="w-9 h-9 flex items-center justify-center text-[#7B7064] text-[13px] select-none"
           >
             ···
           </span>

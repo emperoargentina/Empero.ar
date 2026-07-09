@@ -20,7 +20,13 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
-    prefetchProducts().finally(() => setIsDataReady(true));
+    const heroImageReady = new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = '/images/Visuales/HeroImage.webp';
+    });
+    Promise.all([prefetchProducts(), heroImageReady]).finally(() => setIsDataReady(true));
   }, []);
 
   const {

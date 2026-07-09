@@ -196,6 +196,8 @@ export function ProductModal({
                   <motion.img
                     src={imageUrl}
                     alt={product.nombre}
+                    width={340}
+                    height={400}
                     className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-8' : 'object-cover'}`}
                     initial={{ opacity: 0, scale: 1.04 }}
                     animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}
@@ -306,7 +308,7 @@ export function ProductModal({
                     )}
 
                     {!hasSpecs && !hasCaract && !hasAccesorios && !product.description && (
-                      <p className="text-[12px] text-[#C0B5A8] italic text-center py-6">
+                      <p className="text-[12px] text-[#7B7064] italic text-center py-6">
                         Consultá por especificaciones técnicas.
                       </p>
                     )}

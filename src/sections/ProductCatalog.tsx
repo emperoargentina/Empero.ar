@@ -208,26 +208,26 @@ export function ProductCatalog({
     <section ref={catalogRef} id="catalogo" className="py-20 lg:py-24 bg-[#FAFAF8] relative">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
 
         {/* ── Header ── */}
         <div className="text-center mb-10">
           <AnimatedSection direction="up">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C41B2E]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
                 Catálogo completo
               </span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
             </div>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.08}>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-[#1A1613]">
+            <h2 className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
               Nuestros <em className="not-italic text-[#C41B2E]">productos</em>
             </h2>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#9E9080] mt-4 max-w-xl mx-auto text-base leading-relaxed">
+            <p className="text-[#7B7064] mt-4 max-w-xl mx-auto text-base leading-relaxed">
               {loading ? 'Cargando productos...' : `${totalProducts} productos. Agregá los que te interesan y cotizá por WhatsApp.`}
             </p>
           </AnimatedSection>
@@ -261,7 +261,7 @@ export function ProductCatalog({
                   value={localSearch}
                   onChange={e => setLocalSearch(e.target.value)}
                   aria-label="Buscar productos"
-                  className="w-full pl-12 pr-10 py-3 bg-white border border-[#E8E2D9] rounded-2xl text-[13.5px] text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E]/40 focus:shadow-[0_0_0_3px_rgba(196,27,46,0.08)] transition-all duration-200 shadow-sm"
+                  className="w-full pl-12 pr-10 py-3 bg-white border border-[#E8E2D9] rounded-2xl text-[13.5px] text-[#1A1613] placeholder:text-[#7B7064] focus:outline-none focus:border-[#C41B2E]/40 focus:shadow-[0_0_0_3px_rgba(196,27,46,0.08)] transition-all duration-200 shadow-sm"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                   <AnimatePresence mode="wait">
@@ -315,7 +315,7 @@ export function ProductCatalog({
               <p className="text-[12px] text-[#9A8E82] mb-4 font-medium">
                 Mostrando <span className="text-[#1A1613] font-semibold">{filteredCount}</span> producto{filteredCount !== 1 ? 's' : ''}
                 {filteredCount !== totalProducts && (
-                  <span className="text-[#C0B5A8] font-normal"> de {totalProducts}</span>
+                  <span className="text-[#7B7064] font-normal"> de {totalProducts}</span>
                 )}
               </p>
             )}
@@ -373,10 +373,10 @@ export function ProductCatalog({
                   transition={{ duration: 0.3 }}
                 >
                   <div className="w-16 h-16 bg-white border border-[#EBE5DC] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
-                    <Package className="w-7 h-7 text-[#C0B5A8]" />
+                    <Package className="w-7 h-7 text-[#7B7064]" />
                   </div>
                   <h3 className="text-lg font-semibold text-[#1A1613] mb-2">Sin resultados</h3>
-                  <p className="text-[#9E9080] mb-7 max-w-xs mx-auto text-sm leading-relaxed">
+                  <p className="text-[#7B7064] mb-7 max-w-xs mx-auto text-sm leading-relaxed">
                     Ningún producto coincide con tu búsqueda o filtros activos.
                   </p>
                   <button
@@ -402,7 +402,7 @@ export function ProductCatalog({
 
           <div className="flex-1 overflow-y-auto">
             <div className="px-4 pt-4 pb-2">
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9A8E82] mb-3">Categoría</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Categoría</p>
               <div className="flex flex-col gap-0.5">
                 <label className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
                   selectedCategory === null ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
@@ -410,7 +410,7 @@ export function ProductCatalog({
                   <input type="radio" name="mobile-category" checked={selectedCategory === null} onChange={() => handleCategoryChange(null)} className="w-4 h-4 accent-[#C41B2E]" />
                   <LayoutGrid className={`w-4 h-4 flex-shrink-0 ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
                   <span className={`flex-1 text-[13px] font-medium ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>Todas</span>
-                  <span className="text-[11px] text-[#C0B5A8]">({totalProducts})</span>
+                  <span className="text-[11px] text-[#7B7064]">({totalProducts})</span>
                 </label>
                 {orderedCategories.map(cat => {
                   const Icon = ICON_MAP[cat.icon];
@@ -420,7 +420,7 @@ export function ProductCatalog({
                       <input type="radio" name="mobile-category" checked={active} onChange={() => handleCategoryChange(cat.id)} className="w-4 h-4 accent-[#C41B2E]" />
                       {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />}
                       <span className={`flex-1 text-[13px] font-medium ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{cat.name}</span>
-                      <span className="text-[11px] text-[#C0B5A8]">({categoryCounts[cat.id] ?? 0})</span>
+                      <span className="text-[11px] text-[#7B7064]">({categoryCounts[cat.id] ?? 0})</span>
                     </label>
                   );
                 })}
@@ -430,7 +430,7 @@ export function ProductCatalog({
             <div className="h-px bg-[#EBE5DC] mx-4 my-2" />
 
             <div className="px-4 pb-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9A8E82] mb-3">Disponibilidad</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Disponibilidad</p>
               <div className="flex flex-col gap-0.5">
                 {AVAILABILITY_OPTIONS.map(opt => (
                   <label key={opt.value} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${availabilityFilter === opt.value ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>

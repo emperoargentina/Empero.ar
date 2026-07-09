@@ -24,18 +24,16 @@ export function ProductCard({
   const isPlaceholder = !product.cloudinary_url;
 
   return (
-    <motion.article
-      className={`group relative cursor-pointer bg-white flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-colors duration-200 ${
+    <article
+      className={`group relative cursor-pointer bg-white flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-[transform,box-shadow,colors] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(26,22,19,0.12)] ${
         isInQuoteList ? 'border-emerald-300 shadow-emerald-100' : 'border-[#E8E2D9]'
       }`}
       onClick={() => onViewDetails(product)}
-      whileHover={{ y: -4, boxShadow: '0 16px 48px rgba(26,22,19,0.12)' }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EAE2] flex-shrink-0">
         <div className="absolute inset-0 z-10 bg-[#1A1613]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
-          <span className="flex items-center gap-1.5 text-white text-[11px] font-semibold bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/25">
+          <span className="flex items-center gap-1.5 text-white text-[11px] font-semibold bg-white/25 px-4 py-1.5 rounded-full border border-white/25">
             <Eye className="w-3 h-3" />
             Ver detalles
           </span>
@@ -44,8 +42,11 @@ export function ProductCard({
         <img
           src={imageUrl}
           alt={product.nombre}
+          width={400}
+          height={533}
           className={`w-full h-full ${isPlaceholder ? 'object-contain p-6' : 'object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]'}`}
           loading="lazy"
+          decoding="async"
         />
 
         <div className="absolute bottom-2.5 left-2.5 z-20">
@@ -69,7 +70,7 @@ export function ProductCard({
 
       {/* Info */}
       <div className="flex flex-col flex-1 px-3 pt-2.5 pb-3">
-        <p className="text-[8.5px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-1 truncate">
+        <p className="product-card-category">
           {product.categoria}
         </p>
         <h3 className="product-card-title">
@@ -100,6 +101,6 @@ export function ProductCard({
           </button>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

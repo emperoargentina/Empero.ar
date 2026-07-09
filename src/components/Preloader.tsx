@@ -6,7 +6,7 @@ interface PreloaderProps {
   isDataReady: boolean;
 }
 
-const MIN_MS = 3200;
+const MIN_MS = 600;
 
 export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
   const [progressDone, setProgressDone] = useState(false);
@@ -37,7 +37,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
   return (
     <motion.div
       className="fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col"
-      style={{ backgroundColor: '#FAFAF9' }}
+      style={{ backgroundColor: '#15120F' }}
       exit={{ y: '-100%' }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
@@ -98,7 +98,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
           <motion.img
             src="/images/logo/Logo.png"
             alt="Empero"
-            className="brightness-0 relative z-10"
+            className="brightness-0 invert relative z-10"
             style={{ width: 'clamp(150px, 17vw, 195px)', objectFit: 'contain' }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,7 +122,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
         {/* Tagline */}
         <motion.p
           className="font-sans font-light uppercase tracking-[0.28em] text-center mt-5"
-          style={{ fontSize: '0.66rem', color: 'rgba(26,22,19,0.55)' }}
+          style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.55)' }}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 2.45, ease: [0.16, 1, 0.3, 1] }}
@@ -133,7 +133,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
         {/* Sub-label */}
         <motion.p
           className="font-sans font-light uppercase text-center mt-2"
-          style={{ fontSize: '0.53rem', letterSpacing: '0.32em', color: 'rgba(26,22,19,0.3)' }}
+          style={{ fontSize: '0.7rem', letterSpacing: '0.22em', color: 'rgba(255,255,255,0.32)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 2.75 }}
@@ -144,7 +144,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
       </div>
 
       {/* Barra de progreso */}
-      <div style={{ height: '1px', background: 'rgba(0,0,0,0.07)' }}>
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)' }}>
         <motion.div
           style={{
             height: '100%',

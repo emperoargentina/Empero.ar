@@ -57,7 +57,7 @@ function FilterContent({
     <div className="flex flex-col gap-5 p-4 overflow-y-auto">
       {/* Categoría */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9A8E82] mb-2.5 px-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#7B7064] mb-2.5 px-1">
           Categoría
         </p>
         <div className="flex flex-col gap-0.5">
@@ -71,11 +71,11 @@ function FilterContent({
               onChange={() => onCategoryChange(null)}
               className="w-3.5 h-3.5 accent-[#C41B2E] flex-shrink-0"
             />
-            <LayoutGrid className={`w-3.5 h-3.5 flex-shrink-0 ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
+            <LayoutGrid className={`w-3.5 h-3.5 flex-shrink-0 ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#7B7064]'}`} />
             <span className={`flex-1 text-[12.5px] font-medium ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
               Todas
             </span>
-            <span className="text-[11px] text-[#C0B5A8] flex-shrink-0">({totalProducts})</span>
+            <span className="text-[11px] text-[#7B7064] flex-shrink-0">({totalProducts})</span>
           </label>
 
           {orderedCategories.map(cat => {
@@ -97,12 +97,12 @@ function FilterContent({
                   className="w-3.5 h-3.5 accent-[#C41B2E] flex-shrink-0"
                 />
                 {Icon && (
-                  <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
+                  <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#7B7064]'}`} />
                 )}
                 <span className={`flex-1 text-[12.5px] font-medium truncate ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
                   {cat.name}
                 </span>
-                <span className="text-[11px] text-[#C0B5A8] flex-shrink-0">({count})</span>
+                <span className="text-[11px] text-[#7B7064] flex-shrink-0">({count})</span>
               </label>
             );
           })}
@@ -113,7 +113,7 @@ function FilterContent({
 
       {/* Disponibilidad */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9A8E82] mb-2.5 px-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#7B7064] mb-2.5 px-1">
           Disponibilidad
         </p>
         <div className="flex flex-col gap-0.5">
@@ -214,7 +214,7 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                   className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                     props.selectedCategory === null
                       ? 'text-[#C41B2E] bg-[#FFF0F1]'
-                      : 'text-[#9A8E82] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
+                      : 'text-[#7B7064] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
                   }`}
                 >
                   <LayoutGrid className="w-4 h-4" />
@@ -236,7 +236,7 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                       className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                         active
                           ? 'text-[#C41B2E] bg-[#FFF0F1]'
-                          : 'text-[#9A8E82] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
+                          : 'text-[#7B7064] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
                       }`}
                     >
                       {Icon && <Icon className="w-4 h-4" />}

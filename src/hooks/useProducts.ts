@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { fetchAvailableProducts } from '@/lib/productsApi';
 import type { Product } from '@/data/products';
 
 export type { Product };
@@ -49,11 +49,7 @@ export async function prefetchProducts(): Promise<void> {
   const cached = readCache();
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) return;
   try {
-    const { data } = await supabase
-      .from('products')
-      .select('*')
-      .eq('disponible', true)
-      .order('nombre', { ascending: true });
+    const data = await fetchAvailableProducts();
     if (data) writeCache(data);
   } catch {
     // silent — ProductCatalog will retry
@@ -85,14 +81,7 @@ export function useProducts(): UseProductsReturn {
       setLoading(true);
       setError(null);
       try {
-        const { data, error: sbError } = await supabase
-          .from('products')
-          .select('*')
-          .eq('disponible', true)
-          .order('nombre', { ascending: true });
-
-        if (sbError) throw sbError;
-        const products = data ?? [];
+        const products = await fetchAvailableProducts();
         writeCache(products);
         setAllProducts(products);
       } catch (err: unknown) {

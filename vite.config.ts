@@ -17,7 +17,23 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: 'esnext',
     chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 2,
+      },
+      mangle: true,
+      format: {
+        comments: false,
+      },
+    },
     rollupOptions: {
+      treeshake: {
+        moduleSideEffects: 'no-external',
+        propertyReadSideEffects: false,
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor-react'
@@ -26,6 +42,7 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/gsap') || id.includes('node_modules/lenis')) return 'vendor-animation'
           if (id.includes('node_modules/@supabase')) return 'vendor-supabase'
           if (id.includes('node_modules/lucide-react')) return 'vendor-lucide'
+          if (id.includes('node_modules/@radix-ui')) return 'vendor-radix'
         },
       },
     },

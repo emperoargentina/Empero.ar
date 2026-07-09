@@ -63,7 +63,7 @@ export function AdminPanel({ session }: Props) {
     <div className="flex flex-col h-full bg-[#1A1613]">
       {/* Brand */}
       <div className="px-5 py-6 border-b border-white/[0.06] flex-shrink-0">
-        <img src="/images/logo/Logo.png" alt="Empero" className="h-7 w-auto brightness-0 invert" />
+        <img src="/images/logo/Logo.png" alt="Empero" width={480} height={333} className="h-7 w-auto brightness-0 invert" />
         <p className="text-[10px] text-[#4A4540] uppercase tracking-[0.15em] mt-2 font-medium">
           Panel Administrativo
         </p>

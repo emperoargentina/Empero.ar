@@ -24,26 +24,26 @@ export function Nosotros() {
     <section id="nosotros" className="py-20 lg:py-28 bg-white relative">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
 
         {/* Header */}
         <div className="text-center mb-14">
           <AnimatedSection direction="up">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C41B2E]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
                 Nosotros
               </span>
               <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
             </div>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.08}>
-            <h2 className="text-4xl md:text-5xl font-serif font-normal text-[#1A1613]">
+            <h2 className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
               Quiénes <em className="not-italic text-[#C41B2E]">somos</em>
             </h2>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#9E9080] mt-4 max-w-2xl mx-auto text-base leading-relaxed">
+            <p className="text-[#7B7064] mt-4 max-w-2xl mx-auto text-base leading-relaxed">
               Somos distribuidores oficiales de <strong className="text-[#1A1613]">Empero</strong> en Argentina &mdash;
               una de las marcas líder en equipamiento gastronómico industrial a nivel mundial, con más de 40 años de historia y presencia en más de 90 países.
             </p>
@@ -57,13 +57,13 @@ export function Nosotros() {
           <AnimatedSection direction="left">
             <div className="grid grid-cols-2 gap-3 h-[480px] sm:h-[540px]">
               <div className="row-span-2 overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.main} alt="Cocina industrial Empero" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <img src={IMAGES.main} alt="Cocina industrial Empero" width={900} height={1100} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.topRight} alt="Horno industrial" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <img src={IMAGES.topRight} alt="Horno industrial" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.botRight} alt="Equipamiento profesional" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <img src={IMAGES.botRight} alt="Equipamiento profesional" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
             </div>
           </AnimatedSection>
@@ -71,16 +71,16 @@ export function Nosotros() {
           {/* Story */}
           <AnimatedSection direction="right" delay={0.1}>
             <div className="flex flex-col justify-center lg:pt-4">
-              <p className="text-[10px] font-semibold text-[#C41B2E] uppercase tracking-[0.18em] mb-4">
+              <p className="text-[11px] font-semibold text-[#C41B2E] uppercase tracking-[0.12em] mb-4">
                 Historia de la marca
               </p>
-              <h3 className="text-2xl md:text-3xl font-serif font-normal text-[#1A1613] leading-tight mb-6">
+              <h3 className="text-2xl md:text-3xl font-serif font-[560] text-[#1A1613] leading-tight mb-6">
                 40 años fabricando equipamiento gastronómico de clase mundial
               </h3>
-              <p className="text-[#9E9080] leading-relaxed mb-5 text-[15px]">
+              <p className="text-[#7B7064] leading-relaxed mb-5 text-[15px]">
                 Empero nació en <strong className="text-[#4A4540]">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="text-[#4A4540]">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="text-[#4A4540]">Empero Group</strong>, consolidando una planta de producción de más de <strong className="text-[#4A4540]">60.000 m²</strong> en Konya, Turquía.
               </p>
-              <p className="text-[#9E9080] leading-relaxed mb-8 text-[15px]">
+              <p className="text-[#7B7064] leading-relaxed mb-8 text-[15px]">
                 Hoy Empero fabrica más de <strong className="text-[#4A4540]">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="text-[#4A4540]">90 países</strong>. <strong className="text-[#1A1613]">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
               </p>
 
@@ -104,7 +104,7 @@ export function Nosotros() {
           <div className="grid grid-cols-3 gap-3 h-52 sm:h-64 mb-14">
             {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((src, i) => (
               <div key={i} className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={src} alt={`Imagen ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                <img src={src} alt={`Imagen ${i + 1}`} width={700} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>
@@ -135,7 +135,7 @@ export function Nosotros() {
                   <div className="w-10 h-10 bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.18)] rounded-xl flex items-center justify-center mx-auto mb-4">
                     <stat.icon className="w-4.5 h-4.5 text-[#C41B2E]" />
                   </div>
-                  <div className="text-4xl font-serif font-normal text-white tracking-tight leading-none mb-1">
+                  <div className="text-4xl font-serif font-[560] text-white tracking-tight leading-none mb-1">
                     {stat.value}
                   </div>
                   <div className="text-sm text-white/40 font-medium">{stat.label}</div>

@@ -220,7 +220,7 @@ export function Products() {
                     <td className="px-4 py-3">
                       <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center">
                         {p.cloudinary_url
-                          ? <img src={p.cloudinary_url} alt={p.nombre} className="w-full h-full object-cover" />
+                          ? <img src={p.cloudinary_url} alt={p.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
                           : <Package className="w-4 h-4 text-[#C0B5A8]" />
                         }
                       </div>

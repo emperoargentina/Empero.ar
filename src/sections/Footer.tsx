@@ -45,6 +45,9 @@ export function Footer() {
             <img
               src="/images/logo/Logo.png"
               alt={companyConfig.name}
+              width={480}
+              height={333}
+              loading="lazy"
               className="h-11 w-auto object-contain object-left brightness-0 invert"
             />
             <p className="text-white/45 text-sm leading-relaxed max-w-xs">
@@ -59,7 +62,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-200 cursor-pointer text-white/35 hover:text-white"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-200 cursor-pointer text-white/40 hover:text-white"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                   whileHover={{ y: -2, backgroundColor: 'rgba(196,27,46,0.15)', borderColor: 'rgba(196,27,46,0.3)' }}
                   transition={{ type: 'spring', stiffness: 420, damping: 20 }}
@@ -72,7 +75,7 @@ export function Footer() {
 
           {/* Contact */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-3">
-            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">
               Contacto
             </h4>
             <ul className="space-y-3">
@@ -87,7 +90,7 @@ export function Footer() {
 
           {/* Navigation */}
           <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">
               Navegación
             </h4>
             <ul className="space-y-2.5">
@@ -108,7 +111,7 @@ export function Footer() {
 
           {/* Categories */}
           <div className="col-span-1 sm:col-span-1 lg:col-span-3">
-            <h4 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30 mb-4">
+            <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">
               Categorías
             </h4>
             <ul className="space-y-2.5">
@@ -131,16 +134,16 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/25 text-xs">
+          <p className="text-white/50 text-xs">
             © {new Date().getFullYear()} {companyConfig.name}. Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-4">
-            <button className="text-white/25 hover:text-white/55 text-xs transition-colors cursor-pointer">Privacidad</button>
-            <button className="text-white/25 hover:text-white/55 text-xs transition-colors cursor-pointer">Términos</button>
+            <button className="text-white/50 hover:text-white/80 text-xs transition-colors cursor-pointer">Privacidad</button>
+            <button className="text-white/50 hover:text-white/80 text-xs transition-colors cursor-pointer">Términos</button>
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Volver arriba"
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-white/30 hover:text-white cursor-pointer"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white/40 hover:text-white cursor-pointer"
               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.93 }}

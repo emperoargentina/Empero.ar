@@ -75,13 +75,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        serif:   ['"Instrument Serif"', 'Georgia', 'serif'],
+        display: ['"Fraunces"', 'Georgia', 'serif'],
+        serif:   ['"Fraunces"', 'Georgia', 'serif'],
         sans:    ['"DM Sans"', 'system-ui', 'sans-serif'],
-        inter:   ['"Inter"', 'system-ui', 'sans-serif'],
-        jakarta: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        outfit:  ['"Outfit"', 'system-ui', 'sans-serif'],
-        script:  ['Qwitcher Grypen', 'cursive'],
+        mono:    ['"DM Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {
         'display': ['5.5rem', { lineHeight: '1.05', letterSpacing: '-0.03em' }],

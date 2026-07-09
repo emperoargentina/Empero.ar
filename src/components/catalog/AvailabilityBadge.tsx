@@ -7,7 +7,7 @@ interface AvailabilityBadgeProps {
 
 export function AvailabilityBadge({ modo, size = 'md' }: AvailabilityBadgeProps) {
   const isMd = size === 'md';
-  const base = isMd ? 'pl-2.5 pr-3 py-1 text-[10px]' : 'pl-2 pr-2.5 py-0.5 text-[9px]';
+  const base = isMd ? 'pl-2.5 pr-3 py-1 text-[10.5px]' : 'pl-2 pr-2.5 py-0.5 text-[10px]';
 
   if (modo === 'en_stock') {
     return (

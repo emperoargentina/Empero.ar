@@ -49,7 +49,6 @@ export function Hero({ isReady = false }: HeroProps) {
       gsap.to(contentRef.current, {
         opacity: 0,
         scale: 0.94,
-        filter: 'blur(6px)',
         y: -50,
         ease: 'none',
         scrollTrigger: {
@@ -112,7 +111,7 @@ export function Hero({ isReady = false }: HeroProps) {
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 lg:pt-0"
     >
       {/* Background */}
-      <div ref={bgRef} className="absolute inset-0 z-0">
+      <div ref={bgRef} className="absolute inset-0 z-0" style={{ willChange: 'transform' }}>
         <div className="absolute inset-0 hero-kenburns">
           <picture>
             <source srcSet="/images/Visuales/HeroImage.webp" type="image/webp" />
@@ -120,6 +119,8 @@ export function Hero({ isReady = false }: HeroProps) {
               src="/images/Visuales/HeroImage.jpg"
               alt="Cocina industrial profesional Empero"
               className="w-full h-full object-cover"
+              width={1920}
+              height={1097}
               fetchPriority="high"
               decoding="async"
             />
@@ -134,7 +135,7 @@ export function Hero({ isReady = false }: HeroProps) {
       </div>
 
       {/* Content */}
-      <div ref={contentRef} className="relative z-10 w-full container-custom py-16 lg:py-24">
+      <div ref={contentRef} className="relative z-10 w-full container-custom py-16 lg:py-24" style={{ willChange: 'transform, opacity' }}>
         <div className="max-w-4xl mx-auto text-center">
 
           {/* Ornament + tagline */}
@@ -150,7 +151,7 @@ export function Hero({ isReady = false }: HeroProps) {
 
           {/* Title */}
           <div className="hero-entrance hero-title mb-5 lg:mb-6">
-            <h1 className="text-[2.8rem] leading-[1.0] sm:text-6xl md:text-[4.5rem] lg:text-[6.5rem] xl:text-[7.5rem] font-serif font-normal text-white tracking-[-0.025em]">
+            <h1 className="text-[2.8rem] leading-[1.0] sm:text-6xl md:text-[4.5rem] lg:text-[6.5rem] xl:text-[7.5rem] font-serif font-[560] text-white tracking-[-0.025em]">
               Equipamiento
               <br />
               <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>
@@ -181,17 +182,17 @@ export function Hero({ isReady = false }: HeroProps) {
 
             {/* Trust indicators */}
             <div className="flex items-center justify-center gap-5 mt-7">
-              <span className="flex items-center gap-2 text-white/35 text-xs font-medium">
+              <span className="flex items-center gap-2 text-white/50 text-xs font-medium">
                 <Shield className="w-3.5 h-3.5 text-white/25" />
                 Garantía certificada
               </span>
               <span className="w-px h-3.5 bg-white/10" />
-              <span className="flex items-center gap-2 text-white/35 text-xs font-medium">
+              <span className="flex items-center gap-2 text-white/50 text-xs font-medium">
                 <Zap className="w-3.5 h-3.5 text-white/25" />
                 Respuesta en 24h
               </span>
               <span className="w-px h-3.5 bg-white/10 hidden sm:block" />
-              <span className="hidden sm:flex items-center gap-2 text-white/35 text-xs font-medium">
+              <span className="hidden sm:flex items-center gap-2 text-white/50 text-xs font-medium">
                 <Star className="w-3.5 h-3.5 text-white/25" />
                 +5000 clientes
               </span>
@@ -208,8 +209,8 @@ export function Hero({ isReady = false }: HeroProps) {
               ].map(({ key, display, label, icon: Icon }) => (
                 <div
                   key={key}
-                  className="text-center px-3 py-4 sm:px-4 sm:py-5 backdrop-blur-md rounded-2xl border border-[rgba(196,27,46,0.12)]"
-                  style={{ background: 'rgba(196,27,46,0.04)' }}
+                  className="text-center px-3 py-4 sm:px-4 sm:py-5 rounded-2xl border border-[rgba(196,27,46,0.14)]"
+                  style={{ background: 'rgba(21,17,14,0.55)' }}
                 >
                   <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[rgba(196,27,46,0.1)] rounded-lg flex items-center justify-center mx-auto mb-2.5">
                     <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C41B2E]" />
@@ -217,7 +218,7 @@ export function Hero({ isReady = false }: HeroProps) {
                   <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-none">
                     {display}
                   </div>
-                  <div className="text-[11px] sm:text-xs text-white/35 mt-1.5 font-medium">{label}</div>
+                  <div className="text-[11px] sm:text-xs text-white/50 mt-1.5 font-medium">{label}</div>
                 </div>
               ))}
             </div>

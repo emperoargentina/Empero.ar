@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, type TargetAndTransition } from 'framer-motion';
-
-type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
+import { motion } from 'framer-motion';
 import {
   Menu,
   X,
@@ -141,26 +139,22 @@ export function Navigation({
       <nav className="fixed top-0 left-0 right-0 z-[60]">
         <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:px-3 lg:pt-3' : ''}`}>
           <motion.div
-            animate={(isScrolled ? {
-              backgroundColor: 'rgba(250,250,248,0.97)',
+            animate={isScrolled ? {
+              backgroundColor: 'rgba(250,250,248,1)',
               boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 6px 32px rgba(26,22,19,0.08)',
               borderColor: 'rgba(196,27,46,0.18)',
-              backdropFilter: 'blur(14px)',
-              WebkitBackdropFilter: 'blur(14px)',
             } : {
               backgroundColor: 'rgba(0,0,0,0)',
               boxShadow: '0 0 0 rgba(0,0,0,0)',
               borderColor: 'rgba(196,27,46,0)',
-              backdropFilter: 'blur(0px)',
-              WebkitBackdropFilter: 'blur(0px)',
-            }) as WebkitBlurTarget}
+            }}
             transition={{
               duration: isScrolled ? 0.45 : 0.7,
               ease: [0.16, 1, 0.3, 1],
             }}
             className={`relative border-b lg:border transition-[border-radius,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isScrolled
-                ? 'lg:max-w-[1280px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
+                ? 'lg:max-w-[1600px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5 lg:rounded-none'
             }`}
           >
@@ -180,6 +174,9 @@ export function Navigation({
                 <img
                   src="/images/logo/Logo.png"
                   alt={companyConfig.name}
+                  width={480}
+                  height={333}
+                  fetchPriority="high"
                   className={`transition-all duration-300 w-auto ${
                     isScrolled ? 'h-9 lg:h-9' : 'h-10 lg:h-12 brightness-0 invert'
                   }`}
@@ -257,7 +254,7 @@ export function Navigation({
                   className={`hidden lg:flex relative items-center gap-2 px-3.5 py-2 rounded-xl transition-all duration-150 cursor-pointer border ${
                     isScrolled
                       ? 'bg-[#F4F0E8] hover:bg-[#EBE5DC] text-[#6B6159] border-[#EBE5DC]'
-                      : 'bg-white/10 hover:bg-white/20 text-white border-white/15 backdrop-blur-sm'
+                      : 'bg-white/20 hover:bg-white/30 text-white border-white/15'
                   }`}
                 >
                   <ClipboardList className="w-4 h-4" />
@@ -328,7 +325,7 @@ export function Navigation({
               <ClipboardList className="w-4 h-4 text-[#C41B2E]" />
               <span className="font-semibold text-[#1A1613] tracking-tight text-base">Mi lista</span>
               {totalQuoteItems > 0 && (
-                <span className="ml-auto text-[11px] font-medium text-[#9E9080] bg-[#F4F0E8] px-2.5 py-1 rounded-sm border border-[#EBE5DC]">
+                <span className="ml-auto text-[11px] font-medium text-[#7B7064] bg-[#F4F0E8] px-2.5 py-1 rounded-sm border border-[#EBE5DC]">
                   {totalQuoteItems} {totalQuoteItems === 1 ? 'producto' : 'productos'}
                 </span>
               )}
@@ -339,10 +336,10 @@ export function Navigation({
             {quoteItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">
                 <div className="w-14 h-14 border border-[#EBE5DC] rounded-sm flex items-center justify-center mb-4">
-                  <ClipboardList className="w-6 h-6 text-[#C0B5A8]" />
+                  <ClipboardList className="w-6 h-6 text-[#7B7064]" />
                 </div>
                 <p className="text-sm font-semibold text-[#1A1613] mb-1">Lista vacía</p>
-                <p className="text-xs text-[#9E9080] max-w-[200px] leading-relaxed">
+                <p className="text-xs text-[#7B7064] max-w-[200px] leading-relaxed">
                   Explorá el catálogo y agregá productos para cotizar juntos.
                 </p>
               </div>
@@ -354,20 +351,23 @@ export function Navigation({
                       <img
                         src={item.product.cloudinary_url ?? getCategoryImage(item.product.categoria)}
                         alt={item.product.nombre}
+                        width={56}
+                        height={56}
+                        loading="lazy"
                         className="w-14 h-14 object-cover rounded-sm flex-shrink-0 bg-[#EBE5DC]"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] font-semibold text-[#C41B2E] uppercase tracking-[0.12em] mb-0.5">
+                        <p className="text-[10.5px] font-semibold text-[#C41B2E] uppercase tracking-[0.08em] mb-0.5">
                           {item.product.categoria}
                         </p>
-                        <h4 className="text-[12px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
+                        <h4 className="text-[13px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
                           {item.product.nombre}
                         </h4>
-                        <p className="text-[10px] font-mono text-[#9E9080] mt-0.5">#{item.product.codigo}</p>
+                        <p className="text-[10px] font-mono text-[#7B7064] mt-0.5">#{item.product.codigo}</p>
                       </div>
                       <button
                         onClick={() => onRemoveFromQuote?.(item.product.id)}
-                        className="p-1.5 text-[#C0B5A8] hover:text-[#C41B2E] transition-colors cursor-pointer flex-shrink-0 self-start"
+                        className="p-1.5 text-[#7B7064] hover:text-[#C41B2E] transition-colors cursor-pointer flex-shrink-0 self-start"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -378,7 +378,7 @@ export function Navigation({
                         <button
                           onClick={() => onUpdateQuantity?.(item.product.id, item.quantity - 1)}
                           disabled={item.quantity <= 1}
-                          className="w-7 h-7 flex items-center justify-center text-[#9E9080] hover:bg-[#F4F0E8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                          className="w-7 h-7 flex items-center justify-center text-[#7B7064] hover:bg-[#F4F0E8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
@@ -387,7 +387,7 @@ export function Navigation({
                         </span>
                         <button
                           onClick={() => onUpdateQuantity?.(item.product.id, item.quantity + 1)}
-                          className="w-7 h-7 flex items-center justify-center text-[#9E9080] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
+                          className="w-7 h-7 flex items-center justify-center text-[#7B7064] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
@@ -395,7 +395,7 @@ export function Navigation({
 
                       <button
                         onClick={() => setExpandedItem(expandedItem === item.product.id ? null : item.product.id)}
-                        className="text-[11px] font-medium text-[#9E9080] hover:text-[#C41B2E] transition-colors cursor-pointer flex items-center gap-1"
+                        className="text-[11px] font-medium text-[#7B7064] hover:text-[#C41B2E] transition-colors cursor-pointer flex items-center gap-1"
                       >
                         {expandedItem === item.product.id ? (
                           <><ChevronUp className="w-3 h-3" /> Ocultar notas</>
@@ -411,7 +411,7 @@ export function Navigation({
                           placeholder="Especificaciones, consultas..."
                           value={item.notes}
                           onChange={(e) => onUpdateNotes?.(item.product.id, e.target.value)}
-                          className="text-xs resize-none rounded-sm border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus:border-[#C41B2E]"
+                          className="text-xs resize-none rounded-sm border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#7B7064] focus:border-[#C41B2E]"
                           rows={2}
                         />
                       </div>
@@ -435,14 +435,14 @@ export function Navigation({
               <div className="flex gap-2">
                 <button
                   onClick={onClearQuote}
-                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#9E9080] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#7B7064] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-3 h-3" />
                   Vaciar
                 </button>
                 <button
                   onClick={() => setIsQuoteOpen(false)}
-                  className="flex-1 h-9 text-[11px] font-medium text-[#9E9080] hover:text-[#1A1613] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 text-[11px] font-medium text-[#7B7064] hover:text-[#1A1613] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
                 >
                   Seguir viendo
                 </button>
@@ -456,7 +456,7 @@ export function Navigation({
       {/* ── Mobile menu ─────────────────────────────────────────── */}
       <div className={`fixed inset-0 z-[55] lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
         <div
-          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-black/45 transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div
@@ -467,6 +467,9 @@ export function Navigation({
             <img
               src="/images/logo/Logo.png"
               alt={companyConfig.name}
+              width={480}
+              height={333}
+              loading="lazy"
               className="h-7 w-auto"
             />
             <button
@@ -492,7 +495,7 @@ export function Navigation({
               </div>
               <div className="text-left">
                 <span className="font-semibold text-[#1A1613] text-sm">Mi lista de cotización</span>
-                <span className="block text-[11px] text-[#9E9080] mt-0.5">
+                <span className="block text-[11px] text-[#7B7064] mt-0.5">
                   {totalQuoteItems > 0 ? `${totalQuoteItems} producto${totalQuoteItems !== 1 ? 's' : ''}` : 'Sin productos aún'}
                 </span>
               </div>
@@ -514,7 +517,7 @@ export function Navigation({
                           <button
                             key={cat.id}
                             onClick={() => handleCategoryClick(cat.id)}
-                            className="block w-full text-left text-sm text-[#9E9080] px-3 py-2 rounded-sm hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer"
+                            className="block w-full text-left text-sm text-[#7B7064] px-3 py-2 rounded-sm hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer"
                           >
                             {cat.name}
                           </button>

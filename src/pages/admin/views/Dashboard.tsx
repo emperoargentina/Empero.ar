@@ -169,7 +169,7 @@ export function Dashboard({ onNavigate }: Props) {
               <div key={p.id} className="flex items-center gap-4 px-5 py-3 hover:bg-[#FAF8F4] transition-colors">
                 <div className="w-10 h-10 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center">
                   {p.cloudinary_url
-                    ? <img src={p.cloudinary_url} alt={p.nombre} className="w-full h-full object-cover" />
+                    ? <img src={p.cloudinary_url} alt={p.nombre} width={40} height={40} loading="lazy" className="w-full h-full object-cover" />
                     : <Package className="w-5 h-5 text-[#C0B5A8]" />
                   }
                 </div>

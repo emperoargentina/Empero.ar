@@ -25,7 +25,7 @@ function InputField({
     <div>
       <label
         htmlFor={id}
-        className="block mb-2.5 text-[9px] font-semibold uppercase tracking-[0.22em] transition-colors duration-200"
+        className="block mb-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors duration-200"
         style={{ color: focused ? '#C41B2E' : '#9A8E82' }}
       >
         {label}{required && <span className="ml-1 text-[#C41B2E]/60">*</span>}
@@ -63,7 +63,7 @@ function TextareaField({
     <div>
       <label
         htmlFor={id}
-        className="block mb-2.5 text-[9px] font-semibold uppercase tracking-[0.22em] transition-colors duration-200"
+        className="block mb-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors duration-200"
         style={{ color: focused ? '#C41B2E' : '#9A8E82' }}
       >
         {label}{required && <span className="ml-1 text-[#C41B2E]/60">*</span>}
@@ -149,8 +149,8 @@ export function ContactForm() {
         }}
       />
 
-      <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-24 lg:py-36">
-        <div className="grid lg:grid-cols-[2fr_3fr] gap-14 lg:gap-20 items-start">
+      <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-24 lg:py-36">
+        <div className="grid lg:grid-cols-[2fr_3fr] gap-14 lg:gap-24 items-start">
 
           {/* ── LEFT ── */}
           <AnimatedSection direction="up">
@@ -158,19 +158,19 @@ export function ContactForm() {
 
               <div className="flex items-center gap-3 mb-10">
                 <div className="h-px w-8 bg-[#C41B2E]" />
-                <span className="text-[9px] font-semibold uppercase tracking-[0.28em] text-[#C41B2E]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C41B2E]">
                   Contacto
                 </span>
               </div>
 
               <h2
-                className="font-serif font-normal leading-none mb-6"
+                className="font-serif font-[560] leading-none mb-6"
                 style={{ fontSize: 'clamp(3.2rem, 6.5vw, 5.5rem)', letterSpacing: '-0.02em', color: '#1A1613' }}
               >
                 Hablemos.
               </h2>
 
-              <p className="text-sm leading-relaxed mb-14 max-w-[260px]" style={{ color: '#7A6E65' }}>
+              <p className="text-base leading-relaxed mb-14 max-w-[340px]" style={{ color: '#7A6E65' }}>
                 Consultas sobre equipamiento, precios y disponibilidad. Respondemos en menos de 24&nbsp;hs.
               </p>
 
@@ -178,11 +178,7 @@ export function ContactForm() {
               <ul>
                 {channels.map((ch, i) => {
                   const content = (
-                    <li
-                      key={ch.key}
-                      className={`group flex items-center gap-4 py-[18px] border-t transition-colors duration-200 cursor-pointer ${i === channels.length - 1 ? 'border-b' : ''}`}
-                      style={{ borderColor: 'rgba(0,0,0,0.08)' }}
-                    >
+                    <>
                       <div
                         className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200"
                         style={{ color: ch.color, background: '#EBE5DA', border: '1px solid rgba(0,0,0,0.07)' }}
@@ -190,13 +186,13 @@ export function ContactForm() {
                         {ch.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[8.5px] font-semibold uppercase tracking-[0.18em] mb-0.5" style={{ color: '#B0A498' }}>
+                        <p className="text-[10.5px] font-semibold uppercase tracking-[0.1em] mb-0.5" style={{ color: '#B0A498' }}>
                           {ch.label}
                         </p>
-                        <p className="text-[13.5px] font-medium truncate transition-colors duration-200" style={{ color: '#1A1613' }}>
+                        <p className="text-sm font-medium truncate transition-colors duration-200" style={{ color: '#1A1613' }}>
                           {ch.value}
                         </p>
-                        <p className="text-[10px] mt-0.5" style={{ color: '#B0A498' }}>
+                        <p className="text-[11.5px] mt-0.5" style={{ color: '#B0A498' }}>
                           {ch.sub}
                         </p>
                       </div>
@@ -204,12 +200,26 @@ export function ContactForm() {
                         className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         style={{ color: ch.color, opacity: 0.6 }}
                       />
-                    </li>
+                    </>
                   );
 
-                  return ch.href
-                    ? <a key={ch.key} href={ch.href}>{content}</a>
-                    : <button key={ch.key} type="button" onClick={handleWhatsAppClick} className="w-full text-left">{content}</button>;
+                  return (
+                    <li
+                      key={ch.key}
+                      className={`border-t ${i === channels.length - 1 ? 'border-b' : ''}`}
+                      style={{ borderColor: 'rgba(0,0,0,0.08)' }}
+                    >
+                      {ch.href ? (
+                        <a href={ch.href} className="group flex items-center gap-4 py-[18px] cursor-pointer">
+                          {content}
+                        </a>
+                      ) : (
+                        <button type="button" onClick={handleWhatsAppClick} className="group w-full text-left flex items-center gap-4 py-[18px] cursor-pointer">
+                          {content}
+                        </button>
+                      )}
+                    </li>
+                  );
                 })}
               </ul>
             </div>
@@ -230,10 +240,10 @@ export function ContactForm() {
 
               {/* Header */}
               <div className="px-8 sm:px-10 py-7" style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                <p className="text-[8.5px] font-semibold uppercase tracking-[0.3em] text-[#C41B2E] mb-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C41B2E] mb-2">
                   Consulta
                 </p>
-                <h3 className="font-serif font-normal" style={{ fontSize: '1.3rem', color: '#1A1613' }}>
+                <h3 className="font-serif font-[560]" style={{ fontSize: '1.3rem', color: '#1A1613' }}>
                   Envianos tu mensaje
                 </h3>
               </div>
@@ -259,10 +269,10 @@ export function ContactForm() {
                       >
                         <CheckCircle2 className="w-7 h-7 text-[#C41B2E]" />
                       </motion.div>
-                      <h4 className="font-serif font-normal mb-2" style={{ fontSize: '1.2rem', color: '#1A1613' }}>
+                      <h4 className="font-serif font-[560] mb-2" style={{ fontSize: '1.2rem', color: '#1A1613' }}>
                         Mensaje enviado
                       </h4>
-                      <p className="text-[13px]" style={{ color: '#9A8E82' }}>
+                      <p className="text-sm" style={{ color: '#9A8E82' }}>
                         Te responderemos en menos de 24&nbsp;hs.
                       </p>
                     </motion.div>
@@ -320,12 +330,11 @@ export function ContactForm() {
                         >
                           {/* Shimmer */}
                           <motion.div
-                            className="absolute inset-0 pointer-events-none"
+                            className="absolute inset-y-0 left-0 w-1/2 pointer-events-none"
                             style={{
-                              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)',
-                              backgroundSize: '200% 100%',
+                              background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.14) 50%, transparent 100%)',
                             }}
-                            animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
+                            animate={{ x: ['-100%', '250%'] }}
                             transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
                           />
 
@@ -347,7 +356,7 @@ export function ContactForm() {
                           )}
                         </motion.button>
 
-                        <p className="text-center mt-4 text-[10.5px]" style={{ color: '#B0A498' }}>
+                        <p className="text-center mt-4 text-[11.5px]" style={{ color: '#B0A498' }}>
                           También podés escribirnos por{' '}
                           <button
                             type="button"
