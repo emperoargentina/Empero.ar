@@ -44,7 +44,7 @@ function getItemsPerPage(): number {
   if (w >= 1280) return 16;
   if (w >= 1024) return 12;
   if (w >= 640)  return 8;
-  return 4;
+  return 6;
 }
 
 function SkeletonCard() {

@@ -9,7 +9,12 @@
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
       "Bash(xargs grep *)",
       "Bash(npm run *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(npx vite *)",
+      "Bash(curl -sv -o /dev/null -w \"HTTP:%{http_code} time:%{time_total}\\\\n\" \"https://ujfeannqsiatavnarrhf.supabase.co\")",
+      "Bash(npx eslint *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }

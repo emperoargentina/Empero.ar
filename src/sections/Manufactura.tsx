@@ -3,13 +3,24 @@ import { companyConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { motion } from 'framer-motion';
 
+// srcSet chico + grande por imagen — en mobile el mosaico muestra cada foto a
+// ~45vw, no tiene sentido bajar el archivo de escritorio (900px) para eso.
+function unsplashSrcSet(id: string, w: number, h: number) {
+  const half = { w: Math.round(w / 2), h: Math.round(h / 2) };
+  const base = `https://images.unsplash.com/${id}?fit=crop&auto=format&q=75`;
+  return {
+    src: `${base}&w=${w}&h=${h}`,
+    srcSet: `${base}&w=${half.w}&h=${half.h} ${half.w}w, ${base}&w=${w}&h=${h} ${w}w`,
+  };
+}
+
 const IMAGES = {
-  main:    'https://images.unsplash.com/photo-1581349485608-9469926a8e5e?w=900&h=1100&fit=crop',
-  topRight:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=500&fit=crop',
-  botRight:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=600&h=500&fit=crop',
-  gal1:    'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=700&h=500&fit=crop',
-  gal2:    'https://images.unsplash.com/photo-1544025162-d76694265947?w=700&h=500&fit=crop',
-  gal3:    'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=700&h=500&fit=crop',
+  main:     unsplashSrcSet('photo-1581349485608-9469926a8e5e', 900, 1100),
+  topRight: unsplashSrcSet('photo-1556910103-1c02745aae4d', 600, 500),
+  botRight: unsplashSrcSet('photo-1565538810643-b5bdb714032a', 600, 500),
+  gal1:     unsplashSrcSet('photo-1577219491135-ce391730fb2c', 700, 500),
+  gal2:     unsplashSrcSet('photo-1544025162-d76694265947', 700, 500),
+  gal3:     unsplashSrcSet('photo-1590794056226-79ef3a8147e1', 700, 500),
 };
 
 const stats = [
@@ -57,13 +68,13 @@ export function Nosotros() {
           <AnimatedSection direction="left">
             <div className="grid grid-cols-2 gap-3 h-[480px] sm:h-[540px]">
               <div className="row-span-2 overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.main} alt="Cocina industrial Empero" width={900} height={1100} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.main.src} srcSet={IMAGES.main.srcSet} sizes="(min-width: 1024px) 380px, 45vw" alt="Cocina industrial Empero" width={900} height={1100} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.topRight} alt="Horno industrial" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.topRight.src} srcSet={IMAGES.topRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Horno industrial" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.botRight} alt="Equipamiento profesional" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.botRight.src} srcSet={IMAGES.botRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Equipamiento profesional" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
             </div>
           </AnimatedSection>
@@ -102,9 +113,9 @@ export function Nosotros() {
         {/* Gallery strip */}
         <AnimatedSection direction="up" delay={0.1}>
           <div className="grid grid-cols-3 gap-3 h-52 sm:h-64 mb-14">
-            {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((src, i) => (
+            {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((img, i) => (
               <div key={i} className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={src} alt={`Imagen ${i + 1}`} width={700} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 350px, 30vw" alt={`Imagen ${i + 1}`} width={700} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>

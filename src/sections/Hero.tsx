@@ -34,33 +34,41 @@ export function Hero({ isReady = false }: HeroProps) {
   }, [isReady]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.to(bgRef.current, {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      });
+    const mm = gsap.matchMedia();
 
-      gsap.to(contentRef.current, {
-        opacity: 0,
-        scale: 0.94,
-        y: -50,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: '40% top',
-          end: 'bottom top',
-          scrub: 0.6,
-        },
-      });
-    }, sectionRef);
+    // Parallax scroll-scrub es costoso en GPUs móviles (repaint por frame de
+    // scroll) — solo se activa desde lg, donde el hardware lo sostiene bien.
+    mm.add('(min-width: 1024px)', () => {
+      const ctx = gsap.context(() => {
+        gsap.to(bgRef.current, {
+          yPercent: 30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
 
-    return () => ctx.revert();
+        gsap.to(contentRef.current, {
+          opacity: 0,
+          scale: 0.94,
+          y: -50,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: '40% top',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        });
+      }, sectionRef);
+
+      return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   const statsRef = useRef<HTMLDivElement>(null);
@@ -127,8 +135,8 @@ export function Hero({ isReady = false }: HeroProps) {
           </picture>
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black/90" />
-        {/* Subtle red glow */}
-        <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+        {/* Subtle red glow — blur radius grande es caro en GPUs móviles, solo desktop */}
+        <div className="hidden lg:block absolute inset-0 z-[1] pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#C41B2E]/[0.06] rounded-full blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#C41B2E]/[0.04] rounded-full blur-[120px]" />
         </div>

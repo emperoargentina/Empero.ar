@@ -454,7 +454,7 @@ export function Navigation({
       </Sheet>
 
       {/* ── Mobile menu ─────────────────────────────────────────── */}
-      <div className={`fixed inset-0 z-[55] lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
+      <div className={`fixed inset-0 z-[65] lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
         <div
           className={`absolute inset-0 bg-black/45 transition-opacity ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={() => setIsMobileMenuOpen(false)}
