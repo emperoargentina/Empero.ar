@@ -136,7 +136,7 @@ export function ProductCatalog({
   }, [currentPage, totalPages]);
 
   useEffect(() => {
-    if (initialCategory && !selectedCategory) {
+    if (initialCategory) {
       setSelectedCategory(initialCategory);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

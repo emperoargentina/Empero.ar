@@ -108,7 +108,7 @@ function App() {
           <ContactForm />
         </main>
 
-        <Footer />
+        <Footer onCategorySelect={handleCategorySelect} />
 
         <WhatsAppFloat />
       </div>
