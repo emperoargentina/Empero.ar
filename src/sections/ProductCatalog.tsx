@@ -10,6 +10,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { getLenis } from '@/hooks/useLenis';
 import type { AvailabilityFilter } from '@/hooks/useProducts';
 import { type Product, categories } from '@/data/products';
+import { groupProducts } from '@/lib/groupProducts';
 import { CatalogSidebar } from '@/components/catalog/CatalogSidebar';
 import { ProductCard } from '@/components/catalog/ProductCard';
 import { ProductModal } from '@/components/catalog/ProductModal';
@@ -98,6 +99,7 @@ export function ProductCatalog({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariants, setSelectedVariants] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState('');
@@ -110,16 +112,18 @@ export function ProductCatalog({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const groupedProducts = useMemo(() => groupProducts(filteredProducts), [filteredProducts]);
+
   const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(filteredProducts.length / itemsPerPage)),
-    [filteredProducts.length, itemsPerPage]
+    () => Math.max(1, Math.ceil(groupedProducts.length / itemsPerPage)),
+    [groupedProducts.length, itemsPerPage]
   );
 
-  const paginatedProducts = useMemo(() => {
+  const paginatedGroups = useMemo(() => {
     const safePage = Math.min(Math.max(1, currentPage), totalPages);
     const start = (safePage - 1) * itemsPerPage;
-    return filteredProducts.slice(start, start + itemsPerPage);
-  }, [filteredProducts, currentPage, totalPages, itemsPerPage]);
+    return groupedProducts.slice(start, start + itemsPerPage);
+  }, [groupedProducts, currentPage, totalPages, itemsPerPage]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -168,14 +172,18 @@ export function ProductCatalog({
     if (currentPage < totalPages) handlePageChange(currentPage + 1);
   }, [currentPage, totalPages, handlePageChange]);
 
-  const handleViewDetails = useCallback((product: Product) => {
+  const handleViewDetails = useCallback((product: Product, variants: Product[]) => {
     setSelectedProduct(product);
+    setSelectedVariants(variants);
     setIsModalOpen(true);
   }, []);
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedProduct(null), 200);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      setSelectedVariants([]);
+    }, 200);
   }, []);
 
   const handleCategoryChange = useCallback((cat: string | null) => {
@@ -328,7 +336,7 @@ export function ProductCatalog({
               </div>
             )}
 
-            {!loading && paginatedProducts.length > 0 && (
+            {!loading && paginatedGroups.length > 0 && (
               <>
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -339,14 +347,14 @@ export function ProductCatalog({
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    {paginatedProducts.map(product => (
+                    {paginatedGroups.map(group => (
                       <ProductCard
-                        key={product.id}
-                        product={product}
+                        key={group.key}
+                        variants={group.variants}
                         onViewDetails={handleViewDetails}
                         onAddToQuote={onAddToQuote}
                         onRemoveFromQuote={onRemoveFromQuote}
-                        isInQuoteList={quoteListIds.includes(product.id)}
+                        quoteListIds={quoteListIds}
                       />
                     ))}
                   </motion.div>
@@ -364,7 +372,7 @@ export function ProductCatalog({
               </>
             )}
 
-            {!loading && !error && paginatedProducts.length === 0 && (
+            {!loading && !error && paginatedGroups.length === 0 && (
               <AnimatePresence>
                 <motion.div
                   className="text-center py-24"
@@ -456,11 +464,12 @@ export function ProductCatalog({
 
       <ProductModal
         product={selectedProduct}
+        variants={selectedVariants}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddToQuote={onAddToQuote}
         onRemoveFromQuote={onRemoveFromQuote}
-        isInQuoteList={selectedProduct ? quoteListIds.includes(selectedProduct.id) : false}
+        quoteListIds={quoteListIds}
       />
     </section>
   );

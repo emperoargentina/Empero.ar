@@ -22,6 +22,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 interface QuoteItem {
   product: {
@@ -79,6 +80,13 @@ export function Navigation({
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [removeCandidate, setRemoveCandidate] = useState<QuoteItem | null>(null);
+  const [isRemoveConfirmOpen, setIsRemoveConfirmOpen] = useState(false);
+
+  const closeRemoveConfirm = () => {
+    setIsRemoveConfirmOpen(false);
+    setTimeout(() => setRemoveCandidate(null), 200);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -366,7 +374,7 @@ export function Navigation({
                         <p className="text-[10px] font-mono text-[#7B7064] mt-0.5">#{item.product.codigo}</p>
                       </div>
                       <button
-                        onClick={() => onRemoveFromQuote?.(item.product.id)}
+                        onClick={() => { setRemoveCandidate(item); setIsRemoveConfirmOpen(true); }}
                         className="p-1.5 text-[#7B7064] hover:text-[#C41B2E] transition-colors cursor-pointer flex-shrink-0 self-start"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -549,6 +557,19 @@ export function Navigation({
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isRemoveConfirmOpen}
+        title={`¿Quitar "${removeCandidate?.product.nombre}" de tu lista?`}
+        description="Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras."
+        confirmLabel="Quitar"
+        cancelLabel="Cancelar"
+        onConfirm={() => {
+          if (removeCandidate) onRemoveFromQuote?.(removeCandidate.product.id);
+          closeRemoveConfirm();
+        }}
+        onCancel={closeRemoveConfirm}
+      />
     </>
   );
 }

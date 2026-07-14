@@ -1,7 +1,9 @@
 import { createPortal } from 'react-dom';
 import { Check, Plus, X, Settings, Package, Layers } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
+import { variantLabel } from '@/lib/groupProducts';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { motion, AnimatePresence, type TargetAndTransition } from 'framer-motion';
 
 type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
@@ -19,23 +21,39 @@ const WhatsAppSVG = () => (
 
 interface ProductModalProps {
   product: Product | null;
+  variants?: Product[];
   isOpen: boolean;
   onClose: () => void;
   onAddToQuote?: (product: Product) => void;
   onRemoveFromQuote?: (productId: string) => void;
-  isInQuoteList?: boolean;
+  quoteListIds?: string[];
 }
 
 export function ProductModal({
-  product,
+  product: initialProduct,
+  variants,
   isOpen,
   onClose,
   onAddToQuote,
   onRemoveFromQuote,
-  isInQuoteList = false,
+  quoteListIds = [],
 }: ProductModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const allVariants = useMemo(
+    () => (variants && variants.length > 0 ? variants : initialProduct ? [initialProduct] : []),
+    [variants, initialProduct]
+  );
+
+  useEffect(() => {
+    if (isOpen) setSelectedId(initialProduct?.id ?? null);
+  }, [isOpen, initialProduct?.id]);
+
+  const product = allVariants.find(v => v.id === selectedId) ?? initialProduct;
+  const isInQuoteList = product ? quoteListIds.includes(product.id) : false;
 
   // Lock / unlock scroll
   useEffect(() => {
@@ -84,8 +102,13 @@ export function ProductModal({
   };
 
   const handleQuoteToggle = () => {
-    if (isInQuoteList) onRemoveFromQuote?.(product.id);
+    if (isInQuoteList) setConfirmRemoveOpen(true);
     else onAddToQuote?.(product);
+  };
+
+  const handleConfirmRemove = () => {
+    onRemoveFromQuote?.(product.id);
+    setConfirmRemoveOpen(false);
   };
 
   // Specs
@@ -134,10 +157,12 @@ export function ProductModal({
   const caractTwoCols = caractLen > 5;
   const accTwoCols    = accLen > 5;
 
-  return createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <>
+  return (
+    <>
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <>
           {/* Backdrop */}
           <motion.div
             className="fixed inset-0 z-[80] bg-black/60"
@@ -150,16 +175,14 @@ export function ProductModal({
           />
 
           {/* Centering wrapper */}
-          <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 pointer-events-none">
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-0 sm:p-4 pointer-events-none">
             <motion.div
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-label={product.nombre}
-              className="relative w-full overflow-hidden rounded-2xl bg-white pointer-events-auto"
+              className="relative w-full h-[100dvh] rounded-none sm:h-[min(84vh,660px)] sm:max-w-[920px] sm:rounded-xl overflow-hidden bg-white pointer-events-auto"
               style={{
-                maxWidth: '920px',
-                height: 'min(84vh, 660px)',
                 display: 'flex',
                 flexDirection: 'column',
                 boxShadow: '0 24px 80px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.15)',
@@ -179,19 +202,21 @@ export function ProductModal({
               }}
             >
               {/* Close */}
-              <button
+              <motion.button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="absolute top-3.5 right-3.5 z-30 w-8 h-8 flex items-center justify-center rounded-lg bg-white/90 backdrop-blur-sm border border-[#E8E2D9] text-[#9A8E82] hover:text-[#1A1613] hover:bg-white transition-all duration-150 cursor-pointer shadow-sm"
+                className="absolute top-3 right-3 z-30 w-11 h-11 flex items-center justify-center rounded-lg bg-white shadow-md border border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-150 cursor-pointer outline-none"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.94 }}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
+                <X className="w-5 h-5" strokeWidth={2.25} />
+              </motion.button>
 
               {/* Grid: image | details */}
               <div className="flex flex-col sm:grid sm:grid-cols-[340px_1fr]" style={{ flex: 1, minHeight: 0 }}>
 
                 {/* Image panel */}
-                <div className="relative bg-[#F0EBE2] h-[180px] sm:h-auto overflow-hidden flex-shrink-0">
+                <div className="relative bg-[#F0EBE2] h-[30dvh] sm:h-auto overflow-hidden flex-shrink-0">
                   {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
                   <motion.img
                     src={imageUrl}
@@ -213,7 +238,7 @@ export function ProductModal({
                   <AnimatePresence>
                     {isInQuoteList && (
                       <motion.div
-                        className="absolute top-3.5 right-3.5 flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
+                        className="absolute bottom-3.5 right-3.5 flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0, opacity: 0 }}
@@ -227,7 +252,6 @@ export function ProductModal({
 
                   <div className="modal-product-media-meta">
                     <p className="modal-product-media-category">{product.categoria}</p>
-                    <span className="modal-product-media-code">#{product.codigo}</span>
                   </div>
                 </div>
 
@@ -240,13 +264,28 @@ export function ProductModal({
                       <span className="modal-product-header-category">{product.categoria}</span>
                     </div>
                     <h2 className="modal-product-header-title">{product.nombre}</h2>
-                    {product.codigo && (
-                      <p className="modal-product-header-code">#{product.codigo}</p>
+
+                    {allVariants.length > 1 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2.5">
+                        {allVariants.map(v => (
+                          <button
+                            key={v.id}
+                            onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
+                            className={`px-2.5 py-1 rounded text-[11px] font-semibold border transition-colors cursor-pointer ${
+                              v.id === product.id
+                                ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
+                                : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
+                            }`}
+                          >
+                            {variantLabel(v)}
+                          </button>
+                        ))}
+                      </div>
                     )}
                   </div>
 
                   {/* Scrollable content */}
-                  <div className={`flex-1 min-h-0 overflow-y-auto ${d.padX} ${d.padY} ${d.spaceY}`}>
+                  <div className={`flex-1 min-h-0 overflow-y-auto no-scrollbar ${d.padX} ${d.padY} ${d.spaceY}`}>
 
                     {product.description && (
                       <p className={`modal-product-description ${density === 'sparse' ? 'modal-product-description-sparse' : ''}`}>
@@ -260,7 +299,7 @@ export function ProductModal({
                           <Settings className={`${d.iconSz} text-[#C41B2E]`} />
                           <span className={`modal-product-section-label ${d.sectionLbl}`}>Especificaciones técnicas</span>
                         </div>
-                        <div className="divide-y divide-[#F0EAE2] rounded-xl overflow-hidden border border-[#EBE5DC]">
+                        <div className="divide-y divide-[#F0EAE2] rounded-lg overflow-hidden border border-[#EBE5DC]">
                           {specs.map((s, i) => (
                             <div key={s.label} className={`flex items-center justify-between px-3 ${d.specRowPy} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}>
                               <span className={`text-[#9A8E82] font-medium ${d.labelTxt}`}>{s.label}</span>
@@ -318,7 +357,7 @@ export function ProductModal({
                   <div className="flex-shrink-0 px-5 py-3 border-t border-[#EBE5DC] bg-[#FAFAF8]">
                     <div className="flex gap-2">
                       <motion.button
-                        className="flex-1 h-10 rounded-xl text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
+                        className="flex-1 h-10 rounded-lg text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
                         style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
                         onClick={handleWhatsApp}
                         whileHover={{ scale: 1.015 }}
@@ -329,9 +368,9 @@ export function ProductModal({
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-10 rounded-xl text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer border ${
+                        className={`flex-1 h-10 rounded-lg text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer border ${
                           isInQuoteList
-                            ? 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
+                            ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
                             : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
                         }`}
                         onClick={handleQuoteToggle}
@@ -339,7 +378,7 @@ export function ProductModal({
                         whileTap={{ scale: 0.97 }}
                       >
                         {isInQuoteList
-                          ? <><Check className="w-3.5 h-3.5" /> En tu lista</>
+                          ? <><X className="w-3.5 h-3.5" /> Quitar de la lista</>
                           : <><Plus className="w-3.5 h-3.5" /> Agregar a lista</>
                         }
                       </motion.button>
@@ -349,10 +388,22 @@ export function ProductModal({
                 </div>
               </div>
             </motion.div>
-          </div>
-        </>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
       )}
-    </AnimatePresence>,
-    document.body
+
+      <ConfirmDialog
+        isOpen={confirmRemoveOpen}
+        title={`¿Quitar "${product.nombre}" de tu lista?`}
+        description="Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras."
+        confirmLabel="Quitar"
+        cancelLabel="Cancelar"
+        onConfirm={handleConfirmRemove}
+        onCancel={() => setConfirmRemoveOpen(false)}
+      />
+    </>
   );
 }

@@ -214,14 +214,6 @@
     min-height: 2.7em;
   }
 
-  .product-card-code {
-    font-family: 'DM Mono', 'DM Sans', system-ui, sans-serif;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--warm-400);
-  }
-
   .modal-product-media-meta {
     @apply absolute bottom-3 left-3.5 right-3.5;
   }
@@ -233,14 +225,6 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     color: rgba(255, 255, 255, 0.6);
-  }
-
-  .modal-product-media-code {
-    font-family: 'DM Mono', 'DM Sans', system-ui, sans-serif;
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.4);
   }
 
   .modal-product-header {
@@ -276,15 +260,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  .modal-product-header-code {
-    @apply mt-0.5;
-    font-family: 'DM Mono', 'DM Sans', system-ui, sans-serif;
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: var(--warm-400);
   }
 
   .modal-product-description {
@@ -565,5 +540,13 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

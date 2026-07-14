@@ -1,34 +1,47 @@
+import { useMemo, useState } from 'react';
 import { Check, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Product } from '@/data/products';
+import { variantLabel } from '@/lib/groupProducts';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { AvailabilityBadge } from './AvailabilityBadge';
 
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
 interface ProductCardProps {
-  product: Product;
-  onViewDetails: (product: Product) => void;
+  variants: Product[];
+  onViewDetails: (product: Product, variants: Product[]) => void;
   onAddToQuote?: (product: Product) => void;
   onRemoveFromQuote?: (productId: string) => void;
-  isInQuoteList?: boolean;
+  quoteListIds?: string[];
 }
 
 export function ProductCard({
-  product,
+  variants,
   onViewDetails,
   onAddToQuote,
   onRemoveFromQuote,
-  isInQuoteList = false,
+  quoteListIds = [],
 }: ProductCardProps) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const product = variants[Math.min(selectedIndex, variants.length - 1)];
+  const hasVariants = variants.length > 1;
+
+  const isInQuoteList = useMemo(
+    () => quoteListIds.includes(product.id),
+    [quoteListIds, product.id]
+  );
+
   const imageUrl = product.cloudinary_url ?? PLACEHOLDER;
   const isPlaceholder = !product.cloudinary_url;
 
   return (
     <article
-      className={`group relative cursor-pointer bg-white flex flex-col overflow-hidden rounded-2xl border shadow-sm transition-[transform,box-shadow,colors] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(26,22,19,0.12)] ${
+      className={`group relative cursor-pointer bg-white flex flex-col overflow-hidden rounded-lg border shadow-sm transition-[transform,box-shadow,colors] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(26,22,19,0.12)] ${
         isInQuoteList ? 'border-emerald-300 shadow-emerald-100' : 'border-[#E8E2D9]'
       }`}
-      onClick={() => onViewDetails(product)}
+      onClick={() => onViewDetails(product, variants)}
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EAE2] flex-shrink-0">
@@ -76,14 +89,33 @@ export function ProductCard({
         <h3 className="product-card-title">
           {product.nombre}
         </h3>
-        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
-          <span className="product-card-code truncate flex-1">
-            {product.codigo}
-          </span>
+
+        {hasVariants && (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {variants.map((v, i) => (
+              <button
+                key={v.id}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedIndex(i);
+                }}
+                className={`px-2 py-1 rounded-md text-[10.5px] font-semibold border transition-colors cursor-pointer ${
+                  i === selectedIndex
+                    ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
+                    : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
+                }`}
+              >
+                {variantLabel(v)}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-end mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (isInQuoteList) onRemoveFromQuote?.(product.id);
+              if (isInQuoteList) setConfirmRemoveOpen(true);
               else onAddToQuote?.(product);
             }}
             aria-label={isInQuoteList ? `Quitar ${product.nombre} de la lista` : `Agregar ${product.nombre}`}
@@ -101,6 +133,19 @@ export function ProductCard({
           </button>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmRemoveOpen}
+        title={`¿Quitar "${product.nombre}" de tu lista?`}
+        description="Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras."
+        confirmLabel="Quitar"
+        cancelLabel="Cancelar"
+        onConfirm={() => {
+          onRemoveFromQuote?.(product.id);
+          setConfirmRemoveOpen(false);
+        }}
+        onCancel={() => setConfirmRemoveOpen(false)}
+      />
     </article>
   );
 }
