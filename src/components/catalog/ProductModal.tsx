@@ -97,7 +97,7 @@ export function ProductModal({
   const isPlaceholder = !product.cloudinary_url;
 
   const handleWhatsApp = () => {
-    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre));
+    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre, product.codigo));
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
   };
 

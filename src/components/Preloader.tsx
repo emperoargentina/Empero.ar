@@ -37,7 +37,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
   return (
     <motion.div
       className="fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col"
-      style={{ backgroundColor: '#15120F' }}
+      style={{ backgroundColor: '#000000' }}
       exit={{ y: '-100%' }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
@@ -122,7 +122,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
         {/* Tagline */}
         <motion.p
           className="font-sans font-light uppercase tracking-[0.18em] text-center mt-6 px-6"
-          style={{ fontSize: 'clamp(1.3rem, 2.8vw, 1.7rem)', color: 'rgba(255,255,255,0.75)' }}
+          style={{ fontSize: 'clamp(1.3rem, 2.8vw, 1.7rem)', color: 'rgba(255,255,255,1)' }}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 1.3, ease: [0.16, 1, 0.3, 1] }}
@@ -132,13 +132,15 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
 
         {/* Sub-label */}
         <motion.p
-          className="font-sans font-light uppercase text-center mt-3"
-          style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.45)' }}
+          className="font-sans font-light uppercase text-center mt-3 px-6"
+          style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.85)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.45, delay: 1.42 }}
         >
-          Distribuidores oficiales · Argentina
+          <span className="block sm:inline">Distribuidores oficiales</span>
+          <span className="hidden sm:inline"> · </span>
+          <span className="block sm:inline">Argentina</span>
         </motion.p>
 
       </div>

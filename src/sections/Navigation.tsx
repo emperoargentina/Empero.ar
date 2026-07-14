@@ -123,13 +123,23 @@ export function Navigation({
 
   const handleSendQuote = () => {
     if (quoteItems.length === 0) return;
-    let message = 'Hola, quiero cotizar los siguientes productos:\n\n';
+    const lines = [
+      'Hola, buenos días. 👋',
+      '',
+      'Quisiera solicitar una cotización para los siguientes productos:',
+      '',
+    ];
     quoteItems.forEach((item, i) => {
-      message += `${i + 1}. ${item.product.nombre} (Código: ${item.product.codigo}) - Cant: ${item.quantity}`;
-      if (item.notes) message += ` - ${item.notes}`;
-      message += '\n';
+      lines.push(`${i + 1}. *${item.product.nombre}*`);
+      lines.push(`   Código: ${item.product.codigo}`);
+      lines.push(`   Cantidad: ${item.quantity}`);
+      if (item.notes) lines.push(`   Nota: ${item.notes}`);
+      lines.push('');
     });
-    message += `\nTotal: ${totalQuoteItems} unidades\n\nQuedo atento. Gracias!`;
+    lines.push(`Total: ${totalQuoteItems} unidad${totalQuoteItems !== 1 ? 'es' : ''}`);
+    lines.push('');
+    lines.push('Quedo atento/a a su respuesta. ¡Muchas gracias!');
+    const message = lines.join('\n');
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
     setIsQuoteOpen(false);
   };

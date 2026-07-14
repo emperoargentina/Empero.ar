@@ -18,12 +18,12 @@ export function WhatsAppFloat({ productName }: WhatsAppFloatProps = {}) {
   useEffect(() => {
     const show = () => {
       setShowLabel(true);
-      setTimeout(() => setShowLabel(false), 3500);
+      setTimeout(() => setShowLabel(false), 5000);
     };
 
-    // Primera aparición a los 15s, luego cada 90s
-    const first = setTimeout(show, 15000);
-    const interval = setInterval(show, 90000);
+    // Primera aparición a los 25s, luego cada 140s
+    const first = setTimeout(show, 25000);
+    const interval = setInterval(show, 140000);
 
     return () => {
       clearTimeout(first);
