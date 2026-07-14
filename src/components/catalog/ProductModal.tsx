@@ -181,7 +181,7 @@ export function ProductModal({
               role="dialog"
               aria-modal="true"
               aria-label={product.nombre}
-              className="relative w-full h-[100dvh] rounded-none sm:h-[min(84vh,660px)] sm:max-w-[920px] sm:rounded-xl overflow-hidden bg-white pointer-events-auto"
+              className="relative w-full h-[100dvh] rounded-none sm:h-[min(84vh,660px)] sm:max-w-[1080px] sm:rounded-xl overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -213,7 +213,7 @@ export function ProductModal({
               </motion.button>
 
               {/* Grid: image | details */}
-              <div className="flex flex-col sm:grid sm:grid-cols-[340px_1fr]" style={{ flex: 1, minHeight: 0 }}>
+              <div className="flex flex-col sm:grid sm:grid-cols-[420px_1fr]" style={{ flex: 1, minHeight: 0 }}>
 
                 {/* Image panel */}
                 <div className="relative bg-[#F0EBE2] h-[30dvh] sm:h-auto overflow-hidden flex-shrink-0">
@@ -221,8 +221,8 @@ export function ProductModal({
                   <motion.img
                     src={imageUrl}
                     alt={product.nombre}
-                    width={340}
-                    height={400}
+                    width={420}
+                    height={494}
                     className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-8' : 'object-cover'}`}
                     initial={{ opacity: 0, scale: 1.04 }}
                     animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}

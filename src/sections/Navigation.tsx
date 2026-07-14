@@ -145,7 +145,7 @@ export function Navigation({
     <>
       {/* ── Navbar ─────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-[60]">
-        <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:px-3 lg:pt-3' : ''}`}>
+        <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:max-w-[1600px] lg:mx-auto lg:px-10 xl:px-14 lg:pt-3' : ''}`}>
           <motion.div
             animate={isScrolled ? {
               backgroundColor: 'rgba(250,250,248,1)',
@@ -162,7 +162,7 @@ export function Navigation({
             }}
             className={`relative border-b lg:border transition-[border-radius,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isScrolled
-                ? 'lg:max-w-[1600px] lg:mx-auto lg:rounded-2xl px-4 sm:px-6 lg:py-3'
+                ? 'lg:rounded-2xl px-4 sm:px-6 lg:py-3'
                 : 'container-custom py-0 lg:py-5 lg:rounded-none'
             }`}
           >

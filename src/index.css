@@ -278,7 +278,7 @@
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
-    color: #9a9088;
+    color: var(--warm-950);
   }
 
   /* ─── Badges ──────────────────────────────────────────── */
