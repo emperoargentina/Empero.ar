@@ -205,7 +205,7 @@ export function ProductModal({
               <motion.button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="absolute top-3 right-3 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full sm:rounded-lg bg-white/90 sm:bg-white backdrop-blur-sm sm:backdrop-blur-none shadow-sm sm:shadow-md border border-transparent sm:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 cursor-pointer outline-none"
+                className="absolute top-3 right-3 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full sm:rounded-lg bg-white/90 sm:bg-white backdrop-blur-sm sm:backdrop-blur-none shadow-sm sm:shadow-md border border-transparent sm:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 sm:duration-150 cursor-pointer outline-none"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.94 }}
               >
@@ -231,7 +231,7 @@ export function ProductModal({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none hidden sm:block" />
 
-                  <div className="absolute top-3.5 left-3.5 shadow-sm sm:shadow-none rounded-md">
+                  <div className="absolute top-3.5 left-3.5 shadow-sm sm:shadow-none rounded-md sm:rounded-none">
                     <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
                   </div>
 
