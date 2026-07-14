@@ -271,7 +271,7 @@ export function ProductModal({
                           <button
                             key={v.id}
                             onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
-                            className={`px-2.5 py-1 rounded text-[11px] font-semibold border transition-colors cursor-pointer ${
+                            className={`px-2.5 py-1 rounded-full sm:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
                               v.id === product.id
                                 ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
                                 : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'

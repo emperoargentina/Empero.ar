@@ -252,14 +252,21 @@
   .modal-product-header-title {
     @apply pr-8 break-words whitespace-normal;
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 1.22rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.22;
     letter-spacing: -0.01em;
     color: var(--warm-950);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  @media (min-width: 640px) {
+    .modal-product-header-title {
+      font-size: 1.22rem;
+      line-height: 1.25;
+    }
   }
 
   .modal-product-description {
