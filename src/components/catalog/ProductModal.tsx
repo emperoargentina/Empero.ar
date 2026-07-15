@@ -361,7 +361,7 @@ export function ProductModal({
                   <div className="flex-shrink-0 px-5 py-3 border-t border-[#EBE5DC] bg-[#FAFAF8]">
                     <div className="flex gap-2">
                       <motion.button
-                        className="flex-1 h-10 rounded-lg text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
+                        className="flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
                         style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
                         onClick={handleWhatsApp}
                         whileHover={{ scale: 1.015 }}
@@ -372,7 +372,7 @@ export function ProductModal({
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-10 rounded-lg text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-150 cursor-pointer border ${
+                        className={`flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-200 cursor-pointer border ${
                           isInQuoteList
                             ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
                             : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
