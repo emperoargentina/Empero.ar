@@ -149,6 +149,7 @@ export function ProductModal({
     valueTxt:   density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11px]',
     listTxt:    density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11.5px]',
     listGap:    density === 'sparse' ? 'space-y-2'     : density === 'normal' ? 'space-y-1.5'   : 'space-y-1',
+    listGapSm:  density === 'sparse' ? 'sm:space-y-2'  : density === 'normal' ? 'sm:space-y-1.5' : 'sm:space-y-1',
     sectionLbl: density === 'sparse' ? 'text-[11px]'   : density === 'normal' ? 'text-[10.5px]' : 'text-[10px]',
     iconSz:     density === 'dense'  ? 'w-3 h-3'       : 'w-3.5 h-3.5',
     mb2:        density === 'sparse' ? 'mb-2.5'         : 'mb-1.5',
@@ -319,11 +320,11 @@ export function ProductModal({
                           <Layers className={`${d.iconSz} text-[#C41B2E]`} />
                           <span className={`modal-product-section-label ${d.sectionLbl}`}>Características</span>
                         </div>
-                        <ul className={caractTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : d.listGap}>
+                        <ul className={`grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-y-1 ${caractTwoCols ? 'sm:grid-cols-2' : `sm:grid-cols-1 sm:gap-x-0 ${d.listGapSm}`}`}>
                           {product.caracteristicas_generales!.map((f, i) => (
                             <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
-                              <span className="w-3.5 h-3.5 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                <Check className="w-2 h-2 text-[#C41B2E]" strokeWidth={2.5} />
+                              <span className="w-4 h-4 sm:w-3.5 sm:h-3.5 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
+                                <Check className="w-2.5 h-2.5 sm:w-2 sm:h-2 text-[#C41B2E]" strokeWidth={2.5} />
                               </span>
                               {f}
                             </li>
@@ -338,7 +339,7 @@ export function ProductModal({
                           <Package className={`${d.iconSz} text-[#C41B2E]`} />
                           <span className={`modal-product-section-label ${d.sectionLbl}`}>Accesorios incluidos</span>
                         </div>
-                        <ul className={accTwoCols ? 'grid grid-cols-2 gap-x-3 gap-y-1' : d.listGap}>
+                        <ul className={`grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-y-1 ${accTwoCols ? 'sm:grid-cols-2' : `sm:grid-cols-1 sm:gap-x-0 ${d.listGapSm}`}`}>
                           {product.accesorios_incluidos!.map((a, i) => (
                             <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
                               <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
