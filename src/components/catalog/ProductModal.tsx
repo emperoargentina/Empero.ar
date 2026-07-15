@@ -116,24 +116,67 @@ export function ProductModal({
 
     const result = await Swal.fire({
       html: `
-        <div style="padding:40px 28px 8px;text-align:center">
-          <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#FFF0F1 0%,#FFE4E6 100%);border:2px solid #F5C5C9;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 4px 20px rgba(196,27,46,0.14)">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C41B2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div style="padding:48px 36px 12px;text-align:center;box-sizing:border-box">
+          <!-- Premium Icon Wrapper -->
+          <div style="
+            width:84px;height:84px;border-radius:50%;
+            background:linear-gradient(135deg,#FFF0F1 0%,#FFE4E6 100%);
+            border:2px solid #F5C5C9;
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 26px;
+            box-shadow:0 8px 24px rgba(196,27,46,0.12);
+            position:relative;
+          ">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#C41B2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
             </svg>
           </div>
-          <h3 style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;color:#1A1613;margin:0 0 10px;letter-spacing:-0.02em;line-height:1.2">¿Quitar producto?</h3>
-          <p style="font-family:'DM Sans',system-ui,sans-serif;font-size:14px;color:#7B7064;margin:0 0 28px;line-height:1.55">Se eliminará de tu lista de cotización</p>
-          <div style="display:flex;gap:10px">
-            <button id="swal-cancel-btn" style="flex:1;height:50px;border-radius:13px;cursor:pointer;border:1.5px solid #E8E2D9;background:#F4F0E8;color:#6B6159;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;transition:background .15s" onmouseover="this.style.background='#EBE5DC'" onmouseout="this.style.background='#F4F0E8'">Cancelar</button>
-            <button id="swal-confirm-btn" style="flex:1;height:50px;border-radius:13px;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,#C41B2E 0%,#B01228 100%);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;box-shadow:0 4px 16px rgba(196,27,46,0.34);transition:opacity .15s,transform .1s" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">Quitar</button>
+          <!-- Title -->
+          <h3 style="
+            font-family:'Fraunces',Georgia,serif;
+            font-size:24px;font-weight:600;
+            color:#1A1613;margin:0 0 12px;
+            letter-spacing:-0.02em;line-height:1.2
+          ">¿Quitar producto?</h3>
+          <!-- Subtitle -->
+          <p style="
+            font-family:'DM Sans',system-ui,sans-serif;
+            font-size:14px;color:#6B6159;
+            margin:0 0 32px;line-height:1.6
+          ">
+            Vas a eliminar <strong style="color:#1A1613;font-weight:600">${product.nombre}</strong> de tu lista de cotización.
+          </p>
+          <!-- Custom Buttons Grid -->
+          <div style="display:flex;gap:12px;width:100%">
+            <button id="swal-cancel-btn" style="
+              flex:1;height:52px;border-radius:14px;cursor:pointer;
+              border:1px solid #E8E2D9;background:#FAF8F5;
+              color:#6B6159;font-family:'DM Sans',system-ui,sans-serif;
+              font-size:14px;font-weight:600;transition:all 0.2s ease;
+              outline:none;
+            " onmouseover="this.style.background='#EBE5DC';this.style.borderColor='#D0C7BA'" onmouseout="this.style.background='#FAF8F5';this.style.borderColor='#E8E2D9'">
+              Cancelar
+            </button>
+            <button id="swal-confirm-btn" style="
+              flex:1;height:52px;border-radius:14px;cursor:pointer;
+              border:none;color:#ffffff;
+              background:linear-gradient(135deg,#C41B2E 0%,#B51426 100%);
+              font-family:'DM Sans',system-ui,sans-serif;
+              font-size:14px;font-weight:600;
+              box-shadow:0 6px 20px rgba(196,27,46,0.3);
+              transition:all 0.2s ease;
+              outline:none;
+            " onmouseover="this.style.opacity='0.92';this.style.boxShadow='0 8px 24px rgba(196,27,46,0.4)'" onmouseout="this.style.opacity='1';this.style.boxShadow='0 6px 20px rgba(196,27,46,0.3)'"
+               onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
+              Quitar
+            </button>
           </div>
         </div>
       `,
       showConfirmButton: false,
       showCancelButton: false,
       background: '#FFFFFF',
-      width: 400,
+      width: 460,
       padding: 0,
       customClass: { popup: 'swal-empero-popup' },
       showClass: { popup: 'swal-empero-enter' },
@@ -148,6 +191,7 @@ export function ProductModal({
       onRemoveFromQuote?.(product.id);
     }
   };
+
 
   // Specs
   const specs: { label: string; value: string; icon: LucideIcon }[] = [];
