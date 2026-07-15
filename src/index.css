@@ -228,7 +228,7 @@
   }
 
   .modal-product-header {
-    @apply flex-shrink-0 px-5 pt-4 pb-3 border-b border-[#F0EAE2];
+    @apply flex-shrink-0 px-5 pt-4 pb-3;
   }
 
   .modal-product-header-category-row {
@@ -264,8 +264,8 @@
 
   @media (min-width: 640px) {
     .modal-product-header-title {
-      font-size: 1.22rem;
-      line-height: 1.25;
+      font-size: 2rem;
+      line-height: 1.18;
     }
   }
 
@@ -556,4 +556,50 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+}
+
+
+/* ── SweetAlert2 — Empero custom theme ──────────────────────── */
+.swal2-container {
+  z-index: 9999 !important;
+}
+
+.swal2-backdrop-show {
+  background: rgba(26,22,19,0.55) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+}
+
+.swal-empero-popup {
+  border-radius: 22px !important;
+  padding: 0 !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  box-shadow:
+    0 32px 80px rgba(0,0,0,0.22),
+    0 12px 32px rgba(0,0,0,0.12),
+    0 0 0 1px rgba(235,229,220,0.6) !important;
+  overflow: hidden !important;
+}
+
+/* Animations */
+@keyframes swal-empero-in {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+@keyframes swal-empero-out {
+  from { opacity: 1; transform: scale(1)    translateY(0);  }
+  to   { opacity: 0; transform: scale(0.94) translateY(-8px); }
+}
+
+.swal-empero-enter {
+  animation: swal-empero-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+.swal-empero-leave {
+  animation: swal-empero-out 0.18s ease-in forwards !important;
+}
+
+/* Hide Swal2 default elements we don't use */
+.swal-empero-popup .swal2-html-container {
+  margin: 0 !important;
+  padding: 0 !important;
 }

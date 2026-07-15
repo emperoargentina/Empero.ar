@@ -1,9 +1,9 @@
 import { createPortal } from 'react-dom';
-import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Zap, Box, Gauge, ShoppingBasket, Power, Thermometer, ListChecks, type LucideIcon } from 'lucide-react';
+import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Zap, Box, Gauge, ShoppingBasket, Power, Thermometer, ListChecks, ShieldCheck, Award, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
 import { variantLabel } from '@/lib/groupProducts';
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import Swal from 'sweetalert2';
 import { motion, AnimatePresence, type TargetAndTransition } from 'framer-motion';
 
 type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
@@ -40,8 +40,8 @@ export function ProductModal({
 }: ProductModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const allVariants = useMemo(
     () => (variants && variants.length > 0 ? variants : initialProduct ? [initialProduct] : []),
@@ -58,16 +58,23 @@ export function ProductModal({
   // Lock / unlock scroll
   useEffect(() => {
     const lenis = getLenis();
-    if (isOpen) {
-      lenis?.stop();
-      document.body.style.overflow = 'hidden';
-    } else {
-      lenis?.start();
-      document.body.style.overflow = '';
-    }
+    if (!isOpen) return;
+
+    lenis?.stop();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const blockBgScroll = (e: TouchEvent) => {
+      const scrollEl = scrollRef.current;
+      if (scrollEl && scrollEl.contains(e.target as Node)) return;
+      e.preventDefault();
+    };
+    document.addEventListener('touchmove', blockBgScroll, { passive: false });
+
     return () => {
       lenis?.start();
-      document.body.style.overflow = '';
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('touchmove', blockBgScroll);
     };
   }, [isOpen]);
 
@@ -101,14 +108,45 @@ export function ProductModal({
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
   };
 
-  const handleQuoteToggle = () => {
-    if (isInQuoteList) setConfirmRemoveOpen(true);
-    else onAddToQuote?.(product);
-  };
+  const handleQuoteToggle = async () => {
+    if (!isInQuoteList) {
+      onAddToQuote?.(product);
+      return;
+    }
 
-  const handleConfirmRemove = () => {
-    onRemoveFromQuote?.(product.id);
-    setConfirmRemoveOpen(false);
+    const result = await Swal.fire({
+      html: `
+        <div style="padding:40px 28px 8px;text-align:center">
+          <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#FFF0F1 0%,#FFE4E6 100%);border:2px solid #F5C5C9;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 4px 20px rgba(196,27,46,0.14)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C41B2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+          </div>
+          <h3 style="font-family:'Fraunces',Georgia,serif;font-size:22px;font-weight:600;color:#1A1613;margin:0 0 10px;letter-spacing:-0.02em;line-height:1.2">¿Quitar producto?</h3>
+          <p style="font-family:'DM Sans',system-ui,sans-serif;font-size:14px;color:#7B7064;margin:0 0 28px;line-height:1.55">Se eliminará de tu lista de cotización</p>
+          <div style="display:flex;gap:10px">
+            <button id="swal-cancel-btn" style="flex:1;height:50px;border-radius:13px;cursor:pointer;border:1.5px solid #E8E2D9;background:#F4F0E8;color:#6B6159;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;transition:background .15s" onmouseover="this.style.background='#EBE5DC'" onmouseout="this.style.background='#F4F0E8'">Cancelar</button>
+            <button id="swal-confirm-btn" style="flex:1;height:50px;border-radius:13px;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,#C41B2E 0%,#B01228 100%);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;font-weight:600;box-shadow:0 4px 16px rgba(196,27,46,0.34);transition:opacity .15s,transform .1s" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">Quitar</button>
+          </div>
+        </div>
+      `,
+      showConfirmButton: false,
+      showCancelButton: false,
+      background: '#FFFFFF',
+      width: 400,
+      padding: 0,
+      customClass: { popup: 'swal-empero-popup' },
+      showClass: { popup: 'swal-empero-enter' },
+      hideClass: { popup: 'swal-empero-leave' },
+      didOpen: () => {
+        document.getElementById('swal-confirm-btn')?.addEventListener('click', () => Swal.clickConfirm());
+        document.getElementById('swal-cancel-btn')?.addEventListener('click', () => Swal.clickDismiss('cancel'));
+      },
+    });
+
+    if (result.isConfirmed) {
+      onRemoveFromQuote?.(product.id);
+    }
   };
 
   // Specs
@@ -116,7 +154,7 @@ export function ProductModal({
   const dim = product.dimensiones_mm as Record<string, number> | null;
   if (dim && (dim.Ancho || dim.Profundidad || dim.Alto))
     specs.push({ label: 'Dimensiones', value: `${dim.Ancho ?? '—'} × ${dim.Profundidad ?? '—'} × ${dim.Alto ?? '—'} mm`, icon: Ruler });
-  if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad, icon: Layers });
+  if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad.replace(/bandejas?/gi, ' ').replace(/\s+/g, ' ').trim(), icon: Layers });
   if (product.voltaje)            specs.push({ label: 'Voltaje',     value: product.voltaje, icon: Zap });
   if (product.peso_kg != null)    specs.push({ label: 'Peso',        value: `${product.peso_kg} kg`, icon: Weight });
   if (product.volumen_m3 != null) specs.push({ label: 'Volumen',     value: `${product.volumen_m3} m³`, icon: Box });
@@ -137,26 +175,12 @@ export function ProductModal({
 
   const caractLen  = product.caracteristicas_generales?.length ?? 0;
   const accLen     = product.accesorios_incluidos?.length ?? 0;
-  const totalItems = specs.length + caractLen + accLen;
-  const density    = totalItems <= 4 ? 'sparse' : totalItems <= 10 ? 'normal' : 'dense';
 
-  const d = {
-    padX:       density === 'dense'  ? 'px-4'         : 'px-5',
-    padY:       density === 'sparse' ? 'py-5'          : density === 'normal' ? 'py-4' : 'py-3',
-    spaceY:     density === 'sparse' ? 'space-y-5'     : density === 'normal' ? 'space-y-4' : 'space-y-3',
-    specRowPy:  density === 'sparse' ? 'py-2.5'        : density === 'normal' ? 'py-2' : 'py-1.5',
-    labelTxt:   density === 'sparse' ? 'text-[12.5px]' : density === 'normal' ? 'text-[11.5px]' : 'text-[10.5px]',
-    valueTxt:   density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11px]',
-    listTxt:    density === 'sparse' ? 'text-[13px]'   : density === 'normal' ? 'text-[12px]'   : 'text-[11.5px]',
-    listGap:    density === 'sparse' ? 'space-y-2'     : density === 'normal' ? 'space-y-1.5'   : 'space-y-1',
-    listGapSm:  density === 'sparse' ? 'sm:space-y-2'  : density === 'normal' ? 'sm:space-y-1.5' : 'sm:space-y-1',
-    sectionLbl: density === 'sparse' ? 'text-[11px]'   : density === 'normal' ? 'text-[10.5px]' : 'text-[10px]',
-    iconSz:     density === 'dense'  ? 'w-3 h-3'       : 'w-3.5 h-3.5',
-    mb2:        density === 'sparse' ? 'mb-2.5'         : 'mb-1.5',
-  } as const;
-
-  const caractTwoCols = caractLen > 5;
-  const accTwoCols    = accLen > 5;
+  const trustBadges: { icon: LucideIcon; text: string }[] = [
+    { icon: ShieldCheck, text: 'Equipamiento profesional de alta performance' },
+    { icon: Settings,    text: 'Diseñado para uso intensivo y continuo' },
+    { icon: Award,       text: 'Materiales de alta calidad y máxima durabilidad' },
+  ];
 
   return (
     <>
@@ -182,7 +206,7 @@ export function ProductModal({
               role="dialog"
               aria-modal="true"
               aria-label={product.nombre}
-              className="relative w-full h-[100dvh] rounded-none sm:h-[min(84vh,660px)] sm:max-w-[1080px] sm:rounded-xl overflow-hidden bg-white pointer-events-auto"
+              className="relative w-full h-[100dvh] rounded-none sm:h-[78vh] sm:max-h-[720px] sm:w-[90vw] sm:max-w-[1150px] sm:rounded-2xl sm:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -213,135 +237,204 @@ export function ProductModal({
                 <X className="w-5 h-5" strokeWidth={2.25} />
               </motion.button>
 
+              {/* Availability badge (mobile, top-left) */}
+              <div className="sm:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
+                <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+              </div>
+
               {/* Grid: image | details */}
-              <div className="flex flex-col sm:grid sm:grid-cols-[420px_1fr]" style={{ flex: 1, minHeight: 0 }}>
+              <div className="flex flex-col sm:grid sm:grid-cols-[38%_62%]" style={{ flex: 1, minHeight: 0 }}>
 
-                {/* Image panel */}
-                <div className="relative bg-[var(--warm-50)] sm:bg-[#F0EBE2] h-[38dvh] sm:h-auto overflow-hidden flex-shrink-0">
-                  {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
-                  <motion.img
-                    src={imageUrl}
-                    alt={product.nombre}
-                    width={420}
-                    height={494}
-                    className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-8' : 'object-cover'}`}
-                    initial={{ opacity: 0, scale: 1.04 }}
-                    animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    onLoad={() => setImageLoaded(true)}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none hidden sm:block" />
+                {/* Image panel (desktop) */}
+                <div className="relative bg-[#F7F5F1] sm:h-auto overflow-hidden flex-shrink-0 hidden sm:flex sm:flex-col">
+                  <div className="flex-1 relative min-h-0">
+                    {!imageLoaded && <div className="absolute inset-0 bg-[#EEEAE1] animate-pulse" />}
+                    <motion.img
+                      src={imageUrl}
+                      alt={product.nombre}
+                      width={420}
+                      height={494}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      initial={{ opacity: 0, scale: 1.04 }}
+                      animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}
+                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                      onLoad={() => setImageLoaded(true)}
+                    />
 
-                  <div className="absolute top-3.5 left-3.5 shadow-sm sm:shadow-none rounded-md sm:rounded-none">
-                    <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+                    <div className="absolute top-6 left-6">
+                      <AvailabilityBadge modo={product.modo_disponibilidad} size="lg" pill />
+                    </div>
+
+                    <AnimatePresence>
+                      {isInQuoteList && (
+                        <motion.div
+                          className="absolute bottom-3.5 right-3.5 flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                          transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+                        >
+                          <Check className="w-3 h-3" />
+                          En tu lista
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
-                  <AnimatePresence>
-                    {isInQuoteList && (
-                      <motion.div
-                        className="absolute bottom-3.5 right-3.5 flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-bold shadow-md"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ type: 'spring', stiffness: 420, damping: 20 }}
-                      >
-                        <Check className="w-3 h-3" />
-                        En tu lista
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="modal-product-media-meta hidden sm:block">
-                    <p className="modal-product-media-category">{product.categoria}</p>
+                  <div className="grid grid-cols-3 gap-2 px-5 py-6 bg-white border-t border-[#EBE5DC] min-h-[120px] items-center">
+                    {trustBadges.map((b, i) => (
+                      <div key={i} className="flex flex-col items-center gap-1.5 text-center min-w-0">
+                        <b.icon className="w-7 h-7 text-[#C41B2E] flex-shrink-0" strokeWidth={2} />
+                        <span className="text-[11px] leading-snug text-[#6B6159] font-medium">{b.text}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 {/* Details panel */}
-                <div className="flex flex-col min-h-0 overflow-hidden bg-white">
+                <div className="flex-1 flex flex-col min-h-0 sm:overflow-hidden sm:bg-white">
 
-                  <div className="modal-product-header">
-                    <div className="modal-product-header-category-row">
-                      <div className="modal-product-header-accent" />
-                      <span className="modal-product-header-category">{product.categoria}</span>
-                    </div>
-                    <h2 className="modal-product-header-title">{product.nombre}</h2>
-
-                    {allVariants.length > 1 && (
-                      <div className="flex flex-wrap gap-1.5 mt-2.5">
-                        {allVariants.map(v => (
-                          <button
-                            key={v.id}
-                            onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
-                            className={`px-2.5 py-1 rounded-full sm:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
-                              v.id === product.id
-                                ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
-                                : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
-                            }`}
-                          >
-                            {variantLabel(v)}
-                          </button>
-                        ))}
+                  <div className="modal-product-header hidden sm:flex sm:items-start sm:justify-between sm:gap-8 sm:px-10 sm:pt-14 sm:pb-0">
+                    <div className="min-w-0">
+                      <div className="modal-product-header-category-row">
+                        <span className="modal-product-header-category sm:text-[15px] sm:tracking-[0.14em]">{product.categoria}</span>
                       </div>
-                    )}
+                      <h2 className="modal-product-header-title sm:pr-0">{product.nombre}</h2>
+
+                      {allVariants.length > 1 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2.5">
+                          {allVariants.map(v => (
+                            <button
+                              key={v.id}
+                              onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
+                              className={`px-2.5 py-1 rounded-full sm:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
+                                v.id === product.id
+                                  ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
+                                  : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
+                              }`}
+                            >
+                              {variantLabel(v)}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <img
+                      src="/images/logo/Logo.png"
+                      alt="Empero"
+                      className="h-14 w-auto object-contain flex-shrink-0"
+                    />
                   </div>
 
-                  {/* Scrollable content */}
-                  <div className={`flex-1 min-h-0 overflow-y-auto no-scrollbar ${d.padX} ${d.padY} ${d.spaceY}`}>
-
-                    {product.description && (
-                      <p className={`modal-product-description ${density === 'sparse' ? 'modal-product-description-sparse' : ''}`}>
-                        {product.description}
-                      </p>
-                    )}
-
-                    {hasSpecs && (
-                      <div>
-                        <div className={`flex items-center gap-1.5 ${d.mb2}`}>
-                          <Settings className={`${d.iconSz} text-[#C41B2E]`} />
-                          <span className={`modal-product-section-label ${d.sectionLbl}`}>Especificaciones técnicas</span>
+                  {/* Scrollable content — includes mobile hero so touch anywhere scrolls */}
+                  <div
+                    ref={scrollRef}
+                    data-lenis-prevent
+                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 py-5 space-y-5 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 max-sm:space-y-0"
+                    style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}
+                  >
+                    {/* ===== MOBILE HERO (inside scroll so any touch scrolls) ===== */}
+                    <div className="sm:hidden px-4 pt-14 pb-3.5">
+                      <div className="flex gap-3.5">
+                        {/* Thumbnail */}
+                        <div className="w-[164px] flex-shrink-0 self-start aspect-[3/4] rounded-xl overflow-hidden bg-[var(--warm-50)] border border-[#EBE5DC] relative">
+                          {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
+                          <img
+                            src={imageUrl}
+                            alt={product.nombre}
+                            className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-2.5' : 'object-cover'} transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            onLoad={() => setImageLoaded(true)}
+                          />
                         </div>
-                        <div className="divide-y divide-[#F5F1EB] sm:divide-[#F0EAE2] rounded-2xl sm:rounded-lg overflow-hidden border border-[#EBE5DC]">
-                          {specs.map((s, i) => (
-                            <div key={s.label} className={`flex items-center justify-between gap-2 px-3 ${d.specRowPy} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}>
-                              <span className="flex items-center gap-2 min-w-0">
-                                <s.icon className="w-3.5 h-3.5 text-[#C41B2E]/70 flex-shrink-0 sm:hidden" />
-                                <span className={`text-[#9A8E82] font-medium truncate ${d.labelTxt}`}>{s.label}</span>
-                              </span>
-                              <span className={`font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 ${d.valueTxt}`}>{s.value}</span>
-                            </div>
-                          ))}
+                        {/* Logo + categoría + título + descripción */}
+                        <div className="flex-1 min-w-0">
+                          <img src="/images/logo/Logo.png" alt="Empero" className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
+                          <span className="modal-product-header-category block mb-1">{product.categoria}</span>
+                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{product.nombre}</h2>
+                          {product.description && (
+                            <p className="modal-product-description mt-2 !text-[0.78rem] !leading-[1.5]">{product.description}</p>
+                          )}
                         </div>
                       </div>
-                    )}
-
-                    {hasCaract && (
-                      <div>
-                        <div className={`flex items-center gap-1.5 ${d.mb2}`}>
-                          <Layers className={`${d.iconSz} text-[#C41B2E]`} />
-                          <span className={`modal-product-section-label ${d.sectionLbl}`}>Características</span>
-                        </div>
-                        <ul className={`grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-y-1 ${caractTwoCols ? 'sm:grid-cols-2' : `sm:grid-cols-1 sm:gap-x-0 sm:gap-y-0 ${d.listGapSm}`}`}>
-                          {product.caracteristicas_generales!.map((f, i) => (
-                            <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
-                              <span className="w-4 h-4 sm:w-3.5 sm:h-3.5 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                <Check className="w-2.5 h-2.5 sm:w-2 sm:h-2 text-[#C41B2E]" strokeWidth={2.5} />
-                              </span>
-                              {f}
-                            </li>
+                      {allVariants.length > 1 && (
+                        <div className="flex flex-wrap gap-1.5 mt-3">
+                          {allVariants.map(v => (
+                            <button
+                              key={v.id}
+                              onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
+                              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
+                                v.id === product.id
+                                  ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
+                                  : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
+                              }`}
+                            >
+                              {variantLabel(v)}
+                            </button>
                           ))}
-                        </ul>
-                      </div>
-                    )}
+                        </div>
+                      )}
+                    </div>
 
+                    {/* Mobile content wrapper */}
+                    <div className="sm:hidden px-3.5 pb-4 space-y-3.5">
+
+                    {/* Mobile: combined specs + características */}
+                    <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm overflow-hidden">
+                      <div className="p-4 pb-4">
+                        <div className="flex items-center gap-1.5 mb-2.5">
+                          <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
+                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Especificaciones técnicas</span>
+                        </div>
+                        {hasSpecs ? (
+                          <div className="divide-y divide-[#F5F1EB]">
+                            {specs.map((s, i) => (
+                              <div key={s.label} className={`flex items-center justify-between gap-2 px-1 py-3 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}`}>
+                                <span className="flex items-center gap-2 min-w-0">
+                                  <s.icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />
+                                  <span className="text-[13.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
+                                </span>
+                                <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13.5px]">{s.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por especificaciones</p>
+                        )}
+                      </div>
+                      <div className="h-px bg-[#EBE5DC] mx-4" />
+                      <div className="p-4 pt-4">
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Layers className="w-[18px] h-[18px] text-[#C41B2E]" />
+                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Características</span>
+                        </div>
+                        {hasCaract ? (
+                          <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
+                            {product.caracteristicas_generales!.map((f, i) => (
+                              <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
+                                <span className="w-4 h-4 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
+                                  <Check className="w-2.5 h-2.5 text-[#C41B2E]" strokeWidth={2.5} />
+                                </span>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por características</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile: accesorios */}
                     {hasAccesorios && (
-                      <div>
-                        <div className={`flex items-center gap-1.5 ${d.mb2}`}>
-                          <Package className={`${d.iconSz} text-[#C41B2E]`} />
-                          <span className={`modal-product-section-label ${d.sectionLbl}`}>Accesorios incluidos</span>
+                      <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm p-4">
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Package className="w-[18px] h-[18px] text-[#C41B2E]" />
+                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Accesorios incluidos</span>
                         </div>
-                        <ul className={`grid grid-cols-2 gap-x-3 gap-y-2 sm:gap-y-1 ${accTwoCols ? 'sm:grid-cols-2' : `sm:grid-cols-1 sm:gap-x-0 sm:gap-y-0 ${d.listGapSm}`}`}>
+                        <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
                           {product.accesorios_incluidos!.map((a, i) => (
-                            <li key={i} className={`flex items-start gap-2 text-[#3A3530] leading-snug ${d.listTxt}`}>
+                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
                               <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
                               {a}
                             </li>
@@ -349,30 +442,97 @@ export function ProductModal({
                         </ul>
                       </div>
                     )}
+                    </div>{/* end mobile content wrapper */}
 
-                    {!hasSpecs && !hasCaract && !hasAccesorios && !product.description && (
-                      <p className="text-[12px] text-[#7B7064] italic text-center py-6">
-                        Consultá por especificaciones técnicas.
-                      </p>
+                    {/* Desktop: specs + características side by side */}
+                    <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6 sm:items-stretch">
+                      <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
+                        <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
+                          <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
+                            <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
+                          </span>
+                          <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Especificaciones técnicas</span>
+                        </div>
+                        {hasSpecs ? (
+                          <div className="divide-y divide-[#F0EAE2] flex-1">
+                            {specs.map(s => (
+                              <div key={s.label} className="flex items-center justify-between gap-2 px-6 py-3">
+                                <span className="flex items-center gap-2.5 min-w-0">
+                                  <s.icon className="w-[16px] h-[16px] text-[#C41B2E] flex-shrink-0" />
+                                  <span className="text-[12.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
+                                </span>
+                                <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13px]">{s.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex-1 flex items-center justify-center">
+                            <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por especificaciones</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
+                        <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
+                          <span className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                            <ShieldCheck className="w-[18px] h-[18px] text-emerald-600" />
+                          </span>
+                          <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Características</span>
+                        </div>
+                        {hasCaract ? (
+                          <ul className="px-6 py-4 space-y-3 flex-1">
+                            {product.caracteristicas_generales!.map((f, i) => (
+                              <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13px]">
+                                <span className="w-[18px] h-[18px] rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-[1px]">
+                                  <Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} />
+                                </span>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="flex-1 flex items-center justify-center">
+                            <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por características</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Desktop: accesorios */}
+                    {hasAccesorios && (
+                      <div className="hidden sm:block sm:rounded-2xl sm:border sm:border-[#EBE5DC] sm:overflow-hidden">
+                        <div className="flex items-center gap-2.5 sm:px-6 sm:py-4 sm:border-b sm:border-[#EBE5DC]">
+                          <Package className="sm:w-[18px] sm:h-[18px] text-[#C41B2E]" />
+                          <span className="modal-product-section-label sm:text-[13px] sm:tracking-[0.1em]">Accesorios incluidos</span>
+                        </div>
+                        <ul className="sm:gap-y-2 sm:px-6 sm:py-5 grid grid-cols-2 gap-x-3">
+                          {product.accesorios_incluidos!.map((a, i) => (
+                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug sm:text-[14.5px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
+                              {a}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
 
                   {/* CTAs */}
-                  <div className="flex-shrink-0 px-5 py-3 border-t border-[#EBE5DC] bg-[#FAFAF8]">
-                    <div className="flex gap-2">
+                  <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] sm:shadow-none">
+                    <div className="flex gap-2 sm:gap-4">
                       <motion.button
-                        className="flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-2 text-white cursor-pointer"
+                        className="flex-1 h-12 sm:h-16 rounded-xl sm:rounded-2xl text-[13px] sm:text-[17px] font-semibold flex items-center justify-center gap-2 sm:gap-3 text-white cursor-pointer"
                         style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
                         onClick={handleWhatsApp}
                         whileHover={{ scale: 1.015 }}
                         whileTap={{ scale: 0.97 }}
                       >
-                        <WhatsAppSVG />
+                        <WhatsAppSVG className="w-4 h-4 sm:w-6 sm:h-6 flex-shrink-0" />
                         WhatsApp
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-200 sm:duration-150 cursor-pointer border ${
+                        className={`flex-1 h-12 sm:h-16 rounded-xl sm:rounded-2xl text-[13px] sm:text-[17px] font-semibold flex items-center justify-center gap-1.5 sm:gap-2.5 transition-colors duration-200 sm:duration-150 cursor-pointer border ${
                           isInQuoteList
                             ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
                             : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
@@ -382,8 +542,8 @@ export function ProductModal({
                         whileTap={{ scale: 0.97 }}
                       >
                         {isInQuoteList
-                          ? <><X className="w-3.5 h-3.5" /> Quitar de la lista</>
-                          : <><Plus className="w-3.5 h-3.5" /> Agregar a lista</>
+                          ? <><X className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> Quitar de la lista</>
+                          : <><Plus className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> Agregar a lista</>
                         }
                       </motion.button>
                     </div>
@@ -398,16 +558,6 @@ export function ProductModal({
         </AnimatePresence>,
         document.body
       )}
-
-      <ConfirmDialog
-        isOpen={confirmRemoveOpen}
-        title={`¿Quitar "${product.nombre}" de tu lista?`}
-        description="Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras."
-        confirmLabel="Quitar"
-        cancelLabel="Cancelar"
-        onConfirm={handleConfirmRemove}
-        onCancel={() => setConfirmRemoveOpen(false)}
-      />
     </>
   );
 }
