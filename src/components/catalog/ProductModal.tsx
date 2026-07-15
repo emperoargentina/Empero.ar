@@ -200,13 +200,13 @@ export function ProductModal({
           />
 
           {/* Centering wrapper */}
-          <div className="fixed inset-0 z-[80] flex items-center justify-center p-0 sm:p-4 pointer-events-none">
+          <div className="fixed inset-0 z-[80] flex items-center justify-center p-0 lg:p-4 pointer-events-none">
             <motion.div
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-label={product.nombre}
-              className="relative w-full h-[100dvh] rounded-none sm:h-[90vh] sm:max-h-[860px] sm:w-[94vw] sm:max-w-[1400px] sm:rounded-2xl sm:overflow-hidden bg-white pointer-events-auto"
+              className="relative w-full h-[100dvh] rounded-none lg:h-[90vh] lg:max-h-[860px] lg:w-[94vw] lg:max-w-[1400px] lg:rounded-2xl lg:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -230,7 +230,7 @@ export function ProductModal({
               <motion.button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="absolute top-3 right-3 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full sm:rounded-lg bg-white/90 sm:bg-white backdrop-blur-sm sm:backdrop-blur-none shadow-sm sm:shadow-md border border-transparent sm:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 sm:duration-150 cursor-pointer outline-none"
+                className="absolute top-3 right-3 z-30 w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-full lg:rounded-lg bg-white/90 lg:bg-white backdrop-blur-sm lg:backdrop-blur-none shadow-sm lg:shadow-md border border-transparent lg:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 lg:duration-150 cursor-pointer outline-none"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.94 }}
               >
@@ -238,15 +238,15 @@ export function ProductModal({
               </motion.button>
 
               {/* Availability badge (mobile, top-left) */}
-              <div className="sm:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
+              <div className="lg:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
                 <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
               </div>
 
               {/* Grid: image | details */}
-              <div className="flex flex-col sm:grid sm:grid-cols-[38%_62%]" style={{ flex: 1, minHeight: 0 }}>
+              <div className="flex flex-col lg:grid lg:grid-cols-[38%_62%]" style={{ flex: 1, minHeight: 0 }}>
 
                 {/* Image panel (desktop) */}
-                <div className="relative bg-[#F7F5F1] sm:h-auto overflow-hidden flex-shrink-0 hidden sm:flex sm:flex-col">
+                <div className="relative bg-[#F7F5F1] lg:h-auto overflow-hidden flex-shrink-0 hidden lg:flex lg:flex-col">
                   <div className="flex-1 relative min-h-0">
                     {!imageLoaded && <div className="absolute inset-0 bg-[#EEEAE1] animate-pulse" />}
                     <motion.img
@@ -292,14 +292,14 @@ export function ProductModal({
                 </div>
 
                 {/* Details panel */}
-                <div className="flex-1 flex flex-col min-h-0 sm:overflow-hidden sm:bg-white">
+                <div className="flex-1 flex flex-col min-h-0 lg:overflow-hidden lg:bg-white">
 
-                  <div className="modal-product-header hidden sm:flex sm:items-start sm:justify-between sm:gap-8 sm:px-10 sm:pt-14 sm:pb-0">
+                  <div className="modal-product-header hidden lg:flex lg:items-start lg:justify-between lg:gap-8 lg:px-10 lg:pt-14 lg:pb-0">
                     <div className="min-w-0">
                       <div className="modal-product-header-category-row">
-                        <span className="modal-product-header-category sm:text-[15px] sm:tracking-[0.14em]">{product.categoria}</span>
+                        <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{product.categoria}</span>
                       </div>
-                      <h2 className="modal-product-header-title sm:pr-0">{product.nombre}</h2>
+                      <h2 className="modal-product-header-title lg:pr-0">{product.nombre}</h2>
 
                       {allVariants.length > 1 && (
                         <div className="flex flex-wrap gap-1.5 mt-2.5">
@@ -307,7 +307,7 @@ export function ProductModal({
                             <button
                               key={v.id}
                               onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
-                              className={`px-2.5 py-1 rounded-full sm:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-full lg:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
                                 v.id === product.id
                                   ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
                                   : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
@@ -323,7 +323,7 @@ export function ProductModal({
                     <img
                       src="/images/logo/Logo.png"
                       alt="Empero"
-                      className="h-14 w-auto object-contain flex-shrink-0 sm:mt-6"
+                      className="h-14 w-auto object-contain flex-shrink-0 lg:mt-6"
                     />
                   </div>
 
@@ -331,11 +331,11 @@ export function ProductModal({
                   <div
                     ref={scrollRef}
                     data-lenis-prevent
-                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pt-5 pb-3 space-y-5 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 max-sm:space-y-0 flex flex-col"
+                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pt-5 pb-3 space-y-5 max-lg:px-0 max-lg:pt-0 max-lg:pb-4 max-lg:space-y-0 flex flex-col"
                     style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}
                   >
                     {/* ===== MOBILE HERO (inside scroll so any touch scrolls) ===== */}
-                    <div className="sm:hidden px-4 pt-14 pb-3.5">
+                    <div className="lg:hidden px-4 pt-14 pb-3.5">
                       <div className="flex gap-3.5">
                         {/* Thumbnail */}
                         <div className="w-[164px] flex-shrink-0 self-start aspect-[3/4] rounded-xl overflow-hidden bg-[var(--warm-50)] border border-[#EBE5DC] relative">
@@ -377,7 +377,7 @@ export function ProductModal({
                     </div>
 
                     {/* Mobile content wrapper */}
-                    <div className="sm:hidden px-3.5 pb-4 space-y-3.5">
+                    <div className="lg:hidden px-3.5 pb-4 space-y-3.5">
 
                     {/* Mobile: combined specs + características */}
                     <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm overflow-hidden">
@@ -445,7 +445,7 @@ export function ProductModal({
                     </div>{/* end mobile content wrapper */}
 
                     {/* Desktop: specs + características side by side */}
-                    <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6 sm:items-stretch sm:flex-1 sm:min-h-0">
+                    <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:items-stretch lg:flex-1 lg:min-h-0">
                       <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
                         <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
                           <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
@@ -500,14 +500,14 @@ export function ProductModal({
 
                     {/* Desktop: accesorios */}
                     {hasAccesorios && (
-                      <div className="hidden sm:block sm:rounded-2xl sm:border sm:border-[#EBE5DC] sm:overflow-hidden">
-                        <div className="flex items-center gap-2.5 sm:px-6 sm:py-4 sm:border-b sm:border-[#EBE5DC]">
-                          <Package className="sm:w-[18px] sm:h-[18px] text-[#C41B2E]" />
-                          <span className="modal-product-section-label sm:text-[13px] sm:tracking-[0.1em]">Accesorios incluidos</span>
+                      <div className="hidden lg:block lg:rounded-2xl lg:border lg:border-[#EBE5DC] lg:overflow-hidden">
+                        <div className="flex items-center gap-2.5 lg:px-6 lg:py-4 lg:border-b lg:border-[#EBE5DC]">
+                          <Package className="lg:w-[18px] lg:h-[18px] text-[#C41B2E]" />
+                          <span className="modal-product-section-label lg:text-[13px] lg:tracking-[0.1em]">Accesorios incluidos</span>
                         </div>
-                        <ul className="sm:gap-y-2 sm:px-6 sm:py-5 grid grid-cols-2 gap-x-3">
+                        <ul className="lg:gap-y-2 lg:px-6 lg:py-5 grid grid-cols-2 gap-x-3">
                           {product.accesorios_incluidos!.map((a, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug sm:text-[14.5px]">
+                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug lg:text-[14.5px]">
                               <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
                               {a}
                             </li>
@@ -518,21 +518,21 @@ export function ProductModal({
                   </div>
 
                   {/* CTAs */}
-                  <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] sm:shadow-none">
-                    <div className="flex gap-2 sm:gap-4">
+                  <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:shadow-none">
+                    <div className="flex gap-2 lg:gap-4">
                       <motion.button
-                        className="flex-1 h-12 sm:h-16 rounded-xl sm:rounded-2xl text-[13px] sm:text-[17px] font-semibold flex items-center justify-center gap-2 sm:gap-3 text-white cursor-pointer"
+                        className="flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white cursor-pointer"
                         style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
                         onClick={handleWhatsApp}
                         whileHover={{ scale: 1.015 }}
                         whileTap={{ scale: 0.97 }}
                       >
-                        <WhatsAppSVG className="w-4 h-4 sm:w-6 sm:h-6 flex-shrink-0" />
+                        <WhatsAppSVG className="w-4 h-4 lg:w-6 lg:h-6 flex-shrink-0" />
                         WhatsApp
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-12 sm:h-16 rounded-xl sm:rounded-2xl text-[13px] sm:text-[17px] font-semibold flex items-center justify-center gap-1.5 sm:gap-2.5 transition-colors duration-200 sm:duration-150 cursor-pointer border ${
+                        className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-1.5 lg:gap-2.5 transition-colors duration-200 lg:duration-150 cursor-pointer border ${
                           isInQuoteList
                             ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
                             : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
@@ -542,8 +542,8 @@ export function ProductModal({
                         whileTap={{ scale: 0.97 }}
                       >
                         {isInQuoteList
-                          ? <><X className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> Quitar de la lista</>
-                          : <><Plus className="w-3.5 h-3.5 sm:w-5 sm:h-5" /> Agregar a lista</>
+                          ? <><X className="w-3.5 h-3.5 lg:w-5 lg:h-5" /> Quitar de la lista</>
+                          : <><Plus className="w-3.5 h-3.5 lg:w-5 lg:h-5" /> Agregar a lista</>
                         }
                       </motion.button>
                     </div>
