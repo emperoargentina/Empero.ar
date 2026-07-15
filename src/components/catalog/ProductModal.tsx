@@ -372,7 +372,7 @@ export function ProductModal({
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-200 cursor-pointer border ${
+                        className={`flex-1 h-12 sm:h-10 rounded-xl sm:rounded-lg text-[13px] sm:text-[12.5px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-200 sm:duration-150 cursor-pointer border ${
                           isInQuoteList
                             ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
                             : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
