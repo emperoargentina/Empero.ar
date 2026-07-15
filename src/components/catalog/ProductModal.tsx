@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { Check, Plus, X, Settings, Package, Layers } from 'lucide-react';
+import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Zap, Box, Gauge, ShoppingBasket, Power, Thermometer, ListChecks, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
 import { variantLabel } from '@/lib/groupProducts';
@@ -112,24 +112,24 @@ export function ProductModal({
   };
 
   // Specs
-  const specs: { label: string; value: string }[] = [];
+  const specs: { label: string; value: string; icon: LucideIcon }[] = [];
   const dim = product.dimensiones_mm as Record<string, number> | null;
   if (dim && (dim.Ancho || dim.Profundidad || dim.Alto))
-    specs.push({ label: 'Dimensiones', value: `${dim.Ancho ?? '—'} × ${dim.Profundidad ?? '—'} × ${dim.Alto ?? '—'} mm` });
-  if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad });
-  if (product.voltaje)            specs.push({ label: 'Voltaje',     value: product.voltaje });
-  if (product.peso_kg != null)    specs.push({ label: 'Peso',        value: `${product.peso_kg} kg` });
-  if (product.volumen_m3 != null) specs.push({ label: 'Volumen',     value: `${product.volumen_m3} m³` });
-  if (product.motor_rpm != null)  specs.push({ label: 'Motor',       value: `${product.motor_rpm} RPM` });
-  if (product.dimensiones_canasto_mm) specs.push({ label: 'Canasto', value: product.dimensiones_canasto_mm });
+    specs.push({ label: 'Dimensiones', value: `${dim.Ancho ?? '—'} × ${dim.Profundidad ?? '—'} × ${dim.Alto ?? '—'} mm`, icon: Ruler });
+  if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad, icon: Layers });
+  if (product.voltaje)            specs.push({ label: 'Voltaje',     value: product.voltaje, icon: Zap });
+  if (product.peso_kg != null)    specs.push({ label: 'Peso',        value: `${product.peso_kg} kg`, icon: Weight });
+  if (product.volumen_m3 != null) specs.push({ label: 'Volumen',     value: `${product.volumen_m3} m³`, icon: Box });
+  if (product.motor_rpm != null)  specs.push({ label: 'Motor',       value: `${product.motor_rpm} RPM`, icon: Gauge });
+  if (product.dimensiones_canasto_mm) specs.push({ label: 'Canasto', value: product.dimensiones_canasto_mm, icon: ShoppingBasket });
   const pot = product.potencias_kw as Record<string, number> | null;
-  if (pot?.Total != null)         specs.push({ label: 'Potencia',    value: `${pot.Total} kW` });
-  if (pot?.Motor != null)         specs.push({ label: 'Pot. motor',  value: `${pot.Motor} kW` });
+  if (pot?.Total != null)         specs.push({ label: 'Potencia',    value: `${pot.Total} kW`, icon: Power });
+  if (pot?.Motor != null)         specs.push({ label: 'Pot. motor',  value: `${pot.Motor} kW`, icon: Power });
   const temp = product.temperaturas_c as Record<string, number> | null;
-  if (temp?.Lavado != null)       specs.push({ label: 'T. lavado',   value: `${temp.Lavado} °C` });
-  if (temp?.Enjuague != null)     specs.push({ label: 'T. enjuague', value: `${temp.Enjuague} °C` });
+  if (temp?.Lavado != null)       specs.push({ label: 'T. lavado',   value: `${temp.Lavado} °C`, icon: Thermometer });
+  if (temp?.Enjuague != null)     specs.push({ label: 'T. enjuague', value: `${temp.Enjuague} °C`, icon: Thermometer });
   const prog = product.programas as Record<string, number> | null;
-  if (prog?.Cantidad != null)     specs.push({ label: 'Programas',   value: `${prog.Cantidad}` });
+  if (prog?.Cantidad != null)     specs.push({ label: 'Programas',   value: `${prog.Cantidad}`, icon: ListChecks });
 
   const hasSpecs      = specs.length > 0;
   const hasCaract     = (product.caracteristicas_generales?.length ?? 0) > 0;
@@ -299,11 +299,14 @@ export function ProductModal({
                           <Settings className={`${d.iconSz} text-[#C41B2E]`} />
                           <span className={`modal-product-section-label ${d.sectionLbl}`}>Especificaciones técnicas</span>
                         </div>
-                        <div className="divide-y divide-[#F0EAE2] rounded-lg overflow-hidden border border-[#EBE5DC]">
+                        <div className="divide-y divide-[#F5F1EB] sm:divide-[#F0EAE2] rounded-2xl sm:rounded-lg overflow-hidden border border-[#EBE5DC]">
                           {specs.map((s, i) => (
-                            <div key={s.label} className={`flex items-center justify-between px-3 ${d.specRowPy} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}>
-                              <span className={`text-[#9A8E82] font-medium ${d.labelTxt}`}>{s.label}</span>
-                              <span className={`font-semibold text-[#1A1613] text-right ml-3 ${d.valueTxt}`}>{s.value}</span>
+                            <div key={s.label} className={`flex items-center justify-between gap-2 px-3 ${d.specRowPy} ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAF8]'}`}>
+                              <span className="flex items-center gap-2 min-w-0">
+                                <s.icon className="w-3.5 h-3.5 text-[#C41B2E]/70 flex-shrink-0 sm:hidden" />
+                                <span className={`text-[#9A8E82] font-medium truncate ${d.labelTxt}`}>{s.label}</span>
+                              </span>
+                              <span className={`font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 ${d.valueTxt}`}>{s.value}</span>
                             </div>
                           ))}
                         </div>
