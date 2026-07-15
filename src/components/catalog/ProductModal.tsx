@@ -206,7 +206,7 @@ export function ProductModal({
               role="dialog"
               aria-modal="true"
               aria-label={product.nombre}
-              className="relative w-full h-[100dvh] rounded-none sm:h-[78vh] sm:max-h-[720px] sm:w-[90vw] sm:max-w-[1150px] sm:rounded-2xl sm:overflow-hidden bg-white pointer-events-auto"
+              className="relative w-full h-[100dvh] rounded-none sm:h-[90vh] sm:max-h-[860px] sm:w-[94vw] sm:max-w-[1400px] sm:rounded-2xl sm:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -262,7 +262,7 @@ export function ProductModal({
                     />
 
                     <div className="absolute top-6 left-6">
-                      <AvailabilityBadge modo={product.modo_disponibilidad} size="lg" pill />
+                      <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
                     </div>
 
                     <AnimatePresence>
@@ -323,7 +323,7 @@ export function ProductModal({
                     <img
                       src="/images/logo/Logo.png"
                       alt="Empero"
-                      className="h-14 w-auto object-contain flex-shrink-0"
+                      className="h-14 w-auto object-contain flex-shrink-0 sm:mt-6"
                     />
                   </div>
 
@@ -331,7 +331,7 @@ export function ProductModal({
                   <div
                     ref={scrollRef}
                     data-lenis-prevent
-                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 py-5 space-y-5 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 max-sm:space-y-0"
+                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pt-5 pb-3 space-y-5 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 max-sm:space-y-0 flex flex-col"
                     style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}
                   >
                     {/* ===== MOBILE HERO (inside scroll so any touch scrolls) ===== */}
@@ -445,7 +445,7 @@ export function ProductModal({
                     </div>{/* end mobile content wrapper */}
 
                     {/* Desktop: specs + características side by side */}
-                    <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6 sm:items-stretch">
+                    <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6 sm:items-stretch sm:flex-1 sm:min-h-0">
                       <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
                         <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
                           <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
