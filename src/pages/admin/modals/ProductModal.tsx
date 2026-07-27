@@ -1,4 +1,3 @@
-// src/pages/admin/modals/ProductModal.tsx
 import { useEffect } from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
@@ -6,14 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
 import { toast } from 'sonner'
-import { X, Save, Loader2 } from 'lucide-react'
+import { X, Save, Loader2, ImageIcon, ExternalLink } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-// ─── Zod schema ────────────────────────────────────────────────────────────
 
 const schema = z.object({
   nombre:                 z.string().min(1, 'Requerido'),
   codigo:                 z.string().min(1, 'Requerido'),
+  familia_id:             z.string().nullable().optional(),
+  etiqueta:               z.string().nullable().optional(),
   categoria:              z.string().min(1, 'Requerido'),
   precio_usd:             z.coerce.number().nullable().optional(),
   stock:                  z.coerce.number().int().min(0),
@@ -21,32 +20,30 @@ const schema = z.object({
   modo_disponibilidad:    z.enum(['en_stock', 'por_encargo']),
   cloudinary_url:         z.string().nullable().optional(),
   cloudinary_image_id:    z.string().nullable().optional(),
-  voltaje:                z.string().nullable().optional(),
   peso_kg:                z.coerce.number().nullable().optional(),
   volumen_m3:             z.coerce.number().nullable().optional(),
   capacidad:              z.string().nullable().optional(),
-  motor_rpm:              z.coerce.number().int().nullable().optional(),
   dimensiones_canasto_mm: z.string().nullable().optional(),
   dim_ancho:              z.coerce.number().nullable().optional(),
   dim_prof:               z.coerce.number().nullable().optional(),
   dim_alto:               z.coerce.number().nullable().optional(),
-  temp_lavado:            z.coerce.number().nullable().optional(),
-  temp_enjuague:          z.coerce.number().nullable().optional(),
-  pot_total:              z.coerce.number().nullable().optional(),
-  pot_motor:              z.coerce.number().nullable().optional(),
-  prog_cantidad:          z.coerce.number().int().nullable().optional(),
+  dim_alto_min:           z.coerce.number().nullable().optional(),
+  dim_alto_max:           z.coerce.number().nullable().optional(),
+  potencia_kw:            z.coerce.number().nullable().optional(),
+  consumo_gas_m3h:        z.coerce.number().nullable().optional(),
+  rejilla_mm:             z.string().nullable().optional(),
   accesorios:             z.string(),
   caracteristicas:        z.string(),
 })
 
 type FormValues = z.infer<typeof schema>
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
 function toForm(p: Producto): FormValues {
   return {
     nombre:                 p.nombre,
     codigo:                 p.codigo,
+    familia_id:             p.familia_id ?? '',
+    etiqueta:               p.etiqueta ?? '',
     categoria:              p.categoria,
     precio_usd:             p.precio_usd ?? undefined,
     stock:                  p.stock,
@@ -54,20 +51,18 @@ function toForm(p: Producto): FormValues {
     modo_disponibilidad:    p.modo_disponibilidad,
     cloudinary_url:         p.cloudinary_url ?? '',
     cloudinary_image_id:    p.cloudinary_image_id ?? '',
-    voltaje:                p.voltaje ?? '',
     peso_kg:                p.peso_kg ?? undefined,
     volumen_m3:             p.volumen_m3 ?? undefined,
     capacidad:              p.capacidad ?? '',
-    motor_rpm:              p.motor_rpm ?? undefined,
     dimensiones_canasto_mm: p.dimensiones_canasto_mm ?? '',
     dim_ancho:              p.dimensiones_mm?.Ancho ?? undefined,
     dim_prof:               p.dimensiones_mm?.Profundidad ?? undefined,
     dim_alto:               p.dimensiones_mm?.Alto ?? undefined,
-    temp_lavado:            p.temperaturas_c?.Lavado ?? undefined,
-    temp_enjuague:          p.temperaturas_c?.Enjuague ?? undefined,
-    pot_total:              p.potencias_kw?.Total ?? undefined,
-    pot_motor:              p.potencias_kw?.Motor ?? undefined,
-    prog_cantidad:          p.programas?.Cantidad ?? undefined,
+    dim_alto_min:           p.dimensiones_mm?.Alto_min ?? undefined,
+    dim_alto_max:           p.dimensiones_mm?.Alto_max ?? undefined,
+    potencia_kw:            p.potencia_kw ?? undefined,
+    consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
+    rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             (p.accesorios_incluidos ?? []).join('\n'),
     caracteristicas:        (p.caracteristicas_generales ?? []).join('\n'),
   }
@@ -75,11 +70,12 @@ function toForm(p: Producto): FormValues {
 
 function fromForm(v: FormValues, id?: string): Record<string, unknown> {
   const nullIfEmpty = (s?: string | null) => (s && s.trim() ? s.trim() : null)
-
   return {
     ...(id ? { id } : {}),
     nombre:                 v.nombre,
     codigo:                 v.codigo,
+    familia_id:             nullIfEmpty(v.familia_id),
+    etiqueta:               nullIfEmpty(v.etiqueta),
     categoria:              v.categoria,
     precio_usd:             v.precio_usd ?? null,
     stock:                  v.stock,
@@ -87,34 +83,29 @@ function fromForm(v: FormValues, id?: string): Record<string, unknown> {
     modo_disponibilidad:    v.modo_disponibilidad,
     cloudinary_url:         nullIfEmpty(v.cloudinary_url),
     cloudinary_image_id:    nullIfEmpty(v.cloudinary_image_id),
-    voltaje:                nullIfEmpty(v.voltaje),
     peso_kg:                v.peso_kg ?? null,
     volumen_m3:             v.volumen_m3 ?? null,
     capacidad:              nullIfEmpty(v.capacidad),
-    motor_rpm:              v.motor_rpm ?? null,
     dimensiones_canasto_mm: nullIfEmpty(v.dimensiones_canasto_mm),
     dimensiones_mm:
-      v.dim_ancho || v.dim_prof || v.dim_alto
-        ? { Ancho: v.dim_ancho ?? undefined, Profundidad: v.dim_prof ?? undefined, Alto: v.dim_alto ?? undefined }
+      v.dim_ancho || v.dim_prof || v.dim_alto || v.dim_alto_min || v.dim_alto_max
+        ? {
+            Ancho: v.dim_ancho ?? undefined,
+            Profundidad: v.dim_prof ?? undefined,
+            Alto: v.dim_alto ?? undefined,
+            Alto_min: v.dim_alto_min ?? undefined,
+            Alto_max: v.dim_alto_max ?? undefined,
+          }
         : null,
-    temperaturas_c:
-      v.temp_lavado || v.temp_enjuague
-        ? { Lavado: v.temp_lavado ?? undefined, Enjuague: v.temp_enjuague ?? undefined }
-        : null,
-    potencias_kw:
-      v.pot_total
-        ? { Total: v.pot_total, ...(v.pot_motor ? { Motor: v.pot_motor } : {}) }
-        : null,
-    programas:
-      v.prog_cantidad ? { Cantidad: v.prog_cantidad } : null,
+    potencia_kw:            v.potencia_kw ?? null,
+    consumo_gas_m3h:        v.consumo_gas_m3h ?? null,
+    rejilla_mm:             nullIfEmpty(v.rejilla_mm),
     accesorios_incluidos:
       v.accesorios.trim() ? v.accesorios.split('\n').map(s => s.trim()).filter(Boolean) : null,
     caracteristicas_generales:
       v.caracteristicas.trim() ? v.caracteristicas.split('\n').map(s => s.trim()).filter(Boolean) : null,
   }
 }
-
-// ─── Sub-components ─────────────────────────────────────────────────────────
 
 function Field({
   label, error, children, hint,
@@ -135,9 +126,9 @@ function Field({
 }
 
 const inputCls =
-  'w-full px-3 py-2 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-1 focus:ring-[rgba(196,27,46,0.2)] transition-colors placeholder:text-[#C0B5A8]'
+  'w-full px-3 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[rgba(196,27,46,0.1)] transition-all placeholder:text-[#C0B5A8] bg-white'
 
-// ─── Main component ─────────────────────────────────────────────────────────
+const TAB_CLS = 'px-6 pt-5 pb-4 space-y-4 min-h-[28rem]'
 
 interface Props {
   producto: Producto | null
@@ -205,42 +196,55 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
   const disponible = watch('disponible')
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-6 px-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#EBE5DC]">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-8 px-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-auto overflow-hidden">
+        <div className="h-0.5 bg-gradient-to-r from-[#C41B2E]/60 via-[#C41B2E] to-[#C41B2E]/60" />
+
+        <div className="flex items-center justify-between px-8 py-6 border-b border-[#EBE5DC]">
           <div>
-            <h2 className="text-lg font-semibold text-[#1A1613]">
+            <h2 className="text-xl font-bold text-[#1A1613] tracking-tight">
               {isEdit ? 'Editar producto' : 'Agregar producto'}
             </h2>
-            {isEdit && <p className="text-xs text-[#9E9080] mt-0.5">{producto!.codigo}</p>}
+            {isEdit && (
+              <p className="text-xs text-[#9E9080] mt-0.5 flex items-center gap-1.5">
+                <span className="font-mono bg-[#F4F0E8] px-1.5 py-0.5 rounded text-[#6B6159]">{producto!.codigo}</span>
+                <span>· {producto!.categoria}</span>
+              </p>
+            )}
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-[#9E9080] hover:bg-[#F4F0E8] hover:text-[#1A1613] transition-colors cursor-pointer"
+            className="p-2 rounded-xl text-[#9E9080] hover:bg-[#F4F0E8] hover:text-[#1A1613] transition-all cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Tabs defaultValue="basico" className="w-full">
-            <TabsList className="mx-6 mt-4 grid grid-cols-4 h-9 bg-[#F4F0E8] rounded-xl p-1">
-              <TabsTrigger value="basico"  className="rounded-lg text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm">Básico</TabsTrigger>
-              <TabsTrigger value="imagen"  className="rounded-lg text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm">Imagen</TabsTrigger>
-              <TabsTrigger value="fisico"  className="rounded-lg text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm">Físico</TabsTrigger>
-              <TabsTrigger value="tecnico" className="rounded-lg text-xs font-medium data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm">Técnico</TabsTrigger>
+            <TabsList className="mx-8 mt-4 grid grid-cols-4 h-10 bg-[#F4F0E8] rounded-xl p-0.5 gap-0.5">
+              <TabsTrigger value="basico"  className="rounded-lg text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm h-full">Básico</TabsTrigger>
+              <TabsTrigger value="imagen"  className="rounded-lg text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm h-full">Imagen</TabsTrigger>
+              <TabsTrigger value="fisico"  className="rounded-lg text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm h-full">Físico</TabsTrigger>
+              <TabsTrigger value="tecnico" className="rounded-lg text-xs font-semibold data-[state=active]:bg-white data-[state=active]:text-[#1A1613] data-[state=active]:shadow-sm h-full">Técnico</TabsTrigger>
             </TabsList>
 
-            {/* TAB: Básico */}
-            <TabsContent value="basico" className="px-6 pt-5 pb-4 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <TabsContent value="basico" className={TAB_CLS}>
+              <div className="grid grid-cols-2 gap-5">
                 <Field label="Nombre *" error={errors.nombre?.message}>
                   <input {...register('nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
                 </Field>
                 <Field label="Código *" error={errors.codigo?.message}>
                   <input {...register('codigo')} className={inputCls} placeholder="Ej: EMP.LV-500" />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-2 gap-5">
+                <Field label="Etiqueta de variante" hint="Texto en el selector de variantes">
+                  <input {...register('etiqueta')} className={inputCls} placeholder='Ej: "2 puertas — 300 Lt"' />
+                </Field>
+                <Field label="ID de familia" hint="Mismo ID en variantes del mismo producto">
+                  <input {...register('familia_id')} className={inputCls} placeholder="Ej: lavavajillas-capota" />
                 </Field>
               </div>
 
@@ -251,7 +255,7 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
                 </select>
               </Field>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-5">
                 <Field label="Precio (USD)" error={errors.precio_usd?.message}>
                   <input type="number" step="0.01" min="0" {...register('precio_usd')} className={inputCls} placeholder="0.00" />
                 </Field>
@@ -261,9 +265,9 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
               </div>
 
               <Field label="Modo de disponibilidad *">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   {(['en_stock', 'por_encargo'] as const).map(opt => (
-                    <label key={opt} className="flex items-center gap-3 px-3 py-2.5 border border-[#EBE5DC] rounded-lg cursor-pointer hover:border-[#C41B2E] has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)] transition-colors">
+                    <label key={opt} className="flex items-center gap-3 px-4 py-3 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#C41B2E]/50 has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)] has-[:checked]:shadow-sm transition-all">
                       <input type="radio" value={opt} {...register('modo_disponibilidad')} className="accent-[#C41B2E]" />
                       <span className="text-sm text-[#1A1613] font-medium">
                         {opt === 'en_stock' ? 'En stock' : 'Por encargo'}
@@ -273,59 +277,78 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
                 </div>
               </Field>
 
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="flex items-center gap-3 p-4 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#D8D0C4] transition-colors">
                 <input type="checkbox" {...register('disponible')} className="w-4 h-4 accent-[#C41B2E] rounded" />
                 <div>
                   <span className="text-sm font-medium text-[#1A1613]">Visible en el catálogo</span>
-                  <p className="text-xs text-[#9E9080]">
+                  <p className="text-xs text-[#9E9080] mt-0.5">
                     {disponible ? 'El producto aparece en la tienda' : 'El producto está oculto'}
                   </p>
                 </div>
               </label>
             </TabsContent>
 
-            {/* TAB: Imagen */}
-            <TabsContent value="imagen" className="px-6 pt-5 pb-4 space-y-4">
-              <Field label="URL de imagen (Cloudinary)" hint="La URL completa de la imagen optimizada de Cloudinary">
-                <input {...register('cloudinary_url')} className={inputCls} placeholder="https://res.cloudinary.com/..." />
-              </Field>
-              <Field label="ID público Cloudinary" hint="El public_id del recurso en Cloudinary">
-                <input {...register('cloudinary_image_id')} className={inputCls} placeholder="empero/productos/lv-500" />
-              </Field>
-
-              {watch('cloudinary_url') && (
-                <div className="mt-2">
-                  <p className="text-xs text-[#9E9080] mb-2">Vista previa:</p>
-                  <img
-                    src={watch('cloudinary_url') ?? ''}
-                    alt="Preview"
-                    className="w-32 h-32 object-cover rounded-xl border border-[#EBE5DC]"
-                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                  />
+            <TabsContent value="imagen" className={TAB_CLS}>
+              <div className="flex flex-col items-center justify-center h-full min-h-[20rem] text-center gap-6">
+                <div className="w-full max-w-md space-y-5">
+                  <Field label="URL de imagen (Cloudinary)" hint="URL completa optimizada de la imagen">
+                    <input {...register('cloudinary_url')} className={inputCls} placeholder="https://res.cloudinary.com/..." />
+                  </Field>
+                  <Field label="ID público Cloudinary" hint="public_id del recurso en Cloudinary">
+                    <input {...register('cloudinary_image_id')} className={inputCls} placeholder="empero/productos/lv-500" />
+                  </Field>
                 </div>
-              )}
+
+                {watch('cloudinary_url') && (
+                  <div className="w-full max-w-md p-5 bg-[#FAF8F4] rounded-xl border border-[#EBE5DC]">
+                    <p className="text-xs text-[#9E9080] mb-3 font-medium flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      Vista previa
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={watch('cloudinary_url') ?? ''}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover rounded-lg border border-[#EBE5DC] bg-white"
+                        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                      <div className="text-left text-xs text-[#9E9080] space-y-1">
+                        <p className="flex items-center gap-1"><ExternalLink className="w-3 h-3" /> Imagen configurada</p>
+                        <p className="truncate max-w-[200px] font-mono text-[11px] text-[#C0B5A8]">{watch('cloudinary_url')}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
-            {/* TAB: Físico */}
-            <TabsContent value="fisico" className="px-6 pt-5 pb-4 space-y-4">
-              <p className="text-xs text-[#9E9080] -mt-1">Todos los campos son opcionales.</p>
+            <TabsContent value="fisico" className={TAB_CLS}>
+              <p className="text-xs text-[#9E9080] -mt-1 italic">Todos los campos son opcionales.</p>
 
-              <fieldset className="border border-[#EBE5DC] rounded-xl p-4 space-y-3">
-                <legend className="px-2 text-xs font-semibold text-[#6B6159] uppercase tracking-wide">Dimensiones externas</legend>
-                <div className="grid grid-cols-3 gap-3">
+              <fieldset className="border border-[#EBE5DC] rounded-xl p-5 space-y-4 bg-[#FAF8F4]/50">
+                <legend className="px-3 text-xs font-semibold text-[#6B6159] uppercase tracking-wider bg-white rounded-md py-1.5 border border-[#EBE5DC]">Dimensiones externas</legend>
+                <div className="grid grid-cols-3 gap-4">
                   <Field label="Ancho (mm)">
                     <input type="number" {...register('dim_ancho')} className={inputCls} placeholder="—" />
                   </Field>
                   <Field label="Profundidad (mm)">
                     <input type="number" {...register('dim_prof')} className={inputCls} placeholder="—" />
                   </Field>
-                  <Field label="Alto (mm)">
+                  <Field label="Alto (mm)" hint="Dejar vacío si es regulable">
                     <input type="number" {...register('dim_alto')} className={inputCls} placeholder="—" />
+                  </Field>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Alto mínimo (mm)" hint="Para altura regulable">
+                    <input type="number" {...register('dim_alto_min')} className={inputCls} placeholder="—" />
+                  </Field>
+                  <Field label="Alto máximo (mm)">
+                    <input type="number" {...register('dim_alto_max')} className={inputCls} placeholder="—" />
                   </Field>
                 </div>
               </fieldset>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-5">
                 <Field label="Peso (kg)">
                   <input type="number" step="0.01" {...register('peso_kg')} className={inputCls} placeholder="—" />
                 </Field>
@@ -334,7 +357,7 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
                 </Field>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-5">
                 <Field label="Capacidad" hint='Ej: "50 L" o "20 bandejas"'>
                   <input {...register('capacidad')} className={inputCls} placeholder="—" />
                 </Field>
@@ -344,60 +367,34 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
               </div>
             </TabsContent>
 
-            {/* TAB: Técnico */}
-            <TabsContent value="tecnico" className="px-6 pt-5 pb-4 space-y-4">
-              <p className="text-xs text-[#9E9080] -mt-1">Todos los campos son opcionales.</p>
+            <TabsContent value="tecnico" className={TAB_CLS}>
+              <p className="text-xs text-[#9E9080] -mt-1 italic">Todos los campos son opcionales.</p>
 
-              <div className="grid grid-cols-2 gap-4">
-                <Field label="Voltaje">
-                  <input {...register('voltaje')} className={inputCls} placeholder="Ej: 220V / 380V" />
+              <div className="grid grid-cols-3 gap-5">
+                <Field label="Potencia (kW)">
+                  <input type="number" step="0.01" {...register('potencia_kw')} className={inputCls} placeholder="—" />
                 </Field>
-                <Field label="Motor (RPM)">
-                  <input type="number" {...register('motor_rpm')} className={inputCls} placeholder="—" />
+                <Field label="Consumo de gas (m³/h)">
+                  <input type="number" step="0.01" {...register('consumo_gas_m3h')} className={inputCls} placeholder="—" />
+                </Field>
+                <Field label="Rejilla (mm)">
+                  <input {...register('rejilla_mm')} className={inputCls} placeholder="Ej: 560×524" />
                 </Field>
               </div>
 
-              <fieldset className="border border-[#EBE5DC] rounded-xl p-4 space-y-3">
-                <legend className="px-2 text-xs font-semibold text-[#6B6159] uppercase tracking-wide">Potencias (kW)</legend>
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Total">
-                    <input type="number" step="0.01" {...register('pot_total')} className={inputCls} placeholder="—" />
-                  </Field>
-                  <Field label="Motor">
-                    <input type="number" step="0.01" {...register('pot_motor')} className={inputCls} placeholder="—" />
-                  </Field>
-                </div>
-              </fieldset>
-
-              <fieldset className="border border-[#EBE5DC] rounded-xl p-4 space-y-3">
-                <legend className="px-2 text-xs font-semibold text-[#6B6159] uppercase tracking-wide">Temperaturas (°C)</legend>
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Lavado">
-                    <input type="number" {...register('temp_lavado')} className={inputCls} placeholder="—" />
-                  </Field>
-                  <Field label="Enjuague">
-                    <input type="number" {...register('temp_enjuague')} className={inputCls} placeholder="—" />
-                  </Field>
-                </div>
-              </fieldset>
-
-              <Field label="Cantidad de programas">
-                <input type="number" {...register('prog_cantidad')} className={inputCls} placeholder="—" />
-              </Field>
-
-              <Field label="Accesorios incluidos" hint="Un accesorio por línea">
+              <Field label="Accesorios incluidos" hint="Uno por línea">
                 <textarea
                   {...register('accesorios')}
-                  rows={4}
+                  rows={5}
                   className={inputCls + ' resize-none'}
                   placeholder={"Cesta porta-vajilla\nBandeja de escurrido\nManual de usuario"}
                 />
               </Field>
 
-              <Field label="Características generales" hint="Una característica por línea">
+              <Field label="Características generales" hint="Una por línea">
                 <textarea
                   {...register('caracteristicas')}
-                  rows={4}
+                  rows={5}
                   className={inputCls + ' resize-none'}
                   placeholder={"Construcción en acero inoxidable\nDoble pared aislada\nPanel de control digital"}
                 />
@@ -405,19 +402,18 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
             </TabsContent>
           </Tabs>
 
-          {/* Footer */}
-          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#EBE5DC] bg-[#FAF8F4] rounded-b-2xl">
+          <div className="flex items-center justify-end gap-3 px-8 py-5 border-t border-[#EBE5DC] bg-[#FAF8F4] rounded-b-2xl">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-[#6B6159] hover:text-[#1A1613] hover:bg-[#EBE5DC] rounded-xl transition-colors cursor-pointer"
+              className="px-6 py-2.5 text-sm font-medium text-[#6B6159] hover:text-[#1A1613] hover:bg-[#EBE5DC] rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-5 py-2 bg-[#C41B2E] text-white rounded-xl text-sm font-semibold hover:bg-[#B51426] disabled:opacity-60 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#C41B2E]/20 cursor-pointer"
             >
               {isSubmitting
                 ? <><Loader2 className="w-4 h-4 animate-spin" />Guardando...</>

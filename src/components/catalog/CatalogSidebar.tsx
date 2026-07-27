@@ -17,9 +17,9 @@ const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 const CATEGORY_ORDER = [
-  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas Bajo Mostrador',
+  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución y Autoservicio', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
+  'Distribución', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
 ];
 
 const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: string | null }[] = [

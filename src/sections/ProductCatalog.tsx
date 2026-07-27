@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { productCardImage } from '@/lib/cloudinaryUrl';
 import {
   Package, Filter, Search, X,
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
@@ -30,9 +31,9 @@ const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: str
 ];
 
 const CATEGORY_ORDER = [
-  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas Bajo Mostrador',
+  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución y Autoservicio', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
+  'Distribución', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
 ];
 
 const orderedCategories = CATEGORY_ORDER
@@ -125,7 +126,24 @@ export function ProductCatalog({
     return groupedProducts.slice(start, start + itemsPerPage);
   }, [groupedProducts, currentPage, totalPages, itemsPerPage]);
 
-  // Reset to page 1 when filters change
+  // Preload first visible page images for instant display
+  useEffect(() => {
+    const imgs = paginatedGroups
+      .slice(0, 6)
+      .map(g => g.variants[0]?.cloudinary_url)
+      .filter(Boolean) as string[];
+    const links: HTMLLinkElement[] = imgs.map(url => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = productCardImage(url);
+      link.fetchPriority = 'high';
+      document.head.appendChild(link);
+      return link;
+    });
+    return () => links.forEach(l => l.remove());
+  }, [paginatedGroups]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory, availabilityFilter]);

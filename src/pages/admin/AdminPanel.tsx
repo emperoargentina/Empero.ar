@@ -1,36 +1,96 @@
-// src/pages/admin/AdminPanel.tsx
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { invalidateProductosCache } from '@/lib/productosCache'
 import { Toaster, toast } from 'sonner'
 import {
-  LayoutDashboard, Package, Menu, LogOut, ChevronRight, RefreshCw,
+  Package, Menu, LogOut, RefreshCw,
+  ChevronLeft,
 } from 'lucide-react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
-import { Dashboard } from './views/Dashboard'
-import { Products } from './views/Products'
-
-export type AdminView = 'dashboard' | 'products'
 
 interface Props { session: Session }
 
+const TABS = [
+  { path: '/admin/dashboard', label: 'Dashboard' },
+  { path: '/admin/productos', label: 'Productos' },
+]
+
+function SidebarInner({
+  onPurgeCache, purging, session,
+}: {
+  onPurgeCache: () => void
+  purging: boolean
+  session: Session
+}) {
+  return (
+    <div className="flex flex-col h-full bg-[#1A1613]">
+      <div className="relative px-5 pt-8 pb-6 flex-shrink-0 overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#C41B2E]/5 blur-3xl pointer-events-none" />
+        <div className="w-9 h-9 rounded-xl bg-[#C41B2E] flex items-center justify-center mb-4 shadow-lg shadow-[#C41B2E]/20">
+          <Package className="w-5 h-5 text-white" />
+        </div>
+        <h1 className="text-white font-semibold text-lg tracking-tight">Empero</h1>
+        <p className="text-[#6B6159] text-[11px] font-medium uppercase tracking-[0.12em] mt-0.5">
+          Panel administrativo
+        </p>
+        <div className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-[#C41B2E]/40 via-white/[0.06] to-transparent" />
+      </div>
+
+      <div className="flex-1" />
+
+      <div className="px-3 py-4 space-y-1 flex-shrink-0 border-t border-white/[0.06]">
+        <button
+          onClick={onPurgeCache}
+          disabled={purging}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-white transition-all duration-200 disabled:opacity-50 cursor-pointer"
+        >
+          <RefreshCw className={`w-4 h-4 flex-shrink-0 ${purging ? 'animate-spin' : ''}`} />
+          {purging ? 'Reseteando...' : 'Resetear caché'}
+        </button>
+
+        <div className="px-3 pt-3 pb-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#C41B2E]/20 to-[#C41B2E]/5 border border-white/[0.06] flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-bold text-[#C41B2E]">
+                {session.user.email?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] text-[#857870] truncate font-medium">{session.user.email}</p>
+              <p className="text-[9px] text-[#4A4540] uppercase tracking-[0.12em]">Sesión activa</p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-red-400 transition-all duration-200 cursor-pointer"
+        >
+          <LogOut className="w-4 h-4 flex-shrink-0" />
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function AdminPanel({ session }: Props) {
-  const [view, setView]             = useState<AdminView>('dashboard')
+  const navigate              = useNavigate()
+  const location              = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [purging, setPurging]       = useState(false)
-  // Incrementar para forzar remount de la vista activa tras reset
-  const [cacheKey, setCacheKey]     = useState(0)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  const handleLogout = () => supabase.auth.signOut()
-
-  const handlePurgeCache = async () => {
+  const handlePurgeCache = useCallback(async () => {
     setPurging(true)
-
-    // 1. Invalidar caché local de localStorage
     invalidateProductosCache()
 
-    // 2. Intentar purgar CDN de Vercel (no fatal si no hay token)
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'purge-image-cache' })
+    }
+
     try {
       const secret = import.meta.env.VITE_REVALIDATE_SECRET
       if (secret) {
@@ -39,122 +99,98 @@ export function AdminPanel({ session }: Props) {
           headers: { 'x-revalidate-secret': secret },
         })
       }
-    } catch {
-      // Non-fatal
-    }
+    } catch {}
 
-    // 3. Forzar remount de la vista → refetch de Supabase
-    setCacheKey(k => k + 1)
+    window.dispatchEvent(new CustomEvent('cache-purged'))
     toast.success('Caché reseteado · datos frescos de Supabase')
     setPurging(false)
-  }
+  }, [])
 
-  const navItems = [
-    { id: 'dashboard' as AdminView, label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'products'  as AdminView, label: 'Productos', icon: Package },
-  ]
-
-  const viewLabels: Record<AdminView, string> = {
-    dashboard: 'Dashboard',
-    products:  'Productos',
-  }
-
-  const SidebarInner = () => (
-    <div className="flex flex-col h-full bg-[#1A1613]">
-      {/* Brand */}
-      <div className="px-5 py-6 border-b border-white/[0.06] flex-shrink-0">
-        <img src="/images/logo/Logo.png" alt="Empero" width={480} height={333} className="h-7 w-auto brightness-0 invert" />
-        <p className="text-[10px] text-[#4A4540] uppercase tracking-[0.15em] mt-2 font-medium">
-          Panel Administrativo
-        </p>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        {navItems.map(item => {
-          const active = view === item.id
-          return (
-            <button
-              key={item.id}
-              onClick={() => { setView(item.id); setMobileOpen(false) }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
-                active
-                  ? 'bg-[#C41B2E] text-white shadow-sm shadow-[rgba(196,27,46,0.3)]'
-                  : 'text-[#857870] hover:bg-white/[0.06] hover:text-white'
-              }`}
-            >
-              <item.icon className="w-4 h-4 flex-shrink-0" />
-              {item.label}
-              {active && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-60" />}
-            </button>
-          )
-        })}
-      </nav>
-
-      {/* Cache + User */}
-      <div className="px-3 py-4 border-t border-white/[0.06] space-y-1 flex-shrink-0">
-        <button
-          onClick={handlePurgeCache}
-          disabled={purging}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-white transition-all disabled:opacity-50 cursor-pointer"
-        >
-          <RefreshCw className={`w-4 h-4 flex-shrink-0 ${purging ? 'animate-spin' : ''}`} />
-          {purging ? 'Reseteando...' : 'Resetear caché'}
-        </button>
-
-        <div className="px-3 pt-2 pb-1">
-          <p className="text-[10px] text-[#4A4540] uppercase tracking-[0.12em] mb-0.5">Sesión activa</p>
-          <p className="text-xs text-[#857870] truncate">{session.user.email}</p>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-red-400 transition-all cursor-pointer"
-        >
-          <LogOut className="w-4 h-4 flex-shrink-0" />
-          Cerrar sesión
-        </button>
-      </div>
-    </div>
-  )
+  const sidebarWidth = sidebarCollapsed ? 'w-16' : 'w-60'
 
   return (
-    <div className="min-h-screen bg-[#F4F0E8] flex">
+    <div className="min-h-screen bg-gradient-to-br from-[#F4F0E8] via-[#FAF8F5] to-[#EDE8E0] flex">
       <Toaster richColors position="top-right" />
 
+      {/* Ambient glow */}
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#C41B2E]/[0.03] blur-[120px] pointer-events-none -z-0" />
+      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#C41B2E]/[0.02] blur-[100px] pointer-events-none -z-0" />
+
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-60 flex-shrink-0 sticky top-0 h-screen overflow-hidden border-r border-white/[0.04]">
-        <SidebarInner />
+      <aside className={`hidden lg:block ${sidebarWidth} flex-shrink-0 sticky top-0 h-screen overflow-hidden transition-all duration-300 border-r border-white/[0.04] z-10`}>
+        <SidebarInner
+          onPurgeCache={handlePurgeCache}
+          purging={purging}
+          session={session}
+        />
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#1A1613] border border-white/[0.06] flex items-center justify-center text-[#857870] hover:text-white transition-colors cursor-pointer z-20"
+        >
+          <ChevronLeft className={`w-3 h-3 transition-transform duration-200 ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+        </button>
       </aside>
 
       {/* Mobile sidebar */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="p-0 w-60 border-0">
-          <SidebarInner />
+        <SheetContent side="left" className="p-0 w-60 border-0 bg-[#1A1613]">
+          <SidebarInner
+            onPurgeCache={handlePurgeCache}
+            purging={purging}
+            session={session}
+          />
         </SheetContent>
       </Sheet>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top bar */}
-        <header className="bg-white border-b border-[#EBE5DC] px-4 lg:px-6 h-14 flex items-center gap-3 flex-shrink-0 sticky top-0 z-10">
+      <div className="flex-1 flex flex-col min-w-0 relative z-0">
+        <header className="bg-white/80 backdrop-blur-lg border-b border-[#EBE5DC] px-4 lg:px-8 h-16 flex items-center gap-3 flex-shrink-0 sticky top-0 z-10 shadow-sm">
           <button
             className="lg:hidden p-2 rounded-lg text-[#6B6159] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
             onClick={() => setMobileOpen(true)}
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-1.5 text-sm">
-            <span className="text-[#9E9080]">Empero Admin</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#C0B5A8]" />
-            <span className="text-[#1A1613] font-semibold">{viewLabels[view]}</span>
+
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-[#9E9080] font-medium">Empero Admin</span>
+          </div>
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F0E8] rounded-lg text-[11px] text-[#6B6159] font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              {session.user.email}
+            </div>
           </div>
         </header>
 
-        {/* View content — key={cacheKey} fuerza remount tras reset */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {view === 'dashboard' && <Dashboard key={cacheKey} onNavigate={setView} />}
-          {view === 'products'  && <Products  key={cacheKey} />}
+        {/* Tab bar */}
+        <div className="bg-white/60 backdrop-blur-sm border-b border-[#EBE5DC] px-4 lg:px-8">
+          <div className="flex gap-1">
+            {TABS.map(tab => {
+              const active = location.pathname === tab.path
+              return (
+                <button
+                  key={tab.path}
+                  onClick={() => navigate(tab.path)}
+                  className={`relative px-5 py-3 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                    active
+                      ? 'text-[#C41B2E]'
+                      : 'text-[#9E9080] hover:text-[#6B6159]'
+                  }`}
+                >
+                  {tab.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#C41B2E] rounded-full" />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <main className="flex-1 p-6 lg:p-8 overflow-auto">
+          <Outlet />
         </main>
       </div>
     </div>

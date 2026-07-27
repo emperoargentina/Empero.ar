@@ -1,9 +1,11 @@
-// src/pages/admin/AdminRoot.tsx
 import { useEffect, useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { AdminLogin } from './AdminLogin'
 import { AdminPanel } from './AdminPanel'
+import { Dashboard } from './views/Dashboard'
+import { Products } from './views/Products'
 
 export function AdminRoot() {
   const [session, setSession] = useState<Session | null>(null)
@@ -29,5 +31,14 @@ export function AdminRoot() {
   }
 
   if (!session) return <AdminLogin />
-  return <AdminPanel session={session} />
+
+  return (
+    <Routes>
+      <Route element={<AdminPanel session={session} />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="productos" element={<Products />} />
+      </Route>
+    </Routes>
+  )
 }

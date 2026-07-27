@@ -3,6 +3,8 @@
 export interface Producto {
   id: string
   codigo: string
+  familia_id: string | null
+  etiqueta: string | null
   nombre: string
   categoria: string
   precio_usd: number | null
@@ -11,16 +13,14 @@ export interface Producto {
   modo_disponibilidad: 'en_stock' | 'por_encargo'
   cloudinary_image_id: string | null
   cloudinary_url: string | null
-  voltaje: string | null
   peso_kg: number | null
   volumen_m3: number | null
   capacidad: string | null
-  motor_rpm: number | null
   dimensiones_canasto_mm: string | null
-  dimensiones_mm: { Ancho?: number; Profundidad?: number; Alto?: number } | null
-  potencias_kw: Record<string, number> | null
-  temperaturas_c: Record<string, number> | null
-  programas: { Cantidad?: number; Tiempos_segundos?: number[] } | null
+  dimensiones_mm: { Ancho?: number; Profundidad?: number; Alto?: number; Alto_min?: number; Alto_max?: number } | null
+  potencia_kw: number | null
+  consumo_gas_m3h: number | null
+  rejilla_mm: string | null
   accesorios_incluidos: string[] | null
   caracteristicas_generales: string[] | null
   created_at: string
@@ -31,19 +31,19 @@ export type ProductoInsert = Omit<Producto, 'id' | 'created_at' | 'updated_at'>
 export type ProductoUpdate = Partial<ProductoInsert>
 
 export const CATEGORIAS = [
-  'Lavado',
-  'Refrigeración',
-  'Distribución y Autoservicio',
-  'Hornos',
-  'Freidoras',
-  'Planchas',
   'Cocinas',
-  'Parrillas',
   'Cucipastas',
-  'Hornos a Gas Bajo Mostrador',
-  'Superficies',
+  'Distribución',
   'Elaboración',
+  'Freidoras',
+  'Hornos',
+  'Hornos a Gas',
+  'Lavado',
   'Mesas',
+  'Parrillas',
+  'Planchas',
+  'Refrigeración',
+  'Superficies',
 ] as const
 
 export type Categoria = (typeof CATEGORIAS)[number]

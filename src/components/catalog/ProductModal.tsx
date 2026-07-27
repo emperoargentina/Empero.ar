@@ -1,8 +1,9 @@
 import { createPortal } from 'react-dom';
-import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Zap, Box, Gauge, ShoppingBasket, Power, Thermometer, ListChecks, ShieldCheck, Award, type LucideIcon } from 'lucide-react';
+import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Box, ShoppingBasket, Power, Flame, Grid3X3, ShieldCheck, Award, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
 import { variantLabel } from '@/lib/groupProducts';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Swal from 'sweetalert2';
 import { motion, AnimatePresence, type TargetAndTransition } from 'framer-motion';
 
@@ -10,8 +11,11 @@ type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
 import { whatsappConfig } from '@/data/company';
 import { AvailabilityBadge } from './AvailabilityBadge';
 import { getLenis } from '@/hooks/useLenis';
+import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
 
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
+
+type TabValue = 'variantes' | 'specs' | 'caract' | 'accesorios';
 
 const WhatsAppSVG = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className ?? 'w-4 h-4 flex-shrink-0'} aria-hidden="true">
@@ -40,6 +44,7 @@ export function ProductModal({
 }: ProductModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabValue>('variantes');
   const dialogRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -47,12 +52,22 @@ export function ProductModal({
     () => (variants && variants.length > 0 ? variants : initialProduct ? [initialProduct] : []),
     [variants, initialProduct]
   );
+  const hasVariants = allVariants.length > 1;
+  // Family-level reference (nombre/categoría/imagen de respaldo) — siempre disponible mientras el modal está abierto,
+  // aunque todavía no se haya elegido una variante puntual.
+  const familyRef = initialProduct ?? allVariants[0] ?? null;
 
   useEffect(() => {
-    if (isOpen) setSelectedId(initialProduct?.id ?? null);
-  }, [isOpen, initialProduct?.id]);
+    if (isOpen) {
+      // Con varias variantes, no se preselecciona ninguna: hay que elegir explícitamente.
+      setSelectedId(hasVariants ? null : (allVariants[0]?.id ?? null));
+      setActiveTab('variantes');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, initialProduct?.id, hasVariants]);
 
-  const product = allVariants.find(v => v.id === selectedId) ?? initialProduct;
+  const product = allVariants.find(v => v.id === selectedId) ?? null;
+  const needsSelection = hasVariants && !product;
   const isInQuoteList = product ? quoteListIds.includes(product.id) : false;
 
   // Lock / unlock scroll
@@ -96,19 +111,28 @@ export function ProductModal({
 
   useEffect(() => {
     if (isOpen) setImageLoaded(false);
-  }, [isOpen, product?.id]);
+  }, [isOpen, familyRef?.id]);
 
-  if (!product) return null;
+  // Falls back to "specs" (without writing state) if the selected variant has no accesorios
+  const hasAccesorios = (product?.accesorios_incluidos?.length ?? 0) > 0;
+  const effectiveTab: TabValue = activeTab === 'accesorios' && !hasAccesorios ? 'specs' : activeTab;
 
-  const imageUrl = product.cloudinary_url ?? PLACEHOLDER;
-  const isPlaceholder = !product.cloudinary_url;
+  if (!familyRef) return null;
+
+  const imageUrl = familyRef.cloudinary_url ?? PLACEHOLDER;
 
   const handleWhatsApp = () => {
+    if (!product) return;
     const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre, product.codigo));
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
   };
 
+  const handleSelectVariant = (id: string) => {
+    setSelectedId(id);
+  };
+
   const handleQuoteToggle = async () => {
+    if (!product) return;
     if (!isInQuoteList) {
       onAddToQuote?.(product);
       return;
@@ -192,36 +216,138 @@ export function ProductModal({
     }
   };
 
-
-  // Specs
+  // Specs (based on the currently selected variant)
   const specs: { label: string; value: string; icon: LucideIcon }[] = [];
-  const dim = product.dimensiones_mm as Record<string, number> | null;
-  if (dim && (dim.Ancho || dim.Profundidad || dim.Alto))
-    specs.push({ label: 'Dimensiones', value: `${dim.Ancho ?? '—'} × ${dim.Profundidad ?? '—'} × ${dim.Alto ?? '—'} mm`, icon: Ruler });
-  if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad.replace(/bandejas?/gi, ' ').replace(/\s+/g, ' ').trim(), icon: Layers });
-  if (product.voltaje)            specs.push({ label: 'Voltaje',     value: product.voltaje, icon: Zap });
-  if (product.peso_kg != null)    specs.push({ label: 'Peso',        value: `${product.peso_kg} kg`, icon: Weight });
-  if (product.volumen_m3 != null) specs.push({ label: 'Volumen',     value: `${product.volumen_m3} m³`, icon: Box });
-  if (product.motor_rpm != null)  specs.push({ label: 'Motor',       value: `${product.motor_rpm} RPM`, icon: Gauge });
-  if (product.dimensiones_canasto_mm) specs.push({ label: 'Canasto', value: product.dimensiones_canasto_mm, icon: ShoppingBasket });
-  const pot = product.potencias_kw as Record<string, number> | null;
-  if (pot?.Total != null)         specs.push({ label: 'Potencia',    value: `${pot.Total} kW`, icon: Power });
-  if (pot?.Motor != null)         specs.push({ label: 'Pot. motor',  value: `${pot.Motor} kW`, icon: Power });
-  const temp = product.temperaturas_c as Record<string, number> | null;
-  if (temp?.Lavado != null)       specs.push({ label: 'T. lavado',   value: `${temp.Lavado} °C`, icon: Thermometer });
-  if (temp?.Enjuague != null)     specs.push({ label: 'T. enjuague', value: `${temp.Enjuague} °C`, icon: Thermometer });
-  const prog = product.programas as Record<string, number> | null;
-  if (prog?.Cantidad != null)     specs.push({ label: 'Programas',   value: `${prog.Cantidad}`, icon: ListChecks });
+  if (product) {
+    const dim = product.dimensiones_mm;
+    if (dim && (dim.Ancho || dim.Profundidad || dim.Alto || dim.Alto_min)) {
+      const alto = dim.Alto != null
+        ? `${dim.Alto}`
+        : (dim.Alto_min != null && dim.Alto_max != null ? `${dim.Alto_min}–${dim.Alto_max}` : '—');
+      specs.push({ label: 'Dimensiones', value: `${dim.Ancho ?? '—'} × ${dim.Profundidad ?? '—'} × ${alto} mm`, icon: Ruler });
+    }
+    if (product.capacidad)          specs.push({ label: 'Capacidad',   value: product.capacidad.replace(/bandejas?/gi, ' ').replace(/\s+/g, ' ').trim(), icon: Layers });
+    if (product.peso_kg != null)    specs.push({ label: 'Peso',        value: `${product.peso_kg} kg`, icon: Weight });
+    if (product.volumen_m3 != null) specs.push({ label: 'Volumen',     value: `${product.volumen_m3} m³`, icon: Box });
+    if (product.dimensiones_canasto_mm) specs.push({ label: 'Canasto', value: product.dimensiones_canasto_mm, icon: ShoppingBasket });
+    if (product.rejilla_mm)         specs.push({ label: 'Rejilla',     value: `${product.rejilla_mm} mm`, icon: Grid3X3 });
+    if (product.potencia_kw != null) specs.push({ label: 'Potencia',   value: `${product.potencia_kw} kW`, icon: Power });
+    if (product.consumo_gas_m3h != null) specs.push({ label: 'Consumo de gas', value: `${product.consumo_gas_m3h} m³/h`, icon: Flame });
+  }
 
-  const hasSpecs      = specs.length > 0;
-  const hasCaract     = (product.caracteristicas_generales?.length ?? 0) > 0;
-  const hasAccesorios = (product.accesorios_incluidos?.length ?? 0) > 0;
+  const hasSpecs  = specs.length > 0;
+  const caracteristicas = product?.caracteristicas_generales ?? familyRef.caracteristicas_generales ?? [];
+  const hasCaract = caracteristicas.length > 0;
 
   const trustBadges: { icon: LucideIcon; text: string }[] = [
     { icon: ShieldCheck, text: 'Equipamiento profesional de alta performance' },
     { icon: Settings,    text: 'Diseñado para uso intensivo y continuo' },
     { icon: Award,       text: 'Materiales de alta calidad y máxima durabilidad' },
   ];
+
+  const tabTriggerCls = 'rounded-lg text-[12px] font-semibold text-[#6B6159] data-[state=active]:bg-white data-[state=active]:text-[#C41B2E] data-[state=active]:shadow-sm';
+
+  const specsPanel = needsSelection ? (
+    <p className="text-[13px] text-[#9A8E82] italic text-center py-10">Elegí una variante para ver sus especificaciones.</p>
+  ) : hasSpecs ? (
+    <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white divide-y divide-[#F0EAE2]">
+      {specs.map(s => (
+        <div key={s.label} className="flex items-center justify-between gap-2 px-5 py-3.5">
+          <span className="flex items-center gap-2.5 min-w-0">
+            <s.icon className="w-[17px] h-[17px] text-[#C41B2E] flex-shrink-0" />
+            <span className="text-[13px] text-[#6B6159] font-medium truncate">{s.label}</span>
+          </span>
+          <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13.5px]">{s.value}</span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-[13px] text-[#9A8E82] italic text-center py-10">Consultar por especificaciones</p>
+  );
+
+  const caractPanel = hasCaract ? (
+    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 rounded-2xl border border-[#EBE5DC] bg-white p-5">
+      {caracteristicas.map((f, i) => (
+        <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13.5px]">
+          <span className="w-[18px] h-[18px] rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
+            <Check className="w-2.5 h-2.5 text-[#C41B2E]" strokeWidth={2.5} />
+          </span>
+          {f}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-[13px] text-[#9A8E82] italic text-center py-10">Consultar por características</p>
+  );
+
+  const accesorios = product?.accesorios_incluidos ?? [];
+  const accesoriosPanel = hasAccesorios && (
+    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 rounded-2xl border border-[#EBE5DC] bg-white p-5">
+      {accesorios.map((a, i) => (
+        <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13.5px]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[6px]" />
+          {a}
+        </li>
+      ))}
+    </ul>
+  );
+
+  const variantesPanel = (
+    <div>
+      <AnimatePresence initial={false}>
+        {needsSelection && (
+          <motion.p
+            key="needs-selection-hint"
+            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginBottom: 12 }}
+            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="text-[12.5px] text-[#9A8E82] overflow-hidden"
+          >
+            Elegí una variante para ver precio, stock y especificaciones.
+          </motion.p>
+        )}
+      </AnimatePresence>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {allVariants.map(v => {
+        const active = v.id === product?.id;
+        return (
+          <button
+            key={v.id}
+            onClick={() => handleSelectVariant(v.id)}
+            className={`group relative text-left px-4 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${
+              active
+                ? 'bg-[#FFF0F1] border-[#C41B2E] shadow-[0_8px_24px_rgba(196,27,46,0.12)]'
+                : 'bg-white border-[#E8E2D9] hover:border-[#C41B2E]/50 hover:shadow-md hover:-translate-y-0.5'
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <span className={`text-[14px] font-bold leading-snug ${active ? 'text-[#C41B2E]' : 'text-[#1A1613]'}`}>
+                {variantLabel(v)}
+              </span>
+              <span
+                className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 ${
+                  active ? 'bg-[#C41B2E] border-[#C41B2E]' : 'border-[#D8D0C4] group-hover:border-[#C41B2E]/50'
+                }`}
+              >
+                {active && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-mono text-[#9A8E82] truncate">{v.codigo}</span>
+              <AvailabilityBadge modo={v.modo_disponibilidad} size="sm" />
+            </div>
+            {v.precio_usd != null && (
+              <p className={`text-[13.5px] mt-2.5 pt-2.5 border-t font-bold ${active ? 'border-[#F5C5C9] text-[#C41B2E]' : 'border-[#F0EAE2] text-[#1A1613]'}`}>
+                US$ {Number(v.precio_usd).toLocaleString('es-AR')}
+              </p>
+            )}
+          </button>
+        );
+      })}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -246,7 +372,7 @@ export function ProductModal({
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
-              aria-label={product.nombre}
+              aria-label={familyRef.nombre}
               className="relative w-full h-[100dvh] rounded-none lg:h-[90vh] lg:max-h-[860px] lg:w-[94vw] lg:max-w-[1400px] lg:rounded-2xl lg:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
@@ -279,32 +405,36 @@ export function ProductModal({
               </motion.button>
 
               {/* Availability badge (mobile, top-left) */}
-              <div className="lg:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
-                <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
-              </div>
+              {product && (
+                <div className="lg:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
+                  <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+                </div>
+              )}
 
               {/* Grid: image | details */}
-              <div className="flex flex-col lg:grid lg:grid-cols-[38%_62%]" style={{ flex: 1, minHeight: 0 }}>
+              <div className="flex flex-col lg:grid lg:grid-cols-[44%_56%]" style={{ flex: 1, minHeight: 0 }}>
 
                 {/* Image panel (desktop) */}
-                <div className="relative bg-[#F7F5F1] lg:h-auto overflow-hidden flex-shrink-0 hidden lg:flex lg:flex-col">
+                <div className="relative bg-white lg:h-auto overflow-hidden flex-shrink-0 hidden lg:flex lg:flex-col">
                   <div className="flex-1 relative min-h-0">
                     {!imageLoaded && <div className="absolute inset-0 bg-[#EEEAE1] animate-pulse" />}
                     <motion.img
                       src={imageUrl}
-                      alt={product.nombre}
+                      alt={familyRef.nombre}
                       width={420}
                       height={494}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-contain p-8"
                       initial={{ opacity: 0, scale: 1.04 }}
                       animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}
                       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                       onLoad={() => setImageLoaded(true)}
                     />
 
-                    <div className="absolute top-6 left-6">
-                      <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
-                    </div>
+                    {product && (
+                      <div className="absolute top-6 left-6">
+                        <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+                      </div>
+                    )}
 
                     <AnimatePresence>
                       {isInQuoteList && (
@@ -338,27 +468,9 @@ export function ProductModal({
                   <div className="modal-product-header hidden lg:flex lg:items-start lg:justify-between lg:gap-8 lg:px-10 lg:pt-14 lg:pb-0">
                     <div className="min-w-0">
                       <div className="modal-product-header-category-row">
-                        <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{product.categoria}</span>
+                        <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{familyRef.categoria}</span>
                       </div>
-                      <h2 className="modal-product-header-title lg:pr-0">{product.nombre}</h2>
-
-                      {allVariants.length > 1 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2.5">
-                          {allVariants.map(v => (
-                            <button
-                              key={v.id}
-                              onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
-                              className={`px-2.5 py-1 rounded-full lg:rounded text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
-                                v.id === product.id
-                                  ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
-                                  : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
-                              }`}
-                            >
-                              {variantLabel(v)}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                      <h2 className="modal-product-header-title lg:pr-0">{familyRef.nombre}</h2>
                     </div>
 
                     <img
@@ -381,206 +493,220 @@ export function ProductModal({
                         {/* Thumbnail */}
                         <div className="w-[164px] flex-shrink-0 self-start aspect-[3/4] rounded-xl overflow-hidden bg-[var(--warm-50)] border border-[#EBE5DC] relative">
                           {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
-                          <img
-                            src={imageUrl}
-                            alt={product.nombre}
-                            className={`absolute inset-0 w-full h-full ${isPlaceholder ? 'object-contain p-2.5' : 'object-cover'} transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                          <CloudinaryImage
+                            src={familyRef.cloudinary_url}
+                            alt={familyRef.nombre}
+                            width={164}
+                            height={218}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            placeholderClass="absolute inset-0 w-full h-full object-contain p-2.5"
+                            sizes="164px"
                             onLoad={() => setImageLoaded(true)}
                           />
                         </div>
-                        {/* Logo + categoría + título + descripción */}
+                        {/* Logo + categoría + título */}
                         <div className="flex-1 min-w-0">
                           <img src="/images/logo/Logo.png" alt="Empero" className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
-                          <span className="modal-product-header-category block mb-1">{product.categoria}</span>
-                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{product.nombre}</h2>
-                          {product.description && (
-                            <p className="modal-product-description mt-2 !text-[0.78rem] !leading-[1.5]">{product.description}</p>
+                          <span className="modal-product-header-category block mb-1">{familyRef.categoria}</span>
+                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{familyRef.nombre}</h2>
+                        </div>
+                      </div>
+                    </div>
+
+                    {hasVariants ? (
+                      <div className="px-3.5 pb-4 lg:px-0 lg:pb-0">
+                        <Tabs value={effectiveTab} onValueChange={v => setActiveTab(v as TabValue)}>
+                          <TabsList className={`grid w-full h-10 bg-[#F4F0E8] rounded-xl p-1 mb-4 ${hasAccesorios ? 'grid-cols-4' : 'grid-cols-3'}`}>
+                            <TabsTrigger value="variantes" className={tabTriggerCls}>Variantes</TabsTrigger>
+                            <TabsTrigger value="specs" className={tabTriggerCls}>Especificaciones</TabsTrigger>
+                            <TabsTrigger value="caract" className={tabTriggerCls}>Características</TabsTrigger>
+                            {hasAccesorios && <TabsTrigger value="accesorios" className={tabTriggerCls}>Accesorios</TabsTrigger>}
+                          </TabsList>
+
+                          <TabsContent value="variantes" className="mt-0">{variantesPanel}</TabsContent>
+                          <TabsContent value="specs" className="mt-0">{specsPanel}</TabsContent>
+                          <TabsContent value="caract" className="mt-0">{caractPanel}</TabsContent>
+                          {hasAccesorios && <TabsContent value="accesorios" className="mt-0">{accesoriosPanel}</TabsContent>}
+                        </Tabs>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Mobile content wrapper */}
+                        <div className="lg:hidden px-3.5 pb-4 space-y-3.5">
+                          {/* Mobile: combined specs + características */}
+                          <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm overflow-hidden">
+                            <div className="p-4 pb-4">
+                              <div className="flex items-center gap-1.5 mb-2.5">
+                                <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
+                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Especificaciones técnicas</span>
+                              </div>
+                              {hasSpecs ? (
+                                <div className="divide-y divide-[#F5F1EB]">
+                                  {specs.map((s, i) => (
+                                    <div key={s.label} className={`flex items-center justify-between gap-2 px-1 py-3 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}`}>
+                                      <span className="flex items-center gap-2 min-w-0">
+                                        <s.icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />
+                                        <span className="text-[13.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
+                                      </span>
+                                      <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13.5px]">{s.value}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por especificaciones</p>
+                              )}
+                            </div>
+                            <div className="h-px bg-[#EBE5DC] mx-4" />
+                            <div className="p-4 pt-4">
+                              <div className="flex items-center gap-1.5 mb-3">
+                                <Layers className="w-[18px] h-[18px] text-[#C41B2E]" />
+                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Características</span>
+                              </div>
+                              {hasCaract ? (
+                                <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
+                                  {caracteristicas.map((f, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
+                                      <span className="w-4 h-4 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
+                                        <Check className="w-2.5 h-2.5 text-[#C41B2E]" strokeWidth={2.5} />
+                                      </span>
+                                      {f}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por características</p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Mobile: accesorios */}
+                          {hasAccesorios && (
+                            <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm p-4">
+                              <div className="flex items-center gap-1.5 mb-3">
+                                <Package className="w-[18px] h-[18px] text-[#C41B2E]" />
+                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Accesorios incluidos</span>
+                              </div>
+                              <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
+                                {accesorios.map((a, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
+                                    {a}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           )}
                         </div>
-                      </div>
-                      {allVariants.length > 1 && (
-                        <div className="flex flex-wrap gap-1.5 mt-3">
-                          {allVariants.map(v => (
-                            <button
-                              key={v.id}
-                              onClick={() => { setImageLoaded(false); setSelectedId(v.id); }}
-                              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors duration-200 cursor-pointer ${
-                                v.id === product.id
-                                  ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
-                                  : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
-                              }`}
-                            >
-                              {variantLabel(v)}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Mobile content wrapper */}
-                    <div className="lg:hidden px-3.5 pb-4 space-y-3.5">
-
-                    {/* Mobile: combined specs + características */}
-                    <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm overflow-hidden">
-                      <div className="p-4 pb-4">
-                        <div className="flex items-center gap-1.5 mb-2.5">
-                          <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
-                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Especificaciones técnicas</span>
-                        </div>
-                        {hasSpecs ? (
-                          <div className="divide-y divide-[#F5F1EB]">
-                            {specs.map((s, i) => (
-                              <div key={s.label} className={`flex items-center justify-between gap-2 px-1 py-3 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}`}>
-                                <span className="flex items-center gap-2 min-w-0">
-                                  <s.icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />
-                                  <span className="text-[13.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
-                                </span>
-                                <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13.5px]">{s.value}</span>
+                        {/* Desktop: specs + características side by side */}
+                        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:items-stretch lg:flex-1 lg:min-h-0">
+                          <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
+                            <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
+                              <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
+                                <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
+                              </span>
+                              <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Especificaciones técnicas</span>
+                            </div>
+                            {hasSpecs ? (
+                              <div className="divide-y divide-[#F0EAE2] flex-1">
+                                {specs.map(s => (
+                                  <div key={s.label} className="flex items-center justify-between gap-2 px-6 py-3">
+                                    <span className="flex items-center gap-2.5 min-w-0">
+                                      <s.icon className="w-[16px] h-[16px] text-[#C41B2E] flex-shrink-0" />
+                                      <span className="text-[12.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
+                                    </span>
+                                    <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13px]">{s.value}</span>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por especificaciones</p>
-                        )}
-                      </div>
-                      <div className="h-px bg-[#EBE5DC] mx-4" />
-                      <div className="p-4 pt-4">
-                        <div className="flex items-center gap-1.5 mb-3">
-                          <Layers className="w-[18px] h-[18px] text-[#C41B2E]" />
-                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Características</span>
-                        </div>
-                        {hasCaract ? (
-                          <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
-                            {product.caracteristicas_generales!.map((f, i) => (
-                              <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
-                                <span className="w-4 h-4 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                  <Check className="w-2.5 h-2.5 text-[#C41B2E]" strokeWidth={2.5} />
-                                </span>
-                                {f}
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por características</p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Mobile: accesorios */}
-                    {hasAccesorios && (
-                      <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm p-4">
-                        <div className="flex items-center gap-1.5 mb-3">
-                          <Package className="w-[18px] h-[18px] text-[#C41B2E]" />
-                          <span className="text-[12.5px] font-semibold text-[#1A1613]">Accesorios incluidos</span>
-                        </div>
-                        <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
-                          {product.accesorios_incluidos!.map((a, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
-                              {a}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    </div>{/* end mobile content wrapper */}
-
-                    {/* Desktop: specs + características side by side */}
-                    <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:items-stretch lg:flex-1 lg:min-h-0">
-                      <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
-                        <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
-                          <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
-                            <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
-                          </span>
-                          <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Especificaciones técnicas</span>
-                        </div>
-                        {hasSpecs ? (
-                          <div className="divide-y divide-[#F0EAE2] flex-1">
-                            {specs.map(s => (
-                              <div key={s.label} className="flex items-center justify-between gap-2 px-6 py-3">
-                                <span className="flex items-center gap-2.5 min-w-0">
-                                  <s.icon className="w-[16px] h-[16px] text-[#C41B2E] flex-shrink-0" />
-                                  <span className="text-[12.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
-                                </span>
-                                <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13px]">{s.value}</span>
+                            ) : (
+                              <div className="flex-1 flex items-center justify-center">
+                                <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por especificaciones</p>
                               </div>
-                            ))}
+                            )}
                           </div>
-                        ) : (
-                          <div className="flex-1 flex items-center justify-center">
-                            <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por especificaciones</p>
+
+                          <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
+                            <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
+                              <span className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                                <ShieldCheck className="w-[18px] h-[18px] text-emerald-600" />
+                              </span>
+                              <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Características</span>
+                            </div>
+                            {hasCaract ? (
+                              <ul className="px-6 py-4 space-y-3 flex-1">
+                                {caracteristicas.map((f, i) => (
+                                  <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13px]">
+                                    <span className="w-[18px] h-[18px] rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-[1px]">
+                                      <Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} />
+                                    </span>
+                                    {f}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <div className="flex-1 flex items-center justify-center">
+                                <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por características</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Desktop: accesorios */}
+                        {hasAccesorios && (
+                          <div className="hidden lg:block lg:rounded-2xl lg:border lg:border-[#EBE5DC] lg:overflow-hidden">
+                            <div className="flex items-center gap-2.5 lg:px-6 lg:py-4 lg:border-b lg:border-[#EBE5DC]">
+                              <Package className="lg:w-[18px] lg:h-[18px] text-[#C41B2E]" />
+                              <span className="modal-product-section-label lg:text-[13px] lg:tracking-[0.1em]">Accesorios incluidos</span>
+                            </div>
+                            <ul className="lg:gap-y-2 lg:px-6 lg:py-5 grid grid-cols-2 gap-x-3">
+                              {accesorios.map((a, i) => (
+                                <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug lg:text-[14.5px]">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
+                                  {a}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         )}
-                      </div>
-
-                      <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
-                        <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
-                          <span className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                            <ShieldCheck className="w-[18px] h-[18px] text-emerald-600" />
-                          </span>
-                          <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Características</span>
-                        </div>
-                        {hasCaract ? (
-                          <ul className="px-6 py-4 space-y-3 flex-1">
-                            {product.caracteristicas_generales!.map((f, i) => (
-                              <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13px]">
-                                <span className="w-[18px] h-[18px] rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                  <Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} />
-                                </span>
-                                {f}
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="flex-1 flex items-center justify-center">
-                            <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por características</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Desktop: accesorios */}
-                    {hasAccesorios && (
-                      <div className="hidden lg:block lg:rounded-2xl lg:border lg:border-[#EBE5DC] lg:overflow-hidden">
-                        <div className="flex items-center gap-2.5 lg:px-6 lg:py-4 lg:border-b lg:border-[#EBE5DC]">
-                          <Package className="lg:w-[18px] lg:h-[18px] text-[#C41B2E]" />
-                          <span className="modal-product-section-label lg:text-[13px] lg:tracking-[0.1em]">Accesorios incluidos</span>
-                        </div>
-                        <ul className="lg:gap-y-2 lg:px-6 lg:py-5 grid grid-cols-2 gap-x-3">
-                          {product.accesorios_incluidos!.map((a, i) => (
-                            <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug lg:text-[14.5px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
-                              {a}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      </>
                     )}
                   </div>
 
                   {/* CTAs */}
                   <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:shadow-none">
+                    {needsSelection && (
+                      <p className="text-center text-[12px] font-semibold text-[#C41B2E] mb-2.5">
+                        Elegí una variante para continuar
+                      </p>
+                    )}
                     <div className="flex gap-2 lg:gap-4">
                       <motion.button
-                        className="flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white cursor-pointer"
+                        className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white ${
+                          needsSelection ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
+                        }`}
                         style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
                         onClick={handleWhatsApp}
-                        whileHover={{ scale: 1.015 }}
-                        whileTap={{ scale: 0.97 }}
+                        disabled={needsSelection}
+                        whileHover={needsSelection ? undefined : { scale: 1.015 }}
+                        whileTap={needsSelection ? undefined : { scale: 0.97 }}
                       >
                         <WhatsAppSVG className="w-4 h-4 lg:w-6 lg:h-6 flex-shrink-0" />
                         WhatsApp
                       </motion.button>
 
                       <motion.button
-                        className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-1.5 lg:gap-2.5 transition-colors duration-200 lg:duration-150 cursor-pointer border ${
-                          isInQuoteList
-                            ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
-                            : 'bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
+                        className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-1.5 lg:gap-2.5 transition-colors duration-200 lg:duration-150 border ${
+                          needsSelection
+                            ? 'opacity-40 cursor-not-allowed pointer-events-none bg-[#C41B2E] text-white border-[#C41B2E]'
+                            : isInQuoteList
+                              ? 'cursor-pointer bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300'
+                              : 'cursor-pointer bg-[#C41B2E] text-white border-[#C41B2E] hover:bg-[#B51426] shadow-sm shadow-red-900/20'
                         }`}
                         onClick={handleQuoteToggle}
-                        whileHover={{ scale: 1.015 }}
-                        whileTap={{ scale: 0.97 }}
+                        disabled={needsSelection}
+                        whileHover={needsSelection ? undefined : { scale: 1.015 }}
+                        whileTap={needsSelection ? undefined : { scale: 0.97 }}
                       >
                         {isInQuoteList
                           ? <><X className="w-3.5 h-3.5 lg:w-5 lg:h-5" /> Quitar de la lista</>

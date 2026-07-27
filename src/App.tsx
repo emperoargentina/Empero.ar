@@ -1,18 +1,22 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Navigation } from './sections/Navigation';
 import { Hero } from './sections/Hero';
 import { ProductCatalog } from './sections/ProductCatalog';
-import { Nosotros } from './sections/Manufactura';
-import { ContactForm } from './sections/ContactForm';
-import { Footer } from './sections/Footer';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Preloader } from './components/Preloader';
+import { ProductModal } from './components/catalog/ProductModal';
 import { useQuoteList } from './hooks/useQuoteList';
 import { useLenis } from './hooks/useLenis';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { prefetchProducts } from './hooks/useProducts';
+import { prefetchProducts, useProducts } from './hooks/useProducts';
+import { groupProducts } from './lib/groupProducts';
+import { type Product } from './data/products';
 import { ScrollTrigger } from '@/lib/gsap';
+
+const Nosotros = lazy(() => import('./sections/Manufactura').then(m => ({ default: m.Nosotros })));
+const ContactForm = lazy(() => import('./sections/ContactForm').then(m => ({ default: m.ContactForm })));
+const Footer = lazy(() => import('./sections/Footer').then(m => ({ default: m.Footer })));
 
 function App() {
   useLenis();
@@ -39,6 +43,11 @@ function App() {
     clearList,
     totalItems,
   } = useQuoteList();
+
+  const { allProducts } = useProducts();
+  const [quoteModalProduct, setQuoteModalProduct] = useState<Product | null>(null);
+  const [quoteModalVariants, setQuoteModalVariants] = useState<Product[]>([]);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
 
   const handlePreloaderComplete = useCallback(() => {
     setIsLoading(false);
@@ -68,6 +77,23 @@ function App() {
     addItem(product);
   }, [addItem]);
 
+  const handleOpenProductFromQuote = useCallback((product: Product) => {
+    const group = groupProducts(allProducts).find(g =>
+      g.variants.some(v => v.id === product.id)
+    );
+    setQuoteModalProduct(product);
+    setQuoteModalVariants(group?.variants ?? [product]);
+    setIsQuoteModalOpen(true);
+  }, [allProducts]);
+
+  const handleCloseQuoteModal = useCallback(() => {
+    setIsQuoteModalOpen(false);
+    setTimeout(() => {
+      setQuoteModalProduct(null);
+      setQuoteModalVariants([]);
+    }, 200);
+  }, []);
+
   const quoteListIds = quoteItems.map(item => item.product.id);
 
   return (
@@ -91,6 +117,7 @@ function App() {
           onUpdateNotes={updateNotes}
           onClearQuote={clearList}
           totalQuoteItems={totalItems}
+          onProductClick={handleOpenProductFromQuote}
         />
 
         <main>
@@ -103,15 +130,27 @@ function App() {
             quoteListIds={quoteListIds}
           />
 
-          <Nosotros />
+          <Suspense fallback={null}><Nosotros /></Suspense>
 
-          <ContactForm />
+          <Suspense fallback={null}><ContactForm /></Suspense>
         </main>
 
-        <Footer onCategorySelect={handleCategorySelect} />
+        <Suspense fallback={null}>
+          <Footer onCategorySelect={handleCategorySelect} />
+        </Suspense>
 
         <WhatsAppFloat />
       </div>
+
+      <ProductModal
+        product={quoteModalProduct}
+        variants={quoteModalVariants}
+        isOpen={isQuoteModalOpen}
+        onClose={handleCloseQuoteModal}
+        onAddToQuote={handleAddToQuote}
+        onRemoveFromQuote={removeItem}
+        quoteListIds={quoteListIds}
+      />
     </TooltipProvider>
   );
 }

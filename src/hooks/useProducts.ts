@@ -110,7 +110,8 @@ export function useProducts(): UseProductsReturn {
       result = result.filter(p =>
         p.nombre?.toLowerCase().includes(q) ||
         p.categoria?.toLowerCase().includes(q) ||
-        p.codigo?.toLowerCase().includes(q)
+        p.codigo?.toLowerCase().includes(q) ||
+        p.etiqueta?.toLowerCase().includes(q)
       );
     }
 

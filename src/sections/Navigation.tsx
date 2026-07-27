@@ -13,7 +13,7 @@ import {
   ChevronDown as ChevronDownIcon,
   Package,
 } from 'lucide-react';
-import { categories } from '@/data/products';
+import { categories, type Product } from '@/data/products';
 import { whatsappConfig, companyConfig } from '@/data/company';
 import {
   Sheet,
@@ -23,15 +23,10 @@ import {
 } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
 
 interface QuoteItem {
-  product: {
-    id: string;
-    nombre: string;
-    codigo: string;
-    categoria: string;
-    cloudinary_url: string | null;
-  };
+  product: Product;
   quantity: number;
   notes: string;
 }
@@ -44,19 +39,20 @@ interface NavigationProps {
   onUpdateNotes?: (productId: string, notes: string) => void;
   onClearQuote?: () => void;
   totalQuoteItems?: number;
+  onProductClick?: (product: Product) => void;
 }
 
 const CATEGORY_IMAGES: Record<string, string> = {
   'Lavado': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
   'Refrigeración': 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=100&h=100&fit=crop',
-  'Distribución y Autoservicio': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100&h=100&fit=crop',
+  'Distribución': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100&h=100&fit=crop',
   'Hornos': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Freidoras': 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=100&h=100&fit=crop',
   'Planchas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Cocinas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Parrillas': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop',
   'Cucipastas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
-  'Hornos a Gas Bajo Mostrador': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
+  'Hornos a Gas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Superficies': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
   'Elaboración': 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=100&h=100&fit=crop',
   'Mesas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
@@ -74,6 +70,7 @@ export function Navigation({
   onUpdateNotes,
   onClearQuote,
   totalQuoteItems = 0,
+  onProductClick,
 }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -353,7 +350,7 @@ export function Navigation({
           <div className="flex-1 overflow-y-auto px-5 py-5">
             {quoteItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                <div className="w-14 h-14 border border-[#EBE5DC] rounded-sm flex items-center justify-center mb-4">
+                <div className="w-14 h-14 border border-[#EBE5DC] rounded-2xl flex items-center justify-center mb-4">
                   <ClipboardList className="w-6 h-6 text-[#7B7064]" />
                 </div>
                 <p className="text-sm font-semibold text-[#1A1613] mb-1">Lista vacía</p>
@@ -364,27 +361,42 @@ export function Navigation({
             ) : (
               <div className="space-y-2.5">
                 {quoteItems.map((item) => (
-                  <div key={item.product.id} className="border border-[#EBE5DC] rounded-sm overflow-hidden bg-[#FAF8F4]">
+                  <div
+                    key={item.product.id}
+                    onClick={() => { onProductClick?.(item.product); setIsQuoteOpen(false); }}
+                    className="border border-[#EBE5DC] rounded-2xl overflow-hidden bg-[#FAF8F4] hover:border-[#C41B2E]/35 hover:shadow-[0_4px_16px_rgba(26,22,19,0.06)] transition-all duration-150 cursor-pointer"
+                  >
                     <div className="flex gap-3 p-3">
-                      <img
-                        src={item.product.cloudinary_url ?? getCategoryImage(item.product.categoria)}
-                        alt={item.product.nombre}
-                        width={56}
-                        height={56}
-                        loading="lazy"
-                        className="w-14 h-14 object-cover rounded-sm flex-shrink-0 bg-[#EBE5DC]"
-                      />
+                      {item.product.cloudinary_url ? (
+                        <CloudinaryImage
+                          src={item.product.cloudinary_url}
+                          alt={item.product.nombre}
+                          width={56}
+                          height={56}
+                          className="w-14 h-14 object-cover rounded-xl flex-shrink-0 bg-[#EBE5DC]"
+                          sizes="56px"
+                        />
+                      ) : (
+                        <img
+                          src={getCategoryImage(item.product.categoria)}
+                          alt={item.product.nombre}
+                          width={56}
+                          height={56}
+                          loading="lazy"
+                          className="w-14 h-14 object-cover rounded-xl flex-shrink-0 bg-[#EBE5DC]"
+                        />
+                      )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10.5px] font-semibold text-[#C41B2E] uppercase tracking-[0.08em] mb-0.5">
+                        <p className="product-card-category !mb-0.5">
                           {item.product.categoria}
                         </p>
-                        <h4 className="text-[13px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
+                        <h4 className="text-[13.5px] font-semibold text-[#1A1613] leading-snug line-clamp-2">
                           {item.product.nombre}
                         </h4>
                         <p className="text-[10px] font-mono text-[#7B7064] mt-0.5">#{item.product.codigo}</p>
                       </div>
                       <button
-                        onClick={() => { setRemoveCandidate(item); setIsRemoveConfirmOpen(true); }}
+                        onClick={(e) => { e.stopPropagation(); setRemoveCandidate(item); setIsRemoveConfirmOpen(true); }}
                         className="p-1.5 text-[#7B7064] hover:text-[#C41B2E] transition-colors cursor-pointer flex-shrink-0 self-start"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -392,9 +404,9 @@ export function Navigation({
                     </div>
 
                     <div className="flex items-center gap-3 px-3 pb-3 border-t border-[#EBE5DC] pt-2.5">
-                      <div className="flex items-center border border-[#EBE5DC] rounded-sm overflow-hidden bg-white">
+                      <div className="flex items-center border border-[#EBE5DC] rounded-lg overflow-hidden bg-white">
                         <button
-                          onClick={() => onUpdateQuantity?.(item.product.id, item.quantity - 1)}
+                          onClick={(e) => { e.stopPropagation(); onUpdateQuantity?.(item.product.id, item.quantity - 1); }}
                           disabled={item.quantity <= 1}
                           className="w-7 h-7 flex items-center justify-center text-[#7B7064] hover:bg-[#F4F0E8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
@@ -404,7 +416,7 @@ export function Navigation({
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => onUpdateQuantity?.(item.product.id, item.quantity + 1)}
+                          onClick={(e) => { e.stopPropagation(); onUpdateQuantity?.(item.product.id, item.quantity + 1); }}
                           className="w-7 h-7 flex items-center justify-center text-[#7B7064] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
@@ -412,7 +424,7 @@ export function Navigation({
                       </div>
 
                       <button
-                        onClick={() => setExpandedItem(expandedItem === item.product.id ? null : item.product.id)}
+                        onClick={(e) => { e.stopPropagation(); setExpandedItem(expandedItem === item.product.id ? null : item.product.id); }}
                         className="text-[11px] font-medium text-[#7B7064] hover:text-[#C41B2E] transition-colors cursor-pointer flex items-center gap-1"
                       >
                         {expandedItem === item.product.id ? (
@@ -424,12 +436,12 @@ export function Navigation({
                     </div>
 
                     {expandedItem === item.product.id && (
-                      <div className="px-3 pb-3">
+                      <div className="px-3 pb-3" onClick={(e) => e.stopPropagation()}>
                         <Textarea
                           placeholder="Especificaciones, consultas..."
                           value={item.notes}
                           onChange={(e) => onUpdateNotes?.(item.product.id, e.target.value)}
-                          className="text-xs resize-none rounded-sm border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#7B7064] focus:border-[#C41B2E]"
+                          className="text-xs resize-none rounded-lg border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#7B7064] focus:border-[#C41B2E]"
                           rows={2}
                         />
                       </div>
@@ -444,7 +456,7 @@ export function Navigation({
             <div className="px-5 py-4 border-t border-[#EBE5DC] flex-shrink-0 space-y-2 bg-white">
               <button
                 onClick={handleSendQuote}
-                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-sm transition-colors cursor-pointer"
+                className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-xl transition-colors cursor-pointer"
                 style={{ background: '#25d366', boxShadow: '0 2px 16px rgba(37,211,102,0.2)' }}
               >
                 <MessageCircle className="w-4 h-4" />
@@ -453,14 +465,14 @@ export function Navigation({
               <div className="flex gap-2">
                 <button
                   onClick={onClearQuote}
-                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#7B7064] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#7B7064] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-xl transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-3 h-3" />
                   Vaciar
                 </button>
                 <button
                   onClick={() => setIsQuoteOpen(false)}
-                  className="flex-1 h-9 text-[11px] font-medium text-[#7B7064] hover:text-[#1A1613] border border-[#EBE5DC] rounded-sm transition-colors cursor-pointer"
+                  className="flex-1 h-9 text-[11px] font-medium text-[#7B7064] hover:text-[#1A1613] border border-[#EBE5DC] rounded-xl transition-colors cursor-pointer"
                 >
                   Seguir viendo
                 </button>

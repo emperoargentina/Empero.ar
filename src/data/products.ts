@@ -5,25 +5,24 @@
 export interface Product {
   id: string;
   codigo: string;
+  familia_id: string | null;
+  etiqueta: string | null;
   nombre: string;
-  description: string | null;
   categoria: string;
-  precio_usd: number;
+  precio_usd: number | null;
   stock: number;
   disponible: boolean;
   modo_disponibilidad: 'en_stock' | 'por_encargo';
   cloudinary_image_id: string | null;
   cloudinary_url: string | null;
-  voltaje: string | null;
   peso_kg: number | null;
   volumen_m3: number | null;
   capacidad: string | null;
-  motor_rpm: number | null;
   dimensiones_canasto_mm: string | null;
-  dimensiones_mm: Record<string, unknown> | null;
-  potencias_kw: Record<string, unknown> | null;
-  temperaturas_c: Record<string, unknown> | null;
-  programas: Record<string, unknown> | null;
+  dimensiones_mm: { Ancho?: number; Profundidad?: number; Alto?: number; Alto_min?: number; Alto_max?: number } | null;
+  potencia_kw: number | null;
+  consumo_gas_m3h: number | null;
+  rejilla_mm: string | null;
   accesorios_incluidos: string[] | null;
   caracteristicas_generales: string[] | null;
   created_at: string;
@@ -52,7 +51,7 @@ export const categories: Category[] = [
     color: { bg: '#FFFBEB', text: '#B45309', border: '#FCD34D' },
   },
   {
-    id: 'Distribución y Autoservicio', name: 'Distribución y Autoservicio', shortName: 'Distribución', icon: 'Store',
+    id: 'Distribución', name: 'Distribución', shortName: 'Distribución', icon: 'Store',
     description: 'Vitrinas, mostradores y equipos de exhibición',
     color: { bg: '#EFF6FF', text: '#1D4ED8', border: '#93C5FD' },
   },
@@ -72,7 +71,7 @@ export const categories: Category[] = [
     color: { bg: '#FEF2F2', text: '#B91C1C', border: '#FCA5A5' },
   },
   {
-    id: 'Hornos a Gas Bajo Mostrador', name: 'Hornos a Gas Bajo Mostrador', shortName: 'Hornos a Gas', icon: 'Flame',
+    id: 'Hornos a Gas', name: 'Hornos a Gas', shortName: 'Hornos a Gas', icon: 'Flame',
     description: 'Hornos a gas bajo mostrador y compactos',
     color: { bg: '#FFF7ED', text: '#9A3412', border: '#FDBA74' },
   },

@@ -32,8 +32,8 @@ export function AvailabilityBadge({ modo, size = 'md', pill = false }: Availabil
 
   if (pill) {
     return (
-      <span className={`inline-flex items-center gap-1.5 bg-white text-[#C41B2E] font-semibold uppercase tracking-[0.08em] rounded-full border border-[#C41B2E]/30 shadow-sm ${base}`}>
-        <Clock className={`${iconSz} text-[#C41B2E] flex-shrink-0`} />
+      <span className={`inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 font-semibold uppercase tracking-[0.08em] rounded-full border border-amber-300 shadow-sm ${base}`}>
+        <Clock className={`${iconSz} text-amber-600 flex-shrink-0`} />
         Por Encargo
       </span>
     );
@@ -41,10 +41,10 @@ export function AvailabilityBadge({ modo, size = 'md', pill = false }: Availabil
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 bg-white text-[#C41B2E] font-semibold uppercase tracking-[0.08em] shadow-md ${base}`}
-      style={{ borderRadius: 2, borderLeft: '2px solid #C41B2E' }}
+      className={`inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 font-semibold uppercase tracking-[0.08em] ${base}`}
+      style={{ borderRadius: 2, borderLeft: '2px solid #f59e0b' }}
     >
-      <Clock className="w-2.5 h-2.5 text-[#C41B2E] flex-shrink-0" />
+      <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0" />
       Por Encargo
     </span>
   );

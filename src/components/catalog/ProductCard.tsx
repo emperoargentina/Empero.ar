@@ -1,12 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Check, Eye } from 'lucide-react';
+import { Check, Eye, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type Product } from '@/data/products';
-import { variantLabel } from '@/lib/groupProducts';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { AvailabilityBadge } from './AvailabilityBadge';
-
-const PLACEHOLDER = '/images/Card/Noimagecard.png';
+import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
 
 interface ProductCardProps {
   variants: Product[];
@@ -23,18 +21,20 @@ export function ProductCard({
   onRemoveFromQuote,
   quoteListIds = [],
 }: ProductCardProps) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
-  const product = variants[Math.min(selectedIndex, variants.length - 1)];
+  const product = variants[0];
   const hasVariants = variants.length > 1;
 
-  const isInQuoteList = useMemo(
-    () => quoteListIds.includes(product.id),
-    [quoteListIds, product.id]
+  const variantInQuote = useMemo(
+    () => variants.find(v => quoteListIds.includes(v.id)) ?? null,
+    [quoteListIds, variants]
   );
+  const isInQuoteList = variantInQuote != null;
 
-  const imageUrl = product.cloudinary_url ?? PLACEHOLDER;
-  const isPlaceholder = !product.cloudinary_url;
+  const aggregatedModo = useMemo(() => {
+    if (variants.some(v => v.modo_disponibilidad === 'en_stock')) return 'en_stock' as const;
+    return 'por_encargo' as const;
+  }, [variants]);
 
   return (
     <article
@@ -52,18 +52,17 @@ export function ProductCard({
           </span>
         </div>
 
-        <img
-          src={imageUrl}
+        <CloudinaryImage
+          src={product.cloudinary_url}
           alt={product.nombre}
           width={400}
           height={533}
-          className={`w-full h-full ${isPlaceholder ? 'object-contain p-6' : 'object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]'}`}
-          loading="lazy"
-          decoding="async"
+          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          placeholderClass="w-full h-full object-contain p-6"
         />
 
         <div className="absolute bottom-2.5 left-2.5 z-20">
-          <AvailabilityBadge modo={product.modo_disponibilidad} size="sm" />
+          <AvailabilityBadge modo={aggregatedModo} size="sm" />
         </div>
 
         <AnimatePresence>
@@ -90,42 +89,33 @@ export function ProductCard({
           {product.nombre}
         </h3>
 
-        {hasVariants && (
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {variants.map((v, i) => (
-              <button
-                key={v.id}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedIndex(i);
-                }}
-                className={`px-2 py-1 rounded-md text-[10.5px] font-semibold border transition-colors cursor-pointer ${
-                  i === selectedIndex
-                    ? 'bg-[#C41B2E] text-white border-[#C41B2E]'
-                    : 'bg-white text-[#7B7064] border-[#E8E2D9] hover:border-[#C41B2E]/40 hover:text-[#1A1613]'
-                }`}
-              >
-                {variantLabel(v)}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
+          {hasVariants ? (
+            <span className="flex items-center gap-1.5 text-[10.5px] font-semibold text-[#7B7064] min-w-0">
+              <Layers className="w-3.5 h-3.5 text-[#C41B2E] flex-shrink-0" />
+              <span className="truncate">{variants.length} variantes</span>
+            </span>
+          ) : (
+            <span className="text-[10.5px] font-mono text-[#9A8E82] truncate">{product.codigo}</span>
+          )}
 
-        <div className="flex items-center justify-end mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
           <button
             onClick={(e) => {
               e.stopPropagation();
+              if (hasVariants) { onViewDetails(product, variants); return; }
               if (isInQuoteList) setConfirmRemoveOpen(true);
               else onAddToQuote?.(product);
             }}
-            aria-label={isInQuoteList ? `Quitar ${product.nombre} de la lista` : `Agregar ${product.nombre}`}
+            aria-label={hasVariants ? `Ver variantes de ${product.nombre}` : (isInQuoteList ? `Quitar ${product.nombre} de la lista` : `Agregar ${product.nombre}`)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[10.5px] font-semibold transition-all duration-150 cursor-pointer ${
               isInQuoteList
                 ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
                 : 'bg-[#C41B2E] text-white hover:bg-[#B51426] shadow-sm shadow-red-900/15'
             }`}
           >
-            {isInQuoteList ? (
+            {hasVariants ? (
+              'Ver opciones'
+            ) : isInQuoteList ? (
               <><Check className="w-3 h-3" /> En lista</>
             ) : (
               'Agregar'
@@ -141,7 +131,7 @@ export function ProductCard({
         confirmLabel="Quitar"
         cancelLabel="Cancelar"
         onConfirm={() => {
-          onRemoveFromQuote?.(product.id);
+          if (variantInQuote) onRemoveFromQuote?.(variantInQuote.id);
           setConfirmRemoveOpen(false);
         }}
         onCancel={() => setConfirmRemoveOpen(false)}

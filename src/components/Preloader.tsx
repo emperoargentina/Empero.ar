@@ -6,7 +6,7 @@ interface PreloaderProps {
   isDataReady: boolean;
 }
 
-const MIN_MS = 1900;
+const MIN_MS = 1000;
 
 export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
   const [progressDone, setProgressDone] = useState(false);

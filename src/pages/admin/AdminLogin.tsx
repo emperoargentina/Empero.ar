@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, AlertCircle, Package } from 'lucide-react'
 
 export function AdminLogin() {
   const [email, setEmail]       = useState('')
@@ -23,7 +23,6 @@ export function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-[#1A1613] flex items-center justify-center p-4 relative overflow-hidden">
-
       {/* Diagonal pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -39,58 +38,46 @@ export function AdminLogin() {
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         style={{
-          width: '700px',
-          height: '700px',
+          width: '800px',
+          height: '800px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(196,27,46,0.06) 0%, transparent 60%)',
-          filter: 'blur(100px)',
+          background: 'radial-gradient(circle, rgba(196,27,46,0.08) 0%, transparent 60%)',
+          filter: 'blur(120px)',
         }}
       />
 
       {/* Grain overlay */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.02]"
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundSize: '256px 256px',
         }}
       />
 
-      {/* Card */}
-      <div className="w-full max-w-[440px] relative">
+      <div className="w-full max-w-[420px] relative">
         <motion.div
-          className="bg-white rounded-2xl overflow-hidden"
-          style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.5)' }}
-          initial={{ opacity: 0, y: 12 }}
+          className="bg-white rounded-2xl overflow-hidden shadow-2xl"
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          {/* Red accent line */}
-          <div
-            className="h-0.5 w-full"
-            style={{ background: 'linear-gradient(90deg, transparent, #C41B2E, transparent)' }}
-          />
+          <div className="h-1 bg-gradient-to-r from-transparent via-[#C41B2E] to-transparent" />
 
-          <div className="px-12 pt-12 pb-10">
-            {/* Logo + title */}
-            <div className="text-center mb-8">
-              <img
-                src="/images/logo/Logo.png"
-                alt="Empero"
-                className="h-20 w-auto mx-auto mb-4"
-              />
-              <p className="text-[#9A8E82] text-lg font-bold tracking-wide">
-                Panel de administración
-              </p>
+          <div className="px-10 pt-10 pb-8">
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C41B2E] to-[#B51426] flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#C41B2E]/25">
+                <Package className="w-7 h-7 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-[#1A1613] tracking-tight">Empero</h1>
+              <p className="text-sm text-[#9E9080] font-medium mt-0.5">Panel de administración</p>
             </div>
 
-            {/* Divider */}
-            <div className="h-px bg-[#F0EAE2] mb-6" />
+            <div className="h-px bg-gradient-to-r from-transparent via-[#EBE5DC] to-transparent mb-6" />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email */}
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[#4A4540] mb-1.5">
+                <label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
                   Email
                 </label>
                 <div className="relative">
@@ -101,14 +88,13 @@ export function AdminLogin() {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="admin@empero.com"
-                    className="w-full pl-10 pr-4 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200"
+                    className="w-full pl-10 pr-4 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200 bg-white"
                   />
                 </div>
               </div>
 
-              {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-[#4A4540] mb-1.5">
+                <label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
                   Contraseña
                 </label>
                 <div className="relative">
@@ -119,7 +105,7 @@ export function AdminLogin() {
                     onChange={e => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200"
+                    className="w-full pl-10 pr-10 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200 bg-white"
                   />
                   <button
                     type="button"
@@ -132,7 +118,6 @@ export function AdminLogin() {
                 </div>
               </div>
 
-              {/* Error */}
               {error && (
                 <div
                   className="flex items-center gap-2 text-sm rounded-xl px-4 py-3"
@@ -147,11 +132,10 @@ export function AdminLogin() {
                 </div>
               )}
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-[#C41B2E] text-white rounded-xl text-sm font-semibold hover:bg-[#B51426] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.985]"
+                className="w-full py-3 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.985] shadow-lg shadow-[#C41B2E]/20"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -162,7 +146,7 @@ export function AdminLogin() {
               </button>
             </form>
 
-            <p className="text-xs text-[#C0B5A8]/60 text-center mt-7 leading-relaxed">
+            <p className="text-xs text-[#C0B5A8]/60 text-center mt-6 leading-relaxed">
               La sesión se mantiene activa hasta que cierres sesión manualmente.
             </p>
           </div>
