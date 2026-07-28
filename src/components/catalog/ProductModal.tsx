@@ -415,7 +415,7 @@ export function ProductModal({
               <div className="flex flex-col lg:grid lg:grid-cols-[44%_56%]" style={{ flex: 1, minHeight: 0 }}>
 
                 {/* Image panel (desktop) */}
-                <div className="relative bg-white lg:h-auto overflow-hidden flex-shrink-0 hidden lg:flex lg:flex-col">
+                <div className="relative bg-white lg:h-full overflow-hidden flex-shrink-0 hidden lg:flex lg:flex-col">
                   <div className="flex-1 relative min-h-0">
                     {!imageLoaded && <div className="absolute inset-0 bg-[#EEEAE1] animate-pulse" />}
                     <motion.img
@@ -452,7 +452,7 @@ export function ProductModal({
                     </AnimatePresence>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 px-5 py-6 bg-white border-t border-[#EBE5DC] min-h-[120px] items-center">
+                  <div className="grid grid-cols-3 gap-2 px-5 py-6 bg-white border-t border-[#EBE5DC] min-h-[140px] items-center">
                     {trustBadges.map((b, i) => (
                       <div key={i} className="flex flex-col items-center gap-1.5 text-center min-w-0">
                         <b.icon className="w-7 h-7 text-[#C41B2E] flex-shrink-0" strokeWidth={2} />
@@ -674,7 +674,7 @@ export function ProductModal({
                   </div>
 
                   {/* CTAs */}
-                  <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:shadow-none">
+                  <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:shadow-none lg:min-h-[140px] lg:flex lg:flex-col lg:justify-center">
                     {needsSelection && (
                       <p className="text-center text-[12px] font-semibold text-[#C41B2E] mb-2.5">
                         Elegí una variante para continuar

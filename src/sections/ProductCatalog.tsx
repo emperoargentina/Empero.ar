@@ -108,6 +108,7 @@ export function ProductCatalog({
   const [localSearch, setLocalSearch] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage);
   const catalogRef = useRef<HTMLElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleResize = () => setItemsPerPage(getItemsPerPage());
@@ -175,14 +176,13 @@ export function ProductCatalog({
   }, [localSearch, setSearchQuery]);
 
   const scrollToCatalog = useCallback(() => {
-    const el = catalogRef.current;
+    const el = searchRef.current || catalogRef.current;
     if (!el) return;
     const lenis = getLenis();
     if (lenis) {
-      lenis.scrollTo(el, { offset: -80, duration: 1.0, force: true });
+      lenis.scrollTo(el, { offset: -150, duration: 1.0, force: true });
     } else {
-      const y = el.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, []);
 
@@ -293,7 +293,7 @@ export function ProductCatalog({
 
         {/* ── Search topbar ── */}
         <AnimatedSection direction="up" delay={0.1}>
-          <div className="mb-6">
+          <div ref={searchRef} className="mb-6">
             <div className="flex gap-3 items-center">
               <div className="relative flex-1 group/search">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
@@ -378,21 +378,32 @@ export function ProductCatalog({
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentPage}
+                    variants={{
+                      enter: { transition: { staggerChildren: 0.04 } },
+                      exit: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
+                    }}
+                    initial="initial"
+                    animate="enter"
+                    exit="exit"
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mb-10"
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   >
                     {paginatedGroups.map(group => (
-                      <ProductCard
+                      <motion.div
                         key={group.key}
-                        variants={group.variants}
-                        onViewDetails={handleViewDetails}
-                        onAddToQuote={onAddToQuote}
-                        onRemoveFromQuote={onRemoveFromQuote}
-                        quoteListIds={quoteListIds}
-                      />
+                        variants={{
+                          initial: { opacity: 0, y: 12 },
+                          enter: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
+                          exit: { opacity: 0, y: -12, transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] } },
+                        }}
+                      >
+                        <ProductCard
+                          variants={group.variants}
+                          onViewDetails={handleViewDetails}
+                          onAddToQuote={onAddToQuote}
+                          onRemoveFromQuote={onRemoveFromQuote}
+                          quoteListIds={quoteListIds}
+                        />
+                      </motion.div>
                     ))}
                   </motion.div>
                 </AnimatePresence>

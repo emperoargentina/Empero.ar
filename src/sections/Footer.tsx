@@ -2,6 +2,7 @@ import { Phone, Mail, Clock, Instagram, ArrowUp } from 'lucide-react';
 import { categories } from '@/data/products';
 import { companyConfig, whatsappConfig } from '@/data/company';
 import { motion } from 'framer-motion';
+import { getLenis } from '@/hooks/useLenis';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -38,12 +39,26 @@ export function Footer({ onCategorySelect }: FooterProps) {
 
   const scrollToSection = (href: string) => {
     if (href === '#') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.querySelector(href);
+    if (!el) return;
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -60, duration: 1.0, force: true });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleCategoryClick = (categoryId: string) => {
     onCategorySelect?.(categoryId);
-    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById('catalogo');
+    if (!el) return;
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -175, duration: 1.0, force: true });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
@@ -58,6 +73,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
 
         {/* Main row — 4 columns on desktop */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
+          
 
           {/* Brand */}
           <div className="col-span-2 sm:col-span-4 lg:col-span-4 flex flex-col gap-4">
@@ -124,40 +140,92 @@ export function Footer({ onCategorySelect }: FooterProps) {
                     {link.name}
                   </motion.button>
                 </li>
+
               ))}
             </ul>
           </div>
 
           {/* Categories */}
-          <div className="col-span-1 sm:col-span-1 lg:col-span-3">
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">
-              Categorías
-            </h4>
-            <ul className="space-y-2.5">
-              {categories.slice(0, 5).map((category) => (
-                <li key={category.id}>
-                  <motion.button
-                    onClick={() => handleCategoryClick(category.id)}
-                    className="text-white/55 hover:text-white transition-colors text-sm font-medium cursor-pointer text-left"
-                    whileHover={{ x: 3 }}
-                    transition={{ type: 'spring', stiffness: 420, damping: 25 }}
-                  >
-                    {category.name}
-                  </motion.button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 flex flex-col h-full">
+  <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/50 mb-4">
+    Categorías
+  </h4>
+
+  <ul className="space-y-2.5">
+      {categories.slice(0, 5).map((category) => (
+        <li key={category.id}>
+          <motion.button
+            onClick={() => handleCategoryClick(category.id)}
+            className="text-white/55 hover:text-white transition-colors text-sm font-medium cursor-pointer text-left"
+            whileHover={{ x: 3 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 25 }}
+          >
+            {category.name}
+          </motion.button>
+        </li>
+      ))}
+    </ul>
+
+  <div className="mt-auto flex justify-end">
+    <motion.button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Volver arriba"
+      className="w-9 h-9 rounded-lg flex items-center justify-center text-white/40 hover:text-white"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.08)',
+      }}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.93 }}
+    >
+      <ArrowUp className="w-4 h-4" />
+    </motion.button>
+  </div>
+</div>
+          
 
         </div>
 
         {/* Bottom bar */}
         <div className="pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/50 text-xs">
-            © {new Date().getFullYear()} {companyConfig.name}. Todos los derechos reservados.
-          </p>
+          <div className="text-center text-xs text-white/50">
+  <p>
+    © {new Date().getFullYear()} {companyConfig.name}. Todos los derechos reservados.
+  </p>
+
+ 
+</div>   
           <div className="flex items-center gap-4">
-            <button className="text-white/50 hover:text-white/80 text-xs transition-colors cursor-pointer">Términos</button>
+            
+             <a
+  href="https://arcynox.com.ar"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mt-1 inline-flex items-center justify-center gap-1 text-white/50 hover:text-white hover:gap-1.5 transition-all duration-200"
+>
+  <span>Desarrollado por</span>
+
+  <img
+    src="/images/arcynox.webp"
+    alt="Arcynox"
+    className="h-4 w-4 object-contain"
+  />
+
+  <span className="font-semibold italic">
+    Arcynox
+  </span>
+</a>
+            
+          </div>
+        </div>
+
+      </div>
+    </footer>
+  );
+}
+
+
+// agregar
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Volver arriba"
@@ -168,10 +236,4 @@ export function Footer({ onCategorySelect }: FooterProps) {
             >
               <ArrowUp className="w-3.5 h-3.5" />
             </motion.button>
-          </div>
-        </div>
-
-      </div>
-    </footer>
-  );
-}
+//

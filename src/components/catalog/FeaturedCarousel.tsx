@@ -117,7 +117,7 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[#C41B2E]/[0.02] blur-[120px]" />
       </div>
 
-      <div className="max-w-[1500px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <AnimatedSection direction="up">
           <div className="text-center mb-8 sm:mb-10">
             <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
@@ -127,8 +127,7 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
               </span>
               <div className="h-px w-10 sm:w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center gap-2 sm:gap-3">
-              <Star className="w-6 h-6 sm:w-7 sm:h-7 text-[#C41B2E] flex-shrink-0" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center">
               Productos <em className="not-italic text-[#C41B2E]">Destacados</em>
             </h2>
           </div>
@@ -176,8 +175,8 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
                   />
 
                   {/* Image — blends straight into the white card, fixed height keeps every slide the same size */}
-                  <div className="lg:w-[400px] xl:w-[460px] flex-shrink-0 p-5 sm:p-6 lg:p-8">
-                    <div className="relative overflow-hidden h-[200px] sm:h-[260px] lg:h-full flex items-center justify-center px-6 sm:px-10 py-6">
+                  <div className="lg:w-[440px] xl:w-[520px] flex-shrink-0 p-4 sm:p-5 xl:p-5">
+                    <div className="relative overflow-hidden h-[200px] sm:h-[260px] lg:h-full flex items-center justify-center px-4 py-6">
                       {product.cloudinary_url ? (
                         <img
                           src={productCardImage(product.cloudinary_url)}
@@ -193,7 +192,7 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
                   {/* Content — fixed height so every slide matches; overflow is resolved by trimming bullet points */}
                   <div
                     ref={contentBoxRef}
-                    className="flex-1 max-w-xl p-6 sm:p-8 lg:p-10 xl:p-12 pt-10 sm:pt-12 lg:pt-14 flex flex-col relative overflow-hidden h-[440px] sm:h-[480px] lg:h-[560px] xl:h-[580px]"
+                    className="flex-1 max-w-xl p-6 sm:p-8 lg:p-10 xl:p-10 pt-10 sm:pt-12 lg:pt-14 flex flex-col relative overflow-hidden h-[360px] sm:h-[400px] lg:h-[480px] xl:h-[500px]"
                   >
                     {/* Ghost index numeral — signature mark: this genuinely is page N of the set */}
                     <span

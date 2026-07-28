@@ -201,7 +201,7 @@ export function ContactForm() {
                     <>
                       <div
                         className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 group-hover:scale-105"
-                        style={{ color: ch.color, background: '#F7F3EA', border: '1px solid rgba(0,0,0,0.05)' }}
+                        style={{ color: '#C41B2E' }}
                       >
                         {ch.icon}
                       </div>
@@ -252,7 +252,7 @@ export function ContactForm() {
               >
                 <div
                   className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ color: '#C41B2E', background: '#F7F3EA', border: '1px solid rgba(0,0,0,0.05)' }}
+                  style={{ color: '#C41B2E' }}
                 >
                   <ShieldCheck className="w-6 h-6" />
                 </div>

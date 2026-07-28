@@ -126,7 +126,7 @@ export function Nosotros() {
           <div
             className="rounded-3xl p-10 md:p-14 relative overflow-hidden"
             style={{
-              background: 'linear-gradient(135deg, #D32638 0%, #C41B2E 45%, #97121F 100%)',
+              background: 'linear-gradient(135deg, #D32638 0%, #C41B2E 45%, #f03e50 100%)',
               boxShadow: '0 20px 60px rgba(196,27,46,0.25), 0 1px 0 rgba(255,255,255,0.08) inset',
             }}
           >

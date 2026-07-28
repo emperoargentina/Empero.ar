@@ -1,5 +1,6 @@
+import type { ComponentType } from 'react';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
   X,
@@ -12,6 +13,9 @@ import {
   ChevronUp,
   ChevronDown as ChevronDownIcon,
   Package,
+  ArrowRight,
+  ChefHat, Utensils, Store, Settings2, Zap, Flame,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, Warehouse, ConciergeBell,
 } from 'lucide-react';
 import { categories, type Product } from '@/data/products';
 import { whatsappConfig, companyConfig } from '@/data/company';
@@ -62,6 +66,11 @@ const CATEGORY_IMAGES: Record<string, string> = {
 function getCategoryImage(category: string) {
   return CATEGORY_IMAGES[category] ?? 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop';
 }
+
+const CATEGORY_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  ChefHat, Utensils, Store, Settings2, Zap, Flame,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, Warehouse, ConciergeBell,
+};
 
 export function Navigation({
   onCategorySelect,
@@ -153,7 +162,7 @@ export function Navigation({
     <>
       {/* ── Navbar ─────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-[60]">
-        <div className={`transition-[padding] duration-500 ease-in-out ${isScrolled ? 'lg:max-w-[1600px] lg:mx-auto lg:px-10 xl:px-14 lg:pt-3' : ''}`}>
+        <div className="w-full max-w-[1600px] mx-auto px-0 sm:px-6 lg:px-8 xl:px-10">
           <motion.div
             animate={isScrolled ? {
               backgroundColor: 'rgba(250,250,248,1)',
@@ -165,13 +174,13 @@ export function Navigation({
               borderColor: 'rgba(196,27,46,0)',
             }}
             transition={{
-              duration: isScrolled ? 0.45 : 0.7,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 0.6,
+              ease: [0.4, 0, 0.2, 1],
             }}
-            className={`relative border-b lg:border transition-[border-radius,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            className={`relative border-b lg:border transition-[border-radius,padding] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
               isScrolled
-                ? 'lg:rounded-2xl px-4 sm:px-6 lg:py-3'
-                : 'container-custom py-0 lg:py-5 lg:rounded-none'
+                ? 'lg:rounded-b-2xl lg:py-3 lg:px-10 xl:px-14'
+                : 'lg:rounded-none py-0 lg:py-5'
             }`}
           >
             {/* Red bottom line — mobile only, transparent state only */}
@@ -185,7 +194,7 @@ export function Navigation({
               <a
                 href="#"
                 onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className="flex items-center flex-shrink-0"
+                className="flex items-center flex-shrink-0 ml-3 sm:ml-0"
               >
                 <img
                   src="/images/logo/Logo.png"
@@ -221,30 +230,46 @@ export function Navigation({
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProductsOpen ? 'rotate-180' : ''}`} />
                       </button>
 
-                      {isProductsOpen && (
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-                          <div className="w-64 bg-white rounded-xl border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.08)] py-1.5 overflow-hidden">
+                      <AnimatePresence>
+                        {isProductsOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.18, ease: 'easeOut' }}
+                          className={`mt-3 absolute top-full -left-8 z-50 ${isScrolled ? 'pt-0' : 'pt-2'}`}
+                        >
+                          <div className={`w-[480px] bg-white border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.1)] py-2 overflow-hidden ${isScrolled ? 'rounded-b-2xl rounded-t-none' : 'rounded-2xl'}`}>
                             <button
                               onClick={() => { scrollToSection('catalogo'); setIsProductsOpen(false); }}
-                              className="w-full text-left px-4 py-2 text-sm font-semibold text-[#1A1613] hover:bg-[#F4F0E8] transition-colors"
+                              className="w-full text-left px-5 py-2.5 text-sm font-semibold text-[#C41B2E] hover:bg-[#FFF0F1] transition-colors flex items-center gap-2 cursor-pointer"
                             >
+                              <Package className="w-4 h-4" />
                               Ver todos los productos
+                              <ArrowRight className="w-3.5 h-3.5 ml-auto" />
                             </button>
-                            <div className="h-px bg-[#EBE5DC] my-1 mx-3" />
-                            <div className="max-h-64 overflow-y-auto">
-                              {categories.map((cat) => (
-                                <button
-                                  key={cat.id}
-                                  onClick={() => { handleCategoryClick(cat.id); setIsProductsOpen(false); }}
-                                  className="w-full text-left px-4 py-1.5 text-sm text-[#6B6159] hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors"
-                                >
-                                  {cat.name}
-                                </button>
-                              ))}
+                            <div className="h-px bg-[#EBE5DC] mx-4 my-1" />
+                            <div className="px-4 py-3">
+                              <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                                {categories.map((cat) => {
+                                  const Icon = CATEGORY_ICONS[cat.icon];
+                                  return (
+                                    <button
+                                      key={cat.id}
+                                      onClick={() => { handleCategoryClick(cat.id); setIsProductsOpen(false); }}
+                                      className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-sm text-[#6B6159] hover:bg-[#F4F0E8] hover:text-[#1A1613] transition-colors cursor-pointer"
+                                    >
+                                      {Icon && <Icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />}
+                                      <span className="truncate">{cat.name}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   ) : (
                     <button
