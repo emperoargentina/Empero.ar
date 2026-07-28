@@ -6,6 +6,7 @@ import { AdminLogin } from './AdminLogin'
 import { AdminPanel } from './AdminPanel'
 import { Dashboard } from './views/Dashboard'
 import { Products } from './views/Products'
+import { Destacados } from './views/Destacados'
 
 export function AdminRoot() {
   const [session, setSession] = useState<Session | null>(null)
@@ -38,6 +39,7 @@ export function AdminRoot() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="productos" element={<Products />} />
+        <Route path="destacados" element={<Destacados />} />
       </Route>
     </Routes>
   )

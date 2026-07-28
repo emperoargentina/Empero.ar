@@ -286,6 +286,7 @@ export function ProductModal({ producto, open, onClose, onSaved }: Props) {
                   </p>
                 </div>
               </label>
+
             </TabsContent>
 
             <TabsContent value="imagen" className={TAB_CLS}>

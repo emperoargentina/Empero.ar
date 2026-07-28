@@ -3,7 +3,7 @@ import { productCardImage } from '@/lib/cloudinaryUrl';
 import {
   Package, Filter, Search, X,
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
-  Droplets, Table2, Grid3X3, Snowflake, Layers, LayoutGrid,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, LayoutGrid, Warehouse, ConciergeBell,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ComponentType } from 'react';
@@ -16,12 +16,13 @@ import { CatalogSidebar } from '@/components/catalog/CatalogSidebar';
 import { ProductCard } from '@/components/catalog/ProductCard';
 import { ProductModal } from '@/components/catalog/ProductModal';
 import { Pagination } from '@/components/catalog/Pagination';
+import { FeaturedCarousel } from '@/components/catalog/FeaturedCarousel';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
-  Droplets, Table2, Grid3X3, Snowflake, Layers,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, Warehouse, ConciergeBell,
 };
 
 const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: string | null }[] = [
@@ -31,9 +32,9 @@ const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: str
 ];
 
 const CATEGORY_ORDER = [
-  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas',
+  'Refrigeración', 'Lavado', 'Hornos',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
+  'Distribución', 'Servicio', 'Mesas', 'Superficies', 'Acero', 'Elaboración', 'Cucipastas',
 ];
 
 const orderedCategories = CATEGORY_ORDER
@@ -82,6 +83,7 @@ export function ProductCatalog({
   quoteListIds = [],
 }: ProductCatalogProps) {
   const {
+    allProducts,
     filteredProducts,
     searchQuery,
     selectedCategory,
@@ -112,6 +114,11 @@ export function ProductCatalog({
     window.addEventListener('resize', handleResize, { passive: true });
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const featuredProducts = useMemo(
+    () => allProducts.filter(p => p.destacado === true && p.disponible),
+    [allProducts]
+  )
 
   const groupedProducts = useMemo(() => groupProducts(filteredProducts), [filteredProducts]);
 
@@ -231,6 +238,16 @@ export function ProductCatalog({
   };
 
   return (
+    <>
+      {!loading && featuredProducts.length > 0 && (
+        <FeaturedCarousel
+          products={featuredProducts}
+          onViewDetails={(product) => handleViewDetails(product, [product])}
+          onAddToQuote={onAddToQuote}
+          onRemoveFromQuote={onRemoveFromQuote}
+          quoteListIds={quoteListIds}
+        />
+      )}
     <section ref={catalogRef} id="catalogo" className="py-20 lg:py-24 bg-[#FAFAF8] relative">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
@@ -490,5 +507,6 @@ export function ProductCatalog({
         quoteListIds={quoteListIds}
       />
     </section>
+    </>
   );
 }

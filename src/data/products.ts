@@ -12,6 +12,7 @@ export interface Product {
   precio_usd: number | null;
   stock: number;
   disponible: boolean;
+  destacado?: boolean;
   modo_disponibilidad: 'en_stock' | 'por_encargo';
   cloudinary_image_id: string | null;
   cloudinary_url: string | null;
@@ -71,11 +72,6 @@ export const categories: Category[] = [
     color: { bg: '#FEF2F2', text: '#B91C1C', border: '#FCA5A5' },
   },
   {
-    id: 'Hornos a Gas', name: 'Hornos a Gas', shortName: 'Hornos a Gas', icon: 'Flame',
-    description: 'Hornos a gas bajo mostrador y compactos',
-    color: { bg: '#FFF7ED', text: '#9A3412', border: '#FDBA74' },
-  },
-  {
     id: 'Lavado', name: 'Lavado', shortName: 'Lavado', icon: 'Droplets',
     description: 'Lavavajillas, lavaderos y equipos de limpieza',
     color: { bg: '#ECFEFF', text: '#0E7490', border: '#67E8F9' },
@@ -104,6 +100,16 @@ export const categories: Category[] = [
     id: 'Superficies', name: 'Superficies', shortName: 'Superficies', icon: 'Layers',
     description: 'Mesadas, estantes y superficies de trabajo',
     color: { bg: '#F9FAFB', text: '#4B5563', border: '#D1D5DB' },
+  },
+  {
+    id: 'Acero', name: 'Acero', shortName: 'Acero', icon: 'Warehouse',
+    description: 'Estanterías y muebles de acero inoxidable',
+    color: { bg: '#F8FAFC', text: '#334155', border: '#CBD5E1' },
+  },
+  {
+    id: 'Servicio', name: 'Servicio', shortName: 'Servicio', icon: 'ConciergeBell',
+    description: 'Carros y unidades de servicio',
+    color: { bg: '#F0FDFA', text: '#0F766E', border: '#5EEAD4' },
   },
 ];
 

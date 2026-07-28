@@ -304,7 +304,7 @@
           "Alto": 850
         },
         "peso_kg": 135,
-        "volumen_m3": 1.0,
+        "volumen_m3": 1,
         "capacidad": "400 Lt"
       },
       {
@@ -321,6 +321,19 @@
         "peso_kg": 142,
         "volumen_m3": 1.2,
         "capacidad": "500 Lt"
+      },
+      {
+        "codigo": "EMP.255.70.01",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": 3410,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
       }
     ]
   },
@@ -384,6 +397,71 @@
         },
         "peso_kg": 182,
         "volumen_m3": 1.2
+      },
+      {
+        "codigo": "EMP.200.70.01-6C",
+        "etiqueta": "550 lt — 2000×700×850 mm",
+        "precio_usd": 4495,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2000,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "550 lt"
+      },
+      {
+        "codigo": "EMP.255.70.01-2C",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": null,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
+      },
+      {
+        "codigo": "EMP.255.70.01-4C",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": 4680,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
+      },
+      {
+        "codigo": "EMP.255.70.01-6C",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": 5125,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
+      },
+      {
+        "codigo": "EMP.255.70.01-8C",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": 5730,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
       }
     ]
   },
@@ -621,7 +699,7 @@
   {
     "id": "carro-servicio",
     "nombre": "Carro de Servicio Acero Inoxidable",
-    "categoria": "Distribución",
+    "categoria": "Servicio",
     "caracteristicas_generales": [
       "Acero inoxidable desmontable"
     ],
@@ -657,7 +735,7 @@
   {
     "id": "carro-servicio-plastico",
     "nombre": "Carro de Servicio de Plástico",
-    "categoria": "Distribución",
+    "categoria": "Servicio",
     "caracteristicas_generales": [
       "Estructura de plástico y aluminio"
     ],
@@ -816,7 +894,7 @@
   {
     "id": "unidad-servicio-frio",
     "nombre": "Unidad de Servicio Frío",
-    "categoria": "Distribución",
+    "categoria": "Servicio",
     "caracteristicas_generales": [
       "Rango de temperatura de trabajo: 0 a +5 °C",
       "Funcionamiento garantizado hasta 43 °C de temperatura ambiente (clima tropical)"
@@ -1119,6 +1197,20 @@
         "peso_kg": 27,
         "volumen_m3": 0.09,
         "capacidad": "14 Lt"
+      },
+      {
+        "codigo": "EMP.PLS.7FE020",
+        "etiqueta": "14+14 — 800×730×300 mm",
+        "precio_usd": 2570,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 21,
+        "capacidad": "14+14"
       }
     ]
   },
@@ -1161,6 +1253,19 @@
         },
         "peso_kg": 97,
         "volumen_m3": 0.18
+      },
+      {
+        "codigo": "EMP.PLS.7IE030",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 2475,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 12.6
       }
     ]
   },
@@ -1242,6 +1347,32 @@
         },
         "peso_kg": 90,
         "volumen_m3": 0.18
+      },
+      {
+        "codigo": "EMP.PLS.7IG011",
+        "etiqueta": "400×730×300 mm",
+        "precio_usd": 1100,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.67
+      },
+      {
+        "codigo": "EMP.PLS.7IG031",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 2800,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 26
       }
     ]
   },
@@ -1412,6 +1543,20 @@
         "peso_kg": 24,
         "volumen_m3": 0.09,
         "capacidad": "1 recipiente GN 1/1"
+      },
+      {
+        "codigo": "EMP.PLS.7SE020",
+        "etiqueta": "2x 1/1 GN — 800×730×300 mm",
+        "precio_usd": 1640,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 3,
+        "capacidad": "2x 1/1 GN"
       }
     ]
   },
@@ -1454,7 +1599,7 @@
   {
     "id": "horno-tandoori",
     "nombre": "Horno Tandoori a Gas",
-    "categoria": "Cocinas",
+    "categoria": "Hornos",
     "caracteristicas_generales": [
       "Adaptable a GLP o gas natural (GN)",
       "Diámetro del horno (dorne): 66 cm",
@@ -1484,7 +1629,7 @@
   {
     "id": "horno-ahumador",
     "nombre": "Horno Ahumador a Leña y Gas",
-    "categoria": "Cocinas",
+    "categoria": "Hornos",
     "caracteristicas_generales": [
       "Resistente al calor",
       "Parrillas de asado",
@@ -1586,6 +1731,19 @@
         },
         "peso_kg": 143,
         "volumen_m3": 0.24
+      },
+      {
+        "codigo": "EMP.PLS.7LG010",
+        "etiqueta": "400×730×300 mm",
+        "precio_usd": 1030,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.67
       }
     ]
   },
@@ -1673,6 +1831,19 @@
         "peso_kg": 36,
         "volumen_m3": 0.09,
         "capacidad": "10.5 Lt"
+      },
+      {
+        "codigo": "EMP.PLS.9ME010",
+        "etiqueta": "400×900×850 mm",
+        "precio_usd": 2245,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 12
       }
     ]
   },
@@ -1700,7 +1871,7 @@
   {
     "id": "horno-gas-bajo-mostrador",
     "nombre": "Horno a Gas Bajo Mostrador",
-    "categoria": "Hornos a Gas",
+    "categoria": "Hornos",
     "caracteristicas_generales": [
       "Funciona con GLP o gas natural",
       "Control de temperatura del horno mediante válvula de gas termostática",
@@ -1754,30 +1925,6 @@
         "volumen_m3": 0.41,
         "capacidad": "2 × 2/1 GN",
         "consumo_gas_m3h": 1.36
-      }
-    ]
-  },
-  {
-    "id": "base-horno-pizzero",
-    "nombre": "Base para Horno Pizzero a Gas",
-    "categoria": "Superficies",
-    "caracteristicas_generales": [
-      "Estructura para colocar horno pizzero"
-    ],
-    "variantes": [
-      {
-        "codigo": "EMP.AS.8",
-        "etiqueta": "Base para horno pizzero — 965×800×850 mm",
-        "precio_usd": null,
-        "stock": 1,
-        "modo_disponibilidad": "en_stock",
-        "dimensiones_mm": {
-          "Ancho": 965,
-          "Profundidad": 800,
-          "Alto": 850
-        },
-        "peso_kg": 37,
-        "volumen_m3": 0.65
       }
     ]
   },
@@ -1858,6 +2005,18 @@
         },
         "peso_kg": 18,
         "volumen_m3": 0.26
+      },
+      {
+        "codigo": "EMP.PLS.7TS010-K",
+        "etiqueta": "400×620×550 mm",
+        "precio_usd": 295,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 620,
+          "Alto": 550
+        }
       }
     ]
   },
@@ -1889,7 +2048,7 @@
   {
     "id": "gabinete-inferior-horno-carbon",
     "nombre": "Gabinete Inferior de Acero Inoxidable con Puertas (para Horno a Carbón)",
-    "categoria": "Superficies",
+    "categoria": "Acero",
     "caracteristicas_generales": [
       "Temperatura de trabajo: 500 °C",
       "Campana estándar",
@@ -1932,7 +2091,7 @@
   {
     "id": "superficie-trabajo",
     "nombre": "Superficie de Trabajo",
-    "categoria": "Superficies",
+    "categoria": "Acero",
     "caracteristicas_generales": [
       "Fácil de limpiar y mantener higiene",
       "Las superficies de trabajo son adecuadas para su uso entre cualquier tipo de equipos de la serie 700"
@@ -2369,7 +2528,7 @@
   {
     "id": "estantes-acero-inox",
     "nombre": "Estantes de Acero Inoxidable",
-    "categoria": "Distribución",
+    "categoria": "Acero",
     "caracteristicas_generales": [
       "4 estantes de rejilla",
       "Estructura resistente",
@@ -2400,6 +2559,1204 @@
           "Profundidad": 910,
           "Alto": 1800
         }
+      }
+    ]
+  },
+  {
+    "id": "bano-maria-electrico-900",
+    "nombre": "Baño María Eléctrico (Serie 900)",
+    "categoria": "Cocinas",
+    "caracteristicas_generales": [
+      "Control termostático",
+      "Nivel de agua visible",
+      "Cuerpo de acero inoxidable",
+      "Válvula de drenaje",
+      "Fácil de limpiar y mantener higiene",
+      "Alimentación eléctrica: 230 V AC – N – PE"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9SE010",
+        "etiqueta": "1x 1/1 GN — 400×900×800 mm",
+        "precio_usd": 1305,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 800
+        },
+        "potencia_kw": 2.5,
+        "capacidad": "1x 1/1 GN"
+      },
+      {
+        "codigo": "EMP.PLS.9SE020",
+        "etiqueta": "2x 1/1 GN — 800×900×800 mm",
+        "precio_usd": 2160,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 800
+        },
+        "potencia_kw": 4.4,
+        "capacidad": "2x 1/1 GN"
+      }
+    ]
+  },
+  {
+    "id": "freezer-mostrador",
+    "nombre": "Freezer Bajo Mostrador",
+    "categoria": "Refrigeración",
+    "caracteristicas_generales": [
+      "Enfriamiento por aire forzado (ventilado)",
+      "Rango de temperatura: -18 / -20 °C",
+      "Gas ecológico R-290 (libre de CFC)",
+      "Cuerpo de acero inoxidable",
+      "Puertas con autocierre a 45°",
+      "Alimentación: 220–230 V – 50 Hz",
+      "Fácil de limpiar y mantener higiene"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.150.70.02",
+        "etiqueta": "300 lt — 1500×700×850 mm",
+        "precio_usd": 2930,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1500,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "300 lt"
+      },
+      {
+        "codigo": "EMP.200.70.02",
+        "etiqueta": "500 lt — 2000×700×850 mm",
+        "precio_usd": 3260,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2000,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "500 lt"
+      },
+      {
+        "codigo": "EMP.255.70.02",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": 3920,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
+      }
+    ]
+  },
+  {
+    "id": "freidora-electrica-900",
+    "nombre": "Freidora Eléctrica (Serie 900)",
+    "categoria": "Freidoras",
+    "caracteristicas_generales": [
+      "Control termostático",
+      "Resistencias móviles que facilitan la limpieza",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Cuerpo de acero inoxidable",
+      "Canastos de acero inoxidable",
+      "Fácil de limpiar y mantener higiene",
+      "Alimentación eléctrica: 400 V AC – 3N PE"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9FE010",
+        "etiqueta": "24 lt — 400×900×850 mm",
+        "precio_usd": 2000,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 18,
+        "capacidad": "24 lt"
+      },
+      {
+        "codigo": "EMP.PLS.9FE020",
+        "etiqueta": "24+24 — 800×900×850 mm",
+        "precio_usd": 3390,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 36,
+        "capacidad": "24+24"
+      }
+    ]
+  },
+  {
+    "id": "freidora-electrica-elevador",
+    "nombre": "Freidora Eléctrica con Elevador y Filtro de Aceite",
+    "categoria": "Freidoras",
+    "caracteristicas_generales": [
+      "Elevador automático de canastos",
+      "Sistema de filtrado de aceite",
+      "Control termostático",
+      "Resistencias móviles que facilitan la limpieza",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Cuerpo de acero inoxidable",
+      "Canastos de acero inoxidable",
+      "Fácil de limpiar y mantener higiene",
+      "Alimentación eléctrica: 400 V AC – 3N PE"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.ODFE.010",
+        "etiqueta": "25 lt — 400×900×850 mm",
+        "precio_usd": 6390,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 21,
+        "capacidad": "25 lt"
+      },
+      {
+        "codigo": "EMP.PLS.ODFE.020",
+        "etiqueta": "25+25 — 800×900×850 mm",
+        "precio_usd": 12070,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 42,
+        "capacidad": "25+25"
+      }
+    ]
+  },
+  {
+    "id": "freidora-electrica-mueble",
+    "nombre": "Freidora Eléctrica Doble con Mueble",
+    "categoria": "Freidoras",
+    "caracteristicas_generales": [
+      "Control termostático",
+      "Resistencias móviles que facilitan la limpieza",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Cuerpo de acero inoxidable",
+      "Canastos de acero inoxidable",
+      "Fácil de limpiar y mantener higiene",
+      "Alimentación eléctrica: 400 V AC – 3N PE"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7FE020-D",
+        "etiqueta": "14+14 — 800×730×850 mm",
+        "precio_usd": 3275,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 850
+        },
+        "potencia_kw": 21,
+        "capacidad": "14+14"
+      }
+    ]
+  },
+  {
+    "id": "freidora-gas",
+    "nombre": "Freidora a Gas (sin Mueble)",
+    "categoria": "Freidoras",
+    "caracteristicas_generales": [
+      "Funciona con GLP o gas natural",
+      "Válvula de seguridad magnética para gas y termocupla",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Cuerpo de acero inoxidable",
+      "Canastos de acero inoxidable",
+      "Válvula de seguridad para drenaje del aceite desde el fondo",
+      "Fácil de limpiar y mantener higiene"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7FG010-S",
+        "etiqueta": "12 lt — 400×730×300 mm",
+        "precio_usd": 1555,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 4.34,
+        "capacidad": "12 lt"
+      },
+      {
+        "codigo": "EMP.PLS.7FG020-S",
+        "etiqueta": "12+12 — 800×730×300 mm",
+        "precio_usd": 2895,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.67,
+        "capacidad": "12+12"
+      }
+    ]
+  },
+  {
+    "id": "freidora-gas-900",
+    "nombre": "Freidora a Gas (Serie 900)",
+    "categoria": "Freidoras",
+    "caracteristicas_generales": [
+      "Funciona con GLP o gas natural",
+      "Válvula de seguridad magnética para gas y termocupla",
+      "Termostato de seguridad contra sobrecalentamiento",
+      "Cuerpo de acero inoxidable",
+      "Canastos de acero inoxidable",
+      "Válvula de seguridad para drenaje del aceite desde el fondo",
+      "Fácil de limpiar y mantener higiene"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9FG010",
+        "etiqueta": "24 lt — 400×900×850 mm",
+        "precio_usd": 2065,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 17.41,
+        "capacidad": "24 lt"
+      },
+      {
+        "codigo": "EMP.PLS.9FG020",
+        "etiqueta": "24+24 — 800×900×850 mm",
+        "precio_usd": 3980,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 34.82,
+        "capacidad": "24+24"
+      }
+    ]
+  },
+  {
+    "id": "gabinete-bajo-mostrador-900",
+    "nombre": "Gabinete Bajo Mostrador con Puertas (Serie 900)",
+    "categoria": "Superficies",
+    "caracteristicas_generales": [
+      "Los gabinetes bajo mostrador son aptos para su uso debajo de cualquier equipo de la serie 900",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9TS010",
+        "etiqueta": "400×790×550 mm",
+        "precio_usd": 375,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      },
+      {
+        "codigo": "EMP.PLS.9TS020",
+        "etiqueta": "800×790×550 mm",
+        "precio_usd": 580,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      },
+      {
+        "codigo": "EMP.PLS.9TS030",
+        "etiqueta": "1200×790×550 mm",
+        "precio_usd": 860,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      }
+    ]
+  },
+  {
+    "id": "gabinete-bajo-mostrador-sin-puerta-900",
+    "nombre": "Gabinete Bajo Mostrador sin Puerta (Serie 900)",
+    "categoria": "Superficies",
+    "caracteristicas_generales": [
+      "Los gabinetes bajo mostrador son aptos para su uso debajo de cualquier equipo de la serie 900",
+      "Fácil de limpiar y mantener higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9TS010-K",
+        "etiqueta": "400×790×550 mm",
+        "precio_usd": 345,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      },
+      {
+        "codigo": "EMP.PLS.9TS020-K",
+        "etiqueta": "800×790×550 mm",
+        "precio_usd": 435,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      },
+      {
+        "codigo": "EMP.PLS.9TS030-K",
+        "etiqueta": "1200×790×550 mm",
+        "precio_usd": 685,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 790,
+          "Alto": 550
+        }
+      }
+    ]
+  },
+  {
+    "id": "heladera-vidrio-mostrador",
+    "nombre": "Heladera Mostrador con Puerta de Vidrio",
+    "categoria": "Refrigeración",
+    "caracteristicas_generales": [
+      "Puertas de vidrio con iluminación interior",
+      "Enfriamiento por aire forzado (ventilado)",
+      "Rango de temperatura: 0 / +5 °C",
+      "Gas ecológico R-290 (libre de CFC)",
+      "Cuerpo de acero inoxidable",
+      "Alimentación: 220–230 V – 50 Hz",
+      "Fácil de limpiar y mantener higiene"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.150.70.03",
+        "etiqueta": "300 lt — 1500×700×850 mm",
+        "precio_usd": 2510,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1500,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "300 lt"
+      },
+      {
+        "codigo": "EMP.200.70.03",
+        "etiqueta": "500 lt — 2000×700×850 mm",
+        "precio_usd": 3010,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2000,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "500 lt"
+      },
+      {
+        "codigo": "EMP.255.70.03",
+        "etiqueta": "700 lt — 2550×700×850 mm",
+        "precio_usd": null,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 2550,
+          "Profundidad": 700,
+          "Alto": 850
+        },
+        "capacidad": "700 lt"
+      }
+    ]
+  },
+  {
+    "id": "marmita-electrica-700",
+    "nombre": "Marmita Eléctrica (Calentamiento Indirecto)",
+    "categoria": "Cocinas",
+    "caracteristicas_generales": [
+      "Válvula de seguridad contra sobrepresión y manómetro",
+      "Válvula de drenaje",
+      "Tapa articulada con contrapeso",
+      "Chaqueta doble (doble camisa) — calentamiento indirecto",
+      "Funcionamiento eléctrico",
+      "Válvula de entrada de agua",
+      "Control termostático",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.KTE.70",
+        "etiqueta": "70 lt — 800×730×850 mm",
+        "precio_usd": 6350,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 850
+        },
+        "potencia_kw": 15,
+        "capacidad": "70 lt"
+      }
+    ]
+  },
+  {
+    "id": "marmita-electrica-900",
+    "nombre": "Marmita Eléctrica (Serie 900)",
+    "categoria": "Cocinas",
+    "caracteristicas_generales": [
+      "Válvula de seguridad contra sobrepresión y manómetro",
+      "Válvula de drenaje",
+      "Tapa articulada con contrapeso",
+      "Chaqueta doble (doble camisa) — calentamiento indirecto",
+      "Funcionamiento eléctrico",
+      "Válvula de entrada de agua",
+      "Control termostático",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.KTE.150",
+        "etiqueta": "150 lt — 800×900×850 mm",
+        "precio_usd": 6940,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 20,
+        "capacidad": "150 lt"
+      },
+      {
+        "codigo": "EMP.PLS.KTE.250",
+        "etiqueta": "250 lt — 1200×900×850 mm",
+        "precio_usd": 12980,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 30,
+        "capacidad": "250 lt"
+      }
+    ]
+  },
+  {
+    "id": "marmita-gas-900",
+    "nombre": "Marmita a Gas (Serie 900)",
+    "categoria": "Cocinas",
+    "caracteristicas_generales": [
+      "Válvula de seguridad contra sobrepresión y manómetro",
+      "Válvula de drenaje",
+      "Tapa articulada con contrapeso",
+      "Chaqueta doble (doble camisa) — calentamiento indirecto",
+      "Funciona con GLP o gas natural",
+      "Termostato",
+      "Válvula de entrada de agua",
+      "Cuerpo de acero inoxidable",
+      "Válvula de seguridad para gas y termocupla"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.KTG.150",
+        "etiqueta": "150 lt — 800×900×850 mm",
+        "precio_usd": 6940,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 16.1,
+        "capacidad": "150 lt"
+      },
+      {
+        "codigo": "EMP.PLS.KTG.250",
+        "etiqueta": "250 lt — 1200×900×850 mm",
+        "precio_usd": 12980,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 850
+        },
+        "potencia_kw": 32.2,
+        "capacidad": "250 lt"
+      }
+    ]
+  },
+  {
+    "id": "parrilla-electrica-vapor",
+    "nombre": "Parrilla Eléctrica a Vapor",
+    "categoria": "Parrillas",
+    "caracteristicas_generales": [
+      "Funcionamiento eléctrico",
+      "Sistema de agua (vapor) para recolección de grasa",
+      "Dos zonas de calentamiento independientes",
+      "Control termostático",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7LE010",
+        "etiqueta": "400×730×300 mm",
+        "precio_usd": 2665,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 3.75
+      },
+      {
+        "codigo": "EMP.PLS.7LE020",
+        "etiqueta": "800×730×300 mm",
+        "precio_usd": 3475,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.75
+      },
+      {
+        "codigo": "EMP.PLS.7LE030",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 3775,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 13.75
+      }
+    ]
+  },
+  {
+    "id": "parrilla-gas-piedra-lavica-900",
+    "nombre": "Parrilla a Gas con Piedra Lávica (Serie 900)",
+    "categoria": "Parrillas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad con llama piloto",
+      "Piedra volcánica reemplazable",
+      "Dos zonas de calentamiento independientes"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9LG010",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1080,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 10.3
+      },
+      {
+        "codigo": "EMP.PLS.9LG020",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 1865,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 20.6
+      },
+      {
+        "codigo": "EMP.PLS.9LG030",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2825,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 30.9
+      }
+    ]
+  },
+  {
+    "id": "parrilla-gas-vapor",
+    "nombre": "Parrilla a Gas a Vapor",
+    "categoria": "Parrillas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Sistema de agua (vapor) para recolección de grasa",
+      "Válvula de seguridad con llama piloto",
+      "Parrilla de hierro fundido (pik)",
+      "Dos zonas de calentamiento independientes"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7LG010-S",
+        "etiqueta": "400×730×300 mm",
+        "precio_usd": 1150,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 5.8
+      },
+      {
+        "codigo": "EMP.PLS.7LG020-S",
+        "etiqueta": "800×730×300 mm",
+        "precio_usd": 1835,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 11.6
+      },
+      {
+        "codigo": "EMP.PLS.7LG030-S",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 2610,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 17.4
+      }
+    ]
+  },
+  {
+    "id": "parrilla-gas-vapor-900",
+    "nombre": "Parrilla a Gas a Vapor (Serie 900)",
+    "categoria": "Parrillas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Sistema de agua (vapor) para recolección de grasa",
+      "Válvula de seguridad con llama piloto",
+      "Parrilla de hierro fundido (pik)",
+      "Dos zonas de calentamiento independientes"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9LG010-S",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1250,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 7
+      },
+      {
+        "codigo": "EMP.PLS.9LG020-S",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 2005,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 14
+      },
+      {
+        "codigo": "EMP.PLS.9LG030-S",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2995,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 21
+      }
+    ]
+  },
+  {
+    "id": "plancha-electrica-acanalada",
+    "nombre": "Plancha Eléctrica Acanalada",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7IE011",
+        "etiqueta": "400×730×300 mm",
+        "precio_usd": 1150,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 4.2
+      },
+      {
+        "codigo": "EMP.PLS.7IE021",
+        "etiqueta": "800×730×300 mm",
+        "precio_usd": 2005,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.4
+      },
+      {
+        "codigo": "EMP.PLS.7IE031",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 2740,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 12.6
+      }
+    ]
+  },
+  {
+    "id": "plancha-electrica-acanalada-900",
+    "nombre": "Plancha Eléctrica Acanalada (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IE011",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1225,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 6
+      },
+      {
+        "codigo": "EMP.PLS.9IE021",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 2200,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 12
+      },
+      {
+        "codigo": "EMP.PLS.9IE031",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 3085,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 18
+      }
+    ]
+  },
+  {
+    "id": "plancha-electrica-lisa-900",
+    "nombre": "Plancha Eléctrica Lisa (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IE010",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1110,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 6
+      },
+      {
+        "codigo": "EMP.PLS.9IE020",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 1910,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 12
+      },
+      {
+        "codigo": "EMP.PLS.9IE030",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2640,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 18
+      }
+    ]
+  },
+  {
+    "id": "plancha-electrica-mixta",
+    "nombre": "Plancha Eléctrica Lisa + Acanalada",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7IE022",
+        "etiqueta": "800×730×300 mm",
+        "precio_usd": 1870,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 8.4
+      }
+    ]
+  },
+  {
+    "id": "plancha-electrica-mixta-900",
+    "nombre": "Plancha Eléctrica Lisa + Acanalada (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Control termostático de temperatura",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable",
+      "Fácil limpieza y máxima higiene",
+      "Cuerpo de acero inoxidable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IE022",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 2085,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 12
+      },
+      {
+        "codigo": "EMP.PLS.9IE032",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2825,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 18
+      }
+    ]
+  },
+  {
+    "id": "plancha-gas-acanalada-900",
+    "nombre": "Plancha a Gas Acanalada (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IG011",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1165,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 10.32
+      },
+      {
+        "codigo": "EMP.PLS.9IG021",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 2110,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 20.64
+      },
+      {
+        "codigo": "EMP.PLS.9IG031",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 3085,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 31.02
+      }
+    ]
+  },
+  {
+    "id": "plancha-gas-lisa-900",
+    "nombre": "Plancha a Gas Lisa (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IG010",
+        "etiqueta": "400×900×300 mm",
+        "precio_usd": 1110,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 400,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 10.32
+      },
+      {
+        "codigo": "EMP.PLS.9IG020",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 1735,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 20.64
+      },
+      {
+        "codigo": "EMP.PLS.9IG030",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2570,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 31.02
+      }
+    ]
+  },
+  {
+    "id": "plancha-gas-mixta",
+    "nombre": "Plancha a Gas Lisa + Acanalada",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.7IG022",
+        "etiqueta": "800×730×300 mm",
+        "precio_usd": 1725,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 17.34
+      },
+      {
+        "codigo": "EMP.PLS.7IG032",
+        "etiqueta": "1200×730×300 mm",
+        "precio_usd": 2625,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 730,
+          "Alto": 300
+        },
+        "potencia_kw": 26
+      }
+    ]
+  },
+  {
+    "id": "plancha-gas-mixta-900",
+    "nombre": "Plancha a Gas Lisa + Acanalada (Serie 900)",
+    "categoria": "Planchas",
+    "caracteristicas_generales": [
+      "Funcionamiento a gas licuado (GLP) o gas natural (GN)",
+      "Válvula de seguridad magnética con llama piloto",
+      "Dos zonas de calentamiento independientes",
+      "Cajón recolector de residuos desmontable"
+    ],
+    "variantes": [
+      {
+        "codigo": "EMP.PLS.9IG022",
+        "etiqueta": "800×900×300 mm",
+        "precio_usd": 1910,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 800,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 20.64
+      },
+      {
+        "codigo": "EMP.PLS.9IG032",
+        "etiqueta": "1200×900×300 mm",
+        "precio_usd": 2825,
+        "stock": 0,
+        "modo_disponibilidad": "por_encargo",
+        "dimensiones_mm": {
+          "Ancho": 1200,
+          "Profundidad": 900,
+          "Alto": 300
+        },
+        "potencia_kw": 31.02
       }
     ]
   }

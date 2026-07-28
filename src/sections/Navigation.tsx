@@ -52,8 +52,9 @@ const CATEGORY_IMAGES: Record<string, string> = {
   'Cocinas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Parrillas': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=100&h=100&fit=crop',
   'Cucipastas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
-  'Hornos a Gas': 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=100&h=100&fit=crop',
   'Superficies': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
+  'Acero': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
+  'Servicio': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100&h=100&fit=crop',
   'Elaboración': 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=100&h=100&fit=crop',
   'Mesas': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop',
 };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, SlidersHorizontal, LayoutGrid } from 'lucide-react';
 import {
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
-  Droplets, Table2, Grid3X3, Snowflake, Layers,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, Warehouse, ConciergeBell,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -13,13 +13,13 @@ import type { AvailabilityFilter } from '@/hooks/useProducts';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
-  Droplets, Table2, Grid3X3, Snowflake, Layers,
+  Droplets, Table2, Grid3X3, Snowflake, Layers, Warehouse, ConciergeBell,
 };
 
 const CATEGORY_ORDER = [
-  'Refrigeración', 'Lavado', 'Hornos', 'Hornos a Gas',
+  'Refrigeración', 'Lavado', 'Hornos',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución', 'Mesas', 'Superficies', 'Elaboración', 'Cucipastas',
+  'Distribución', 'Servicio', 'Mesas', 'Superficies', 'Acero', 'Elaboración', 'Cucipastas',
 ];
 
 const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: string | null }[] = [

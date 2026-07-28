@@ -10,6 +10,7 @@ export interface Producto {
   precio_usd: number | null
   stock: number
   disponible: boolean
+  destacado: boolean
   modo_disponibilidad: 'en_stock' | 'por_encargo'
   cloudinary_image_id: string | null
   cloudinary_url: string | null
@@ -31,18 +32,19 @@ export type ProductoInsert = Omit<Producto, 'id' | 'created_at' | 'updated_at'>
 export type ProductoUpdate = Partial<ProductoInsert>
 
 export const CATEGORIAS = [
+  'Acero',
   'Cocinas',
   'Cucipastas',
   'Distribución',
   'Elaboración',
   'Freidoras',
   'Hornos',
-  'Hornos a Gas',
   'Lavado',
   'Mesas',
   'Parrillas',
   'Planchas',
   'Refrigeración',
+  'Servicio',
   'Superficies',
 ] as const
 

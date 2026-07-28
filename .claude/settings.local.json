@@ -30,7 +30,24 @@
       "Bash(git worktree *)",
       "Bash(git branch *)",
       "Bash(echo \"exit=$?\")",
-      "PowerShell($p = \"D:\\\\Juanchydo\\\\Desktop\\\\Empero.ar\\\\.claude\\\\worktrees\\\\product-modal-mobile-redesign\"; if \\(Test-Path $p\\) { Remove-Item -Recurse -Force $p -ErrorAction SilentlyContinue }; if \\(Test-Path $p\\) { Write-Output \"STILL EXISTS\" } else { Write-Output \"DELETED\" }; $wt = \"D:\\\\Juanchydo\\\\Desktop\\\\Empero.ar\\\\.claude\\\\worktrees\"; if \\(Test-Path $wt\\) { $c = \\(Get-ChildItem $wt -Force | Measure-Object\\).Count; if \\($c -eq 0\\) { Remove-Item -Recurse -Force $wt; Write-Output \"worktrees dir removed \\(was empty\\)\" } else { Write-Output \"worktrees dir kept \\($c items\\)\" } })"
+      "PowerShell($p = \"D:\\\\Juanchydo\\\\Desktop\\\\Empero.ar\\\\.claude\\\\worktrees\\\\product-modal-mobile-redesign\"; if \\(Test-Path $p\\) { Remove-Item -Recurse -Force $p -ErrorAction SilentlyContinue }; if \\(Test-Path $p\\) { Write-Output \"STILL EXISTS\" } else { Write-Output \"DELETED\" }; $wt = \"D:\\\\Juanchydo\\\\Desktop\\\\Empero.ar\\\\.claude\\\\worktrees\"; if \\(Test-Path $wt\\) { $c = \\(Get-ChildItem $wt -Force | Measure-Object\\).Count; if \\($c -eq 0\\) { Remove-Item -Recurse -Force $wt; Write-Output \"worktrees dir removed \\(was empty\\)\" } else { Write-Output \"worktrees dir kept \\($c items\\)\" } })",
+      "Bash(node -e ' *)",
+      "Bash(node scripts/_build_excel_map.mjs)",
+      "Bash(node scripts/_regen_products.mjs)",
+      "Bash(node scripts/_reuse_images.mjs)",
+      "Bash(curl -s \"https://www.empero.com.tr/en/detay-undercounter-cabinets-141\" -o uc.html)",
+      "Bash(curl -s \"https://www.empero.com.tr/admin/pages/upload/n-748-4512-21-02-2024.jpg\" -o cab_inferior.jpg)",
+      "Bash(curl -s \"https://www.empero.com.tr/en/detay-counter-type-refrigerators-84\" -o cr.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://www.empero.com.tr/en/detay-counter-type-refrigerators-84\")",
+      "Bash(curl -s \"https://www.empero.com.tr/en/products\" -o prods.html)",
+      "Bash(curl -s \"https://www.empero.com.tr/en/detay-counter-type-refrigerators-fan-cooling-227\" -o r227.html)",
+      "Bash(node scripts/_fix_wrong_images.mjs)",
+      "Bash(node scripts/_propagate_family_images.mjs)",
+      "Bash(echo \"---exit $?---\")",
+      "Bash(node -e \"const L=require\\('lucide-react'\\); console.log\\('Warehouse:',!!L.Warehouse,'ConciergeBell:',!!L.ConciergeBell\\);\")",
+      "Bash(echo \"tsc exit: $?\")",
+      "Bash(rm -f _db_dump.json _excel_map.json _Products_final.backup.json)",
+      "Bash(node -e 'const p=JSON.parse\\(require\\(\"fs\"\\).readFileSync\\(\"Products_final.json\",\"utf8\"\\)\\);console.log\\(\"familias:\",p.length,\"| variantes:\",p.reduce\\(\\(n,f\\)=>n+f.variantes.length,0\\)\\);const c={};p.forEach\\(f=>c[f.categoria]=\\(c[f.categoria]||0\\)+1\\);console.log\\(JSON.stringify\\(c\\)\\)')"
     ]
   }
 }

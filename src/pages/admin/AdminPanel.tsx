@@ -6,39 +6,68 @@ import { invalidateProductosCache } from '@/lib/productosCache'
 import { Toaster, toast } from 'sonner'
 import {
   Package, Menu, LogOut, RefreshCw,
-  ChevronLeft,
+  ChevronLeft, LayoutDashboard, Star,
 } from 'lucide-react'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 
 interface Props { session: Session }
 
-const TABS = [
-  { path: '/admin/dashboard', label: 'Dashboard' },
-  { path: '/admin/productos', label: 'Productos' },
+const NAV = [
+  { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/admin/productos', label: 'Productos', icon: Package },
+  { path: '/admin/destacados', label: 'Destacados', icon: Star },
 ]
 
 function SidebarInner({
-  onPurgeCache, purging, session,
+  onPurgeCache, purging, session, collapsed,
 }: {
   onPurgeCache: () => void
   purging: boolean
   session: Session
+  collapsed?: boolean
 }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   return (
     <div className="flex flex-col h-full bg-[#1A1613]">
-      <div className="relative px-5 pt-8 pb-6 flex-shrink-0 overflow-hidden">
+      <div className={`relative px-5 pt-8 pb-6 flex-shrink-0 overflow-hidden ${collapsed ? 'px-3' : ''}`}>
         <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#C41B2E]/5 blur-3xl pointer-events-none" />
         <div className="w-9 h-9 rounded-xl bg-[#C41B2E] flex items-center justify-center mb-4 shadow-lg shadow-[#C41B2E]/20">
           <Package className="w-5 h-5 text-white" />
         </div>
-        <h1 className="text-white font-semibold text-lg tracking-tight">Empero</h1>
-        <p className="text-[#6B6159] text-[11px] font-medium uppercase tracking-[0.12em] mt-0.5">
-          Panel administrativo
-        </p>
+        {!collapsed && (
+          <>
+            <h1 className="text-white font-semibold text-lg tracking-tight">Empero</h1>
+            <p className="text-[#6B6159] text-[11px] font-medium uppercase tracking-[0.12em] mt-0.5">
+              Panel administrativo
+            </p>
+          </>
+        )}
         <div className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-[#C41B2E]/40 via-white/[0.06] to-transparent" />
       </div>
 
-      <div className="flex-1" />
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {NAV.map(item => {
+          const active = location.pathname === item.path
+          const Icon = item.icon
+          return (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
+                active
+                  ? 'bg-white/[0.08] text-white'
+                  : 'text-[#857870] hover:bg-white/[0.04] hover:text-white'
+              }`}
+              title={collapsed ? item.label : undefined}
+            >
+              <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C41B2E]' : ''}`} />
+              {!collapsed && <span>{item.label}</span>}
+            </button>
+          )
+        })}
+      </nav>
 
       <div className="px-3 py-4 space-y-1 flex-shrink-0 border-t border-white/[0.06]">
         <button
@@ -47,29 +76,31 @@ function SidebarInner({
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-white transition-all duration-200 disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-4 h-4 flex-shrink-0 ${purging ? 'animate-spin' : ''}`} />
-          {purging ? 'Reseteando...' : 'Resetear caché'}
+          {!collapsed && (purging ? 'Reseteando...' : 'Resetear caché')}
         </button>
 
-        <div className="px-3 pt-3 pb-1">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#C41B2E]/20 to-[#C41B2E]/5 border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-              <span className="text-[10px] font-bold text-[#C41B2E]">
-                {session.user.email?.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] text-[#857870] truncate font-medium">{session.user.email}</p>
-              <p className="text-[9px] text-[#4A4540] uppercase tracking-[0.12em]">Sesión activa</p>
+        {!collapsed && (
+          <div className="px-3 pt-3 pb-1">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#C41B2E]/20 to-[#C41B2E]/5 border border-white/[0.06] flex items-center justify-center flex-shrink-0">
+                <span className="text-[10px] font-bold text-[#C41B2E]">
+                  {session.user.email?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] text-[#857870] truncate font-medium">{session.user.email}</p>
+                <p className="text-[9px] text-[#4A4540] uppercase tracking-[0.12em]">Sesión activa</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <button
           onClick={() => supabase.auth.signOut()}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[#857870] hover:bg-white/[0.06] hover:text-red-400 transition-all duration-200 cursor-pointer"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
-          Cerrar sesión
+          {!collapsed && 'Cerrar sesión'}
         </button>
       </div>
     </div>
@@ -77,8 +108,6 @@ function SidebarInner({
 }
 
 export function AdminPanel({ session }: Props) {
-  const navigate              = useNavigate()
-  const location              = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [purging, setPurging]       = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -112,16 +141,15 @@ export function AdminPanel({ session }: Props) {
     <div className="min-h-screen bg-gradient-to-br from-[#F4F0E8] via-[#FAF8F5] to-[#EDE8E0] flex">
       <Toaster richColors position="top-right" />
 
-      {/* Ambient glow */}
       <div className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#C41B2E]/[0.03] blur-[120px] pointer-events-none -z-0" />
       <div className="fixed bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#C41B2E]/[0.02] blur-[100px] pointer-events-none -z-0" />
 
-      {/* Desktop sidebar */}
       <aside className={`hidden lg:block ${sidebarWidth} flex-shrink-0 sticky top-0 h-screen overflow-hidden transition-all duration-300 border-r border-white/[0.04] z-10`}>
         <SidebarInner
           onPurgeCache={handlePurgeCache}
           purging={purging}
           session={session}
+          collapsed={sidebarCollapsed}
         />
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -131,7 +159,6 @@ export function AdminPanel({ session }: Props) {
         </button>
       </aside>
 
-      {/* Mobile sidebar */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="p-0 w-60 border-0 bg-[#1A1613]">
           <SidebarInner
@@ -142,7 +169,6 @@ export function AdminPanel({ session }: Props) {
         </SheetContent>
       </Sheet>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 relative z-0">
         <header className="bg-white/80 backdrop-blur-lg border-b border-[#EBE5DC] px-4 lg:px-8 h-16 flex items-center gap-3 flex-shrink-0 sticky top-0 z-10 shadow-sm">
           <button
@@ -154,6 +180,10 @@ export function AdminPanel({ session }: Props) {
 
           <div className="flex items-center gap-2 text-sm">
             <span className="text-[#9E9080] font-medium">Empero Admin</span>
+            <span className="text-[#C0B5A8] mx-1">·</span>
+            <span className="text-[#6B6159]">
+              {NAV.find(t => location.pathname === t.path)?.label || 'Admin'}
+            </span>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
@@ -163,31 +193,6 @@ export function AdminPanel({ session }: Props) {
             </div>
           </div>
         </header>
-
-        {/* Tab bar */}
-        <div className="bg-white/60 backdrop-blur-sm border-b border-[#EBE5DC] px-4 lg:px-8">
-          <div className="flex gap-1">
-            {TABS.map(tab => {
-              const active = location.pathname === tab.path
-              return (
-                <button
-                  key={tab.path}
-                  onClick={() => navigate(tab.path)}
-                  className={`relative px-5 py-3 text-sm font-medium transition-all duration-200 cursor-pointer ${
-                    active
-                      ? 'text-[#C41B2E]'
-                      : 'text-[#9E9080] hover:text-[#6B6159]'
-                  }`}
-                >
-                  {tab.label}
-                  {active && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#C41B2E] rounded-full" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
 
         <main className="flex-1 p-6 lg:p-8 overflow-auto">
           <Outlet />
