@@ -116,7 +116,9 @@ export function ProductCatalog({
   }, []);
 
   const featuredProducts = useMemo(
-    () => allProducts.filter(p => p.destacado === true && p.disponible),
+    () => allProducts
+      .filter(p => p.destacado === true && p.disponible)
+      .sort((a, b) => (a.destacado_orden ?? Infinity) - (b.destacado_orden ?? Infinity)),
     [allProducts]
   )
 

@@ -13,6 +13,7 @@ export interface Product {
   stock: number;
   disponible: boolean;
   destacado?: boolean;
+  destacado_orden?: number | null;
   modo_disponibilidad: 'en_stock' | 'por_encargo';
   cloudinary_image_id: string | null;
   cloudinary_url: string | null;

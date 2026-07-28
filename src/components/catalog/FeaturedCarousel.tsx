@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Package, Ruler, Weight, Zap, Flame, ArrowLeft, ArrowRight, Plus, Check } from 'lucide-react'
+import { Star, Package, Ruler, Weight, Zap, Flame, ArrowLeft, ArrowRight } from 'lucide-react'
 import { productCardImage } from '@/lib/cloudinaryUrl'
 import { whatsappConfig } from '@/data/company'
 import type { Product } from '@/data/products'
 import { AnimatedSection } from '@/components/animations/AnimatedSection'
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 interface Props {
   products: Product[]
@@ -23,16 +22,6 @@ const WhatsAppSVG = ({ className }: { className?: string }) => (
   </svg>
 )
 
-function SpecPill({ icon: Icon, value }: { icon: React.ComponentType<{ className?: string }>; value: string | number | null | undefined }) {
-  if (value == null || value === '') return null
-  return (
-    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1613]/[0.04] border border-[#1A1613]/[0.06] text-xs text-[#4A4540]">
-      <Icon className="w-3 h-3 text-[#C41B2E]/60" />
-      <span className="font-medium">{value}</span>
-    </div>
-  )
-}
-
 function formatDim(dims: Product['dimensiones_mm']): string | null {
   if (!dims) return null
   if (dims.Ancho) return `${dims.Ancho}×${dims.Profundidad || '?'}×${dims.Alto || dims.Alto_max || '?'} mm`
@@ -40,16 +29,20 @@ function formatDim(dims: Product['dimensiones_mm']): string | null {
 }
 
 const slideVariants = {
-  enter: (d: number) => ({ x: d > 0 ? 360 : -360, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (d: number) => ({ x: d > 0 ? -240 : 240, opacity: 0 }),
+  enter: (d: number) => ({ x: d > 0 ? 56 : -56, opacity: 0, scale: 0.985 }),
+  center: { x: 0, opacity: 1, scale: 1 },
+  exit: (d: number) => ({ x: d > 0 ? -40 : 40, opacity: 0, scale: 0.985 }),
 }
 
-export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemoveFromQuote, quoteListIds = [] }: Props) {
+const MAX_FEATURES = 4
+
+export function FeaturedCarousel({ products, onViewDetails }: Props) {
   const [[page, dir], setPage] = useState([0, 0])
   const [paused, setPaused] = useState(false)
-  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false)
+  const [maxFeatures, setMaxFeatures] = useState(MAX_FEATURES)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const contentBoxRef = useRef<HTMLDivElement>(null)
+  const contentInnerRef = useRef<HTMLDivElement>(null)
 
   const len = products.length
 
@@ -68,55 +61,74 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
 
   useEffect(() => {
     if (len <= 1 || paused) return
-    timerRef.current = setInterval(next, 5000)
+    timerRef.current = setInterval(next, 7500)
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [len, paused, next])
+
+  // Reset feature-trimming for the new slide during render (cheaper than an effect + extra pass).
+  const [trimmedForPage, setTrimmedForPage] = useState(page)
+  if (trimmedForPage !== page) {
+    setTrimmedForPage(page)
+    setMaxFeatures(MAX_FEATURES)
+  }
+
+  // Every card shares the same fixed height. If a product's content (specs + bullet points)
+  // doesn't fit, drop bullet points one at a time until it does. This needs the actual rendered
+  // DOM size, which only exists post-commit, so a layout effect is unavoidable here.
+  useLayoutEffect(() => {
+    const box = contentBoxRef.current
+    const inner = contentInnerRef.current
+    if (!box || !inner) return
+    if (inner.scrollHeight > box.clientHeight && maxFeatures > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- depends on measured layout, can't be derived during render
+      setMaxFeatures(m => m - 1)
+    }
+  }, [maxFeatures, page])
+
+  useEffect(() => {
+    const box = contentBoxRef.current
+    if (!box) return
+    const ro = new ResizeObserver(() => setMaxFeatures(MAX_FEATURES))
+    ro.observe(box)
+    return () => ro.disconnect()
+  }, [])
 
   if (!len) return null
 
   const product = products[page]
-  const isInQuoteList = quoteListIds.includes(product.id)
 
   const specs = [
-    { icon: Ruler, value: formatDim(product.dimensiones_mm) },
-    { icon: Weight, value: product.capacidad },
-    { icon: Zap, value: product.potencia_kw != null ? `${product.potencia_kw} kW` : null },
-    { icon: Flame, value: product.consumo_gas_m3h != null ? `${product.consumo_gas_m3h} m³/h` : null },
+    { icon: Ruler, label: 'Dimensiones', value: formatDim(product.dimensiones_mm) },
+    { icon: Weight, label: 'Capacidad', value: product.capacidad },
+    { icon: Zap, label: 'Potencia', value: product.potencia_kw != null ? `${product.potencia_kw} kW` : null },
+    { icon: Flame, label: 'Consumo gas', value: product.consumo_gas_m3h != null ? `${product.consumo_gas_m3h} m³/h` : null },
   ].filter(s => s.value != null)
 
-  const features = (product.caracteristicas_generales || []).slice(0, 4)
+  const features = (product.caracteristicas_generales || []).slice(0, maxFeatures)
 
   const handleWhatsApp = () => {
     const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre, product.codigo))
     window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank')
   }
 
-  const handleQuoteToggle = () => {
-    if (!isInQuoteList) {
-      onAddToQuote?.(product)
-    } else {
-      setConfirmRemoveOpen(true)
-    }
-  }
-
   return (
-    <section className="py-16 lg:py-20 bg-[#FAFAF8] relative overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-20 bg-[#FAFAF8] relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[#C41B2E]/[0.02] blur-[120px]" />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+      <div className="max-w-[1500px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
         <AnimatedSection direction="up">
-          <div className="text-center mb-10">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
+          <div className="text-center mb-8 sm:mb-10">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
+              <div className="h-px w-10 sm:w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
+              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
                 Lo más destacado
               </span>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
+              <div className="h-px w-10 sm:w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center gap-3">
-              <Star className="w-7 h-7 text-[#C41B2E]" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center gap-2 sm:gap-3">
+              <Star className="w-6 h-6 sm:w-7 sm:h-7 text-[#C41B2E] flex-shrink-0" />
               Productos <em className="not-italic text-[#C41B2E]">Destacados</em>
             </h2>
           </div>
@@ -127,29 +139,7 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
           onMouseLeave={() => setPaused(false)}
           className="relative select-none"
         >
-          {/* Prev arrow */}
-          {len > 1 && (
-            <button
-              onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:bg-white hover:text-[#C41B2E] shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
-              aria-label="Anterior"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-          )}
-
-          {/* Next arrow */}
-          {len > 1 && (
-            <button
-              onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:bg-white hover:text-[#C41B2E] shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
-              aria-label="Siguiente"
-            >
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          )}
-
-          <div className="overflow-hidden rounded-3xl min-h-[520px] lg:min-h-[620px]">
+          <div className="overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_-20px_rgba(26,22,19,0.18)]">
             <AnimatePresence initial={false} custom={dir} mode="popLayout">
               <motion.div
                 key={page}
@@ -158,7 +148,7 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
@@ -166,27 +156,28 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
                   if (info.offset.x < -60) next()
                   else if (info.offset.x > 60) prev()
                 }}
-                className="bg-white border border-[#E8E2D9] shadow-sm cursor-grab active:cursor-grabbing"
+                className="bg-white border border-[#E8E2D9] cursor-grab active:cursor-grabbing"
               >
                 <div className="flex flex-col lg:flex-row relative lg:justify-center">
-                  {/* Badge top-left */}
-                  <div className="absolute top-2 left-2 z-10">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#C41B2E] text-white text-[10px] font-bold rounded-lg shadow-lg shadow-[#C41B2E]/20">
-                      <Star className="w-3 h-3 fill-white" />
-                      {page + 1}/{len}
-                    </span>
-                  </div>
+                  {/* Top hairline — same signature red glow as the footer/header dividers */}
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#C41B2E]/50 to-transparent z-10" />
 
-                  {/* Logo top-right */}
+                  {/* Badge top-left */}
+                  <span className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#C41B2E] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-[#C41B2E]/25">
+                    <Star className="w-3 h-3 fill-white" />
+                    Destacado
+                  </span>
+
+                  {/* Logo — quiet watermark, not competing with the product */}
                   <img
                     src="/images/logo/Logo.png"
                     alt="Empero"
-                    className="absolute top-6 right-6 h-14 lg:h-16 w-auto object-contain z-10"
+                    className="absolute top-4 right-4 sm:top-6 sm:right-6 h-9 sm:h-12 lg:h-14 w-auto object-contain opacity-60 z-10"
                   />
 
-                  {/* Image */}
-                  <div className="lg:w-[420px] xl:w-[480px] flex-shrink-0 relative overflow-hidden">
-                    <div className="aspect-[4/3] lg:aspect-auto lg:h-full min-h-[300px] bg-white flex items-center justify-center px-8 lg:px-10 py-4">
+                  {/* Image — blends straight into the white card, fixed height keeps every slide the same size */}
+                  <div className="lg:w-[400px] xl:w-[460px] flex-shrink-0 p-5 sm:p-6 lg:p-8">
+                    <div className="relative overflow-hidden h-[200px] sm:h-[260px] lg:h-full flex items-center justify-center px-6 sm:px-10 py-6">
                       {product.cloudinary_url ? (
                         <img
                           src={productCardImage(product.cloudinary_url)}
@@ -199,23 +190,48 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 max-w-lg xl:max-w-xl p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
-                    <div className="mx-auto w-full">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C41B2E] mb-2.5">
-                        {product.categoria}
+                  {/* Content — fixed height so every slide matches; overflow is resolved by trimming bullet points */}
+                  <div
+                    ref={contentBoxRef}
+                    className="flex-1 max-w-xl p-6 sm:p-8 lg:p-10 xl:p-12 pt-10 sm:pt-12 lg:pt-14 flex flex-col relative overflow-hidden h-[440px] sm:h-[480px] lg:h-[560px] xl:h-[580px]"
+                  >
+                    {/* Ghost index numeral — signature mark: this genuinely is page N of the set */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none select-none absolute -top-2 sm:top-0 right-2 sm:right-4 lg:right-6 font-serif font-[560] text-[5.5rem] sm:text-[7rem] lg:text-[8rem] leading-none text-[#C41B2E]/[0.06]"
+                    >
+                      {String(page + 1).padStart(2, '0')}
+                    </span>
+
+                    <div className="relative flex flex-col h-full" ref={contentInnerRef}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="w-6 h-px bg-[#C41B2E]" />
+                        <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-[#C41B2E]">
+                          {product.categoria}
+                        </span>
                       </div>
-                      <h3 className="text-2xl lg:text-3xl xl:text-[1.65rem] font-serif font-[560] text-[#1A1613] leading-tight">
+
+                      <h3 className="font-serif font-[560] text-2xl sm:text-3xl lg:text-[2.1rem] text-[#1A1613] leading-[1.1]">
                         {product.nombre}
                       </h3>
-                      {product.etiqueta && (
+                      {product.etiqueta ? (
                         <p className="text-sm text-[#9E9080] mt-2">{product.etiqueta}</p>
+                      ) : (
+                        <div className="mt-2" />
                       )}
 
                       {specs.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-6">
+                        <div className="mt-6 border-t border-[#E8E2D9] divide-y divide-[#E8E2D9]">
                           {specs.map(s => (
-                            <SpecPill key={s.icon.name || s.value?.toString()} icon={s.icon} value={s.value} />
+                            <div key={s.label} className="flex items-center justify-between py-2 gap-4">
+                              <span className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[#9E9080] flex-shrink-0">
+                                <s.icon className="w-3 h-3 text-[#C41B2E]/70" />
+                                {s.label}
+                              </span>
+                              <span className="font-mono text-xs sm:text-[13px] text-[#2C2825] text-right truncate">
+                                {s.value}
+                              </span>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -231,33 +247,19 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
                         </div>
                       )}
 
-                      {/* Actions */}
-                      <div className="mt-8 flex flex-col sm:flex-row gap-2.5">
+                      {/* Ver detalles + WhatsApp — pinned to the bottom so both buttons land at the same height on every card */}
+                      <div className="mt-auto pt-6 flex flex-col sm:flex-row gap-2.5">
                         <button
                           onClick={() => onViewDetails(product)}
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1A1613] text-white rounded-xl text-sm font-semibold hover:bg-[#2A2623] transition-all duration-200 shadow-sm cursor-pointer"
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C41B2E] text-white rounded-lg text-sm font-semibold hover:bg-[#B51426] transition-all duration-200 shadow-sm cursor-pointer"
                         >
                           Ver detalles
                           <ArrowRight className="w-4 h-4" />
                         </button>
 
-                        {onAddToQuote && (
-                          <button
-                            onClick={handleQuoteToggle}
-                            className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                              isInQuoteList
-                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
-                                : 'bg-[#C41B2E] text-white hover:bg-[#B51426] shadow-sm'
-                            }`}
-                          >
-                            {isInQuoteList ? <><Check className="w-4 h-4" /> En lista</> : <><Plus className="w-4 h-4" /> Agregar</>}
-                          </button>
-                        )}
-
                         <button
                           onClick={handleWhatsApp}
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white cursor-pointer"
-                          style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 12px rgba(37,211,102,0.25)' }}
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#25D366] hover:bg-[#1EAF56] transition-all duration-200 cursor-pointer shadow-sm"
                         >
                           <WhatsAppSVG className="w-4 h-4" />
                           WhatsApp
@@ -270,38 +272,52 @@ export function FeaturedCarousel({ products, onViewDetails, onAddToQuote, onRemo
             </AnimatePresence>
           </div>
 
-          {/* Dots */}
+          {/* Editorial pagination — progress ticks + prev/next, one consistent control at every breakpoint */}
           {len > 1 && (
-            <div className="flex items-center justify-center gap-2.5 mt-8">
-              {products.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goTo(i)}
-                  className={`rounded-full transition-all duration-300 cursor-pointer ${
-                    i === page
-                      ? 'w-10 h-2.5 bg-[#C41B2E]'
-                      : 'w-2.5 h-2.5 bg-[#D8D0C6] hover:bg-[#C0B5A8]'
-                  }`}
-                  aria-label={`Ir al producto ${i + 1}`}
-                />
-              ))}
+            <div className="flex items-center gap-3 sm:gap-4 mt-6 sm:mt-7">
+              <button
+                onClick={prev}
+                className="flex-shrink-0 w-9 h-9 rounded-full border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:border-[#C41B2E]/40 hover:text-[#C41B2E] transition-colors duration-200 cursor-pointer"
+                aria-label="Anterior"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex-1 flex items-center gap-1.5">
+                {products.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => goTo(i)}
+                    className="relative flex-1 h-[3px] rounded-full bg-[#E8E2D9] hover:bg-[#D8D0C6] transition-colors duration-300 cursor-pointer overflow-hidden"
+                    aria-label={`Ir al producto ${i + 1}`}
+                  >
+                    {i === page && (
+                      <motion.span
+                        layoutId="featured-carousel-active-tick"
+                        className="absolute inset-0 rounded-full bg-[#C41B2E]"
+                        transition={{ type: 'spring', stiffness: 500, damping: 40, mass: 0.6 }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <span className="flex-shrink-0 font-mono text-xs tracking-wide text-[#9E9080]">
+                {String(page + 1).padStart(2, '0')} / {String(len).padStart(2, '0')}
+              </span>
+
+              <button
+                onClick={next}
+                className="flex-shrink-0 w-9 h-9 rounded-full border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:border-[#C41B2E]/40 hover:text-[#C41B2E] transition-colors duration-200 cursor-pointer"
+                aria-label="Siguiente"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           )}
         </div>
       </div>
 
-      <ConfirmDialog
-        isOpen={confirmRemoveOpen}
-        title={`¿Quitar "${product.nombre}" de tu lista?`}
-        description="Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras."
-        confirmLabel="Quitar"
-        cancelLabel="Cancelar"
-        onConfirm={() => {
-          onRemoveFromQuote?.(product.id)
-          setConfirmRemoveOpen(false)
-        }}
-        onCancel={() => setConfirmRemoveOpen(false)}
-      />
     </section>
   )
 }

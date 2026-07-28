@@ -25,6 +25,16 @@ function writeCache(data: Product[]) {
   } catch {}
 }
 
+// Admin writes (destacados, stock, etc.) call this so the home page doesn't keep
+// serving its own separately-cached product list for up to CACHE_TTL after a change.
+export function invalidatePublicProductsCache() {
+  try {
+    localStorage.removeItem(CACHE_KEY)
+  } catch {
+    // Storage unavailable — nothing to clean up
+  }
+}
+
 interface UseProductsReturn {
   allProducts: Product[];
   filteredProducts: Product[];
