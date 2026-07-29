@@ -121,18 +121,13 @@ export function Hero({ isReady = false }: HeroProps) {
       {/* Background */}
       <div ref={bgRef} className="absolute inset-0 z-0" style={{ willChange: 'transform' }}>
         <div className="absolute inset-0 hero-kenburns">
-          <picture>
-            <source srcSet="/images/Visuales/HeroImage.webp" type="image/webp" />
-            <img
-              src="/images/Visuales/HeroImage.jpg"
-              alt="Cocina industrial profesional Empero"
-              className="w-full h-full object-cover"
-              width={1920}
-              height={1097}
-              fetchPriority="high"
-              decoding="async"
-            />
-          </picture>
+          <img
+            src="/images/Visuales/heroteo.png"
+            alt="Cocina industrial profesional Empero"
+            className="w-full h-full object-cover"
+            fetchPriority="high"
+            decoding="async"
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black/90" />
         {/* Subtle red glow — blur radius grande es caro en GPUs móviles, solo desktop */}
