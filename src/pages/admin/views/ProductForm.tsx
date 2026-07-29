@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
 import { toast } from 'sonner'
 import {
-  ArrowLeft, Save, Loader2, FileText, ImageIcon, Ruler, Wrench,
+  ArrowLeft, Save, Loader2, FileText, ImageIcon, Ruler, Wrench, Plus, X,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 
@@ -36,8 +36,8 @@ const schema = z.object({
   potencia_kw:            z.coerce.number().nullable().optional(),
   consumo_gas_m3h:        z.coerce.number().nullable().optional(),
   rejilla_mm:             z.string().nullable().optional(),
-  accesorios:             z.string(),
-  caracteristicas:        z.string(),
+  accesorios:             z.array(z.string()),
+  caracteristicas:        z.array(z.string()),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -49,7 +49,7 @@ const EMPTY_DEFAULTS: FormValues = {
   peso_kg: undefined, volumen_m3: undefined, capacidad: '', dimensiones_canasto_mm: '',
   dim_ancho: undefined, dim_prof: undefined, dim_alto: undefined, dim_alto_min: undefined, dim_alto_max: undefined,
   potencia_kw: undefined, consumo_gas_m3h: undefined, rejilla_mm: '',
-  accesorios: '', caracteristicas: '',
+  accesorios: [], caracteristicas: [],
 }
 
 function toForm(p: Producto): FormValues {
@@ -77,8 +77,8 @@ function toForm(p: Producto): FormValues {
     potencia_kw:            p.potencia_kw ?? undefined,
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
-    accesorios:             (p.accesorios_incluidos ?? []).join('\n'),
-    caracteristicas:        (p.caracteristicas_generales ?? []).join('\n'),
+    accesorios:             p.accesorios_incluidos ?? [],
+    caracteristicas:        p.caracteristicas_generales ?? [],
   }
 }
 
@@ -114,10 +114,8 @@ function fromForm(v: FormValues, id?: string): Record<string, unknown> {
     potencia_kw:            v.potencia_kw ?? null,
     consumo_gas_m3h:        v.consumo_gas_m3h ?? null,
     rejilla_mm:             nullIfEmpty(v.rejilla_mm),
-    accesorios_incluidos:
-      v.accesorios.trim() ? v.accesorios.split('\n').map(s => s.trim()).filter(Boolean) : null,
-    caracteristicas_generales:
-      v.caracteristicas.trim() ? v.caracteristicas.split('\n').map(s => s.trim()).filter(Boolean) : null,
+    accesorios_incluidos:      v.accesorios.length ? v.accesorios : null,
+    caracteristicas_generales: v.caracteristicas.length ? v.caracteristicas : null,
   }
 }
 
@@ -133,8 +131,71 @@ function ErrorText({ children }: { children: React.ReactNode }) {
   return <p className="mt-1 text-xs text-red-500">{children}</p>
 }
 
-function Card({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-xl p-5 space-y-4 bg-white border border-[#EBE5DC]">{children}</div>
+function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`rounded-xl p-5 space-y-4 bg-white border border-[#EBE5DC] ${className}`}>{children}</div>
+}
+
+function ListField({
+  label, hint, items, onChange, placeholder,
+}: {
+  label: string
+  hint?: string
+  items: string[]
+  onChange: (items: string[]) => void
+  placeholder?: string
+}) {
+  const [draft, setDraft] = useState('')
+
+  const addItem = () => {
+    const value = draft.trim()
+    if (!value) return
+    onChange([...items, value])
+    setDraft('')
+  }
+
+  return (
+    <div>
+      <Label>{label}</Label>
+      <div className="flex gap-2">
+        <input
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') { e.preventDefault(); addItem() }
+          }}
+          className={inputCls}
+          placeholder={placeholder}
+        />
+        <button
+          type="button"
+          onClick={addItem}
+          className="flex items-center gap-1.5 px-4 rounded-lg text-sm font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer whitespace-nowrap"
+        >
+          <Plus className="w-4 h-4" /> Agregar
+        </button>
+      </div>
+      {hint && <Hint>{hint}</Hint>}
+      {items.length > 0 && (
+        <div className="mt-3 rounded-lg border border-[#EBE5DC] overflow-hidden">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between gap-3 px-3 py-2 text-sm text-[#1A1613] border-b border-[#EBE5DC] last:border-b-0 odd:bg-white even:bg-[#FAF8F4]/50"
+            >
+              <span>{item}</span>
+              <button
+                type="button"
+                onClick={() => onChange(items.filter((_, idx) => idx !== i))}
+                className="text-[#C0B5A8] hover:text-red-500 transition-colors cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 const inputCls =
@@ -227,6 +288,8 @@ export function ProductForm() {
   const disponible = watch('disponible')
   const cloudinaryUrl = watch('cloudinary_url')
   const cloudinaryImageId = watch('cloudinary_image_id')
+  const accesorios = watch('accesorios')
+  const caracteristicas = watch('caracteristicas')
 
   return (
     <div>
@@ -268,7 +331,7 @@ export function ProductForm() {
         </div>
 
         {tab === 'basico' && (
-          <div className="space-y-5">
+          <div className="space-y-5 min-h-[32rem]">
             <Card>
               <div className="grid grid-cols-2 gap-5">
                 <div>
@@ -344,7 +407,7 @@ export function ProductForm() {
         )}
 
         {tab === 'imagen' && (
-          <Card>
+          <Card className="min-h-[32rem]">
             <ImageUpload
               url={cloudinaryUrl || null}
               publicId={cloudinaryImageId || null}
@@ -362,7 +425,7 @@ export function ProductForm() {
         )}
 
         {tab === 'fisico' && (
-          <div className="space-y-5">
+          <div className="space-y-5 min-h-[32rem]">
             <p className="text-xs text-[#9E9080] italic">Todos los campos son opcionales.</p>
             <fieldset className="border border-[#EBE5DC] rounded-xl p-5 space-y-4 bg-[#FAF8F4]/50">
               <legend className="px-3 text-xs font-semibold text-[#6B6159] uppercase tracking-wider bg-white rounded-md py-1.5 border border-[#EBE5DC]">
@@ -422,7 +485,7 @@ export function ProductForm() {
         )}
 
         {tab === 'tecnico' && (
-          <div className="space-y-5">
+          <div className="space-y-5 min-h-[32rem]">
             <p className="text-xs text-[#9E9080] italic">Todos los campos son opcionales.</p>
             <Card>
               <div className="grid grid-cols-3 gap-5">
@@ -439,16 +502,20 @@ export function ProductForm() {
                   <input {...register('rejilla_mm')} className={inputCls} placeholder="Ej: 560×524" />
                 </div>
               </div>
-              <div>
-                <Label>Accesorios incluidos</Label>
-                <textarea {...register('accesorios')} rows={5} className={inputCls + ' resize-none'} placeholder={'Cesta porta-vajilla\nBandeja de escurrido\nManual de usuario'} />
-                <Hint>Uno por línea</Hint>
-              </div>
-              <div>
-                <Label>Características generales</Label>
-                <textarea {...register('caracteristicas')} rows={5} className={inputCls + ' resize-none'} placeholder={'Construcción en acero inoxidable\nDoble pared aislada\nPanel de control digital'} />
-                <Hint>Una por línea</Hint>
-              </div>
+              <ListField
+                label="Accesorios incluidos"
+                hint="Escribí un accesorio y presioná Enter o Agregar"
+                items={accesorios}
+                onChange={items => setValue('accesorios', items)}
+                placeholder="Ej: Cesta porta-vajilla"
+              />
+              <ListField
+                label="Características generales"
+                hint="Escribí una característica y presioná Enter o Agregar"
+                items={caracteristicas}
+                onChange={items => setValue('caracteristicas', items)}
+                placeholder="Ej: Construcción en acero inoxidable"
+              />
             </Card>
           </div>
         )}
