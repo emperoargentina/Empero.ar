@@ -1,11 +1,12 @@
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getProductos, invalidateProductosCache, getCacheAge } from '@/lib/productosCache'
+import { groupProductosByFamily, type FamilyGroup } from '@/lib/adminFamilies'
 import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto'
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
-  Filter, Clock, Grid3X3, List,
+  Filter, Clock, Grid3X3, List, ChevronRight, Layers,
   Loader2,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -47,6 +48,157 @@ function StockBadge({ p }: { p: Producto }) {
   )
 }
 
+function ProductRow({
+  p, index, nested, onNavigate, onToggle, onDelete,
+}: {
+  p: Producto
+  index: number
+  nested?: boolean
+  onNavigate: (id: string) => void
+  onToggle: (p: Producto) => void
+  onDelete: (p: Producto) => void
+}) {
+  return (
+    <tr
+      onClick={() => onNavigate(p.id)}
+      className={`transition-colors cursor-pointer ${
+        nested ? 'bg-[#FDFCFA]' : (index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50')
+      } hover:bg-[#F4F0E8]`}
+    >
+      <td className={`px-4 py-3 ${nested ? 'pl-10' : ''}`}>
+        <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+          {p.cloudinary_url
+            ? <img src={p.cloudinary_url} alt={p.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
+            : <Package className="w-4 h-4 text-[#C0B5A8]" />
+          }
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <span className="font-mono text-xs text-[#6B6159] bg-[#F4F0E8] px-1.5 py-0.5 rounded">{p.codigo}</span>
+      </td>
+      <td className="px-4 py-3 max-w-[220px]">
+        <p className="font-medium text-[#1A1613] truncate">{p.nombre}</p>
+        {p.etiqueta && <p className="text-[11px] text-[#9E9080] mt-0.5">{p.etiqueta}</p>}
+      </td>
+      <td className="px-4 py-3 hidden md:table-cell">
+        <span className="text-xs text-[#9E9080] bg-[#FAF8F4] px-2 py-0.5 rounded-md">{p.categoria}</span>
+      </td>
+      <td className="px-4 py-3">
+        <StockBadge p={p} />
+      </td>
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <span className="text-sm font-medium text-[#6B6159] tabular-nums">
+          {p.precio_usd != null ? `US$ ${Number(p.precio_usd).toLocaleString('es-AR')}` : <span className="text-[#C0B5A8]">—</span>}
+        </span>
+      </td>
+      <td className="px-4 py-3 hidden lg:table-cell">
+        <button
+          onClick={e => { e.stopPropagation(); onToggle(p) }}
+          className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
+            p.disponible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
+          }`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+            p.disponible ? 'translate-x-4' : 'translate-x-0'
+          }`} />
+        </button>
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1 justify-end">
+          <button
+            onClick={e => { e.stopPropagation(); onNavigate(p.id) }}
+            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+            title="Editar"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={e => { e.stopPropagation(); onDelete(p) }}
+            className="p-1.5 text-[#9E9080] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+            title="Eliminar"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
+function FamilyHeaderRow({
+  group, index, expanded, onToggle, onAddVariant,
+}: {
+  group: FamilyGroup
+  index: number
+  expanded: boolean
+  onToggle: () => void
+  onAddVariant: (() => void) | null
+}) {
+  const rep = group.variants[0]
+  const totalStock = group.variants.reduce(
+    (sum, v) => sum + (v.modo_disponibilidad === 'en_stock' ? v.stock : 0), 0,
+  )
+  const prices = group.variants.map(v => v.precio_usd).filter((v): v is number => v != null)
+  const priceLabel = prices.length === 0
+    ? null
+    : Math.min(...prices) === Math.max(...prices)
+      ? `US$ ${Math.min(...prices).toLocaleString('es-AR')}`
+      : `US$ ${Math.min(...prices).toLocaleString('es-AR')}–${Math.max(...prices).toLocaleString('es-AR')}`
+
+  return (
+    <tr
+      onClick={onToggle}
+      className={`transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`}
+    >
+      <td className="px-4 py-3">
+        <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+          {rep.cloudinary_url
+            ? <img src={rep.cloudinary_url} alt={rep.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
+            : <Package className="w-4 h-4 text-[#C0B5A8]" />
+          }
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#C41B2E]">
+          <ChevronRight className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+          {group.variants.length}
+        </span>
+      </td>
+      <td className="px-4 py-3 max-w-[220px]">
+        <p className="font-semibold text-[#1A1613] truncate">{rep.nombre}</p>
+        <p className="text-[11px] text-[#9E9080] mt-0.5 flex items-center gap-1">
+          <Layers className="w-3 h-3 text-[#C41B2E]" /> {group.variants.length} variantes
+        </p>
+      </td>
+      <td className="px-4 py-3 hidden md:table-cell">
+        <span className="text-xs text-[#9E9080] bg-[#FAF8F4] px-2 py-0.5 rounded-md">{rep.categoria}</span>
+      </td>
+      <td className="px-4 py-3">
+        <span className="text-xs font-medium text-[#6B6159]">{totalStock} ud. en stock</span>
+      </td>
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <span className="text-sm font-medium text-[#6B6159] tabular-nums">
+          {priceLabel ?? <span className="text-[#C0B5A8]">—</span>}
+        </span>
+      </td>
+      <td className="px-4 py-3 hidden lg:table-cell" />
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1 justify-end">
+          {onAddVariant && (
+            <button
+              onClick={e => { e.stopPropagation(); onAddVariant() }}
+              className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+              title="Agregar variante"
+            >
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </td>
+    </tr>
+  )
+}
+
 export function Products() {
   const [allProductos, setAllProductos] = useState<Producto[]>([])
   const [loading, setLoading]           = useState(true)
@@ -59,6 +211,7 @@ export function Products() {
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
   const [displayCount, setDisplayCount] = useState(CHUNK)
   const [viewMode, setViewMode]         = useState<'table' | 'grid'>('table')
+  const [expanded, setExpanded]         = useState<Set<string>>(new Set())
   const sentinelRef                     = useRef<HTMLDivElement>(null)
   const navigate                        = useNavigate()
 
@@ -92,11 +245,23 @@ export function Products() {
     return list
   }, [allProductos, search, categoria, modo])
 
+  const families = useMemo(() => groupProductosByFamily(filtered), [filtered])
+
   useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo])
 
-  const visibleItems   = filtered.slice(0, displayCount)
-  const hasMore        = displayCount < filtered.length
-  const totalCount     = filtered.length
+  const visibleFamilies = families.slice(0, displayCount)
+  const hasMore         = displayCount < families.length
+  const totalCount      = filtered.length
+  const visibleCount    = visibleFamilies.reduce((n, f) => n + f.variants.length, 0)
+
+  const toggleExpanded = (key: string) => {
+    setExpanded(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
 
   // IntersectionObserver for infinite scroll
   useEffect(() => {
@@ -144,6 +309,8 @@ export function Products() {
     toast.success(`Producto ${!p.disponible ? 'activado' : 'desactivado'}`)
     await reloadAfterMutation()
   }
+
+  const handleNavigate = (id: string) => navigate(`/admin/productos/${id}`)
 
   const stockOk = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > LOW_STOCK_THRESHOLD).length
   const stockBajo = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length
@@ -292,7 +459,7 @@ export function Products() {
               <p className="text-sm text-[#9E9080] font-medium">Cargando productos...</p>
             </div>
           </div>
-        ) : visibleItems.length === 0 ? (
+        ) : visibleFamilies.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 gap-3">
             <div className="w-12 h-12 rounded-xl bg-[#F4F0E8] flex items-center justify-center">
               <Package className="w-6 h-6 text-[#C0B5A8]" />
@@ -316,72 +483,45 @@ export function Products() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0EAE2]">
-                {visibleItems.map((p, i) => (
-                  <tr
-                    key={p.id}
-                    onClick={() => navigate(`/admin/productos/${p.id}`)}
-                    className={`transition-colors cursor-pointer ${
-                      i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'
-                    } hover:bg-[#F4F0E8]`}
-                  >
-                    <td className="px-4 py-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
-                        {p.cloudinary_url
-                          ? <img src={p.cloudinary_url} alt={p.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
-                          : <Package className="w-4 h-4 text-[#C0B5A8]" />
-                        }
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="font-mono text-xs text-[#6B6159] bg-[#F4F0E8] px-1.5 py-0.5 rounded">{p.codigo}</span>
-                    </td>
-                    <td className="px-4 py-3 max-w-[220px]">
-                      <p className="font-medium text-[#1A1613] truncate">{p.nombre}</p>
-                      {p.etiqueta && <p className="text-[11px] text-[#9E9080] mt-0.5">{p.etiqueta}</p>}
-                    </td>
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="text-xs text-[#9E9080] bg-[#FAF8F4] px-2 py-0.5 rounded-md">{p.categoria}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <StockBadge p={p} />
-                    </td>
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className="text-sm font-medium text-[#6B6159] tabular-nums">
-                        {p.precio_usd != null ? `US$ ${Number(p.precio_usd).toLocaleString('es-AR')}` : <span className="text-[#C0B5A8]">—</span>}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 hidden lg:table-cell">
-                      <button
-                        onClick={e => { e.stopPropagation(); handleToggleDisponible(p) }}
-                        className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
-                          p.disponible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
-                        }`}
-                      >
-                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
-                          p.disponible ? 'translate-x-4' : 'translate-x-0'
-                        }`} />
-                      </button>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1 justify-end">
-                        <button
-                          onClick={e => { e.stopPropagation(); navigate(`/admin/productos/${p.id}`) }}
-                          className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
-                          title="Editar"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={e => { e.stopPropagation(); handleDelete(p) }}
-                          className="p-1.5 text-[#9E9080] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
-                          title="Eliminar"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {visibleFamilies.map((group, i) => {
+                  if (group.variants.length === 1) {
+                    return (
+                      <ProductRow
+                        key={group.key}
+                        p={group.variants[0]}
+                        index={i}
+                        onNavigate={handleNavigate}
+                        onToggle={handleToggleDisponible}
+                        onDelete={handleDelete}
+                      />
+                    )
+                  }
+                  const isExpanded = expanded.has(group.key)
+                  return (
+                    <Fragment key={group.key}>
+                      <FamilyHeaderRow
+                        group={group}
+                        index={i}
+                        expanded={isExpanded}
+                        onToggle={() => toggleExpanded(group.key)}
+                        onAddVariant={group.familiaId
+                          ? () => navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(group.familiaId!)}`)
+                          : null}
+                      />
+                      {isExpanded && group.variants.map(v => (
+                        <ProductRow
+                          key={v.id}
+                          p={v}
+                          index={i}
+                          nested
+                          onNavigate={handleNavigate}
+                          onToggle={handleToggleDisponible}
+                          onDelete={handleDelete}
+                        />
+                      ))}
+                    </Fragment>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -397,7 +537,7 @@ export function Products() {
               </div>
             ) : (
               <p className="text-xs text-[#C0B5A8] font-medium">
-                Mostrando {displayCount} de {totalCount} — scrolleá para más
+                Mostrando {visibleCount} de {totalCount} productos — scrolleá para más
               </p>
             )}
           </div>

@@ -1,16 +1,19 @@
 // src/pages/admin/views/ProductForm.tsx
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom'
 import { useForm, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
+import { getProductos } from '@/lib/productosCache'
+import { buildFamilyOptions, generateUniqueFamilyId, type FamilyOption } from '@/lib/adminFamilies'
 import { toast } from 'sonner'
 import {
-  ArrowLeft, Save, Loader2, FileText, ImageIcon, Ruler, Wrench, Plus, X,
+  ArrowLeft, Save, Loader2, FileText, ImageIcon, Ruler, Wrench, Plus, X, Layers,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { FamilyPicker } from '@/components/admin/FamilyPicker'
 
 const schema = z.object({
   nombre:                 z.string().min(1, 'Requerido'),
@@ -214,11 +217,14 @@ export function ProductForm() {
   const { id } = useParams<{ id: string }>()
   const isEdit = Boolean(id)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const [tab, setTab] = useState<Tab>('basico')
   const [loading, setLoading] = useState(isEdit)
   const [loadError, setLoadError] = useState('')
   const [producto, setProducto] = useState<Producto | null>(null)
+  const [familyOptions, setFamilyOptions] = useState<FamilyOption[]>([])
+  const [addingVariant, setAddingVariant] = useState(false)
 
   const {
     register,
@@ -248,6 +254,42 @@ export function ProductForm() {
     }
     void load()
   }, [id, isEdit, reset])
+
+  useEffect(() => {
+    const loadFamilies = async () => {
+      const { data } = await getProductos()
+      setFamilyOptions(buildFamilyOptions(data))
+
+      if (isEdit) return
+      const fam = searchParams.get('familia_id')
+      if (!fam) return
+      const rep = data.find(p => p.familia_id === fam)
+      if (!rep) return
+      setValue('familia_id', fam)
+      setValue('nombre', rep.nombre)
+      setValue('categoria', rep.categoria)
+      setValue('cloudinary_url', rep.cloudinary_url ?? '')
+      setValue('cloudinary_image_id', rep.cloudinary_image_id ?? '')
+      setValue('caracteristicas', rep.caracteristicas_generales ?? [])
+    }
+    void loadFamilies()
+  }, [isEdit, searchParams, setValue])
+
+  const handleAddVariant = async () => {
+    if (!producto) return
+    setAddingVariant(true)
+    let famId = producto.familia_id
+    if (!famId) {
+      famId = generateUniqueFamilyId(producto.nombre, familyOptions.map(f => f.familia_id))
+      const { error } = await supabase.from('products').update({ familia_id: famId }).eq('id', producto.id)
+      if (error) {
+        toast.error('Error al crear la familia de variantes')
+        setAddingVariant(false)
+        return
+      }
+    }
+    navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(famId)}`)
+  }
 
   const onSubmit = async (values: FormValues) => {
     const payload = fromForm(values, isEdit ? id : undefined)
@@ -290,6 +332,7 @@ export function ProductForm() {
   const cloudinaryImageId = watch('cloudinary_image_id')
   const accesorios = watch('accesorios')
   const caracteristicas = watch('caracteristicas')
+  const familiaId = watch('familia_id')
 
   return (
     <div>
@@ -308,6 +351,19 @@ export function ProductForm() {
             {isEdit ? `Editando · ${producto?.codigo ?? ''}` : 'Completá los datos para crear un producto nuevo'}
           </p>
         </div>
+        {isEdit && producto && (
+          <button
+            type="button"
+            onClick={handleAddVariant}
+            disabled={addingVariant}
+            className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors cursor-pointer disabled:opacity-60"
+          >
+            {addingVariant
+              ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              : <Layers className="w-3.5 h-3.5" />}
+            Agregar variante
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -352,9 +408,13 @@ export function ProductForm() {
                   <Hint>Texto en el selector de variantes</Hint>
                 </div>
                 <div>
-                  <Label>ID de familia</Label>
-                  <input {...register('familia_id')} className={inputCls} placeholder="Ej: lavavajillas-capota" />
-                  <Hint>Mismo ID en variantes del mismo producto</Hint>
+                  <Label>Familia de variantes</Label>
+                  <FamilyPicker
+                    value={familiaId || null}
+                    options={familyOptions}
+                    onChange={fam => setValue('familia_id', fam ?? '')}
+                  />
+                  <Hint>Vinculá a una familia existente, o dejalo vacío si es independiente</Hint>
                 </div>
               </div>
               <div>
