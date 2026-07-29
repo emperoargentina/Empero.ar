@@ -8,7 +8,7 @@ import {
   Filter, Clock, Grid3X3, List,
   Loader2,
 } from 'lucide-react'
-import { ProductModal } from '../modals/ProductModal'
+import { useNavigate } from 'react-router-dom'
 
 const CHUNK = 30
 
@@ -58,10 +58,9 @@ export function Products() {
   const [categoria, setCategoria]       = useState('')
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
   const [displayCount, setDisplayCount] = useState(CHUNK)
-  const [modalOpen, setModalOpen]       = useState(false)
-  const [editing, setEditing]           = useState<Producto | null>(null)
   const [viewMode, setViewMode]         = useState<'table' | 'grid'>('table')
   const sentinelRef                     = useRef<HTMLDivElement>(null)
+  const navigate                        = useNavigate()
 
   const load = useCallback(async (force = false) => {
     setLoading(true)
@@ -185,7 +184,7 @@ export function Products() {
           </p>
         </div>
         <button
-          onClick={() => { setEditing(null); setModalOpen(true) }}
+          onClick={() => navigate('/admin/productos/nuevo')}
           className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] transition-all duration-200 shadow-lg shadow-[#C41B2E]/25 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -320,7 +319,8 @@ export function Products() {
                 {visibleItems.map((p, i) => (
                   <tr
                     key={p.id}
-                    className={`transition-colors ${
+                    onClick={() => navigate(`/admin/productos/${p.id}`)}
+                    className={`transition-colors cursor-pointer ${
                       i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'
                     } hover:bg-[#F4F0E8]`}
                   >
@@ -352,7 +352,7 @@ export function Products() {
                     </td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <button
-                        onClick={() => handleToggleDisponible(p)}
+                        onClick={e => { e.stopPropagation(); handleToggleDisponible(p) }}
                         className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
                           p.disponible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
                         }`}
@@ -365,14 +365,14 @@ export function Products() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1 justify-end">
                         <button
-                          onClick={() => { setEditing(p); setModalOpen(true) }}
+                          onClick={e => { e.stopPropagation(); navigate(`/admin/productos/${p.id}`) }}
                           className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
                           title="Editar"
                         >
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => handleDelete(p)}
+                          onClick={e => { e.stopPropagation(); handleDelete(p) }}
                           className="p-1.5 text-[#9E9080] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
                           title="Eliminar"
                         >
@@ -412,16 +412,6 @@ export function Products() {
         )}
       </div>
 
-      <ProductModal
-        producto={editing}
-        open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditing(null) }}
-        onSaved={async () => {
-          setModalOpen(false)
-          setEditing(null)
-          await reloadAfterMutation()
-        }}
-      />
     </div>
     </>
   )
