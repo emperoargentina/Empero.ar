@@ -39,7 +39,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
 
   const scrollToSection = (href: string) => {
     if (href === '#') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    const el = document.querySelector(href);
+    const el = document.querySelector<HTMLElement>(href);
     if (!el) return;
     const lenis = getLenis();
     if (lenis) {
