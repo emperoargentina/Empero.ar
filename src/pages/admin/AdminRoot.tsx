@@ -6,6 +6,7 @@ import { AdminLogin } from './AdminLogin'
 import { AdminPanel } from './AdminPanel'
 import { Dashboard } from './views/Dashboard'
 import { Products } from './views/Products'
+import { ProductForm } from './views/ProductForm'
 import { Destacados } from './views/Destacados'
 
 export function AdminRoot() {
@@ -39,6 +40,8 @@ export function AdminRoot() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="productos" element={<Products />} />
+        <Route path="productos/nuevo" element={<ProductForm />} />
+        <Route path="productos/:id" element={<ProductForm />} />
         <Route path="destacados" element={<Destacados />} />
       </Route>
     </Routes>
