@@ -6,27 +6,24 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
+import type { ProductFamily } from '@/types/family'
 import { getProductos } from '@/lib/productosCache'
 import { buildFamilyOptions, generateUniqueFamilyId, type FamilyOption } from '@/lib/adminFamilies'
 import { toast } from 'sonner'
 import {
-  ArrowLeft, Save, Loader2, FileText, ImageIcon, Ruler, Wrench, Plus, X, Layers,
+  ArrowLeft, Save, Loader2, FileText, Ruler, Wrench, Plus, X, Layers, Pencil,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 import { FamilyPicker } from '@/components/admin/FamilyPicker'
 
 const schema = z.object({
-  nombre:                 z.string().min(1, 'Requerido'),
+  // Variante
   codigo:                 z.string().min(1, 'Requerido'),
-  familia_id:             z.string().nullable().optional(),
   etiqueta:               z.string().nullable().optional(),
-  categoria:              z.string().min(1, 'Requerido'),
   precio_usd:             z.coerce.number().nullable().optional(),
   stock:                  z.coerce.number().int().min(0),
   disponible:             z.boolean(),
   modo_disponibilidad:    z.enum(['en_stock', 'por_encargo']),
-  cloudinary_url:         z.string().nullable().optional(),
-  cloudinary_image_id:    z.string().nullable().optional(),
   peso_kg:                z.coerce.number().nullable().optional(),
   volumen_m3:             z.coerce.number().nullable().optional(),
   capacidad:              z.string().nullable().optional(),
@@ -40,34 +37,36 @@ const schema = z.object({
   consumo_gas_m3h:        z.coerce.number().nullable().optional(),
   rejilla_mm:             z.string().nullable().optional(),
   accesorios:             z.array(z.string()),
-  caracteristicas:        z.array(z.string()),
+  // Familia (solo se usan/validan si se está creando una familia nueva)
+  familia_nombre:               z.string().optional(),
+  familia_categoria:            z.string().optional(),
+  familia_cloudinary_url:       z.string().nullable().optional(),
+  familia_cloudinary_image_id:  z.string().nullable().optional(),
+  familia_caracteristicas:      z.array(z.string()),
 })
 
 type FormValues = z.infer<typeof schema>
 
 const EMPTY_DEFAULTS: FormValues = {
-  nombre: '', codigo: '', familia_id: '', etiqueta: '', categoria: '',
-  precio_usd: undefined, stock: 0, disponible: true, modo_disponibilidad: 'en_stock',
-  cloudinary_url: '', cloudinary_image_id: '',
+  codigo: '', etiqueta: '', precio_usd: undefined, stock: 0, disponible: true,
+  modo_disponibilidad: 'en_stock',
   peso_kg: undefined, volumen_m3: undefined, capacidad: '', dimensiones_canasto_mm: '',
   dim_ancho: undefined, dim_prof: undefined, dim_alto: undefined, dim_alto_min: undefined, dim_alto_max: undefined,
   potencia_kw: undefined, consumo_gas_m3h: undefined, rejilla_mm: '',
-  accesorios: [], caracteristicas: [],
+  accesorios: [],
+  familia_nombre: '', familia_categoria: '', familia_cloudinary_url: '', familia_cloudinary_image_id: '',
+  familia_caracteristicas: [],
 }
 
 function toForm(p: Producto): FormValues {
   return {
-    nombre:                 p.nombre,
+    ...EMPTY_DEFAULTS,
     codigo:                 p.codigo,
-    familia_id:             p.familia_id ?? '',
     etiqueta:               p.etiqueta ?? '',
-    categoria:              p.categoria,
     precio_usd:             p.precio_usd ?? undefined,
     stock:                  p.stock,
     disponible:             p.disponible,
     modo_disponibilidad:    p.modo_disponibilidad,
-    cloudinary_url:         p.cloudinary_url ?? '',
-    cloudinary_image_id:    p.cloudinary_image_id ?? '',
     peso_kg:                p.peso_kg ?? undefined,
     volumen_m3:             p.volumen_m3 ?? undefined,
     capacidad:              p.capacidad ?? '',
@@ -81,25 +80,21 @@ function toForm(p: Producto): FormValues {
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             p.accesorios_incluidos ?? [],
-    caracteristicas:        p.caracteristicas_generales ?? [],
   }
 }
 
-function fromForm(v: FormValues, id?: string): Record<string, unknown> {
-  const nullIfEmpty = (s?: string | null) => (s && s.trim() ? s.trim() : null)
+const nullIfEmpty = (s?: string | null) => (s && s.trim() ? s.trim() : null)
+
+// Payload de variante — nunca incluye nombre/categoria/imagen/características:
+// el trigger de Postgres los deriva siempre de product_families vía familia_id.
+function fromForm(v: FormValues): Record<string, unknown> {
   return {
-    ...(id ? { id } : {}),
-    nombre:                 v.nombre,
     codigo:                 v.codigo,
-    familia_id:             nullIfEmpty(v.familia_id),
     etiqueta:               nullIfEmpty(v.etiqueta),
-    categoria:              v.categoria,
     precio_usd:             v.precio_usd ?? null,
     stock:                  v.stock,
     disponible:             v.disponible,
     modo_disponibilidad:    v.modo_disponibilidad,
-    cloudinary_url:         nullIfEmpty(v.cloudinary_url),
-    cloudinary_image_id:    nullIfEmpty(v.cloudinary_image_id),
     peso_kg:                v.peso_kg ?? null,
     volumen_m3:             v.volumen_m3 ?? null,
     capacidad:              nullIfEmpty(v.capacidad),
@@ -117,8 +112,7 @@ function fromForm(v: FormValues, id?: string): Record<string, unknown> {
     potencia_kw:            v.potencia_kw ?? null,
     consumo_gas_m3h:        v.consumo_gas_m3h ?? null,
     rejilla_mm:             nullIfEmpty(v.rejilla_mm),
-    accesorios_incluidos:      v.accesorios.length ? v.accesorios : null,
-    caracteristicas_generales: v.caracteristicas.length ? v.caracteristicas : null,
+    accesorios_incluidos:   v.accesorios.length ? v.accesorios : null,
   }
 }
 
@@ -204,14 +198,16 @@ function ListField({
 const inputCls =
   'w-full px-3 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[rgba(196,27,46,0.1)] transition-all placeholder:text-[#C0B5A8] bg-white'
 
-type Tab = 'basico' | 'imagen' | 'fisico' | 'tecnico'
+type Tab = 'familia' | 'variante' | 'fisico' | 'tecnico'
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: 'basico',  label: 'Básico',  icon: FileText },
-  { id: 'imagen',  label: 'Imagen',  icon: ImageIcon },
-  { id: 'fisico',  label: 'Físico',  icon: Ruler },
-  { id: 'tecnico', label: 'Técnico', icon: Wrench },
+  { id: 'familia',  label: 'Familia',  icon: Layers },
+  { id: 'variante', label: 'Variante', icon: FileText },
+  { id: 'fisico',   label: 'Físico',   icon: Ruler },
+  { id: 'tecnico',  label: 'Técnico',  icon: Wrench },
 ]
+
+type FamilyMode = 'existing' | 'new'
 
 export function ProductForm() {
   const { id } = useParams<{ id: string }>()
@@ -219,12 +215,15 @@ export function ProductForm() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const [tab, setTab] = useState<Tab>('basico')
+  const [tab, setTab] = useState<Tab>('familia')
   const [loading, setLoading] = useState(isEdit)
   const [loadError, setLoadError] = useState('')
   const [producto, setProducto] = useState<Producto | null>(null)
   const [familyOptions, setFamilyOptions] = useState<FamilyOption[]>([])
-  const [addingVariant, setAddingVariant] = useState(false)
+
+  const [familyMode, setFamilyMode] = useState<FamilyMode>(isEdit ? 'existing' : 'new')
+  const [familyId, setFamilyId] = useState<string | null>(null)
+  const [familyPreview, setFamilyPreview] = useState<ProductFamily | null>(null)
 
   const {
     register,
@@ -247,8 +246,10 @@ export function ProductForm() {
       if (error || !data) {
         setLoadError('Producto no encontrado')
       } else {
-        setProducto(data as Producto)
-        reset(toForm(data as Producto))
+        const p = data as Producto
+        setProducto(p)
+        setFamilyId(p.familia_id)
+        reset(toForm(p))
       }
       setLoading(false)
     }
@@ -256,49 +257,81 @@ export function ProductForm() {
   }, [id, isEdit, reset])
 
   useEffect(() => {
-    const loadFamilies = async () => {
+    const loadFamilyOptions = async () => {
       const { data } = await getProductos()
       setFamilyOptions(buildFamilyOptions(data))
-
-      if (isEdit) return
-      const fam = searchParams.get('familia_id')
-      if (!fam) return
-      const rep = data.find(p => p.familia_id === fam)
-      if (!rep) return
-      setValue('familia_id', fam)
-      setValue('nombre', rep.nombre)
-      setValue('categoria', rep.categoria)
-      setValue('cloudinary_url', rep.cloudinary_url ?? '')
-      setValue('cloudinary_image_id', rep.cloudinary_image_id ?? '')
-      setValue('caracteristicas', rep.caracteristicas_generales ?? [])
     }
-    void loadFamilies()
-  }, [isEdit, searchParams, setValue])
+    void loadFamilyOptions()
+  }, [])
 
-  const handleAddVariant = async () => {
+  useEffect(() => {
+    if (isEdit) return
+    const fam = searchParams.get('familia_id')
+    if (fam) {
+      setFamilyMode('existing')
+      setFamilyId(fam)
+    }
+  }, [isEdit, searchParams])
+
+  useEffect(() => {
+    if (familyMode !== 'existing' || !familyId) {
+      setFamilyPreview(null)
+      return
+    }
+    let cancelled = false
+    supabase.from('product_families').select('*').eq('id', familyId).single().then(({ data }) => {
+      if (!cancelled) setFamilyPreview((data as ProductFamily) ?? null)
+    })
+    return () => { cancelled = true }
+  }, [familyMode, familyId])
+
+  const handleAddVariant = () => {
     if (!producto) return
-    setAddingVariant(true)
-    let famId = producto.familia_id
-    if (!famId) {
-      famId = generateUniqueFamilyId(producto.nombre, familyOptions.map(f => f.familia_id))
-      const { error } = await supabase.from('products').update({ familia_id: famId }).eq('id', producto.id)
-      if (error) {
-        toast.error('Error al crear la familia de variantes')
-        setAddingVariant(false)
-        return
-      }
-    }
-    navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(famId)}`)
+    navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(producto.familia_id)}`)
   }
 
   const onSubmit = async (values: FormValues) => {
-    const payload = fromForm(values, isEdit ? id : undefined)
+    let famId = familyId
+
+    if (familyMode === 'new') {
+      if (!values.familia_nombre?.trim() || !values.familia_categoria?.trim()) {
+        toast.error('Completá nombre y categoría de la familia')
+        setTab('familia')
+        return
+      }
+      famId = generateUniqueFamilyId(values.familia_nombre, familyOptions.map(f => f.familia_id))
+      const { error: famError } = await supabase.from('product_families').insert({
+        id: famId,
+        nombre: values.familia_nombre.trim(),
+        categoria: values.familia_categoria,
+        cloudinary_url: nullIfEmpty(values.familia_cloudinary_url),
+        cloudinary_image_id: nullIfEmpty(values.familia_cloudinary_image_id),
+        caracteristicas_generales: values.familia_caracteristicas.length ? values.familia_caracteristicas : null,
+      })
+      if (famError) {
+        toast.error('Error al crear la familia: ' + famError.message)
+        return
+      }
+    }
+
+    if (!famId) {
+      toast.error('Elegí o creá una familia para el producto')
+      setTab('familia')
+      return
+    }
+
+    const payload = { ...fromForm(values), familia_id: famId }
 
     const { error } = isEdit
       ? await supabase.from('products').update(payload).eq('id', id)
       : await supabase.from('products').insert(payload)
 
     if (error) {
+      if (familyMode === 'new') {
+        // Best-effort: la familia recién creada queda huérfana (sin variantes,
+        // invisible en cualquier listado) si esto falla — no bloquea el toast.
+        void supabase.from('product_families').delete().eq('id', famId)
+      }
       toast.error(`Error al ${isEdit ? 'guardar' : 'crear'} el producto`)
       return
     }
@@ -328,11 +361,10 @@ export function ProductForm() {
   }
 
   const disponible = watch('disponible')
-  const cloudinaryUrl = watch('cloudinary_url')
-  const cloudinaryImageId = watch('cloudinary_image_id')
   const accesorios = watch('accesorios')
-  const caracteristicas = watch('caracteristicas')
-  const familiaId = watch('familia_id')
+  const familiaCloudinaryUrl = watch('familia_cloudinary_url')
+  const familiaCloudinaryImageId = watch('familia_cloudinary_image_id')
+  const familiaCaracteristicas = watch('familia_caracteristicas')
 
   return (
     <div>
@@ -345,7 +377,7 @@ export function ProductForm() {
         </Link>
         <div>
           <h1 className="text-lg font-bold text-[#1A1613]">
-            {isEdit ? (producto?.nombre ?? 'Editar producto') : 'Agregar producto'}
+            {isEdit ? (familyPreview?.nombre ?? 'Editar producto') : 'Agregar producto'}
           </h1>
           <p className="text-xs text-[#9E9080]">
             {isEdit ? `Editando · ${producto?.codigo ?? ''}` : 'Completá los datos para crear un producto nuevo'}
@@ -355,12 +387,9 @@ export function ProductForm() {
           <button
             type="button"
             onClick={handleAddVariant}
-            disabled={addingVariant}
-            className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors cursor-pointer disabled:opacity-60"
+            className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors cursor-pointer"
           >
-            {addingVariant
-              ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              : <Layers className="w-3.5 h-3.5" />}
+            <Layers className="w-3.5 h-3.5" />
             Agregar variante
           </button>
         )}
@@ -386,48 +415,115 @@ export function ProductForm() {
           })}
         </div>
 
-        {tab === 'basico' && (
+        {tab === 'familia' && (
+          <div className="space-y-5 min-h-[32rem]">
+            {!isEdit && (
+              <Card>
+                <div>
+                  <Label>Familia de variantes *</Label>
+                  <FamilyPicker
+                    value={familyMode === 'existing' ? familyId : null}
+                    options={familyOptions}
+                    onChange={fam => {
+                      if (fam) {
+                        setFamilyMode('existing')
+                        setFamilyId(fam)
+                      } else {
+                        setFamilyMode('new')
+                        setFamilyId(null)
+                      }
+                    }}
+                    onCreateNew={nombre => {
+                      setFamilyMode('new')
+                      setFamilyId(null)
+                      setValue('familia_nombre', nombre)
+                    }}
+                  />
+                  <Hint>Elegí una familia existente para agregarle una variante, o escribí un nombre nuevo para crear una familia.</Hint>
+                </div>
+              </Card>
+            )}
+
+            {familyMode === 'existing' && (
+              <Card className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+                  {familyPreview?.cloudinary_url
+                    ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} className="w-full h-full object-cover" />
+                    : <Layers className="w-6 h-6 text-[#C0B5A8]" />
+                  }
+                </div>
+                <div className="flex-1 min-w-0">
+                  {familyPreview ? (
+                    <>
+                      <p className="font-semibold text-[#1A1613] truncate">{familyPreview.nombre}</p>
+                      <p className="text-xs text-[#9E9080]">{familyPreview.categoria}</p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-[#9E9080]">Cargando datos de la familia...</p>
+                  )}
+                </div>
+                {familyId && (
+                  <Link
+                    to={`/admin/familias/${familyId}`}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors flex-shrink-0"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Editar familia
+                  </Link>
+                )}
+              </Card>
+            )}
+
+            {familyMode === 'new' && (
+              <Card>
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <Label>Nombre de familia *</Label>
+                    <input {...register('familia_nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
+                  </div>
+                  <div>
+                    <Label>Categoría *</Label>
+                    <select {...register('familia_categoria')} className={inputCls + ' cursor-pointer'}>
+                      <option value="">Seleccionar categoría...</option>
+                      {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <ImageUpload
+                  url={familiaCloudinaryUrl || null}
+                  publicId={familiaCloudinaryImageId || null}
+                  onChange={(url, publicId) => {
+                    setValue('familia_cloudinary_url', url ?? '')
+                    setValue('familia_cloudinary_image_id', publicId ?? '')
+                  }}
+                />
+                <ListField
+                  label="Características generales"
+                  hint="Escribí una característica y presioná Enter o Agregar — se comparten entre todas las variantes de la familia"
+                  items={familiaCaracteristicas}
+                  onChange={items => setValue('familia_caracteristicas', items)}
+                  placeholder="Ej: Construcción en acero inoxidable"
+                />
+              </Card>
+            )}
+          </div>
+        )}
+
+        {tab === 'variante' && (
           <div className="space-y-5 min-h-[32rem]">
             <Card>
               <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <Label>Nombre *</Label>
-                  <input {...register('nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
-                  {errors.nombre && <ErrorText>{errors.nombre.message}</ErrorText>}
-                </div>
                 <div>
                   <Label>Código *</Label>
                   <input {...register('codigo')} className={inputCls} placeholder="Ej: EMP.LV-500" />
                   {errors.codigo && <ErrorText>{errors.codigo.message}</ErrorText>}
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-5">
                 <div>
                   <Label>Etiqueta de variante</Label>
                   <input {...register('etiqueta')} className={inputCls} placeholder='Ej: "2 puertas — 300 Lt"' />
                   <Hint>Texto en el selector de variantes</Hint>
                 </div>
-                <div>
-                  <Label>Familia de variantes</Label>
-                  <FamilyPicker
-                    value={familiaId || null}
-                    options={familyOptions}
-                    onChange={fam => setValue('familia_id', fam ?? '')}
-                  />
-                  <Hint>Vinculá a una familia existente, o dejalo vacío si es independiente</Hint>
-                </div>
               </div>
-              <div>
-                <Label>Categoría *</Label>
-                <select {...register('categoria')} className={inputCls + ' cursor-pointer'}>
-                  <option value="">Seleccionar categoría...</option>
-                  {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-                {errors.categoria && <ErrorText>{errors.categoria.message}</ErrorText>}
-              </div>
-            </Card>
-
-            <Card>
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <Label>Precio (USD)</Label>
@@ -464,24 +560,6 @@ export function ProductForm() {
               </label>
             </Card>
           </div>
-        )}
-
-        {tab === 'imagen' && (
-          <Card className="min-h-[32rem]">
-            <ImageUpload
-              url={cloudinaryUrl || null}
-              publicId={cloudinaryImageId || null}
-              onChange={(url, publicId) => {
-                setValue('cloudinary_url', url ?? '')
-                setValue('cloudinary_image_id', publicId ?? '')
-              }}
-            />
-            <div>
-              <Label>URL de imagen (manual)</Label>
-              <input {...register('cloudinary_url')} className={inputCls} placeholder="https://res.cloudinary.com/..." />
-              <Hint>Se completa sola al subir una imagen, o pegá una URL existente</Hint>
-            </div>
-          </Card>
         )}
 
         {tab === 'fisico' && (
@@ -568,13 +646,6 @@ export function ProductForm() {
                 items={accesorios}
                 onChange={items => setValue('accesorios', items)}
                 placeholder="Ej: Cesta porta-vajilla"
-              />
-              <ListField
-                label="Características generales"
-                hint="Escribí una característica y presioná Enter o Agregar"
-                items={caracteristicas}
-                onChange={items => setValue('caracteristicas', items)}
-                placeholder="Ej: Construcción en acero inoxidable"
               />
             </Card>
           </div>

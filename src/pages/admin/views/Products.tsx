@@ -6,10 +6,10 @@ import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
-  Filter, Clock, Grid3X3, List, ChevronRight, Layers,
+  Filter, Clock, ChevronRight, Layers, Settings2,
   Loader2,
 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const CHUNK = 30
 
@@ -132,7 +132,7 @@ function FamilyHeaderRow({
   index: number
   expanded: boolean
   onToggle: () => void
-  onAddVariant: (() => void) | null
+  onAddVariant: () => void
 }) {
   const rep = group.variants[0]
   const totalStock = group.variants.reduce(
@@ -184,15 +184,21 @@ function FamilyHeaderRow({
       <td className="px-4 py-3 hidden lg:table-cell" />
       <td className="px-4 py-3">
         <div className="flex items-center gap-1 justify-end">
-          {onAddVariant && (
-            <button
-              onClick={e => { e.stopPropagation(); onAddVariant() }}
-              className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
-              title="Agregar variante"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-          )}
+          <Link
+            to={`/admin/familias/${group.familiaId}`}
+            onClick={e => e.stopPropagation()}
+            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+            title="Editar familia"
+          >
+            <Settings2 className="w-3.5 h-3.5" />
+          </Link>
+          <button
+            onClick={e => { e.stopPropagation(); onAddVariant() }}
+            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+            title="Agregar variante"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
         </div>
       </td>
     </tr>
@@ -210,7 +216,6 @@ export function Products() {
   const [categoria, setCategoria]       = useState('')
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
   const [displayCount, setDisplayCount] = useState(CHUNK)
-  const [viewMode, setViewMode]         = useState<'table' | 'grid'>('table')
   const [expanded, setExpanded]         = useState<Set<string>>(new Set())
   const sentinelRef                     = useRef<HTMLDivElement>(null)
   const navigate                        = useNavigate()
@@ -423,21 +428,6 @@ export function Products() {
           <option value="en_stock">Stock: En stock</option>
           <option value="por_encargo">Stock: Por encargo</option>
         </select>
-
-        <div className="hidden sm:flex items-center border border-[#EBE5DC] rounded-lg overflow-hidden">
-          <button
-            onClick={() => setViewMode('table')}
-            className={`p-2 transition-colors cursor-pointer ${viewMode === 'table' ? 'bg-[#F4F0E8] text-[#1A1613]' : 'text-[#C0B5A8] hover:text-[#6B6159]'}`}
-          >
-            <List className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 transition-colors cursor-pointer ${viewMode === 'grid' ? 'bg-[#F4F0E8] text-[#1A1613]' : 'text-[#C0B5A8] hover:text-[#6B6159]'}`}
-          >
-            <Grid3X3 className="w-4 h-4" />
-          </button>
-        </div>
       </div>
 
       {/* Table */}
@@ -504,9 +494,7 @@ export function Products() {
                         index={i}
                         expanded={isExpanded}
                         onToggle={() => toggleExpanded(group.key)}
-                        onAddVariant={group.familiaId
-                          ? () => navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(group.familiaId!)}`)
-                          : null}
+                        onAddVariant={() => navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(group.familiaId)}`)}
                       />
                       {isExpanded && group.variants.map(v => (
                         <ProductRow

@@ -1,3 +1,8 @@
+// OBSOLETO desde la migración a product_families (ver scripts/migration-families.sql):
+// la imagen ahora vive en la familia y se sincroniza sola a cada variante vía
+// trigger de Postgres — este script ya no tiene nada que propagar. Se conserva
+// como registro histórico de cómo se pobló Cloudinary, no correr de nuevo.
+//
 // Rellena cloudinary_url/id en variantes sin imagen copiando la de otra variante
 // de la MISMA familia. Fallback explícito para familias sin ninguna imagen.
 import { readFileSync } from "node:fs";

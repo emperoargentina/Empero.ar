@@ -69,6 +69,25 @@ if (ids.size !== mapped.length) {
   process.exit(1)
 }
 
+// ── Familias: product_families.id reusa el mismo family.id que ya se usaba
+// como familia_id — es la misma columna text de siempre, ahora con FK real.
+const familyRows = families.map(f => ({
+  id: f.id,
+  nombre: f.nombre,
+  categoria: f.categoria,
+  caracteristicas_generales: f.caracteristicas_generales ?? [],
+}))
+
+const { error: familiesError } = await supabase
+  .from('product_families')
+  .upsert(familyRows, { onConflict: 'id' })
+
+if (familiesError) {
+  console.error('❌  Error al importar product_families:', familiesError.message)
+  process.exit(1)
+}
+console.log(`✅  ${familyRows.length} familias importadas`)
+
 // ── Importar en batches de 50 ────────────────────────────────────────────────
 const BATCH_SIZE = 50
 let imported = 0

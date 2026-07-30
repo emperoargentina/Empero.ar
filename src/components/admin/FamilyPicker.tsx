@@ -1,18 +1,19 @@
 // src/components/admin/FamilyPicker.tsx
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Search, X, Layers } from 'lucide-react'
+import { Search, X, Layers, Plus } from 'lucide-react'
 import type { FamilyOption } from '@/lib/adminFamilies'
 
 interface FamilyPickerProps {
   value: string | null
   options: FamilyOption[]
   onChange: (familiaId: string | null) => void
+  onCreateNew: (nombre: string) => void
 }
 
 const inputCls =
   'w-full pl-9 pr-3 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[rgba(196,27,46,0.1)] transition-all placeholder:text-[#C0B5A8] bg-white'
 
-export function FamilyPicker({ value, options, onChange }: FamilyPickerProps) {
+export function FamilyPicker({ value, options, onChange, onCreateNew }: FamilyPickerProps) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -66,26 +67,40 @@ export function FamilyPicker({ value, options, onChange }: FamilyPickerProps) {
           placeholder="Buscar familia existente..."
         />
       </div>
-      {open && matches.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full max-h-56 overflow-y-auto rounded-lg border border-[#EBE5DC] bg-white shadow-lg">
-          {matches.map(o => (
-            <button
-              key={o.familia_id}
-              type="button"
-              onClick={() => { onChange(o.familia_id); setQuery(''); setOpen(false) }}
-              className="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-[#FAF8F4] transition-colors cursor-pointer"
-            >
-              <span className="truncate text-[#1A1613]">{o.nombre}</span>
-              <span className="text-xs text-[#9E9080] flex-shrink-0">
-                {o.count} variante{o.count !== 1 ? 's' : ''}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
-      {open && query.trim() && matches.length === 0 && (
-        <div className="absolute z-10 mt-1 w-full rounded-lg border border-[#EBE5DC] bg-white shadow-lg px-4 py-3 text-xs text-[#9E9080]">
-          No hay familias existentes con ese nombre. Para crear una, usá "Agregar variante" desde un producto ya guardado.
+      {open && (matches.length > 0 || query.trim()) && (
+        <div className="absolute z-10 mt-1 w-full rounded-lg border border-[#EBE5DC] bg-white shadow-lg overflow-hidden">
+          {matches.length > 0 && (
+            <div className="max-h-56 overflow-y-auto">
+              {matches.map(o => (
+                <button
+                  key={o.familia_id}
+                  type="button"
+                  onClick={() => { onChange(o.familia_id); setQuery(''); setOpen(false) }}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-[#FAF8F4] transition-colors cursor-pointer"
+                >
+                  <span className="truncate text-[#1A1613]">{o.nombre}</span>
+                  <span className="text-xs text-[#9E9080] flex-shrink-0">
+                    {o.count} variante{o.count !== 1 ? 's' : ''}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+          {query.trim() && (
+            <>
+              {matches.length === 0 && (
+                <p className="px-4 py-3 text-xs text-[#9E9080]">No hay familias existentes con ese nombre.</p>
+              )}
+              <button
+                type="button"
+                onClick={() => { onCreateNew(query.trim()); setQuery(''); setOpen(false) }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-left text-sm font-medium text-[#C41B2E] hover:bg-[#FFF0F1] transition-colors cursor-pointer border-t border-[#EBE5DC]"
+              >
+                <Plus className="w-4 h-4 flex-shrink-0" />
+                Crear familia «{query.trim()}»
+              </button>
+            </>
+          )}
         </div>
       )}
     </div>

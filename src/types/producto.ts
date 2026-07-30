@@ -3,7 +3,7 @@
 export interface Producto {
   id: string
   codigo: string
-  familia_id: string | null
+  familia_id: string
   etiqueta: string | null
   nombre: string
   categoria: string

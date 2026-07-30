@@ -21,7 +21,7 @@ export function groupProducts(products: Product[]): ProductGroup[] {
   const order: string[] = [];
 
   for (const p of products) {
-    const key = p.familia_id ?? (p.nombre ?? '').trim().toLowerCase();
+    const key = p.familia_id;
     if (!map.has(key)) {
       map.set(key, []);
       order.push(key);

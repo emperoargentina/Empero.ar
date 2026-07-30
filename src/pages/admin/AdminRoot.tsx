@@ -7,6 +7,7 @@ import { AdminPanel } from './AdminPanel'
 import { Dashboard } from './views/Dashboard'
 import { Products } from './views/Products'
 import { ProductForm } from './views/ProductForm'
+import { FamilyForm } from './views/FamilyForm'
 import { Destacados } from './views/Destacados'
 
 export function AdminRoot() {
@@ -42,6 +43,7 @@ export function AdminRoot() {
         <Route path="productos" element={<Products />} />
         <Route path="productos/nuevo" element={<ProductForm />} />
         <Route path="productos/:id" element={<ProductForm />} />
+        <Route path="familias/:id" element={<FamilyForm />} />
         <Route path="destacados" element={<Destacados />} />
       </Route>
     </Routes>

@@ -1,3 +1,9 @@
+// OBSOLETO desde la migración a product_families (ver scripts/migration-families.sql):
+// editar la imagen de una familia desde /admin/familias/:id ya la propaga a todas
+// sus variantes automáticamente. Además, filtra por familia_id como slug de texto —
+// dejó de tener sentido buscar por eso una vez creada product_families. Se conserva
+// como registro histórico de cómo se pobló Cloudinary, no correr de nuevo.
+//
 // Sube a Cloudinary las imágenes CORRECTAS (distintas) para los gabinetes y el
 // gabinete-inferior que estaban mal cargados, y actualiza el DB por familia.
 import { readFileSync } from "node:fs";

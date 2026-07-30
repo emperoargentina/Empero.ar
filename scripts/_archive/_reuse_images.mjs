@@ -1,3 +1,7 @@
+// OBSOLETO desde la migración a product_families (ver scripts/migration-families.sql):
+// la imagen es un campo propio de product_families, editable una sola vez desde
+// /admin/familias/:id. Se conserva como registro histórico, no correr de nuevo.
+//
 // Copia cloudinary_url + cloudinary_image_id desde una familia hermana con imagen
 // hacia las familias nuevas sin imagen. No sube nada a Cloudinary (reusa el asset).
 import { readFileSync } from "node:fs";
