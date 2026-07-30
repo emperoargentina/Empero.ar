@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
 import type { ProductFamily } from '@/types/family'
 import { getProductos } from '@/lib/productosCache'
-import { buildFamilyOptions, generateUniqueFamilyId, type FamilyOption } from '@/lib/adminFamilies'
+import { buildFamilyOptions, generateUniqueFamilyId, SIN_ASIGNAR_ID, type FamilyOption } from '@/lib/adminFamilies'
 import { toast } from 'sonner'
 import {
   ArrowLeft, Save, Loader2, FileText, Ruler, Wrench, Plus, X, Layers, Pencil,
@@ -43,6 +43,9 @@ const schema = z.object({
   familia_cloudinary_url:       z.string().nullable().optional(),
   familia_cloudinary_image_id:  z.string().nullable().optional(),
   familia_caracteristicas:      z.array(z.string()),
+  // Producto hijo (solo se usan/validan si el toggle "Convertir en Producto Hijo" está activo)
+  hijo_nombre:                  z.string().optional(),
+  hijo_categoria:               z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -56,6 +59,7 @@ const EMPTY_DEFAULTS: FormValues = {
   accesorios: [],
   familia_nombre: '', familia_categoria: '', familia_cloudinary_url: '', familia_cloudinary_image_id: '',
   familia_caracteristicas: [],
+  hijo_nombre: '', hijo_categoria: '',
 }
 
 function toForm(p: Producto): FormValues {
@@ -80,6 +84,8 @@ function toForm(p: Producto): FormValues {
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             p.accesorios_incluidos ?? [],
+    hijo_nombre:            p.nombre,
+    hijo_categoria:         p.categoria,
   }
 }
 
@@ -224,6 +230,9 @@ export function ProductForm() {
   const [familyMode, setFamilyMode] = useState<FamilyMode>(isEdit ? 'existing' : 'new')
   const [familyId, setFamilyId] = useState<string | null>(null)
   const [familyPreview, setFamilyPreview] = useState<ProductFamily | null>(null)
+  const [isChild, setIsChild] = useState(false)
+
+  const wasPending = producto?.familia_id === SIN_ASIGNAR_ID
 
   const {
     register,
@@ -249,6 +258,7 @@ export function ProductForm() {
         const p = data as Producto
         setProducto(p)
         setFamilyId(p.familia_id)
+        setIsChild(p.familia_id === SIN_ASIGNAR_ID)
         reset(toForm(p))
       }
       setLoading(false)
@@ -286,14 +296,54 @@ export function ProductForm() {
   }, [familyMode, familyId])
 
   const handleAddVariant = () => {
-    if (!producto) return
+    if (!producto || wasPending) return
     navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(producto.familia_id)}`)
   }
 
   const onSubmit = async (values: FormValues) => {
-    let famId = familyId
+    // Caso: producto hijo — se guarda en el pool "Sin asignar", sin familia real.
+    if (isChild) {
+      if (!values.hijo_nombre?.trim() || !values.hijo_categoria?.trim()) {
+        toast.error('Completá nombre y categoría del producto hijo')
+        setTab('familia')
+        return
+      }
+      const previousFamiliaId = producto?.familia_id ?? null
+      const payload = {
+        ...fromForm(values),
+        familia_id: SIN_ASIGNAR_ID,
+        nombre: values.hijo_nombre.trim(),
+        categoria: values.hijo_categoria,
+      }
 
-    if (familyMode === 'new') {
+      const { error } = isEdit
+        ? await supabase.from('products').update(payload).eq('id', id)
+        : await supabase.from('products').insert(payload)
+
+      if (error) {
+        toast.error(`Error al ${isEdit ? 'guardar' : 'crear'} el producto`)
+        return
+      }
+
+      // Si se extrajo de una familia real que quedó sin productos, se borra.
+      if (previousFamiliaId && previousFamiliaId !== SIN_ASIGNAR_ID) {
+        const { count } = await supabase
+          .from('products')
+          .select('*', { count: 'exact', head: true })
+          .eq('familia_id', previousFamiliaId)
+        if (count === 0) void supabase.from('product_families').delete().eq('id', previousFamiliaId)
+      }
+
+      toast.success(isEdit ? 'Producto actualizado — sin familia asignada' : 'Producto hijo creado — asignalo desde una familia')
+      navigate('/admin/productos')
+      return
+    }
+
+    // Caso: producto con familia real.
+    let famId = familyId
+    const mustCreateNewFamily = familyMode === 'new' || (isEdit && wasPending)
+
+    if (mustCreateNewFamily) {
       if (!values.familia_nombre?.trim() || !values.familia_categoria?.trim()) {
         toast.error('Completá nombre y categoría de la familia')
         setTab('familia')
@@ -327,7 +377,7 @@ export function ProductForm() {
       : await supabase.from('products').insert(payload)
 
     if (error) {
-      if (familyMode === 'new') {
+      if (mustCreateNewFamily) {
         // Best-effort: la familia recién creada queda huérfana (sin variantes,
         // invisible en cualquier listado) si esto falla — no bloquea el toast.
         void supabase.from('product_families').delete().eq('id', famId)
@@ -377,13 +427,15 @@ export function ProductForm() {
         </Link>
         <div>
           <h1 className="text-lg font-bold text-[#1A1613]">
-            {isEdit ? (familyPreview?.nombre ?? 'Editar producto') : 'Agregar producto'}
+            {isEdit
+              ? (wasPending ? (producto?.nombre ?? 'Editar producto') : (familyPreview?.nombre ?? 'Editar producto'))
+              : 'Agregar producto'}
           </h1>
           <p className="text-xs text-[#9E9080]">
             {isEdit ? `Editando · ${producto?.codigo ?? ''}` : 'Completá los datos para crear un producto nuevo'}
           </p>
         </div>
-        {isEdit && producto && (
+        {isEdit && producto && !wasPending && (
           <button
             type="button"
             onClick={handleAddVariant}
@@ -417,94 +469,137 @@ export function ProductForm() {
 
         {tab === 'familia' && (
           <div className="space-y-5 min-h-[32rem]">
-            {!isEdit && (
-              <Card>
+            <Card>
+              <label className="flex items-center gap-3 p-4 -m-1 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#D8D0C4] transition-colors has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)]">
+                <input
+                  type="checkbox"
+                  checked={isChild}
+                  onChange={e => setIsChild(e.target.checked)}
+                  className="w-4 h-4 accent-[#C41B2E] rounded flex-shrink-0"
+                />
                 <div>
-                  <Label>Familia de variantes *</Label>
-                  <FamilyPicker
-                    value={familyMode === 'existing' ? familyId : null}
-                    options={familyOptions}
-                    onChange={fam => {
-                      if (fam) {
-                        setFamilyMode('existing')
-                        setFamilyId(fam)
-                      } else {
-                        setFamilyMode('new')
-                        setFamilyId(null)
-                      }
-                    }}
-                    onCreateNew={nombre => {
-                      setFamilyMode('new')
-                      setFamilyId(null)
-                      setValue('familia_nombre', nombre)
-                    }}
-                  />
-                  <Hint>Elegí una familia existente para agregarle una variante, o escribí un nombre nuevo para crear una familia.</Hint>
+                  <span className="text-sm font-medium text-[#1A1613]">Convertir en Producto Hijo</span>
+                  <p className="text-xs text-[#9E9080] mt-0.5">
+                    {isChild
+                      ? 'Se guarda sin familia todavía — lo asignás después desde el botón "Agregar producto hijo" de una familia.'
+                      : 'Es un producto normal: elegí o creá su familia abajo.'}
+                  </p>
                 </div>
-              </Card>
-            )}
+              </label>
+            </Card>
 
-            {familyMode === 'existing' && (
-              <Card className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
-                  {familyPreview?.cloudinary_url
-                    ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} className="w-full h-full object-cover" />
-                    : <Layers className="w-6 h-6 text-[#C0B5A8]" />
-                  }
-                </div>
-                <div className="flex-1 min-w-0">
-                  {familyPreview ? (
-                    <>
-                      <p className="font-semibold text-[#1A1613] truncate">{familyPreview.nombre}</p>
-                      <p className="text-xs text-[#9E9080]">{familyPreview.categoria}</p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-[#9E9080]">Cargando datos de la familia...</p>
-                  )}
-                </div>
-                {familyId && (
-                  <Link
-                    to={`/admin/familias/${familyId}`}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors flex-shrink-0"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    Editar familia
-                  </Link>
-                )}
-              </Card>
-            )}
-
-            {familyMode === 'new' && (
+            {isChild ? (
               <Card>
                 <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <Label>Nombre de familia *</Label>
-                    <input {...register('familia_nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
+                    <Label>Nombre *</Label>
+                    <input {...register('hijo_nombre')} className={inputCls} placeholder="Para identificarlo en el selector" />
                   </div>
                   <div>
                     <Label>Categoría *</Label>
-                    <select {...register('familia_categoria')} className={inputCls + ' cursor-pointer'}>
+                    <select {...register('hijo_categoria')} className={inputCls + ' cursor-pointer'}>
                       <option value="">Seleccionar categoría...</option>
                       {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                 </div>
-                <ImageUpload
-                  url={familiaCloudinaryUrl || null}
-                  publicId={familiaCloudinaryImageId || null}
-                  onChange={(url, publicId) => {
-                    setValue('familia_cloudinary_url', url ?? '')
-                    setValue('familia_cloudinary_image_id', publicId ?? '')
-                  }}
-                />
-                <ListField
-                  label="Características generales"
-                  hint="Escribí una característica y presioná Enter o Agregar — se comparten entre todas las variantes de la familia"
-                  items={familiaCaracteristicas}
-                  onChange={items => setValue('familia_caracteristicas', items)}
-                  placeholder="Ej: Construcción en acero inoxidable"
-                />
+                <Hint>Sin imagen ni características propias — esos datos los toma de la familia recién lo asignes.</Hint>
               </Card>
+            ) : (
+              <>
+                {!isEdit && (
+                  <Card>
+                    <div>
+                      <Label>Familia de variantes *</Label>
+                      <FamilyPicker
+                        value={familyMode === 'existing' ? familyId : null}
+                        options={familyOptions}
+                        onChange={fam => {
+                          if (fam) {
+                            setFamilyMode('existing')
+                            setFamilyId(fam)
+                          } else {
+                            setFamilyMode('new')
+                            setFamilyId(null)
+                          }
+                        }}
+                        onCreateNew={nombre => {
+                          setFamilyMode('new')
+                          setFamilyId(null)
+                          setValue('familia_nombre', nombre)
+                        }}
+                      />
+                      <Hint>Elegí una familia existente para agregarle una variante, o escribí un nombre nuevo para crear una familia.</Hint>
+                    </div>
+                  </Card>
+                )}
+
+                {familyMode === 'existing' && !(isEdit && wasPending) && (
+                  <Card className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+                      {familyPreview?.cloudinary_url
+                        ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} className="w-full h-full object-cover" />
+                        : <Layers className="w-6 h-6 text-[#C0B5A8]" />
+                      }
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      {familyPreview ? (
+                        <>
+                          <p className="font-semibold text-[#1A1613] truncate">{familyPreview.nombre}</p>
+                          <p className="text-xs text-[#9E9080]">{familyPreview.categoria}</p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-[#9E9080]">Cargando datos de la familia...</p>
+                      )}
+                    </div>
+                    {familyId && (
+                      <Link
+                        to={`/admin/familias/${familyId}`}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors flex-shrink-0"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                        Editar familia
+                      </Link>
+                    )}
+                  </Card>
+                )}
+
+                {(familyMode === 'new' || (isEdit && wasPending)) && (
+                  <Card>
+                    {isEdit && wasPending && (
+                      <Hint>Este producto todavía no tenía familia — creá una para que pase a ser "único".</Hint>
+                    )}
+                    <div className="grid grid-cols-2 gap-5">
+                      <div>
+                        <Label>Nombre de familia *</Label>
+                        <input {...register('familia_nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
+                      </div>
+                      <div>
+                        <Label>Categoría *</Label>
+                        <select {...register('familia_categoria')} className={inputCls + ' cursor-pointer'}>
+                          <option value="">Seleccionar categoría...</option>
+                          {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <ImageUpload
+                      url={familiaCloudinaryUrl || null}
+                      publicId={familiaCloudinaryImageId || null}
+                      onChange={(url, publicId) => {
+                        setValue('familia_cloudinary_url', url ?? '')
+                        setValue('familia_cloudinary_image_id', publicId ?? '')
+                      }}
+                    />
+                    <ListField
+                      label="Características generales"
+                      hint="Escribí una característica y presioná Enter o Agregar — se comparten entre todas las variantes de la familia"
+                      items={familiaCaracteristicas}
+                      onChange={items => setValue('familia_caracteristicas', items)}
+                      placeholder="Ej: Construcción en acero inoxidable"
+                    />
+                  </Card>
+                )}
+              </>
             )}
           </div>
         )}

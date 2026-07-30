@@ -1,15 +1,23 @@
 import { Fragment, useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { getProductos, invalidateProductosCache, getCacheAge } from '@/lib/productosCache'
-import { groupProductosByFamily, type FamilyGroup } from '@/lib/adminFamilies'
+import {
+  groupProductosByFamily, listUnassignedChildren, listEmptyFamilies,
+  listFamilies, createEmptyFamily, addChildrenToFamily, SIN_ASIGNAR_ID,
+  type FamilyGroup,
+} from '@/lib/adminFamilies'
 import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto'
+import type { ProductFamily } from '@/types/family'
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
   Filter, Clock, ChevronRight, Layers, Settings2,
-  Loader2,
+  Loader2, FolderPlus, UserPlus, FolderOpen,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
+import { CreateFamilyModal } from '@/components/admin/CreateFamilyModal'
+import { FamilyChildPickerModal } from '@/components/admin/FamilyChildPickerModal'
 
 const CHUNK = 30
 
@@ -49,23 +57,37 @@ function StockBadge({ p }: { p: Producto }) {
 }
 
 function ProductRow({
-  p, index, nested, onNavigate, onToggle, onDelete,
+  p, index, nested, variantIndex = 0, isFirst, isLast, onNavigate, onToggle, onDelete,
 }: {
   p: Producto
   index: number
   nested?: boolean
+  variantIndex?: number
+  isFirst?: boolean
+  isLast?: boolean
   onNavigate: (id: string) => void
   onToggle: (p: Producto) => void
   onDelete: (p: Producto) => void
 }) {
+  const cellY = nested
+    ? `${isFirst ? 'border-t border-[#C41B2E]/30' : ''} ${isLast ? 'border-b border-[#C41B2E]/30' : ''}`
+    : ''
+
   return (
-    <tr
+    <motion.tr
+      initial={nested ? { opacity: 0, y: -8 } : false}
+      animate={{ opacity: 1, y: 0 }}
+      exit={nested ? { opacity: 0, y: -8, transition: { duration: 0.15, ease: [0.4, 0, 1, 1] } } : undefined}
+      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1], delay: nested ? variantIndex * 0.035 : 0 }}
       onClick={() => onNavigate(p.id)}
       className={`transition-colors cursor-pointer ${
-        nested ? 'bg-[#FDFCFA]' : (index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50')
-      } hover:bg-[#F4F0E8]`}
+        nested
+          ? 'bg-gradient-to-r from-[#FFF4F1] to-[#FFFBFA] hover:from-[#FFE9E4] hover:to-[#FFF4F1]'
+          : `${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`
+      }`}
     >
-      <td className={`px-4 py-3 ${nested ? 'pl-10' : ''}`}>
+      <td className={`px-4 py-3 ${cellY} ${nested ? 'pl-10 relative border-l border-[#C41B2E]/30' : ''}`}>
+        {nested && <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-full bg-[#C41B2E]/40" />}
         <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
           {p.cloudinary_url
             ? <img src={p.cloudinary_url} alt={p.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
@@ -73,25 +95,25 @@ function ProductRow({
           }
         </div>
       </td>
-      <td className="px-4 py-3">
-        <span className="font-mono text-xs text-[#6B6159] bg-[#F4F0E8] px-1.5 py-0.5 rounded">{p.codigo}</span>
-      </td>
-      <td className="px-4 py-3 max-w-[220px]">
+      <td className={`px-4 py-3 overflow-hidden ${cellY}`}>
         <p className="font-medium text-[#1A1613] truncate">{p.nombre}</p>
-        {p.etiqueta && <p className="text-[11px] text-[#9E9080] mt-0.5">{p.etiqueta}</p>}
+        {p.etiqueta && <p className="text-[11px] text-[#4A4540] mt-0.5 truncate">{p.etiqueta}</p>}
       </td>
-      <td className="px-4 py-3 hidden md:table-cell">
-        <span className="text-xs text-[#9E9080] bg-[#FAF8F4] px-2 py-0.5 rounded-md">{p.categoria}</span>
+      <td className={`px-4 py-3 ${cellY}`}>
+        <span className="font-mono text-xs text-[#1A1613] bg-[#F4F0E8] px-1.5 py-0.5 rounded whitespace-nowrap">{p.codigo}</span>
       </td>
-      <td className="px-4 py-3">
+      <td className={`px-4 py-3 hidden md:table-cell overflow-hidden ${cellY}`}>
+        <span className="text-xs text-[#1A1613] bg-[#FAF8F4] px-2 py-0.5 rounded-md inline-block max-w-full truncate align-bottom">{p.categoria}</span>
+      </td>
+      <td className={`px-4 py-3 ${cellY}`}>
         <StockBadge p={p} />
       </td>
-      <td className="px-4 py-3 hidden sm:table-cell">
-        <span className="text-sm font-medium text-[#6B6159] tabular-nums">
+      <td className={`px-4 py-3 hidden sm:table-cell ${cellY}`}>
+        <span className="text-sm font-medium text-[#1A1613] tabular-nums whitespace-nowrap">
           {p.precio_usd != null ? `US$ ${Number(p.precio_usd).toLocaleString('es-AR')}` : <span className="text-[#C0B5A8]">—</span>}
         </span>
       </td>
-      <td className="px-4 py-3 hidden lg:table-cell">
+      <td className={`px-4 py-3 hidden lg:table-cell ${cellY}`}>
         <button
           onClick={e => { e.stopPropagation(); onToggle(p) }}
           className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
@@ -103,7 +125,7 @@ function ProductRow({
           }`} />
         </button>
       </td>
-      <td className="px-4 py-3">
+      <td className={`px-4 py-3 ${cellY} ${nested ? 'border-r border-[#C41B2E]/30' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
           <button
             onClick={e => { e.stopPropagation(); onNavigate(p.id) }}
@@ -121,18 +143,20 @@ function ProductRow({
           </button>
         </div>
       </td>
-    </tr>
+    </motion.tr>
   )
 }
 
 function FamilyHeaderRow({
-  group, index, expanded, onToggle, onAddVariant,
+  group, index, expanded, onToggle, onAddVariant, onToggleVisible, onAddChild,
 }: {
   group: FamilyGroup
   index: number
   expanded: boolean
   onToggle: () => void
   onAddVariant: () => void
+  onToggleVisible: () => void
+  onAddChild: () => void
 }) {
   const rep = group.variants[0]
   const totalStock = group.variants.reduce(
@@ -144,45 +168,67 @@ function FamilyHeaderRow({
     : Math.min(...prices) === Math.max(...prices)
       ? `US$ ${Math.min(...prices).toLocaleString('es-AR')}`
       : `US$ ${Math.min(...prices).toLocaleString('es-AR')}–${Math.max(...prices).toLocaleString('es-AR')}`
+  const allVisible = group.variants.every(v => v.disponible)
+  const cellY = expanded ? 'border-y-2 border-[#C41B2E]/60' : 'border-y-2 border-transparent'
 
   return (
     <tr
       onClick={onToggle}
-      className={`transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`}
+      className={`transition-colors duration-200 cursor-pointer ${
+        expanded
+          ? 'bg-[#FFE1D6] hover:bg-[#FFD4C5]'
+          : `${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`
+      }`}
     >
-      <td className="px-4 py-3">
-        <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-l-2 border-[#C41B2E]/60' : ''}`}>
+        <div className={`w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border transition-colors ${
+          expanded ? 'bg-[#FFD1C0] border-[#F0A088]' : 'bg-[#F4F0E8] border-[#EBE5DC]'
+        }`}>
           {rep.cloudinary_url
             ? <img src={rep.cloudinary_url} alt={rep.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
             : <Package className="w-4 h-4 text-[#C0B5A8]" />
           }
         </div>
       </td>
-      <td className="px-4 py-3">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#C41B2E]">
-          <ChevronRight className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} />
-          {group.variants.length}
-        </span>
-      </td>
-      <td className="px-4 py-3 max-w-[220px]">
+      <td className={`px-4 py-3 overflow-hidden ${cellY}`}>
         <p className="font-semibold text-[#1A1613] truncate">{rep.nombre}</p>
-        <p className="text-[11px] text-[#9E9080] mt-0.5 flex items-center gap-1">
-          <Layers className="w-3 h-3 text-[#C41B2E]" /> {group.variants.length} variantes
+        <p className="text-[11px] text-[#4A4540] mt-0.5 flex items-center gap-1 truncate">
+          <Layers className="w-3 h-3 text-[#C41B2E] flex-shrink-0" /> {group.variants.length} variantes
         </p>
       </td>
-      <td className="px-4 py-3 hidden md:table-cell">
-        <span className="text-xs text-[#9E9080] bg-[#FAF8F4] px-2 py-0.5 rounded-md">{rep.categoria}</span>
+      <td className={`px-4 py-3 ${cellY}`}>
+        <span className={`inline-flex items-center gap-1 text-xs font-semibold px-1.5 py-1 rounded-full transition-colors whitespace-nowrap ${
+          expanded ? 'bg-[#C41B2E] text-white' : 'text-[#C41B2E]'
+        }`}>
+          <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 flex-shrink-0 ${expanded ? 'rotate-90' : ''}`} />
+          {group.variants.length} productos
+        </span>
       </td>
-      <td className="px-4 py-3">
-        <span className="text-xs font-medium text-[#6B6159]">{totalStock} ud. en stock</span>
+      <td className={`px-4 py-3 hidden md:table-cell overflow-hidden ${cellY}`}>
+        <span className="text-xs text-[#1A1613] bg-[#FAF8F4] px-2 py-0.5 rounded-md inline-block max-w-full truncate align-bottom">{rep.categoria}</span>
       </td>
-      <td className="px-4 py-3 hidden sm:table-cell">
-        <span className="text-sm font-medium text-[#6B6159] tabular-nums">
+      <td className={`px-4 py-3 ${cellY}`}>
+        <span className="text-xs font-medium text-[#1A1613] whitespace-nowrap">{totalStock} ud. en stock</span>
+      </td>
+      <td className={`px-4 py-3 hidden sm:table-cell ${cellY}`}>
+        <span className="text-sm font-medium text-[#1A1613] tabular-nums whitespace-nowrap">
           {priceLabel ?? <span className="text-[#C0B5A8]">—</span>}
         </span>
       </td>
-      <td className="px-4 py-3 hidden lg:table-cell" />
-      <td className="px-4 py-3">
+      <td className={`px-4 py-3 hidden lg:table-cell ${cellY}`}>
+        <button
+          onClick={e => { e.stopPropagation(); onToggleVisible() }}
+          className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
+            allVisible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
+          }`}
+          title={allVisible ? 'Ocultar todas las variantes' : 'Mostrar todas las variantes'}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+            allVisible ? 'translate-x-4' : 'translate-x-0'
+          }`} />
+        </button>
+      </td>
+      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-r-2 border-[#C41B2E]/60' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
           <Link
             to={`/admin/familias/${group.familiaId}`}
@@ -192,6 +238,13 @@ function FamilyHeaderRow({
           >
             <Settings2 className="w-3.5 h-3.5" />
           </Link>
+          <button
+            onClick={e => { e.stopPropagation(); onAddChild() }}
+            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+            title="Agregar producto hijo"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+          </button>
           <button
             onClick={e => { e.stopPropagation(); onAddVariant() }}
             className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
@@ -207,6 +260,7 @@ function FamilyHeaderRow({
 
 export function Products() {
   const [allProductos, setAllProductos] = useState<Producto[]>([])
+  const [families, setFamilies]         = useState<ProductFamily[]>([])
   const [loading, setLoading]           = useState(true)
   const [loadingMore, setLoadingMore]   = useState(false)
   const [error, setError]               = useState<string | null>(null)
@@ -215,20 +269,24 @@ export function Products() {
   const [search, setSearch]             = useState('')
   const [categoria, setCategoria]       = useState('')
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
+  const [tab, setTab]                   = useState<'ambos' | 'unicos' | 'variantes'>('ambos')
   const [displayCount, setDisplayCount] = useState(CHUNK)
-  const [expanded, setExpanded]         = useState<Set<string>>(new Set())
+  const [expandedKey, setExpandedKey]   = useState<string | null>(null)
+  const [createFamilyOpen, setCreateFamilyOpen] = useState(false)
+  const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null)
   const sentinelRef                     = useRef<HTMLDivElement>(null)
   const navigate                        = useNavigate()
 
   const load = useCallback(async (force = false) => {
     setLoading(true)
     setError(null)
-    const result = await getProductos(force)
+    const [result, { data: fams }] = await Promise.all([getProductos(force), listFamilies()])
     if (result.error) {
       setError(result.error)
       toast.error('Error al cargar productos: ' + result.error)
     }
     setAllProductos(result.data)
+    setFamilies(fams)
     setFromCache(result.fromCache)
     setCacheAge(getCacheAge())
     setLoading(false)
@@ -250,22 +308,33 @@ export function Products() {
     return list
   }, [allProductos, search, categoria, modo])
 
-  const families = useMemo(() => groupProductosByFamily(filtered), [filtered])
+  const visibleProductos = useMemo(
+    () => filtered.filter(p => p.familia_id !== SIN_ASIGNAR_ID),
+    [filtered],
+  )
+  const familyGroups = useMemo(() => groupProductosByFamily(visibleProductos), [visibleProductos])
 
-  useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo])
+  const unicosCount    = useMemo(() => familyGroups.filter(f => f.variants.length === 1).length, [familyGroups])
+  const variantesCount = useMemo(() => familyGroups.filter(f => f.variants.length > 1).length, [familyGroups])
 
-  const visibleFamilies = families.slice(0, displayCount)
-  const hasMore         = displayCount < families.length
-  const totalCount      = filtered.length
+  const familiesByTab = useMemo(() => {
+    if (tab === 'unicos') return familyGroups.filter(f => f.variants.length === 1)
+    if (tab === 'variantes') return familyGroups.filter(f => f.variants.length > 1)
+    return familyGroups
+  }, [familyGroups, tab])
+
+  const unassignedChildren = useMemo(() => listUnassignedChildren(allProductos), [allProductos])
+  const emptyFamilies      = useMemo(() => listEmptyFamilies(families, allProductos), [families, allProductos])
+
+  useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo, tab])
+
+  const visibleFamilies = familiesByTab.slice(0, displayCount)
+  const hasMore         = displayCount < familiesByTab.length
+  const totalCount      = familiesByTab.reduce((n, f) => n + f.variants.length, 0)
   const visibleCount    = visibleFamilies.reduce((n, f) => n + f.variants.length, 0)
 
   const toggleExpanded = (key: string) => {
-    setExpanded(prev => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
+    setExpandedKey(prev => (prev === key ? null : key))
   }
 
   // IntersectionObserver for infinite scroll
@@ -315,7 +384,33 @@ export function Products() {
     await reloadAfterMutation()
   }
 
+  const handleToggleFamilyVisible = async (group: FamilyGroup) => {
+    const next = !group.variants.every(v => v.disponible)
+    const ids = group.variants.map(v => v.id)
+    const { error } = await supabase.from('products').update({ disponible: next }).in('id', ids)
+    if (error) { toast.error('Error al actualizar: ' + error.message); return }
+    toast.success(`${ids.length} variante${ids.length !== 1 ? 's' : ''} ${next ? 'activada' : 'desactivada'}${ids.length !== 1 ? 's' : ''}`)
+    await reloadAfterMutation()
+  }
+
   const handleNavigate = (id: string) => navigate(`/admin/productos/${id}`)
+
+  const handleCreateFamily = async (nombre: string) => {
+    const { error } = await createEmptyFamily(nombre)
+    if (error) { toast.error('Error al crear la familia: ' + error); return }
+    toast.success('Familia creada — agregale productos hijo cuando quieras')
+    setCreateFamilyOpen(false)
+    await reloadAfterMutation()
+  }
+
+  const handleAddChildren = async (productIds: string[], categoriaBatch: string) => {
+    if (!pickerFamily) return
+    const { error } = await addChildrenToFamily(pickerFamily, productIds, categoriaBatch)
+    if (error) { toast.error('Error al agregar productos: ' + error); return }
+    toast.success(`${productIds.length} producto${productIds.length !== 1 ? 's' : ''} agregado${productIds.length !== 1 ? 's' : ''} a «${pickerFamily.nombre}»`)
+    setPickerFamily(null)
+    await reloadAfterMutation()
+  }
 
   const stockOk = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > LOW_STOCK_THRESHOLD).length
   const stockBajo = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length
@@ -355,13 +450,22 @@ export function Products() {
             )}
           </p>
         </div>
-        <button
-          onClick={() => navigate('/admin/productos/nuevo')}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] transition-all duration-200 shadow-lg shadow-[#C41B2E]/25 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Agregar producto
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setCreateFamilyOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#EBE5DC] text-[#1A1613] rounded-xl text-sm font-semibold hover:bg-[#F4F0E8] transition-all duration-200 cursor-pointer"
+          >
+            <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
+            Crear familia
+          </button>
+          <button
+            onClick={() => navigate('/admin/productos/nuevo')}
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] transition-all duration-200 shadow-lg shadow-[#C41B2E]/25 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Agregar producto
+          </button>
+        </div>
       </div>
 
       {/* Summary bar */}
@@ -382,6 +486,62 @@ export function Products() {
           {allProductos.length} total
         </span>
       </div>
+
+      {/* Tabs: Ambos / Únicos / Variantes */}
+      <div className="inline-flex items-center gap-1 bg-[#F4F0E8] rounded-xl p-1 w-fit">
+        {([
+          { key: 'ambos', label: 'Ambos', count: familyGroups.length },
+          { key: 'unicos', label: 'Únicos', count: unicosCount },
+          { key: 'variantes', label: 'Variantes', count: variantesCount },
+        ] as const).map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+              tab === t.key
+                ? 'bg-white text-[#1A1613] shadow-sm'
+                : 'text-[#9E9080] hover:text-[#6B6159]'
+            }`}
+          >
+            {t.label}
+            <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${
+              tab === t.key ? 'bg-[#F4F0E8] text-[#6B6159]' : 'bg-[#EBE5DC]/60 text-[#9E9080]'
+            }`}>
+              {t.count}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Familias pendientes (vacías, esperando su primer producto hijo) */}
+      {emptyFamilies.length > 0 && (
+        <div className="bg-[#FFF8F5] border border-[#F5C6BA] rounded-xl p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-[#C41B2E] uppercase tracking-wider flex items-center gap-1.5">
+              <FolderOpen className="w-3.5 h-3.5" />
+              Familias pendientes — sin productos todavía
+            </p>
+            {unassignedChildren.length > 0 && (
+              <span className="text-xs text-[#9E9080]">
+                {unassignedChildren.length} producto{unassignedChildren.length !== 1 ? 's' : ''} hijo sin asignar
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {emptyFamilies.map(fam => (
+              <button
+                key={fam.id}
+                onClick={() => setPickerFamily(fam)}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium bg-white border border-[#EBE5DC] text-[#1A1613] hover:border-[#C41B2E]/40 hover:bg-[#FFF0F1] transition-all cursor-pointer"
+              >
+                <Layers className="w-3.5 h-3.5 text-[#C41B2E]" />
+                {fam.nombre}
+                <span className="text-[11px] text-[#9E9080]">· agregar hijo</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Error banner */}
       {error && (
@@ -459,17 +619,27 @@ export function Products() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm table-fixed min-w-[820px]">
+              <colgroup>
+                <col className="w-[8%]" />
+                <col className="w-[28%]" />
+                <col className="w-[11%]" />
+                <col className="hidden md:[display:table-column] w-[13%]" />
+                <col className="w-[16%]" />
+                <col className="hidden sm:[display:table-column] w-[14%]" />
+                <col className="hidden lg:[display:table-column] w-[6%]" />
+                <col className="w-[8%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b border-[#EBE5DC] bg-[#FAF8F4]">
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider w-12" />
-                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider">Código</th>
+                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider" />
                   <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider">Nombre</th>
+                  <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider">Código</th>
                   <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider hidden md:table-cell">Categoría</th>
                   <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider">Stock</th>
                   <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider hidden sm:table-cell">Precio</th>
                   <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[#9E9080] uppercase tracking-wider hidden lg:table-cell">Visible</th>
-                  <th className="px-4 py-3.5 w-24" />
+                  <th className="px-4 py-3.5" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0EAE2]">
@@ -486,7 +656,7 @@ export function Products() {
                       />
                     )
                   }
-                  const isExpanded = expanded.has(group.key)
+                  const isExpanded = expandedKey === group.key
                   return (
                     <Fragment key={group.key}>
                       <FamilyHeaderRow
@@ -495,18 +665,28 @@ export function Products() {
                         expanded={isExpanded}
                         onToggle={() => toggleExpanded(group.key)}
                         onAddVariant={() => navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(group.familiaId)}`)}
+                        onToggleVisible={() => handleToggleFamilyVisible(group)}
+                        onAddChild={() => {
+                          const fam = families.find(f => f.id === group.familiaId)
+                          if (fam) setPickerFamily(fam)
+                        }}
                       />
-                      {isExpanded && group.variants.map(v => (
-                        <ProductRow
-                          key={v.id}
-                          p={v}
-                          index={i}
-                          nested
-                          onNavigate={handleNavigate}
-                          onToggle={handleToggleDisponible}
-                          onDelete={handleDelete}
-                        />
-                      ))}
+                      <AnimatePresence initial={false}>
+                        {isExpanded && group.variants.map((v, vi) => (
+                          <ProductRow
+                            key={v.id}
+                            p={v}
+                            index={i}
+                            nested
+                            variantIndex={vi}
+                            isFirst={vi === 0}
+                            isLast={vi === group.variants.length - 1}
+                            onNavigate={handleNavigate}
+                            onToggle={handleToggleDisponible}
+                            onDelete={handleDelete}
+                          />
+                        ))}
+                      </AnimatePresence>
                     </Fragment>
                   )
                 })}
@@ -539,6 +719,22 @@ export function Products() {
           </div>
         )}
       </div>
+
+      <CreateFamilyModal
+        open={createFamilyOpen}
+        onOpenChange={setCreateFamilyOpen}
+        onConfirm={handleCreateFamily}
+      />
+
+      {pickerFamily && (
+        <FamilyChildPickerModal
+          open={Boolean(pickerFamily)}
+          onOpenChange={open => { if (!open) setPickerFamily(null) }}
+          family={pickerFamily}
+          unassigned={unassignedChildren}
+          onConfirm={handleAddChildren}
+        />
+      )}
 
     </div>
     </>

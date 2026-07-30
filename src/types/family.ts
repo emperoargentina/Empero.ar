@@ -3,7 +3,7 @@
 export interface ProductFamily {
   id: string
   nombre: string
-  categoria: string
+  categoria: string | null
   cloudinary_url: string | null
   cloudinary_image_id: string | null
   caracteristicas_generales: string[] | null

@@ -22,14 +22,14 @@ export function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1613] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#F4F0E8] via-[#FAF8F5] to-[#EDE8E0] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Diagonal pattern */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: [
-            'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px)',
-            'repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px)',
+            'repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(26,22,19,0.02) 40px, rgba(26,22,19,0.02) 41px)',
+            'repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(26,22,19,0.02) 40px, rgba(26,22,19,0.02) 41px)',
           ].join(', '),
         }}
       />
@@ -41,17 +41,8 @@ export function AdminLogin() {
           width: '800px',
           height: '800px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(196,27,46,0.08) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(196,27,46,0.06) 0%, transparent 60%)',
           filter: 'blur(120px)',
-        }}
-      />
-
-      {/* Grain overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: '256px 256px',
         }}
       />
 

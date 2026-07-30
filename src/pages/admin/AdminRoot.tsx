@@ -27,7 +27,7 @@ export function AdminRoot() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#1A1613] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-[#C41B2E] border-t-transparent rounded-full animate-spin" />
       </div>
     )
