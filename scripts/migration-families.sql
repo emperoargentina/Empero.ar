@@ -13,7 +13,7 @@ create table if not exists public.product_families (
   categoria                  text not null,
   cloudinary_url             text,
   cloudinary_image_id        text,
-  caracteristicas_generales  text[],
+  caracteristicas_generales  json,
   created_at                 timestamptz not null default now(),
   updated_at                 timestamptz not null default now()
 );
