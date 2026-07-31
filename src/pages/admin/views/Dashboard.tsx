@@ -6,6 +6,7 @@ import {
   Package, TrendingDown, AlertTriangle, ShoppingCart, XCircle, ArrowRight, Clock,
   TrendingUp, Eye,
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface Stats {
   total: number
@@ -400,12 +401,14 @@ export function Dashboard() {
                 <p className="text-[11px] text-[#9E9080]">{alerts.length} producto{alerts.length !== 1 ? 's' : ''} por revisar</p>
               </div>
             </div>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigate('/admin/productos')}
-              className="text-xs text-[#C41B2E] hover:text-[#B51426] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer bg-[#FFF0F1] hover:bg-[#FFE4E6] px-3 py-1.5 rounded-lg"
+              className="text-xs text-[#C41B2E] hover:text-[#B51426] font-semibold bg-[#FFF0F1] hover:bg-[#FFE4E6] rounded-lg"
             >
               Ver todos <ArrowRight className="w-3 h-3" />
-            </button>
+            </Button>
           </div>
           <div className="max-h-96 overflow-y-auto">
             {alerts.map(p => (

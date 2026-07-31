@@ -5,54 +5,63 @@ import { getProductos, invalidateProductosCache, getCacheAge } from '@/lib/produ
 import {
   groupProductosByFamily, listUnassignedChildren, listEmptyFamilies,
   listFamilies, createEmptyFamily, addChildrenToFamily, SIN_ASIGNAR_ID,
+  deleteFamilyKeepProducts, deleteFamilyWithProducts, deleteFamily,
   type FamilyGroup,
 } from '@/lib/adminFamilies'
 import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto'
+import { CATEGORIA_ICONS } from '@/lib/categoriaIcons'
 import type { ProductFamily } from '@/types/family'
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
-  Filter, Clock, ChevronRight, Layers, Settings2,
-  Loader2, FolderPlus, UserPlus, FolderOpen,
+  Filter, Clock, ChevronRight, Layers, X, ArrowUpDown,
+  Loader2, FolderPlus, FolderOpen, CheckCircle2, XCircle, Truck,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { CreateFamilyModal } from '@/components/admin/CreateFamilyModal'
 import { FamilyChildPickerModal } from '@/components/admin/FamilyChildPickerModal'
+import { DeleteFamilyModal } from '@/components/admin/DeleteFamilyModal'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const CHUNK = 30
 
-const BADGE_CLS = 'inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full w-28'
+const BADGE_CLS = 'inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full w-28 border'
 
 function StockBadge({ p }: { p: Producto }) {
   if (p.modo_disponibilidad === 'por_encargo') {
     return (
-      <span className={`${BADGE_CLS} bg-amber-50 text-amber-700 border border-amber-200`}>
+      <Badge variant="outline" className={`${BADGE_CLS} bg-amber-50 text-amber-700 border-amber-200`}>
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
         Por encargo
-      </span>
+      </Badge>
     )
   }
   if (p.stock === 0) {
     return (
-      <span className={`${BADGE_CLS} bg-red-50 text-red-600 border border-red-200`}>
+      <Badge variant="outline" className={`${BADGE_CLS} bg-red-50 text-red-600 border-red-200`}>
         <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
         Sin stock
-      </span>
+      </Badge>
     )
   }
   if (p.stock <= LOW_STOCK_THRESHOLD) {
     return (
-      <span className={`${BADGE_CLS} bg-red-50 text-red-600 border border-red-200`}>
+      <Badge variant="outline" className={`${BADGE_CLS} bg-red-50 text-red-600 border-red-200`}>
         <AlertTriangle className="w-3 h-3 text-red-500" />
         {p.stock} ud.
-      </span>
+      </Badge>
     )
   }
   return (
-    <span className={`${BADGE_CLS} bg-emerald-50 text-emerald-700 border border-emerald-200`}>
+    <Badge variant="outline" className={`${BADGE_CLS} bg-emerald-50 text-emerald-700 border-emerald-200`}>
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
       {p.stock} ud.
-    </span>
+    </Badge>
   )
 }
 
@@ -114,33 +123,33 @@ function ProductRow({
         </span>
       </td>
       <td className={`px-4 py-3 hidden lg:table-cell ${cellY}`}>
-        <button
-          onClick={e => { e.stopPropagation(); onToggle(p) }}
-          className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
-            p.disponible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
-          }`}
-        >
-          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
-            p.disponible ? 'translate-x-4' : 'translate-x-0'
-          }`} />
-        </button>
+        <Switch
+          checked={p.disponible}
+          onClick={e => e.stopPropagation()}
+          onCheckedChange={() => onToggle(p)}
+          className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-[#D8D0C6]"
+        />
       </td>
       <td className={`px-4 py-3 ${cellY} ${nested ? 'border-r border-[#C41B2E]/30' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
-          <button
+          <Button
+            variant="ghost"
+            size="iconSm"
             onClick={e => { e.stopPropagation(); onNavigate(p.id) }}
-            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
+            className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]"
             title="Editar"
           >
             <Pencil className="w-3.5 h-3.5" />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
+            size="iconSm"
             onClick={e => { e.stopPropagation(); onDelete(p) }}
-            className="p-1.5 text-[#9E9080] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+            className="text-[#9E9080] hover:text-red-500 hover:bg-red-50"
             title="Eliminar"
           >
             <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          </Button>
         </div>
       </td>
     </motion.tr>
@@ -148,15 +157,15 @@ function ProductRow({
 }
 
 function FamilyHeaderRow({
-  group, index, expanded, onToggle, onAddVariant, onToggleVisible, onAddChild,
+  group, index, expanded, onToggle, onToggleVisible, onAddChild, onDelete,
 }: {
   group: FamilyGroup
   index: number
   expanded: boolean
   onToggle: () => void
-  onAddVariant: () => void
   onToggleVisible: () => void
   onAddChild: () => void
+  onDelete: () => void
 }) {
   const rep = group.variants[0]
   const totalStock = group.variants.reduce(
@@ -193,7 +202,7 @@ function FamilyHeaderRow({
       <td className={`px-4 py-3 overflow-hidden ${cellY}`}>
         <p className="font-semibold text-[#1A1613] truncate">{rep.nombre}</p>
         <p className="text-[11px] text-[#4A4540] mt-0.5 flex items-center gap-1 truncate">
-          <Layers className="w-3 h-3 text-[#C41B2E] flex-shrink-0" /> {group.variants.length} variantes
+          <Layers className="w-3 h-3 text-[#C41B2E] flex-shrink-0" /> {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
         </p>
       </td>
       <td className={`px-4 py-3 ${cellY}`}>
@@ -201,7 +210,7 @@ function FamilyHeaderRow({
           expanded ? 'bg-[#C41B2E] text-white' : 'text-[#C41B2E]'
         }`}>
           <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 flex-shrink-0 ${expanded ? 'rotate-90' : ''}`} />
-          {group.variants.length} productos
+          {group.variants.length} producto{group.variants.length !== 1 ? 's' : ''}
         </span>
       </td>
       <td className={`px-4 py-3 hidden md:table-cell overflow-hidden ${cellY}`}>
@@ -216,42 +225,43 @@ function FamilyHeaderRow({
         </span>
       </td>
       <td className={`px-4 py-3 hidden lg:table-cell ${cellY}`}>
-        <button
-          onClick={e => { e.stopPropagation(); onToggleVisible() }}
-          className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#C41B2E]/20 ${
-            allVisible ? 'bg-emerald-500' : 'bg-[#D8D0C6]'
-          }`}
+        <Switch
+          checked={allVisible}
+          onClick={e => e.stopPropagation()}
+          onCheckedChange={() => onToggleVisible()}
+          className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-[#D8D0C6]"
           title={allVisible ? 'Ocultar todas las variantes' : 'Mostrar todas las variantes'}
-        >
-          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
-            allVisible ? 'translate-x-4' : 'translate-x-0'
-          }`} />
-        </button>
+        />
       </td>
       <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-r-2 border-[#C41B2E]/60' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
-          <Link
-            to={`/admin/familias/${group.familiaId}`}
-            onClick={e => e.stopPropagation()}
-            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
-            title="Editar familia"
-          >
-            <Settings2 className="w-3.5 h-3.5" />
-          </Link>
-          <button
+          <Button
+            variant="ghost"
+            size="iconSm"
             onClick={e => { e.stopPropagation(); onAddChild() }}
-            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
-            title="Agregar producto hijo"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={e => { e.stopPropagation(); onAddVariant() }}
-            className="p-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] rounded-lg transition-all cursor-pointer"
-            title="Agregar variante"
+            className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]"
+            title="Agregar producto hijo huérfano"
           >
             <Plus className="w-3.5 h-3.5" />
-          </button>
+          </Button>
+          <Button asChild variant="ghost" size="iconSm" className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]">
+            <Link
+              to={`/admin/familias/${group.familiaId}`}
+              onClick={e => e.stopPropagation()}
+              title="Editar familia"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            size="iconSm"
+            onClick={e => { e.stopPropagation(); onDelete() }}
+            className="text-[#9E9080] hover:text-red-500 hover:bg-red-50"
+            title="Eliminar familia"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </Button>
         </div>
       </td>
     </tr>
@@ -270,10 +280,12 @@ export function Products() {
   const [categoria, setCategoria]       = useState('')
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
   const [tab, setTab]                   = useState<'ambos' | 'unicos' | 'variantes'>('ambos')
+  const [orden, setOrden]               = useState<'fecha' | 'nombre' | 'precio'>('fecha')
   const [displayCount, setDisplayCount] = useState(CHUNK)
   const [expandedKey, setExpandedKey]   = useState<string | null>(null)
   const [createFamilyOpen, setCreateFamilyOpen] = useState(false)
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null)
+  const [deletingFamily, setDeletingFamily] = useState<FamilyGroup | null>(null)
   const sentinelRef                     = useRef<HTMLDivElement>(null)
   const navigate                        = useNavigate()
 
@@ -314,24 +326,48 @@ export function Products() {
   )
   const familyGroups = useMemo(() => groupProductosByFamily(visibleProductos), [visibleProductos])
 
-  const unicosCount    = useMemo(() => familyGroups.filter(f => f.variants.length === 1).length, [familyGroups])
-  const variantesCount = useMemo(() => familyGroups.filter(f => f.variants.length > 1).length, [familyGroups])
+  const isCarpetaGroup = useCallback((f: FamilyGroup) => (
+    f.variants.length > 1 || families.find(fam => fam.id === f.familiaId)?.es_carpeta === true
+  ), [families])
+
+  const unicosCount    = useMemo(() => familyGroups.filter(f => !isCarpetaGroup(f)).length, [familyGroups, isCarpetaGroup])
+  const variantesCount = useMemo(() => familyGroups.filter(f => isCarpetaGroup(f)).length, [familyGroups, isCarpetaGroup])
 
   const familiesByTab = useMemo(() => {
-    if (tab === 'unicos') return familyGroups.filter(f => f.variants.length === 1)
-    if (tab === 'variantes') return familyGroups.filter(f => f.variants.length > 1)
+    if (tab === 'unicos') return familyGroups.filter(f => !isCarpetaGroup(f))
+    if (tab === 'variantes') return familyGroups.filter(f => isCarpetaGroup(f))
     return familyGroups
   }, [familyGroups, tab])
 
   const unassignedChildren = useMemo(() => listUnassignedChildren(allProductos), [allProductos])
   const emptyFamilies      = useMemo(() => listEmptyFamilies(families, allProductos), [families, allProductos])
 
-  useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo, tab])
+  const sortedFamilies = useMemo(() => {
+    const list = [...familiesByTab]
+    if (orden === 'nombre') {
+      list.sort((a, b) => a.variants[0].nombre.localeCompare(b.variants[0].nombre, 'es'))
+    } else if (orden === 'precio') {
+      list.sort((a, b) => (b.variants[0].precio_usd ?? -1) - (a.variants[0].precio_usd ?? -1))
+    } else {
+      list.sort((a, b) => b.variants[0].created_at.localeCompare(a.variants[0].created_at))
+    }
+    return list
+  }, [familiesByTab, orden])
 
-  const visibleFamilies = familiesByTab.slice(0, displayCount)
-  const hasMore         = displayCount < familiesByTab.length
-  const totalCount      = familiesByTab.reduce((n, f) => n + f.variants.length, 0)
+  useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo, tab, orden])
+
+  const visibleFamilies = sortedFamilies.slice(0, displayCount)
+  const hasMore         = displayCount < sortedFamilies.length
+  const totalCount      = sortedFamilies.reduce((n, f) => n + f.variants.length, 0)
   const visibleCount    = visibleFamilies.reduce((n, f) => n + f.variants.length, 0)
+
+  const hasActiveFilters = !!(search.trim() || categoria || modo !== 'all')
+
+  const clearFilters = () => {
+    setSearch('')
+    setCategoria('')
+    setModo('all')
+  }
 
   const toggleExpanded = (key: string) => {
     setExpandedKey(prev => (prev === key ? null : key))
@@ -403,6 +439,32 @@ export function Products() {
     await reloadAfterMutation()
   }
 
+  const handleDeleteFamilyKeep = async () => {
+    if (!deletingFamily) return
+    const { error } = await deleteFamilyKeepProducts(deletingFamily.familiaId)
+    if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    toast.success('Familia eliminada — los productos quedaron como hijos huérfanos')
+    setDeletingFamily(null)
+    await reloadAfterMutation()
+  }
+
+  const handleDeleteFamilyCascade = async () => {
+    if (!deletingFamily) return
+    const { error } = await deleteFamilyWithProducts(deletingFamily.familiaId)
+    if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    toast.success('Familia y productos vinculados eliminados')
+    setDeletingFamily(null)
+    await reloadAfterMutation()
+  }
+
+  const handleDeleteEmptyFamily = async (fam: ProductFamily) => {
+    if (!confirm(`¿Eliminar la familia pendiente "${fam.nombre}"? No tiene productos vinculados.`)) return
+    const { error } = await deleteFamily(fam.id)
+    if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    toast.success('Familia pendiente eliminada')
+    await reloadAfterMutation()
+  }
+
   const handleAddChildren = async (productIds: string[], categoriaBatch: string) => {
     if (!pickerFamily) return
     const { error } = await addChildrenToFamily(pickerFamily, productIds, categoriaBatch)
@@ -451,67 +513,97 @@ export function Products() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
+            variant="brandOutline"
             onClick={() => setCreateFamilyOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#EBE5DC] text-[#1A1613] rounded-xl text-sm font-semibold hover:bg-[#F4F0E8] transition-all duration-200 cursor-pointer"
+            className="px-4 py-2.5 h-auto rounded-xl"
           >
             <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
             Crear familia
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="brand"
             onClick={() => navigate('/admin/productos/nuevo')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] transition-all duration-200 shadow-lg shadow-[#C41B2E]/25 cursor-pointer"
+            className="px-5 py-2.5 h-auto rounded-xl"
           >
             <Plus className="w-4 h-4" />
             Agregar producto
-          </button>
+          </Button>
         </div>
       </div>
 
-      {/* Summary bar */}
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Stats */}
+      <div className="flex flex-wrap gap-3">
         {[
-          { label: 'En stock', count: stockOk, color: 'bg-emerald-500' },
-          { label: 'Stock bajo', count: stockBajo, color: 'bg-amber-500' },
-          { label: 'Sin stock', count: sinStock, color: 'bg-red-500' },
-          { label: 'Por encargo', count: porEncargo, color: 'bg-amber-400' },
-        ].filter(s => s.count > 0).map(s => (
-          <span key={s.label} className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6B6159] bg-white border border-[#EBE5DC] rounded-lg px-2.5 py-1">
-            <span className={`w-2 h-2 rounded-full ${s.color}`} />
-            {s.count} {s.label.toLowerCase()}
-          </span>
-        ))}
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6B6159] bg-white border border-[#EBE5DC] rounded-lg px-2.5 py-1">
-          <Package className="w-3 h-3 text-[#C0B5A8]" />
-          {allProductos.length} total
-        </span>
+          { label: 'En stock', count: stockOk, icon: CheckCircle2, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100', dot: 'bg-emerald-500' },
+          { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'bg-amber-50 text-amber-600 border-amber-100', dot: 'bg-amber-500' },
+          { label: 'Sin stock', count: sinStock, icon: XCircle, tint: 'bg-red-50 text-red-600 border-red-100', dot: 'bg-red-500' },
+          { label: 'Por encargo', count: porEncargo, icon: Truck, tint: 'bg-[#FFF7E6] text-[#B08A4A] border-[#EFE0BC]', dot: 'bg-amber-400' },
+        ].filter(s => s.count > 0).map(s => {
+          const Icon = s.icon
+          return (
+            <div
+              key={s.label}
+              className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm"
+            >
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${s.tint}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{s.count}</p>
+                <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 flex items-center gap-1.5 truncate">
+                  <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.dot}`} />
+                  {s.label}
+                </p>
+              </div>
+            </div>
+          )
+        })}
+        <div className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm">
+          <div className="w-10 h-10 rounded-xl border border-[#EBE5DC] bg-[#F4F0E8] text-[#6B6159] flex items-center justify-center flex-shrink-0">
+            <Package className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
+            <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 truncate">Total productos</p>
+          </div>
+        </div>
       </div>
 
       {/* Tabs: Ambos / Únicos / Variantes */}
-      <div className="inline-flex items-center gap-1 bg-[#F4F0E8] rounded-xl p-1 w-fit">
-        {([
-          { key: 'ambos', label: 'Ambos', count: familyGroups.length },
-          { key: 'unicos', label: 'Únicos', count: unicosCount },
-          { key: 'variantes', label: 'Variantes', count: variantesCount },
-        ] as const).map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-              tab === t.key
-                ? 'bg-white text-[#1A1613] shadow-sm'
-                : 'text-[#9E9080] hover:text-[#6B6159]'
-            }`}
-          >
-            {t.label}
-            <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${
-              tab === t.key ? 'bg-[#F4F0E8] text-[#6B6159]' : 'bg-[#EBE5DC]/60 text-[#9E9080]'
-            }`}>
-              {t.count}
-            </span>
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={tab}
+        onValueChange={v => setTab(v as typeof tab)}
+        className="w-fit"
+      >
+        <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
+          {([
+            { key: 'ambos', label: 'Ambos', count: familyGroups.length },
+            { key: 'unicos', label: 'Únicos', count: unicosCount },
+            { key: 'variantes', label: 'Familias', count: variantesCount },
+          ] as const).map(t => (
+            <TabsTrigger
+              key={t.key}
+              value={t.key}
+              className="group relative rounded-lg px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
+            >
+              {tab === t.key && (
+                <motion.span
+                  layoutId="productos-tab-pill"
+                  className="absolute inset-0 rounded-lg bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
+                  transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-1.5">
+                {t.label}
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F0E8] text-[#9E9080] group-data-[state=active]:bg-white/25 group-data-[state=active]:text-white">
+                  {t.count}
+                </span>
+              </span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       {/* Familias pendientes (vacías, esperando su primer producto hijo) */}
       {emptyFamilies.length > 0 && (
@@ -529,15 +621,29 @@ export function Products() {
           </div>
           <div className="flex flex-wrap gap-2">
             {emptyFamilies.map(fam => (
-              <button
+              <div
                 key={fam.id}
-                onClick={() => setPickerFamily(fam)}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium bg-white border border-[#EBE5DC] text-[#1A1613] hover:border-[#C41B2E]/40 hover:bg-[#FFF0F1] transition-all cursor-pointer"
+                className="flex items-center gap-1 pl-1 pr-1.5 py-1 rounded-lg border border-[#EBE5DC] bg-white hover:border-[#C41B2E]/40 transition-colors"
               >
-                <Layers className="w-3.5 h-3.5 text-[#C41B2E]" />
-                {fam.nombre}
-                <span className="text-[11px] text-[#9E9080]">· agregar hijo</span>
-              </button>
+                <Button
+                  variant="ghost"
+                  onClick={() => setPickerFamily(fam)}
+                  className="px-2.5 py-1.5 h-auto rounded-md font-medium hover:bg-[#FFF0F1]"
+                >
+                  <Layers className="w-3.5 h-3.5 text-[#C41B2E]" />
+                  {fam.nombre}
+                  <span className="text-[11px] text-[#9E9080]">· agregar hijo</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="iconSm"
+                  onClick={() => handleDeleteEmptyFamily(fam)}
+                  className="text-[#9E9080] hover:text-red-500 hover:bg-red-50"
+                  title="Eliminar familia pendiente"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             ))}
           </div>
         </div>
@@ -555,39 +661,89 @@ export function Products() {
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-[#EBE5DC] p-4 flex flex-wrap gap-3 items-center shadow-sm">
+      <div className={`bg-white rounded-xl border p-4 flex flex-wrap gap-3 items-center shadow-sm transition-colors ${
+        hasActiveFilters
+          ? 'border-[#C41B2E]/50 ring-2 ring-[#C41B2E]/10'
+          : 'border-[#EBE5DC]'
+      }`}>
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8]" />
-          <input
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
+          <Input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar por nombre o código..."
-            className="w-full pl-9 pr-4 py-2 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all"
+            className={`w-full pl-9 h-10 border-[#EBE5DC] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E] ${
+              search ? 'border-[#C41B2E]/40' : ''
+            }`}
           />
         </div>
 
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none" />
-          <select
-            value={categoria}
-            onChange={e => setCategoria(e.target.value)}
-            className="pl-8 pr-8 py-2 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 cursor-pointer appearance-none bg-white transition-all"
-          >
-            <option value="">Todas las categorías</option>
-            {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
+          <Select value={categoria || 'all'} onValueChange={v => setCategoria(v === 'all' ? '' : v)}>
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
+              categoria ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            }`}>
+              <SelectValue placeholder="Todas las categorías" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Todas las categorías</SelectItem>
+              {CATEGORIAS.map(c => {
+                const Icon = CATEGORIA_ICONS[c]
+                return (
+                  <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                    <span className="flex items-center gap-2">
+                      <Icon className="w-3.5 h-3.5 opacity-70" />
+                      {c}
+                    </span>
+                  </SelectItem>
+                )
+              })}
+            </SelectContent>
+          </Select>
         </div>
 
-        <select
-          value={modo}
-          onChange={e => setModo(e.target.value as typeof modo)}
-          className="px-3 py-2 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 cursor-pointer appearance-none bg-white transition-all"
-        >
-          <option value="all">Stock: Todos</option>
-          <option value="en_stock">Stock: En stock</option>
-          <option value="por_encargo">Stock: Por encargo</option>
-        </select>
+        <div className="relative">
+          <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
+          <Select value={orden} onValueChange={v => setOrden(v as typeof orden)}>
+            <SelectTrigger className="pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="fecha" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por fecha de creación</SelectItem>
+              <SelectItem value="nombre" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por nombre</SelectItem>
+              <SelectItem value="precio" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por precio</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
+          <Select value={modo} onValueChange={v => setModo(v as typeof modo)}>
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[180px] ${
+              modo !== 'all' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            }`}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: Todos</SelectItem>
+              <SelectItem value="en_stock" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: En stock</SelectItem>
+              <SelectItem value="por_encargo" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: Por encargo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            onClick={clearFilters}
+            className="h-10 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
+          >
+            <X className="w-4 h-4" />
+            Limpiar filtros
+          </Button>
+        )}
       </div>
 
       {/* Table */}
@@ -644,7 +800,7 @@ export function Products() {
               </thead>
               <tbody className="divide-y divide-[#F0EAE2]">
                 {visibleFamilies.map((group, i) => {
-                  if (group.variants.length === 1) {
+                  if (!isCarpetaGroup(group)) {
                     return (
                       <ProductRow
                         key={group.key}
@@ -664,12 +820,12 @@ export function Products() {
                         index={i}
                         expanded={isExpanded}
                         onToggle={() => toggleExpanded(group.key)}
-                        onAddVariant={() => navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(group.familiaId)}`)}
                         onToggleVisible={() => handleToggleFamilyVisible(group)}
                         onAddChild={() => {
                           const fam = families.find(f => f.id === group.familiaId)
                           if (fam) setPickerFamily(fam)
                         }}
+                        onDelete={() => setDeletingFamily(group)}
                       />
                       <AnimatePresence initial={false}>
                         {isExpanded && group.variants.map((v, vi) => (
@@ -733,6 +889,17 @@ export function Products() {
           family={pickerFamily}
           unassigned={unassignedChildren}
           onConfirm={handleAddChildren}
+        />
+      )}
+
+      {deletingFamily && (
+        <DeleteFamilyModal
+          open={Boolean(deletingFamily)}
+          onOpenChange={open => { if (!open) setDeletingFamily(null) }}
+          familyName={deletingFamily.variants[0].nombre}
+          productCount={deletingFamily.variants.length}
+          onKeepProducts={handleDeleteFamilyKeep}
+          onDeleteProducts={handleDeleteFamilyCascade}
         />
       )}
 

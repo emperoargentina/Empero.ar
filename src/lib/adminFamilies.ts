@@ -102,6 +102,26 @@ export async function deleteFamily(id: string): Promise<{ error: string | null }
   return { error: error?.message ?? null }
 }
 
+// Borra la familia y desvincula sus productos — pasan a ser hijos huérfanos.
+export async function deleteFamilyKeepProducts(id: string): Promise<{ error: string | null }> {
+  const { error: unlinkError } = await supabase
+    .from('products')
+    .update({ familia_id: SIN_ASIGNAR_ID })
+    .eq('familia_id', id)
+  if (unlinkError) return { error: unlinkError.message }
+  return deleteFamily(id)
+}
+
+// Borra la familia y todos los productos vinculados a ella.
+export async function deleteFamilyWithProducts(id: string): Promise<{ error: string | null }> {
+  const { error: deleteProductsError } = await supabase
+    .from('products')
+    .delete()
+    .eq('familia_id', id)
+  if (deleteProductsError) return { error: deleteProductsError.message }
+  return deleteFamily(id)
+}
+
 // "Crear Familia": solo un nombre, sin categoría/imagen/características —
 // la categoría se completa recién con el primer producto hijo que se le agregue.
 export async function createEmptyFamily(nombre: string): Promise<{ data: ProductFamily | null; error: string | null }> {
@@ -111,6 +131,7 @@ export async function createEmptyFamily(nombre: string): Promise<{ data: Product
     cloudinary_url: null,
     cloudinary_image_id: null,
     caracteristicas_generales: null,
+    es_carpeta: true,
   })
 }
 
@@ -118,6 +139,13 @@ export async function createEmptyFamily(nombre: string): Promise<{ data: Product
 // Si la familia todavía no tiene categoría, la toma de `categoria` (la del
 // primer lote agregado); todos los productos del lote deben compartirla —
 // eso se valida en la UI antes de llamar a esta función.
+// Al asignarlo a la familia, el trigger de Postgres pisa nombre/categoria/
+// imagen del producto con los de la familia (así todas las variantes
+// muestran el mismo título en la card). Para no perder la identificación
+// que tenía el hijo mientras estaba huérfano, si todavía no tiene su propio
+// "etiqueta" ("Nombre de Producto hijo") le copiamos ahí su nombre previo —
+// ese campo el trigger nunca lo toca, así que sigue distinguiéndolo en el
+// selector de variantes y en el listado del admin.
 export async function addChildrenToFamily(
   family: ProductFamily,
   productIds: string[],
@@ -127,6 +155,24 @@ export async function addChildrenToFamily(
     const { error: catError } = await updateFamily(family.id, { categoria })
     if (catError) return { error: catError }
   }
-  const { error } = await supabase.from('products').update({ familia_id: family.id }).in('id', productIds)
-  return { error: error?.message ?? null }
+
+  const { data: children, error: fetchError } = await supabase
+    .from('products')
+    .select('id, nombre, etiqueta')
+    .in('id', productIds)
+  if (fetchError) return { error: fetchError.message }
+
+  const results = await Promise.all(
+    (children ?? []).map(p =>
+      supabase
+        .from('products')
+        .update({
+          familia_id: family.id,
+          ...(p.etiqueta?.trim() ? {} : { etiqueta: p.nombre }),
+        })
+        .eq('id', p.id),
+    ),
+  )
+  const failed = results.find(r => r.error)
+  return { error: failed?.error?.message ?? null }
 }

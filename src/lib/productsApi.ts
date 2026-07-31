@@ -12,7 +12,11 @@ export async function fetchAvailableProducts(): Promise<Product[]> {
     )
   }
 
-  const url = `${SUPABASE_URL}/rest/v1/products?select=*&disponible=eq.true&order=nombre.asc`
+  // Excluye el pool de "productos hijo" sin asignar (familia_id = "_sin_asignar")
+  // — son borradores del admin en tránsito hacia una familia real, nunca deben
+  // filtrarse al catálogo público (y si dos huérfanos no relacionados quedaran
+  // visibles, se agruparían entre sí por compartir el mismo familia_id sentinela).
+  const url = `${SUPABASE_URL}/rest/v1/products?select=*&disponible=eq.true&familia_id=neq._sin_asignar&order=nombre.asc`
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
 

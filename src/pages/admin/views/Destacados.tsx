@@ -5,6 +5,7 @@ import { invalidatePublicProductsCache } from '@/hooks/useProducts'
 import type { Producto } from '@/types/producto'
 import { toast } from 'sonner'
 import { Search, Star, Package, X, Loader2, Check, Plus, GripVertical } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 
 const MAX_DESTACADOS = 5
 
@@ -219,14 +220,14 @@ export function Destacados() {
         <div className="bg-white rounded-xl border border-[#EBE5DC] shadow-sm overflow-hidden">
           <div className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8]" />
-              <input
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
+              <Input
                 ref={searchRef}
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Buscá productos para agregar como destacados..."
-                className="w-full pl-9 pr-4 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all"
+                className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
               />
             </div>
           </div>

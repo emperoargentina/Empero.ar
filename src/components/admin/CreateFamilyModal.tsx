@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react'
 import { Loader2, FolderPlus } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 interface CreateFamilyModalProps {
   open: boolean
@@ -38,36 +41,37 @@ export function CreateFamilyModal({ open, onOpenChange, onConfirm }: CreateFamil
         </DialogHeader>
 
         <div className="px-5 py-5">
-          <p className="text-xs font-semibold uppercase tracking-wider mb-1.5 text-[#9E9080]">Nombre *</p>
-          <input
+          <Label className="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-[#9E9080]">Nombre *</Label>
+          <Input
             autoFocus
             value={nombre}
             onChange={e => setNombre(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); void handleConfirm() } }}
             placeholder="Ej: Lavavajillas Industrial LV-500"
-            className="w-full px-3 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[rgba(196,27,46,0.1)] transition-all placeholder:text-[#C0B5A8] bg-white"
+            className="border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
           />
         </div>
 
         <DialogFooter className="px-5 py-4 border-t border-[#EBE5DC] bg-[#FAF8F4]">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B6159] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
+            className="text-[#6B6159] hover:bg-[#F4F0E8]"
           >
             Cancelar
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="brand"
             onClick={handleConfirm}
             disabled={!nombre.trim() || submitting}
-            className="flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             {submitting
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Creando...</>
               : 'Crear familia'
             }
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

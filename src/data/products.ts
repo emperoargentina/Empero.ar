@@ -10,6 +10,7 @@ export interface Product {
   nombre: string;
   categoria: string;
   precio_usd: number | null;
+  mostrar_precio: boolean;
   stock: number;
   disponible: boolean;
   destacado?: boolean;

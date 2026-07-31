@@ -1,26 +1,36 @@
 // src/pages/admin/views/ProductForm.tsx
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom'
-import { useForm, type Resolver } from 'react-hook-form'
+import { motion } from 'framer-motion'
+import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useForm, Controller, type Resolver } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
 import { type Producto, CATEGORIAS } from '@/types/producto'
 import type { ProductFamily } from '@/types/family'
-import { getProductos } from '@/lib/productosCache'
-import { buildFamilyOptions, generateUniqueFamilyId, SIN_ASIGNAR_ID, type FamilyOption } from '@/lib/adminFamilies'
+import { getProductos, invalidateProductosCache } from '@/lib/productosCache'
+import { buildFamilyOptions, generateUniqueFamilyId, updateFamily, SIN_ASIGNAR_ID, type FamilyOption } from '@/lib/adminFamilies'
 import { toast } from 'sonner'
 import {
-  ArrowLeft, Save, Loader2, FileText, Ruler, Wrench, Plus, X, Layers, Pencil,
+  ArrowLeft, Save, Loader2, FileText, Ruler, Sparkles, Plus, X, AlertTriangle,
+  Tag, Package, Weight, Zap, Boxes,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
-import { FamilyPicker } from '@/components/admin/FamilyPicker'
+import { CATEGORIA_ICONS } from '@/lib/categoriaIcons'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const schema = z.object({
   // Variante
   codigo:                 z.string().min(1, 'Requerido'),
   etiqueta:               z.string().nullable().optional(),
   precio_usd:             z.coerce.number().nullable().optional(),
+  mostrar_precio:         z.boolean(),
   stock:                  z.coerce.number().int().min(0),
   disponible:             z.boolean(),
   modo_disponibilidad:    z.enum(['en_stock', 'por_encargo']),
@@ -37,29 +47,28 @@ const schema = z.object({
   consumo_gas_m3h:        z.coerce.number().nullable().optional(),
   rejilla_mm:             z.string().nullable().optional(),
   accesorios:             z.array(z.string()),
-  // Familia (solo se usan/validan si se está creando una familia nueva)
-  familia_nombre:               z.string().optional(),
-  familia_categoria:            z.string().optional(),
-  familia_cloudinary_url:       z.string().nullable().optional(),
-  familia_cloudinary_image_id:  z.string().nullable().optional(),
-  familia_caracteristicas:      z.array(z.string()),
-  // Producto hijo (solo se usan/validan si el toggle "Convertir en Producto Hijo" está activo)
-  hijo_nombre:                  z.string().optional(),
-  hijo_categoria:               z.string().optional(),
+  // Nombre/categoría/imagen del producto — si es un producto hijo se guardan
+  // directo en la fila (sin familia todavía); si no, arman/actualizan su
+  // familia personal de 1 solo producto ("único"). No aplica si el producto
+  // ya pertenece a una familia real: ahí se editan desde "Editar familia".
+  nombre:                 z.string().optional(),
+  categoria:              z.string().optional(),
+  cloudinary_url:         z.string().nullable().optional(),
+  cloudinary_image_id:    z.string().nullable().optional(),
+  caracteristicas:        z.array(z.string()),
 })
 
 type FormValues = z.infer<typeof schema>
 
 const EMPTY_DEFAULTS: FormValues = {
-  codigo: '', etiqueta: '', precio_usd: undefined, stock: 0, disponible: true,
+  codigo: '', etiqueta: '', precio_usd: undefined, mostrar_precio: false, stock: 0, disponible: true,
   modo_disponibilidad: 'en_stock',
   peso_kg: undefined, volumen_m3: undefined, capacidad: '', dimensiones_canasto_mm: '',
   dim_ancho: undefined, dim_prof: undefined, dim_alto: undefined, dim_alto_min: undefined, dim_alto_max: undefined,
   potencia_kw: undefined, consumo_gas_m3h: undefined, rejilla_mm: '',
   accesorios: [],
-  familia_nombre: '', familia_categoria: '', familia_cloudinary_url: '', familia_cloudinary_image_id: '',
-  familia_caracteristicas: [],
-  hijo_nombre: '', hijo_categoria: '',
+  nombre: '', categoria: '', cloudinary_url: '', cloudinary_image_id: '',
+  caracteristicas: [],
 }
 
 function toForm(p: Producto): FormValues {
@@ -68,6 +77,7 @@ function toForm(p: Producto): FormValues {
     codigo:                 p.codigo,
     etiqueta:               p.etiqueta ?? '',
     precio_usd:             p.precio_usd ?? undefined,
+    mostrar_precio:         p.mostrar_precio,
     stock:                  p.stock,
     disponible:             p.disponible,
     modo_disponibilidad:    p.modo_disponibilidad,
@@ -84,20 +94,25 @@ function toForm(p: Producto): FormValues {
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             p.accesorios_incluidos ?? [],
-    hijo_nombre:            p.nombre,
-    hijo_categoria:         p.categoria,
+    nombre:                 p.nombre,
+    categoria:              p.categoria,
+    cloudinary_url:         p.cloudinary_url ?? '',
+    cloudinary_image_id:    p.cloudinary_image_id ?? '',
+    caracteristicas:        p.caracteristicas_generales ?? [],
   }
 }
 
 const nullIfEmpty = (s?: string | null) => (s && s.trim() ? s.trim() : null)
 
 // Payload de variante — nunca incluye nombre/categoria/imagen/características:
-// el trigger de Postgres los deriva siempre de product_families vía familia_id.
+// el trigger de Postgres los deriva siempre de product_families vía familia_id
+// (salvo que familia_id sea la sentinela "sin asignar", ver onSubmit).
 function fromForm(v: FormValues): Record<string, unknown> {
   return {
     codigo:                 v.codigo,
     etiqueta:               nullIfEmpty(v.etiqueta),
     precio_usd:             v.precio_usd ?? null,
+    mostrar_precio:         v.mostrar_precio,
     stock:                  v.stock,
     disponible:             v.disponible,
     modo_disponibilidad:    v.modo_disponibilidad,
@@ -122,8 +137,8 @@ function fromForm(v: FormValues): Record<string, unknown> {
   }
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-semibold uppercase tracking-wider mb-1.5 text-[#9E9080]">{children}</p>
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <Label className="block text-[13px] font-bold uppercase tracking-wider mb-1.5 text-[#1A1613]">{children}</Label>
 }
 
 function Hint({ children }: { children: React.ReactNode }) {
@@ -134,14 +149,66 @@ function ErrorText({ children }: { children: React.ReactNode }) {
   return <p className="mt-1 text-xs text-red-500">{children}</p>
 }
 
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-xl p-5 space-y-4 bg-white border border-[#EBE5DC] ${className}`}>{children}</div>
+const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]'
+
+// Card de sección con icono de color — agrupa visualmente los campos
+// relacionados y hace mucho más fácil escanear tabs largos como
+// "Especificaciones" o "Características".
+function SectionCard({
+  icon: Icon, tint, title, description, className = '', children,
+}: {
+  icon: React.ElementType
+  tint: string
+  title: string
+  description?: string
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className={`rounded-xl border border-[#EBE5DC] bg-white overflow-hidden ${className}`}>
+      <div className="flex items-start gap-3 px-5 py-4 border-b border-[#EBE5DC] bg-[#FCFBF9]">
+        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${tint}`}>
+          <Icon className="w-4 h-4" />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-[#1A1613]">{title}</p>
+          {description && <p className="text-xs text-[#9E9080] mt-0.5">{description}</p>}
+        </div>
+      </div>
+      <div className="p-5 space-y-4 flex-1">{children}</div>
+    </div>
+  )
+}
+
+function ToggleRow({
+  label, hint, checked, onChange, color = 'brand',
+}: {
+  label: string
+  hint: string
+  checked: boolean
+  onChange: (value: boolean) => void
+  color?: 'brand' | 'green'
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 p-3 border border-[#EBE5DC] rounded-xl">
+      <div className="min-w-0">
+        <span className="text-sm font-medium text-[#1A1613] block truncate">{label}</span>
+        <p className="text-xs text-[#9E9080] mt-0.5 truncate">{hint}</p>
+      </div>
+      <Switch
+        checked={checked}
+        onCheckedChange={onChange}
+        className={`flex-shrink-0 data-[state=unchecked]:bg-[#D8D0C6] ${
+          color === 'green' ? 'data-[state=checked]:bg-emerald-500' : 'data-[state=checked]:bg-[#C41B2E]'
+        }`}
+      />
+    </div>
+  )
 }
 
 function ListField({
-  label, hint, items, onChange, placeholder,
+  hint, items, onChange, placeholder,
 }: {
-  label: string
   hint?: string
   items: string[]
   onChange: (items: string[]) => void
@@ -158,24 +225,19 @@ function ListField({
 
   return (
     <div>
-      <Label>{label}</Label>
       <div className="flex gap-2">
-        <input
+        <Input
           value={draft}
           onChange={e => setDraft(e.target.value)}
           onKeyDown={e => {
             if (e.key === 'Enter') { e.preventDefault(); addItem() }
           }}
-          className={inputCls}
+          className={fieldCls}
           placeholder={placeholder}
         />
-        <button
-          type="button"
-          onClick={addItem}
-          className="flex items-center gap-1.5 px-4 rounded-lg text-sm font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer whitespace-nowrap"
-        >
+        <Button type="button" variant="brand" onClick={addItem} className="whitespace-nowrap">
           <Plus className="w-4 h-4" /> Agregar
-        </button>
+        </Button>
       </div>
       {hint && <Hint>{hint}</Hint>}
       {items.length > 0 && (
@@ -186,13 +248,15 @@ function ListField({
               className="flex items-center justify-between gap-3 px-3 py-2 text-sm text-[#1A1613] border-b border-[#EBE5DC] last:border-b-0 odd:bg-white even:bg-[#FAF8F4]/50"
             >
               <span>{item}</span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="iconSm"
                 onClick={() => onChange(items.filter((_, idx) => idx !== i))}
-                className="text-[#C0B5A8] hover:text-red-500 transition-colors cursor-pointer"
+                className="text-[#C0B5A8] hover:text-red-500 hover:bg-red-50"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -201,41 +265,35 @@ function ListField({
   )
 }
 
-const inputCls =
-  'w-full px-3 py-2.5 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[rgba(196,27,46,0.1)] transition-all placeholder:text-[#C0B5A8] bg-white'
-
-type Tab = 'familia' | 'variante' | 'fisico' | 'tecnico'
+type Tab = 'basico' | 'especificaciones' | 'caracteristicas'
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: 'familia',  label: 'Familia',  icon: Layers },
-  { id: 'variante', label: 'Variante', icon: FileText },
-  { id: 'fisico',   label: 'Físico',   icon: Ruler },
-  { id: 'tecnico',  label: 'Técnico',  icon: Wrench },
+  { id: 'basico',           label: 'Básico',           icon: FileText },
+  { id: 'especificaciones', label: 'Especificaciones', icon: Ruler },
+  { id: 'caracteristicas',  label: 'Características',  icon: Sparkles },
 ]
-
-type FamilyMode = 'existing' | 'new'
 
 export function ProductForm() {
   const { id } = useParams<{ id: string }>()
   const isEdit = Boolean(id)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
-  const [tab, setTab] = useState<Tab>('familia')
+  const [tab, setTab] = useState<Tab>('basico')
   const [loading, setLoading] = useState(isEdit)
   const [loadError, setLoadError] = useState('')
   const [producto, setProducto] = useState<Producto | null>(null)
   const [familyOptions, setFamilyOptions] = useState<FamilyOption[]>([])
 
-  const [familyMode, setFamilyMode] = useState<FamilyMode>(isEdit ? 'existing' : 'new')
   const [familyId, setFamilyId] = useState<string | null>(null)
   const [familyPreview, setFamilyPreview] = useState<ProductFamily | null>(null)
+  const [isCarpeta, setIsCarpeta] = useState(false)
   const [isChild, setIsChild] = useState(false)
 
   const wasPending = producto?.familia_id === SIN_ASIGNAR_ID
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     watch,
@@ -274,46 +332,63 @@ export function ProductForm() {
     void loadFamilyOptions()
   }, [])
 
+  // Determina si el producto pertenece a una familia real (carpeta) — más
+  // de un producto adentro, o marcada explícitamente con es_carpeta.
   useEffect(() => {
-    if (isEdit) return
-    const fam = searchParams.get('familia_id')
-    if (fam) {
-      setFamilyMode('existing')
-      setFamilyId(fam)
-    }
-  }, [isEdit, searchParams])
-
-  useEffect(() => {
-    if (familyMode !== 'existing' || !familyId) {
+    if (!familyId || familyId === SIN_ASIGNAR_ID) {
       setFamilyPreview(null)
+      setIsCarpeta(false)
       return
     }
     let cancelled = false
-    supabase.from('product_families').select('*').eq('id', familyId).single().then(({ data }) => {
-      if (!cancelled) setFamilyPreview((data as ProductFamily) ?? null)
-    })
+    const load = async () => {
+      const [{ data: fam }, { count }] = await Promise.all([
+        supabase.from('product_families').select('*').eq('id', familyId).single(),
+        supabase.from('products').select('*', { count: 'exact', head: true }).eq('familia_id', familyId),
+      ])
+      if (cancelled) return
+      setFamilyPreview((fam as ProductFamily) ?? null)
+      setIsCarpeta(Boolean((fam as ProductFamily | null)?.es_carpeta) || (count ?? 0) > 1)
+    }
+    void load()
     return () => { cancelled = true }
-  }, [familyMode, familyId])
+  }, [familyId])
 
-  const handleAddVariant = () => {
-    if (!producto || wasPending) return
-    navigate(`/admin/productos/nuevo?familia_id=${encodeURIComponent(producto.familia_id)}`)
+  const handleQuitarDeFamilia = async () => {
+    if (!id || !familyId || !familyPreview) return
+    if (!confirm(`¿Quitar este producto de "${familyPreview.nombre}"? Pasará a ser un producto hijo sin familia asignada.`)) return
+    const { error } = await supabase.from('products').update({ familia_id: SIN_ASIGNAR_ID }).eq('id', id)
+    if (error) { toast.error('Error al quitar de la familia: ' + error.message); return }
+
+    const { data } = await supabase.from('products').select('*').eq('id', id).single()
+    if (data) {
+      const p = data as Producto
+      setProducto(p)
+      setFamilyId(p.familia_id)
+      setIsChild(true)
+      reset(toForm(p))
+    }
+    invalidateProductosCache()
+    toast.success('Producto quitado de la familia — ahora es un producto hijo sin asignar')
   }
 
   const onSubmit = async (values: FormValues) => {
     // Caso: producto hijo — se guarda en el pool "Sin asignar", sin familia real.
     if (isChild) {
-      if (!values.hijo_nombre?.trim() || !values.hijo_categoria?.trim()) {
+      if (!values.nombre?.trim() || !values.categoria?.trim()) {
         toast.error('Completá nombre y categoría del producto hijo')
-        setTab('familia')
+        setTab('basico')
         return
       }
       const previousFamiliaId = producto?.familia_id ?? null
       const payload = {
         ...fromForm(values),
         familia_id: SIN_ASIGNAR_ID,
-        nombre: values.hijo_nombre.trim(),
-        categoria: values.hijo_categoria,
+        nombre: values.nombre.trim(),
+        categoria: values.categoria,
+        cloudinary_url: nullIfEmpty(values.cloudinary_url),
+        cloudinary_image_id: nullIfEmpty(values.cloudinary_image_id),
+        ...(isEdit ? {} : { id: crypto.randomUUID() }),
       }
 
       const { error } = isEdit
@@ -325,52 +400,96 @@ export function ProductForm() {
         return
       }
 
-      // Si se extrajo de una familia real que quedó sin productos, se borra.
+      // Si se extrajo de una familia personal que quedó sin productos, se
+      // borra — pero nunca una carpeta real creada a propósito (esa puede
+      // quedar vacía a propósito, ver "familias pendientes").
       if (previousFamiliaId && previousFamiliaId !== SIN_ASIGNAR_ID) {
         const { count } = await supabase
           .from('products')
           .select('*', { count: 'exact', head: true })
           .eq('familia_id', previousFamiliaId)
-        if (count === 0) void supabase.from('product_families').delete().eq('id', previousFamiliaId)
+        if (count === 0) {
+          const { data: prevFam } = await supabase
+            .from('product_families')
+            .select('es_carpeta')
+            .eq('id', previousFamiliaId)
+            .single()
+          if (!prevFam?.es_carpeta) {
+            const { error: delError } = await supabase.from('product_families').delete().eq('id', previousFamiliaId)
+            if (delError) toast.error('No se pudo borrar la familia anterior: ' + delError.message)
+          }
+        }
       }
 
+      invalidateProductosCache()
       toast.success(isEdit ? 'Producto actualizado — sin familia asignada' : 'Producto hijo creado — asignalo desde una familia')
       navigate('/admin/productos')
       return
     }
 
-    // Caso: producto con familia real.
+    // Caso: producto ya asignado a una familia real — solo se editan sus
+    // campos propios, nombre/categoría/imagen se manejan desde "Editar familia".
+    if (isCarpeta) {
+      if (!familyId) { toast.error('Falta la familia del producto'); return }
+      const payload = { ...fromForm(values), familia_id: familyId }
+      const { error } = await supabase.from('products').update(payload).eq('id', id)
+      if (error) { toast.error('Error al guardar: ' + error.message); return }
+      invalidateProductosCache()
+      toast.success('Producto actualizado')
+      navigate('/admin/productos')
+      return
+    }
+
+    // Caso: producto único — arma o actualiza su familia personal (1:1).
+    if (!values.nombre?.trim() || !values.categoria?.trim()) {
+      toast.error('Completá nombre y categoría del producto')
+      setTab('basico')
+      return
+    }
+
     let famId = familyId
-    const mustCreateNewFamily = familyMode === 'new' || (isEdit && wasPending)
+    const mustCreateNewFamily = !isEdit || wasPending
 
     if (mustCreateNewFamily) {
-      if (!values.familia_nombre?.trim() || !values.familia_categoria?.trim()) {
-        toast.error('Completá nombre y categoría de la familia')
-        setTab('familia')
-        return
-      }
-      famId = generateUniqueFamilyId(values.familia_nombre, familyOptions.map(f => f.familia_id))
+      famId = generateUniqueFamilyId(values.nombre, familyOptions.map(f => f.familia_id))
       const { error: famError } = await supabase.from('product_families').insert({
         id: famId,
-        nombre: values.familia_nombre.trim(),
-        categoria: values.familia_categoria,
-        cloudinary_url: nullIfEmpty(values.familia_cloudinary_url),
-        cloudinary_image_id: nullIfEmpty(values.familia_cloudinary_image_id),
-        caracteristicas_generales: values.familia_caracteristicas.length ? values.familia_caracteristicas : null,
+        nombre: values.nombre.trim(),
+        categoria: values.categoria,
+        cloudinary_url: nullIfEmpty(values.cloudinary_url),
+        cloudinary_image_id: nullIfEmpty(values.cloudinary_image_id),
+        caracteristicas_generales: values.caracteristicas.length ? values.caracteristicas : null,
+        es_carpeta: false,
       })
       if (famError) {
         toast.error('Error al crear la familia: ' + famError.message)
+        return
+      }
+    } else {
+      const { error: famError } = await updateFamily(famId!, {
+        nombre: values.nombre.trim(),
+        categoria: values.categoria,
+        cloudinary_url: nullIfEmpty(values.cloudinary_url),
+        cloudinary_image_id: nullIfEmpty(values.cloudinary_image_id),
+        caracteristicas_generales: values.caracteristicas.length ? values.caracteristicas : null,
+      })
+      if (famError) {
+        toast.error('Error al actualizar el producto: ' + famError)
         return
       }
     }
 
     if (!famId) {
       toast.error('Elegí o creá una familia para el producto')
-      setTab('familia')
+      setTab('basico')
       return
     }
 
-    const payload = { ...fromForm(values), familia_id: famId }
+    const payload = {
+      ...fromForm(values),
+      familia_id: famId,
+      ...(isEdit ? {} : { id: crypto.randomUUID() }),
+    }
 
     const { error } = isEdit
       ? await supabase.from('products').update(payload).eq('id', id)
@@ -386,6 +505,7 @@ export function ProductForm() {
       return
     }
 
+    invalidateProductosCache()
     toast.success(isEdit ? 'Producto actualizado' : 'Producto creado')
     navigate('/admin/productos')
   }
@@ -411,231 +531,199 @@ export function ProductForm() {
   }
 
   const disponible = watch('disponible')
+  const mostrarPrecio = watch('mostrar_precio')
   const accesorios = watch('accesorios')
-  const familiaCloudinaryUrl = watch('familia_cloudinary_url')
-  const familiaCloudinaryImageId = watch('familia_cloudinary_image_id')
-  const familiaCaracteristicas = watch('familia_caracteristicas')
+  const cloudinaryUrl = watch('cloudinary_url')
+  const cloudinaryImageId = watch('cloudinary_image_id')
+  const caracteristicas = watch('caracteristicas')
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link
-          to="/admin/productos"
-          className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#EBE5DC] text-[#6B6159] hover:bg-[#F4F0E8] transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
+        <Button asChild variant="brandOutline" size="icon" className="rounded-lg">
+          <Link to="/admin/productos">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+        </Button>
         <div>
           <h1 className="text-lg font-bold text-[#1A1613]">
-            {isEdit
-              ? (wasPending ? (producto?.nombre ?? 'Editar producto') : (familyPreview?.nombre ?? 'Editar producto'))
-              : 'Agregar producto'}
+            {isEdit ? (producto?.nombre ?? 'Editar producto') : 'Agregar producto'}
           </h1>
           <p className="text-xs text-[#9E9080]">
             {isEdit ? `Editando · ${producto?.codigo ?? ''}` : 'Completá los datos para crear un producto nuevo'}
           </p>
         </div>
-        {isEdit && producto && !wasPending && (
-          <button
-            type="button"
-            onClick={handleAddVariant}
-            className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors cursor-pointer"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            Agregar variante
-          </button>
-        )}
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="inline-flex items-center gap-0.5 mb-6 p-1 rounded-lg bg-[#F4F0E8] border border-[#EBE5DC]">
-          {TABS.map(({ id: tabId, label, icon: Icon }) => {
-            const active = tab === tabId
-            return (
-              <button
-                key={tabId}
-                type="button"
-                onClick={() => setTab(tabId)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all cursor-pointer ${
-                  active ? 'bg-[#C41B2E] text-white shadow-[0_1px_6px_rgba(196,27,46,0.4)]' : 'text-[#6B6159] hover:text-[#1A1613]'
-                }`}
+        <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <Tabs
+            value={tab}
+            onValueChange={v => setTab(v as Tab)}
+            className="w-fit"
+          >
+            <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-lg gap-0.5">
+              {TABS.map(({ id: tabId, label, icon: Icon }) => (
+                <TabsTrigger
+                  key={tabId}
+                  value={tabId}
+                  className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
+                >
+                  {tab === tabId && (
+                    <motion.span
+                      layoutId="productform-tab-pill"
+                      className="absolute inset-0 rounded-md bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
+                      transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
+          {isCarpeta && familyPreview && (
+            <div className="flex items-center gap-2 text-sm flex-wrap">
+              <span className="text-[#9E9080]">Pertenece a la familia:</span>
+              <Link
+                to={`/admin/familias/${familyId}`}
+                className="font-semibold text-[#1A1613] hover:text-[#C41B2E] transition-colors"
               >
-                <Icon className="w-3.5 h-3.5" />
-                {label}
-              </button>
-            )
-          })}
+                {familyPreview.nombre}
+              </Link>
+              <Badge variant="secondary" className="bg-[#FAF8F4] text-[#6B6159] border-[#EBE5DC] font-medium">
+                {familyPreview.categoria}
+              </Badge>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={handleQuitarDeFamilia}
+                className="bg-red-50 text-red-600 border border-red-200 shadow-none hover:bg-red-100"
+              >
+                <X className="w-3.5 h-3.5" /> Quitar
+              </Button>
+            </div>
+          )}
         </div>
 
-        {tab === 'familia' && (
-          <div className="space-y-5 min-h-[32rem]">
-            <Card>
-              <label className="flex items-center gap-3 p-4 -m-1 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#D8D0C4] transition-colors has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)]">
-                <input
-                  type="checkbox"
-                  checked={isChild}
-                  onChange={e => setIsChild(e.target.checked)}
-                  className="w-4 h-4 accent-[#C41B2E] rounded flex-shrink-0"
-                />
-                <div>
-                  <span className="text-sm font-medium text-[#1A1613]">Convertir en Producto Hijo</span>
-                  <p className="text-xs text-[#9E9080] mt-0.5">
-                    {isChild
-                      ? 'Se guarda sin familia todavía — lo asignás después desde el botón "Agregar producto hijo" de una familia.'
-                      : 'Es un producto normal: elegí o creá su familia abajo.'}
-                  </p>
-                </div>
-              </label>
-            </Card>
-
-            {isChild ? (
-              <Card>
-                <div className="grid grid-cols-2 gap-5">
-                  <div>
-                    <Label>Nombre *</Label>
-                    <input {...register('hijo_nombre')} className={inputCls} placeholder="Para identificarlo en el selector" />
-                  </div>
-                  <div>
-                    <Label>Categoría *</Label>
-                    <select {...register('hijo_categoria')} className={inputCls + ' cursor-pointer'}>
-                      <option value="">Seleccionar categoría...</option>
-                      {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <Hint>Sin imagen ni características propias — esos datos los toma de la familia recién lo asignes.</Hint>
-              </Card>
-            ) : (
-              <>
-                {!isEdit && (
-                  <Card>
-                    <div>
-                      <Label>Familia de variantes *</Label>
-                      <FamilyPicker
-                        value={familyMode === 'existing' ? familyId : null}
-                        options={familyOptions}
-                        onChange={fam => {
-                          if (fam) {
-                            setFamilyMode('existing')
-                            setFamilyId(fam)
-                          } else {
-                            setFamilyMode('new')
-                            setFamilyId(null)
-                          }
-                        }}
-                        onCreateNew={nombre => {
-                          setFamilyMode('new')
-                          setFamilyId(null)
-                          setValue('familia_nombre', nombre)
-                        }}
-                      />
-                      <Hint>Elegí una familia existente para agregarle una variante, o escribí un nombre nuevo para crear una familia.</Hint>
-                    </div>
-                  </Card>
-                )}
-
-                {familyMode === 'existing' && !(isEdit && wasPending) && (
-                  <Card className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
-                      {familyPreview?.cloudinary_url
-                        ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} className="w-full h-full object-cover" />
-                        : <Layers className="w-6 h-6 text-[#C0B5A8]" />
-                      }
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      {familyPreview ? (
-                        <>
-                          <p className="font-semibold text-[#1A1613] truncate">{familyPreview.nombre}</p>
-                          <p className="text-xs text-[#9E9080]">{familyPreview.categoria}</p>
-                        </>
-                      ) : (
-                        <p className="text-sm text-[#9E9080]">Cargando datos de la familia...</p>
-                      )}
-                    </div>
-                    {familyId && (
-                      <Link
-                        to={`/admin/familias/${familyId}`}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#C41B2E] border border-[#C41B2E]/30 bg-[#FFF0F1] hover:bg-[#FFE4E6] transition-colors flex-shrink-0"
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                        Editar familia
-                      </Link>
-                    )}
-                  </Card>
-                )}
-
-                {(familyMode === 'new' || (isEdit && wasPending)) && (
-                  <Card>
-                    {isEdit && wasPending && (
-                      <Hint>Este producto todavía no tenía familia — creá una para que pase a ser "único".</Hint>
-                    )}
-                    <div className="grid grid-cols-2 gap-5">
-                      <div>
-                        <Label>Nombre de familia *</Label>
-                        <input {...register('familia_nombre')} className={inputCls} placeholder="Ej: Lavavajillas Industrial LV-500" />
-                      </div>
-                      <div>
-                        <Label>Categoría *</Label>
-                        <select {...register('familia_categoria')} className={inputCls + ' cursor-pointer'}>
-                          <option value="">Seleccionar categoría...</option>
-                          {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                      </div>
-                    </div>
-                    <ImageUpload
-                      url={familiaCloudinaryUrl || null}
-                      publicId={familiaCloudinaryImageId || null}
-                      onChange={(url, publicId) => {
-                        setValue('familia_cloudinary_url', url ?? '')
-                        setValue('familia_cloudinary_image_id', publicId ?? '')
-                      }}
-                    />
-                    <ListField
-                      label="Características generales"
-                      hint="Escribí una característica y presioná Enter o Agregar — se comparten entre todas las variantes de la familia"
-                      items={familiaCaracteristicas}
-                      onChange={items => setValue('familia_caracteristicas', items)}
-                      placeholder="Ej: Construcción en acero inoxidable"
-                    />
-                  </Card>
-                )}
-              </>
-            )}
-          </div>
-        )}
-
-        {tab === 'variante' && (
-          <div className="space-y-5 min-h-[32rem]">
-            <Card>
+        {tab === 'basico' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+            <SectionCard
+              icon={Tag}
+              tint="bg-[#FFE4E6] text-[#C41B2E]"
+              title="Identidad del producto"
+              description={
+                isCarpeta
+                  ? 'Se edita desde "Editar familia" — se comparte con el resto de las variantes'
+                  : isChild
+                    ? 'Nombre, categoría e imagen para identificarlo mientras no tiene familia'
+                    : 'Nombre, categoría e imagen que va a mostrar el catálogo'
+              }
+              className="h-full flex flex-col"
+            >
+              {isEdit && wasPending && !isChild && (
+                <Hint>Este producto no tenía familia — al guardar se crea una para que pase a ser "único".</Hint>
+              )}
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <Label>Código *</Label>
-                  <input {...register('codigo')} className={inputCls} placeholder="Ej: EMP.LV-500" />
+                  <FieldLabel>Nombre *</FieldLabel>
+                  <Input
+                    {...register('nombre')}
+                    disabled={isCarpeta}
+                    className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}
+                    placeholder={isChild ? 'Para identificarlo en el selector' : 'Ej: Lavavajillas Industrial LV-500'}
+                  />
+                </div>
+                <div>
+                  <FieldLabel>Categoría *</FieldLabel>
+                  <Controller
+                    control={control}
+                    name="categoria"
+                    render={({ field }) => (
+                      <Select value={field.value || undefined} onValueChange={field.onChange} disabled={isCarpeta}>
+                        <SelectTrigger className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}>
+                          <SelectValue placeholder="Seleccionar categoría..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CATEGORIAS.map(c => {
+                            const Icon = CATEGORIA_ICONS[c]
+                            return (
+                              <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                                <span className="flex items-center gap-2">
+                                  <Icon className="w-3.5 h-3.5 opacity-70" />
+                                  {c}
+                                </span>
+                              </SelectItem>
+                            )
+                          })}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+              </div>
+              <ImageUpload
+                size="lg"
+                disabled={isCarpeta}
+                url={cloudinaryUrl || null}
+                publicId={cloudinaryImageId || null}
+                onChange={(url, publicId) => {
+                  setValue('cloudinary_url', url ?? '')
+                  setValue('cloudinary_image_id', publicId ?? '')
+                }}
+              />
+              {isChild && (
+                <p className="flex items-start gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                  Al ser un producto hijo sin asignar, esta imagen no se muestra en el catálogo público — se va a ver recién cuando lo asignes a una familia.
+                </p>
+              )}
+            </SectionCard>
+
+            <SectionCard
+              icon={Package}
+              tint="bg-slate-100 text-slate-600"
+              title="Datos de la variante"
+              description="Código, precio, stock y visibilidad de esta variante puntual"
+              className="h-full flex flex-col"
+            >
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <FieldLabel>Código *</FieldLabel>
+                  <Input {...register('codigo')} className={fieldCls} placeholder="Ej: EMP.LV-500" />
                   {errors.codigo && <ErrorText>{errors.codigo.message}</ErrorText>}
                 </div>
                 <div>
-                  <Label>Etiqueta de variante</Label>
-                  <input {...register('etiqueta')} className={inputCls} placeholder='Ej: "2 puertas — 300 Lt"' />
-                  <Hint>Texto en el selector de variantes</Hint>
+                  <FieldLabel>Nombre de Producto hijo</FieldLabel>
+                  <Input
+                    {...register('etiqueta')}
+                    disabled={!isChild}
+                    className={`${fieldCls} disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}
+                    placeholder={isChild ? 'Ej: "2 puertas — 300 Lt"' : 'Activá "Producto hijo" para editar'}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <Label>Precio (USD)</Label>
-                  <input type="number" step="0.01" min="0" {...register('precio_usd')} className={inputCls} placeholder="0.00" />
+                  <FieldLabel>Precio (USD)</FieldLabel>
+                  <Input type="number" step="0.01" min="0" {...register('precio_usd')} className={fieldCls} placeholder="0.00" />
                   {errors.precio_usd && <ErrorText>{errors.precio_usd.message}</ErrorText>}
                 </div>
                 <div>
-                  <Label>Stock actual</Label>
-                  <input type="number" min="0" {...register('stock')} className={inputCls} placeholder="0" />
+                  <FieldLabel>Stock actual</FieldLabel>
+                  <Input type="number" min="0" {...register('stock')} className={fieldCls} placeholder="0" />
                   {errors.stock && <ErrorText>{errors.stock.message}</ErrorText>}
                 </div>
               </div>
               <div>
-                <Label>Modo de disponibilidad *</Label>
+                <FieldLabel>Modo de disponibilidad *</FieldLabel>
                 <div className="grid grid-cols-2 gap-3">
                   {(['en_stock', 'por_encargo'] as const).map(opt => (
-                    <label key={opt} className="flex items-center gap-3 px-4 py-3 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#C41B2E]/50 has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)] transition-all">
+                    <label key={opt} className="flex items-center gap-3 px-4 py-2.5 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#C41B2E]/50 has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)] transition-all">
                       <input type="radio" value={opt} {...register('modo_disponibilidad')} className="accent-[#C41B2E]" />
                       <span className="text-sm font-medium text-[#1A1613]">
                         {opt === 'en_stock' ? 'En stock' : 'Por encargo'}
@@ -644,120 +732,169 @@ export function ProductForm() {
                   ))}
                 </div>
               </div>
-              <label className="flex items-center gap-3 p-4 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#D8D0C4] transition-colors">
-                <input type="checkbox" {...register('disponible')} className="w-4 h-4 accent-[#C41B2E] rounded" />
-                <div>
-                  <span className="text-sm font-medium text-[#1A1613]">Visible en el catálogo</span>
-                  <p className="text-xs text-[#9E9080] mt-0.5">
-                    {disponible ? 'El producto aparece en la tienda' : 'El producto está oculto'}
-                  </p>
-                </div>
-              </label>
-            </Card>
+              <div className="grid grid-cols-2 gap-3">
+                <ToggleRow
+                  label="Visible en el catálogo"
+                  hint={disponible ? 'Aparece en la tienda' : 'Está oculto'}
+                  checked={disponible}
+                  onChange={v => setValue('disponible', v)}
+                  color="green"
+                />
+                <ToggleRow
+                  label="Mostrar precio"
+                  hint={mostrarPrecio ? 'Se muestra en la ficha' : 'Precio oculto'}
+                  checked={mostrarPrecio}
+                  onChange={v => setValue('mostrar_precio', v)}
+                  color="green"
+                />
+                {!isCarpeta && (
+                  <ToggleRow
+                    label="Producto hijo"
+                    hint={isChild ? 'Sin familia todavía' : 'Producto único'}
+                    checked={isChild}
+                    onChange={setIsChild}
+                  />
+                )}
+              </div>
+            </SectionCard>
           </div>
         )}
 
-        {tab === 'fisico' && (
+        {tab === 'especificaciones' && (
           <div className="space-y-5 min-h-[32rem]">
             <p className="text-xs text-[#9E9080] italic">Todos los campos son opcionales.</p>
-            <fieldset className="border border-[#EBE5DC] rounded-xl p-5 space-y-4 bg-[#FAF8F4]/50">
-              <legend className="px-3 text-xs font-semibold text-[#6B6159] uppercase tracking-wider bg-white rounded-md py-1.5 border border-[#EBE5DC]">
-                Dimensiones externas
-              </legend>
+
+            <SectionCard
+              icon={Ruler}
+              tint="bg-sky-100 text-sky-600"
+              title="Dimensiones externas"
+              description="Medidas del gabinete — dejá el alto vacío si es regulable"
+            >
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label>Ancho (mm)</Label>
-                  <input type="number" {...register('dim_ancho')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Ancho (mm)</FieldLabel>
+                  <Input type="number" {...register('dim_ancho')} className={fieldCls} placeholder="—" />
                 </div>
                 <div>
-                  <Label>Profundidad (mm)</Label>
-                  <input type="number" {...register('dim_prof')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Profundidad (mm)</FieldLabel>
+                  <Input type="number" {...register('dim_prof')} className={fieldCls} placeholder="—" />
                 </div>
                 <div>
-                  <Label>Alto (mm)</Label>
-                  <input type="number" {...register('dim_alto')} className={inputCls} placeholder="—" />
-                  <Hint>Dejar vacío si es regulable</Hint>
+                  <FieldLabel>Alto (mm)</FieldLabel>
+                  <Input type="number" {...register('dim_alto')} className={fieldCls} placeholder="—" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Alto mínimo (mm)</Label>
-                  <input type="number" {...register('dim_alto_min')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Alto mínimo (mm)</FieldLabel>
+                  <Input type="number" {...register('dim_alto_min')} className={fieldCls} placeholder="—" />
                   <Hint>Para altura regulable</Hint>
                 </div>
                 <div>
-                  <Label>Alto máximo (mm)</Label>
-                  <input type="number" {...register('dim_alto_max')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Alto máximo (mm)</FieldLabel>
+                  <Input type="number" {...register('dim_alto_max')} className={fieldCls} placeholder="—" />
                 </div>
               </div>
-            </fieldset>
+            </SectionCard>
 
-            <Card>
+            <SectionCard
+              icon={Weight}
+              tint="bg-amber-100 text-amber-600"
+              title="Peso y capacidad"
+              description="Volumen, capacidad interna y peso para logística"
+            >
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <Label>Peso (kg)</Label>
-                  <input type="number" step="0.01" {...register('peso_kg')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Peso (kg)</FieldLabel>
+                  <Input type="number" step="0.01" {...register('peso_kg')} className={fieldCls} placeholder="—" />
                 </div>
                 <div>
-                  <Label>Volumen (m³)</Label>
-                  <input type="number" step="0.0001" {...register('volumen_m3')} className={inputCls} placeholder="—" />
+                  <FieldLabel>Volumen (m³)</FieldLabel>
+                  <Input type="number" step="0.0001" {...register('volumen_m3')} className={fieldCls} placeholder="—" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <Label>Capacidad</Label>
-                  <input {...register('capacidad')} className={inputCls} placeholder='Ej: "50 L" o "20 bandejas"' />
+                  <FieldLabel>Capacidad</FieldLabel>
+                  <Input {...register('capacidad')} className={fieldCls} placeholder='Ej: "50 L" o "20 bandejas"' />
                 </div>
                 <div>
-                  <Label>Dim. canasto (mm)</Label>
-                  <input {...register('dimensiones_canasto_mm')} className={inputCls} placeholder="Ej: 500×500" />
+                  <FieldLabel>Dim. canasto (mm)</FieldLabel>
+                  <Input {...register('dimensiones_canasto_mm')} className={fieldCls} placeholder="Ej: 500×500" />
                 </div>
               </div>
-            </Card>
+            </SectionCard>
+
+            <SectionCard
+              icon={Zap}
+              tint="bg-violet-100 text-violet-600"
+              title="Datos técnicos"
+              description="Potencia, consumo y rejilla — solo si aplica al equipo"
+            >
+              <div className="grid grid-cols-3 gap-5">
+                <div>
+                  <FieldLabel>Potencia (kW)</FieldLabel>
+                  <Input type="number" step="0.01" {...register('potencia_kw')} className={fieldCls} placeholder="—" />
+                </div>
+                <div>
+                  <FieldLabel>Consumo de gas (m³/h)</FieldLabel>
+                  <Input type="number" step="0.01" {...register('consumo_gas_m3h')} className={fieldCls} placeholder="—" />
+                </div>
+                <div>
+                  <FieldLabel>Rejilla (mm)</FieldLabel>
+                  <Input {...register('rejilla_mm')} className={fieldCls} placeholder="Ej: 560×524" />
+                </div>
+              </div>
+            </SectionCard>
           </div>
         )}
 
-        {tab === 'tecnico' && (
+        {tab === 'caracteristicas' && (
           <div className="space-y-5 min-h-[32rem]">
-            <p className="text-xs text-[#9E9080] italic">Todos los campos son opcionales.</p>
-            <Card>
-              <div className="grid grid-cols-3 gap-5">
-                <div>
-                  <Label>Potencia (kW)</Label>
-                  <input type="number" step="0.01" {...register('potencia_kw')} className={inputCls} placeholder="—" />
-                </div>
-                <div>
-                  <Label>Consumo de gas (m³/h)</Label>
-                  <input type="number" step="0.01" {...register('consumo_gas_m3h')} className={inputCls} placeholder="—" />
-                </div>
-                <div>
-                  <Label>Rejilla (mm)</Label>
-                  <input {...register('rejilla_mm')} className={inputCls} placeholder="Ej: 560×524" />
-                </div>
-              </div>
+            <SectionCard
+              icon={Sparkles}
+              tint="bg-teal-100 text-teal-600"
+              title="Características generales"
+              description="Bullets que se muestran en la ficha del producto"
+            >
+              {isCarpeta ? (
+                <Hint>Se editan desde "Editar familia" — se comparten entre todos los productos de la carpeta.</Hint>
+              ) : isChild ? (
+                <Hint>Las toma de la familia recién lo asignes a una.</Hint>
+              ) : (
+                <ListField
+                  items={caracteristicas}
+                  hint="Escribí una característica y presioná Enter o Agregar"
+                  onChange={items => setValue('caracteristicas', items)}
+                  placeholder="Ej: Construcción en acero inoxidable"
+                />
+              )}
+            </SectionCard>
+
+            <SectionCard
+              icon={Boxes}
+              tint="bg-indigo-100 text-indigo-600"
+              title="Accesorios incluidos"
+              description="Todo lo que viene de fábrica con esta variante"
+            >
               <ListField
-                label="Accesorios incluidos"
-                hint="Escribí un accesorio y presioná Enter o Agregar"
                 items={accesorios}
+                hint="Escribí un accesorio y presioná Enter o Agregar"
                 onChange={items => setValue('accesorios', items)}
                 placeholder="Ej: Cesta porta-vajilla"
               />
-            </Card>
+            </SectionCard>
           </div>
         )}
 
         <div className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC]">
           <span className="text-xs text-[#9E9080]">* Campos obligatorios</span>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] disabled:opacity-60 transition-all shadow-lg shadow-[#C41B2E]/20 cursor-pointer"
-          >
+          <Button type="submit" variant="brand" disabled={isSubmitting} className="px-6 py-2.5 h-auto rounded-xl">
             {isSubmitting
               ? <><Loader2 className="w-4 h-4 animate-spin" />Guardando...</>
               : <><Save className="w-4 h-4" />{isEdit ? 'Guardar cambios' : 'Crear producto'}</>
             }
-          </button>
+          </Button>
         </div>
       </form>
     </div>

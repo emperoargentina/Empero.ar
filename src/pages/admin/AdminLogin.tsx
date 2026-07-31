@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, Lock, Mail, AlertCircle, Package } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export function AdminLogin() {
   const [email, setEmail]       = useState('')
@@ -68,44 +71,46 @@ export function AdminLogin() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
+                <Label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
                   Email
-                </label>
+                </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] pointer-events-none" />
-                  <input
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] pointer-events-none z-10" />
+                  <Input
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="admin@empero.com"
-                    className="w-full pl-10 pr-4 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200 bg-white"
+                    className="pl-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
+                <Label className="block text-xs font-semibold text-[#4A4540] mb-1.5 uppercase tracking-wider">
                   Contraseña
-                </label>
+                </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] pointer-events-none" />
-                  <input
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] pointer-events-none z-10" />
+                  <Input
                     type={showPwd ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 border border-[#EBE5DC] rounded-xl text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all duration-200 bg-white"
+                    className="pl-10 pr-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowPwd(p => !p)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#C0B5A8] hover:text-[#6B6159] transition-colors cursor-pointer"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 text-[#C0B5A8] hover:text-[#6B6159] hover:bg-transparent"
                     tabIndex={-1}
                   >
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -123,10 +128,11 @@ export function AdminLogin() {
                 </div>
               )}
 
-              <button
+              <Button
                 type="submit"
+                variant="brand"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white rounded-xl text-sm font-semibold hover:from-[#B51426] hover:to-[#A0101F] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.985] shadow-lg shadow-[#C41B2E]/20"
+                className="w-full h-12 rounded-xl active:scale-[0.985]"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -134,7 +140,7 @@ export function AdminLogin() {
                     Ingresando...
                   </span>
                 ) : 'Ingresar'}
-              </button>
+              </Button>
             </form>
 
             <p className="text-xs text-[#C0B5A8]/60 text-center mt-6 leading-relaxed">

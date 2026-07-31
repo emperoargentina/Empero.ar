@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Search, Package, Loader2, UserPlus } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { Producto } from '@/types/producto'
 import type { ProductFamily } from '@/types/family'
 
@@ -70,12 +72,12 @@ export function FamilyChildPickerModal({
 
         <div className="px-5 pt-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8]" />
-            <input
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
+            <Input
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Buscar por nombre o código..."
-              className="w-full pl-9 pr-4 py-2 border border-[#EBE5DC] rounded-lg text-sm text-[#1A1613] placeholder:text-[#C0B5A8] focus:outline-none focus:border-[#C41B2E] focus:ring-2 focus:ring-[#C41B2E]/10 transition-all"
+              className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
             />
           </div>
         </div>
@@ -131,24 +133,25 @@ export function FamilyChildPickerModal({
         </div>
 
         <DialogFooter className="px-5 py-4 border-t border-[#EBE5DC] bg-[#FAF8F4]">
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B6159] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
+            className="text-[#6B6159] hover:bg-[#F4F0E8]"
           >
             Cancelar
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="brand"
             onClick={handleConfirm}
             disabled={selected.size === 0 || submitting}
-            className="flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             {submitting
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Agregando...</>
               : `Agregar${selected.size > 0 ? ` (${selected.size})` : ''}`
             }
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

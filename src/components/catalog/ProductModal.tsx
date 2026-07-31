@@ -337,7 +337,7 @@ export function ProductModal({
               <span className="text-[11px] font-mono text-[#9A8E82] truncate">{v.codigo}</span>
               <AvailabilityBadge modo={v.modo_disponibilidad} size="sm" />
             </div>
-            {v.precio_usd != null && (
+            {v.mostrar_precio && v.precio_usd != null && (
               <p className={`text-[13.5px] mt-2.5 pt-2.5 border-t font-bold ${active ? 'border-[#F5C5C9] text-[#C41B2E]' : 'border-[#F0EAE2] text-[#1A1613]'}`}>
                 US$ {Number(v.precio_usd).toLocaleString('es-AR')}
               </p>
