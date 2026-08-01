@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
   Filter, Clock, ChevronRight, Layers, X, ArrowUpDown,
-  Loader2, FolderPlus, FolderOpen, CheckCircle2, Truck,
+  Loader2, FolderPlus, FolderOpen, ShoppingCart, TrendingDown,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { CreateFamilyModal } from '@/components/admin/CreateFamilyModal'
@@ -539,9 +539,9 @@ export function Products() {
       {/* Stats */}
       <div className="flex flex-wrap gap-3">
         {[
-          { label: 'En stock', count: stockOk, icon: CheckCircle2, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100', dot: 'bg-emerald-500' },
+          { label: 'En stock', count: stockOk, icon: ShoppingCart, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100', dot: 'bg-emerald-500' },
           { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'bg-amber-50 text-amber-600 border-amber-100', dot: 'bg-amber-500' },
-          { label: 'Por encargo', count: porEncargo, icon: Truck, tint: 'bg-[#FFF7E6] text-[#B08A4A] border-[#EFE0BC]', dot: 'bg-amber-400' },
+          { label: 'Por encargo', count: porEncargo, icon: TrendingDown, tint: 'bg-[#FFF7E6] text-[#B08A4A] border-[#EFE0BC]', dot: 'bg-amber-400' },
         ].filter(s => s.count > 0).map(s => {
           const Icon = s.icon
           return (
