@@ -539,9 +539,9 @@ export function Products() {
       {/* Stats */}
       <div className="flex flex-wrap gap-3">
         {[
-          { label: 'En stock', count: stockOk, icon: ShoppingCart, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100', dot: 'bg-emerald-500' },
-          { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'bg-amber-50 text-amber-600 border-amber-100', dot: 'bg-amber-500' },
-          { label: 'Por encargo', count: porEncargo, icon: TrendingDown, tint: 'bg-[#FFF7E6] text-[#B08A4A] border-[#EFE0BC]', dot: 'bg-amber-400' },
+          { label: 'En stock', count: stockOk, icon: ShoppingCart, tint: 'from-emerald-600 to-emerald-500', dot: 'bg-emerald-500' },
+          { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'from-orange-500 to-amber-400', dot: 'bg-amber-500' },
+          { label: 'Por encargo', count: porEncargo, icon: TrendingDown, tint: 'from-amber-500 to-amber-400', dot: 'bg-amber-400' },
         ].filter(s => s.count > 0).map(s => {
           const Icon = s.icon
           return (
@@ -549,8 +549,8 @@ export function Products() {
               key={s.label}
               className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm"
             >
-              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${s.tint}`}>
-                <Icon className="w-5 h-5" />
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 shadow-lg ${s.tint}`}>
+                <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
                 <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{s.count}</p>
@@ -563,8 +563,8 @@ export function Products() {
           )
         })}
         <div className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm">
-          <div className="w-10 h-10 rounded-xl border border-[#EBE5DC] bg-[#F4F0E8] text-[#6B6159] flex items-center justify-center flex-shrink-0">
-            <Package className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
+            <Package className="w-5 h-5 text-white" strokeWidth={1.8} />
           </div>
           <div className="min-w-0">
             <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
