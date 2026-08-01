@@ -31,9 +31,10 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const CHUNK = 30
 
-const BADGE_CLS = 'inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full w-28 border'
+const BADGE_CLS = 'inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border shadow-sm w-28'
 
 function StockBadge({ p }: { p: Producto }) {
+  const unidad = p.stock === 1 ? 'unidad' : 'unidades'
   if (p.stock === 0) {
     return (
       <Badge variant="outline" className={`${BADGE_CLS} bg-amber-50 text-amber-700 border-amber-200`}>
@@ -46,14 +47,42 @@ function StockBadge({ p }: { p: Producto }) {
     return (
       <Badge variant="outline" className={`${BADGE_CLS} bg-red-50 text-red-600 border-red-200`}>
         <AlertTriangle className="w-3 h-3 text-red-500" />
-        {p.stock} ud.
+        {p.stock} {unidad}
       </Badge>
     )
   }
   return (
     <Badge variant="outline" className={`${BADGE_CLS} bg-emerald-50 text-emerald-700 border-emerald-200`}>
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-      {p.stock} ud.
+      {p.stock} {unidad}
+    </Badge>
+  )
+}
+
+function FamilyAvailabilityBadge({ variants }: { variants: Producto[] }) {
+  const hasStock = variants.some(v => v.stock > 0)
+  const hasBackorder = variants.some(v => v.stock === 0)
+
+  if (hasStock && hasBackorder) {
+    return (
+      <Badge variant="outline" className={`${BADGE_CLS} bg-sky-50 text-sky-700 border-sky-200`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+        Ambas
+      </Badge>
+    )
+  }
+  if (hasBackorder) {
+    return (
+      <Badge variant="outline" className={`${BADGE_CLS} bg-amber-50 text-amber-700 border-amber-200`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+        Por encargo
+      </Badge>
+    )
+  }
+  return (
+    <Badge variant="outline" className={`${BADGE_CLS} bg-emerald-50 text-emerald-700 border-emerald-200`}>
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+      En stock
     </Badge>
   )
 }
@@ -167,7 +196,6 @@ function FamilyHeaderRow({
   const displayNombre = family?.nombre ?? rep.nombre
   const displayCategoria = family?.categoria ?? rep.categoria
   const displayImagen = family?.cloudinary_url ?? rep.cloudinary_url
-  const totalStock = group.variants.reduce((sum, v) => sum + v.stock, 0)
   const prices = group.variants.map(v => v.precio_usd).filter((v): v is number => v != null)
   const priceLabel = prices.length === 0
     ? null
@@ -214,7 +242,7 @@ function FamilyHeaderRow({
         <span className="text-xs text-[#1A1613] bg-[#FAF8F4] px-2 py-0.5 rounded-md inline-block max-w-full truncate align-bottom">{displayCategoria}</span>
       </td>
       <td className={`px-4 py-3 ${cellY}`}>
-        <span className="text-xs font-medium text-[#1A1613] whitespace-nowrap">{totalStock} ud. en stock</span>
+        <FamilyAvailabilityBadge variants={group.variants} />
       </td>
       <td className={`px-4 py-3 hidden sm:table-cell ${cellY}`}>
         <span className="text-sm font-medium text-[#1A1613] tabular-nums whitespace-nowrap">
@@ -276,7 +304,7 @@ export function Products() {
   const [search, setSearch]             = useState('')
   const [categoria, setCategoria]       = useState('')
   const [modo, setModo]                 = useState<'all' | 'en_stock' | 'por_encargo'>('all')
-  const [tab, setTab]                   = useState<'ambos' | 'unicos' | 'variantes'>('ambos')
+  const [tab, setTab]                   = useState<'todos' | 'unicos' | 'variantes' | 'hijos'>('todos')
   const [orden, setOrden]               = useState<'fecha' | 'nombre' | 'precio'>('fecha')
   const [displayCount, setDisplayCount] = useState(CHUNK)
   const [expandedKey, setExpandedKey]   = useState<string | null>(null)
@@ -330,11 +358,23 @@ export function Products() {
   const unicosCount    = useMemo(() => familyGroups.filter(f => !isCarpetaGroup(f)).length, [familyGroups, isCarpetaGroup])
   const variantesCount = useMemo(() => familyGroups.filter(f => isCarpetaGroup(f)).length, [familyGroups, isCarpetaGroup])
 
+  // "Hijos" = solo huérfanos sin asignar, uno por fila.
+  const filteredOrphans = useMemo(
+    () => filtered.filter(p => p.familia_id === SIN_ASIGNAR_ID),
+    [filtered],
+  )
+  const hijosGroups = useMemo(
+    () => filteredOrphans.map(p => ({ key: p.id, familiaId: p.familia_id, variants: [p] }) as FamilyGroup),
+    [filteredOrphans],
+  )
+  const hijosCount = hijosGroups.length
+
   const familiesByTab = useMemo(() => {
     if (tab === 'unicos') return familyGroups.filter(f => !isCarpetaGroup(f))
     if (tab === 'variantes') return familyGroups.filter(f => isCarpetaGroup(f))
+    if (tab === 'hijos') return hijosGroups
     return familyGroups
-  }, [familyGroups, tab])
+  }, [familyGroups, hijosGroups, tab])
 
   const unassignedChildren = useMemo(() => listUnassignedChildren(allProductos), [allProductos])
   const emptyFamilies      = useMemo(() => listEmptyFamilies(families, allProductos), [families, allProductos])
@@ -343,7 +383,9 @@ export function Products() {
   // Nombre a mostrar del grupo: el de la familia (que agrupa), no el de un
   // hijo cualquiera — cada hijo conserva su propio nombre.
   const groupDisplayName = useCallback(
-    (f: FamilyGroup) => familyById.get(f.familiaId)?.nombre ?? f.variants[0].nombre,
+    (f: FamilyGroup) => f.variants.length === 1
+      ? f.variants[0].nombre
+      : familyById.get(f.familiaId)?.nombre ?? f.variants[0].nombre,
     [familyById],
   )
 
@@ -573,7 +615,7 @@ export function Products() {
         </div>
       </div>
 
-      {/* Tabs: Ambos / Únicos / Variantes */}
+      {/* Tabs: Todos / Únicos / Familias / Hijos */}
       <Tabs
         value={tab}
         onValueChange={v => setTab(v as typeof tab)}
@@ -581,9 +623,10 @@ export function Products() {
       >
         <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
           {([
-            { key: 'ambos', label: 'Ambos', count: familyGroups.length },
+            { key: 'todos', label: 'Todos', count: familyGroups.length },
             { key: 'unicos', label: 'Únicos', count: unicosCount },
             { key: 'variantes', label: 'Familias', count: variantesCount },
+            { key: 'hijos', label: 'Sin asignar', count: hijosCount },
           ] as const).map(t => (
             <TabsTrigger
               key={t.key}

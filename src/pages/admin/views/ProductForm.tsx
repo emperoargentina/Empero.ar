@@ -329,12 +329,27 @@ export function ProductForm() {
       const { data, error } = await supabase.from('products').select('*').eq('id', id).single()
       if (error || !data) {
         setLoadError('Producto no encontrado')
+        setLoading(false)
+        return
+      }
+      const p = data as Producto
+      setProducto(p)
+      setFamilyId(p.familia_id)
+      setIsChild(p.familia_id === SIN_ASIGNAR_ID)
+      reset(toForm(p))
+
+      // Se resuelve junto con el producto (no en un efecto aparte) para que
+      // el blur de "pertenece a una familia" ya esté listo en el primer render.
+      if (p.familia_id && p.familia_id !== SIN_ASIGNAR_ID) {
+        const [{ data: fam }, { count }] = await Promise.all([
+          supabase.from('product_families').select('*').eq('id', p.familia_id).single(),
+          supabase.from('products').select('*', { count: 'exact', head: true }).eq('familia_id', p.familia_id),
+        ])
+        setFamilyPreview((fam as ProductFamily) ?? null)
+        setIsCarpeta(Boolean((fam as ProductFamily | null)?.es_carpeta) || (count ?? 0) > 1)
       } else {
-        const p = data as Producto
-        setProducto(p)
-        setFamilyId(p.familia_id)
-        setIsChild(p.familia_id === SIN_ASIGNAR_ID)
-        reset(toForm(p))
+        setFamilyPreview(null)
+        setIsCarpeta(false)
       }
       setLoading(false)
     }
@@ -349,28 +364,6 @@ export function ProductForm() {
     void loadFamilyOptions()
   }, [])
 
-  // Determina si el producto pertenece a una familia real (carpeta) — más
-  // de un producto adentro, o marcada explícitamente con es_carpeta.
-  useEffect(() => {
-    if (!familyId || familyId === SIN_ASIGNAR_ID) {
-      setFamilyPreview(null)
-      setIsCarpeta(false)
-      return
-    }
-    let cancelled = false
-    const load = async () => {
-      const [{ data: fam }, { count }] = await Promise.all([
-        supabase.from('product_families').select('*').eq('id', familyId).single(),
-        supabase.from('products').select('*', { count: 'exact', head: true }).eq('familia_id', familyId),
-      ])
-      if (cancelled) return
-      setFamilyPreview((fam as ProductFamily) ?? null)
-      setIsCarpeta(Boolean((fam as ProductFamily | null)?.es_carpeta) || (count ?? 0) > 1)
-    }
-    void load()
-    return () => { cancelled = true }
-  }, [familyId])
-
   const handleQuitarDeFamilia = async () => {
     if (!id || !familyId || !familyPreview) return
     if (!confirm(`¿Quitar este producto de "${familyPreview.nombre}"? Pasará a ser un producto hijo sin familia asignada.`)) return
@@ -383,6 +376,8 @@ export function ProductForm() {
       setProducto(p)
       setFamilyId(p.familia_id)
       setIsChild(true)
+      setIsCarpeta(false)
+      setFamilyPreview(null)
       reset(toForm(p))
     }
     invalidateProductosCache()
@@ -650,8 +645,10 @@ export function ProductForm() {
               <div className="relative">
                 {isCarpeta && (
                   <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-xl backdrop-blur-sm bg-white/55 pointer-events-none">
+                    <div className="w-9 h-9 rounded-full bg-[#1A1613]/85 text-white flex items-center justify-center shadow-sm">
+                      <Lock className="w-4 h-4" />
+                    </div>
                     <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1613]/85 text-white text-xs font-semibold shadow-sm">
-                      <Lock className="w-3.5 h-3.5" />
                       Desactivado — pertenece a una familia
                     </span>
                     <p className="text-xs text-[#6B6159] text-center max-w-[80%]">
