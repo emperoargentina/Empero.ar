@@ -139,13 +139,11 @@ export async function createEmptyFamily(nombre: string): Promise<{ data: Product
 // Si la familia todavía no tiene categoría, la toma de `categoria` (la del
 // primer lote agregado); todos los productos del lote deben compartirla —
 // eso se valida en la UI antes de llamar a esta función.
-// Al asignarlo a la familia, el trigger de Postgres pisa nombre/categoria/
-// imagen del producto con los de la familia (así todas las variantes
-// muestran el mismo título en la card). Para no perder la identificación
-// que tenía el hijo mientras estaba huérfano, si todavía no tiene su propio
-// "etiqueta" ("Nombre de Producto hijo") le copiamos ahí su nombre previo —
-// ese campo el trigger nunca lo toca, así que sigue distinguiéndolo en el
-// selector de variantes y en el listado del admin.
+// Nombre/categoría/imagen del hijo son su propia identidad y nunca se tocan
+// acá — la familia solo los agrupa (familia_id). En el catálogo público y
+// en el modal, la card/header muestran el nombre/categoría de la familia;
+// cada hijo se distingue como variante por su propio nombre (ver variantLabel
+// en groupProducts.ts).
 export async function addChildrenToFamily(
   family: ProductFamily,
   productIds: string[],
@@ -156,23 +154,9 @@ export async function addChildrenToFamily(
     if (catError) return { error: catError }
   }
 
-  const { data: children, error: fetchError } = await supabase
+  const { error } = await supabase
     .from('products')
-    .select('id, nombre, etiqueta')
+    .update({ familia_id: family.id })
     .in('id', productIds)
-  if (fetchError) return { error: fetchError.message }
-
-  const results = await Promise.all(
-    (children ?? []).map(p =>
-      supabase
-        .from('products')
-        .update({
-          familia_id: family.id,
-          ...(p.etiqueta?.trim() ? {} : { etiqueta: p.nombre }),
-        })
-        .eq('id', p.id),
-    ),
-  )
-  const failed = results.find(r => r.error)
-  return { error: failed?.error?.message ?? null }
+  return { error: error?.message ?? null }
 }

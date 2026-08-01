@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getProductos, getCacheAge } from '@/lib/productosCache'
+import { listFamilies, groupProductosByFamily, SIN_ASIGNAR_ID } from '@/lib/adminFamilies'
 import { type Producto, LOW_STOCK_THRESHOLD } from '@/types/producto'
 import {
-  Package, TrendingDown, AlertTriangle, ShoppingCart, XCircle, ArrowRight, Clock,
-  TrendingUp, Eye,
+  Package, TrendingDown, AlertTriangle, ShoppingCart, ArrowRight, Clock,
+  TrendingUp, Eye, Folder,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface Stats {
   total: number
+  familias: number
   enStock: number
   porEncargo: number
   stockBajo: number
-  sinStock: number
 }
 
 const STAT_CARDS = [
@@ -25,6 +26,13 @@ const STAT_CARDS = [
     bg: 'bg-[#1A1613]',
   },
   {
+    key: 'familias' as const,
+    label: 'Familias',
+    icon: Folder,
+    gradient: 'from-[#C41B2E] to-[#E0526B]',
+    bg: 'bg-[#C41B2E]',
+  },
+  {
     key: 'enStock' as const,
     label: 'En stock',
     icon: ShoppingCart,
@@ -32,18 +40,19 @@ const STAT_CARDS = [
     bg: 'bg-emerald-500',
   },
   {
+    key: 'stockBajo' as const,
+    label: 'Stock bajo',
+    sub: `≤ ${LOW_STOCK_THRESHOLD} unidades`,
+    icon: AlertTriangle,
+    gradient: 'from-orange-500 to-amber-400',
+    bg: 'bg-orange-500',
+  },
+  {
     key: 'porEncargo' as const,
     label: 'Por encargo',
     icon: TrendingDown,
     gradient: 'from-amber-500 to-amber-400',
     bg: 'bg-amber-500',
-  },
-  {
-    key: 'sinStock' as const,
-    label: 'Sin stock',
-    icon: XCircle,
-    gradient: 'from-red-500 to-rose-400',
-    bg: 'bg-red-500',
   },
 ]
 
@@ -81,7 +90,6 @@ function DonutChart({ stats }: { stats: Stats }) {
   const segments = [
     { label: 'En stock', value: stats.enStock, color: '#059669' },
     { label: 'Por encargo', value: stats.porEncargo, color: '#D97706' },
-    { label: 'Sin stock', value: stats.sinStock, color: '#DC2626' },
   ].filter(s => s.value > 0)
 
   const total = segments.reduce((a, s) => a + s.value, 0)
@@ -141,13 +149,11 @@ function AlertRow({ p }: { p: Producto }) {
       </div>
 
       <div className={`text-xs font-semibold px-3 py-1 rounded-full flex-shrink-0 ${
-        p.stock === 0
-          ? 'bg-red-50 text-red-600 border border-red-200'
-          : p.stock <= LOW_STOCK_THRESHOLD / 2
-            ? 'bg-orange-50 text-orange-700 border border-orange-200'
-            : 'bg-amber-50 text-amber-700 border border-amber-200'
+        p.stock <= LOW_STOCK_THRESHOLD / 2
+          ? 'bg-orange-50 text-orange-700 border border-orange-200'
+          : 'bg-amber-50 text-amber-700 border border-amber-200'
       }`}>
-        {p.stock === 0 ? '0 ud.' : `${p.stock} ud.`}
+        {p.stock} ud.
       </div>
 
       <ArrowRight className="w-4 h-4 text-[#C0B5A8] group-hover:text-[#C41B2E] transition-colors flex-shrink-0" />
@@ -159,7 +165,6 @@ function DonutLegend({ stats }: { stats: Stats }) {
   const items = [
     { label: 'En stock', value: stats.enStock, color: '#059669', dot: 'bg-emerald-600' },
     { label: 'Por encargo', value: stats.porEncargo, color: '#D97706', dot: 'bg-amber-500' },
-    { label: 'Sin stock', value: stats.sinStock, color: '#DC2626', dot: 'bg-red-600' },
   ]
   return (
     <div className="space-y-2.5">
@@ -195,7 +200,10 @@ export function Dashboard() {
       setLoading(true)
       setError(null)
 
-      const result = await getProductos()
+      const [result, familiesResult] = await Promise.all([
+        getProductos(),
+        listFamilies(),
+      ])
 
       if (result.error) {
         setError(result.error)
@@ -204,14 +212,22 @@ export function Dashboard() {
       }
 
       const productos = result.data
-      const enStock = productos.filter(p => p.modo_disponibilidad === 'en_stock')
+      const enStock = productos.filter(p => p.stock > 0)
+
+      // Familias = carpetas reales (es_carpeta, con o sin productos) + grupos
+      // de productos que comparten familia_id con más de una variante.
+      const carpetas = familiesResult.error ? [] : familiesResult.data.filter(f => f.es_carpeta === true)
+      const carpetasIds = new Set(carpetas.map(f => f.id))
+      const gruposMultiVariante = groupProductosByFamily(
+        productos.filter(p => p.familia_id !== SIN_ASIGNAR_ID),
+      ).filter(g => g.variants.length > 1 && !carpetasIds.has(g.familiaId))
 
       setStats({
         total:      productos.length,
-        enStock:    enStock.filter(p => p.stock > 0).length,
-        porEncargo: productos.filter(p => p.modo_disponibilidad === 'por_encargo').length,
-        stockBajo:  enStock.filter(p => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length,
-        sinStock:   enStock.filter(p => p.stock === 0).length,
+        familias:   carpetas.length + gruposMultiVariante.length,
+        enStock:    enStock.length,
+        porEncargo: productos.filter(p => p.stock === 0).length,
+        stockBajo:  enStock.filter(p => p.stock <= LOW_STOCK_THRESHOLD).length,
       })
 
       setAlerts(
@@ -287,7 +303,7 @@ export function Dashboard() {
       )}
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5">
         {STAT_CARDS.map(card => (
           <StatCard
             key={card.key}
@@ -295,7 +311,7 @@ export function Dashboard() {
             value={stats[card.key]}
             icon={card.icon}
             gradient={card.gradient}
-            sub={card.key === 'sinStock' && stats.sinStock > 0 ? 'requieren atención' : undefined}
+            sub={card.sub}
           />
         ))}
       </div>
@@ -332,15 +348,6 @@ export function Dashboard() {
                 <div className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full transition-all duration-500" style={{ width: `${stats.porEncargo / stats.total * 100}%` }} />
               </div>
             </div>
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1.5">
-                <span className="text-[#6B6159] font-medium">Sin stock</span>
-                <span className="text-[#1A1613] font-semibold">{Math.round(stats.sinStock / stats.total * 100)}%</span>
-              </div>
-              <div className="h-2 bg-[#F4F0E8] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-red-400 to-rose-300 rounded-full transition-all duration-500" style={{ width: `${stats.sinStock / stats.total * 100}%` }} />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -372,22 +379,6 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Low stock banner */}
-      {stats.stockBajo > 0 && (
-        <div className="relative overflow-hidden bg-gradient-to-r from-amber-50 to-amber-50/50 border border-amber-200 rounded-xl">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(251,191,36,0.03)_20px,rgba(251,191,36,0.03)_21px)]" />
-          <div className="relative flex items-center gap-3 px-5 py-3.5">
-            <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-4.5 h-4.5 text-amber-600" />
-            </div>
-            <p className="text-sm text-amber-800 font-medium flex-1">
-              {stats.stockBajo} producto{stats.stockBajo !== 1 ? 's' : ''} con stock bajo (≤ {LOW_STOCK_THRESHOLD} unidades)
-              {stats.sinStock > 0 && <span className="text-amber-600 font-normal"> · {stats.sinStock} agotados</span>}
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Alerts section */}
       {alerts.length > 0 && (
         <div className="bg-white rounded-2xl border border-[#EBE5DC] overflow-hidden shadow-sm">
@@ -418,7 +409,7 @@ export function Dashboard() {
         </div>
       )}
 
-      {alerts.length === 0 && stats.sinStock === 0 && (
+      {alerts.length === 0 && (
         <div className="bg-gradient-to-r from-emerald-50 to-emerald-50/50 border border-emerald-100 rounded-2xl overflow-hidden">
           <div className="flex items-center gap-4 px-6 py-5">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">

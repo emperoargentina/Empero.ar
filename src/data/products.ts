@@ -7,8 +7,17 @@ export interface Product {
   codigo: string;
   familia_id: string;
   etiqueta: string | null;
+  // Identidad propia del producto — nunca se pisa con los datos de la familia.
   nombre: string;
   categoria: string;
+  // Identidad de la familia (agrupamiento) — lo que se muestra en la card y
+  // el header del modal del catálogo público, independiente del nombre/
+  // categoría de cada variante hijo.
+  familia_nombre: string;
+  familia_categoria: string | null;
+  familia_cloudinary_url: string | null;
+  familia_cloudinary_image_id: string | null;
+  familia_caracteristicas_generales: string[] | null;
   precio_usd: number | null;
   mostrar_precio: boolean;
   stock: number;

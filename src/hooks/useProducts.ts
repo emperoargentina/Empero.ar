@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { fetchAvailableProducts } from '@/lib/productsApi';
+import { disponibilidadDeStock } from '@/lib/availability';
 import type { Product } from '@/data/products';
 
 export type { Product };
@@ -119,6 +120,7 @@ export function useProducts(): UseProductsReturn {
       const q = searchQuery.toLowerCase();
       result = result.filter(p =>
         p.nombre?.toLowerCase().includes(q) ||
+        p.familia_nombre?.toLowerCase().includes(q) ||
         p.categoria?.toLowerCase().includes(q) ||
         p.codigo?.toLowerCase().includes(q) ||
         p.etiqueta?.toLowerCase().includes(q)
@@ -126,11 +128,11 @@ export function useProducts(): UseProductsReturn {
     }
 
     if (selectedCategory) {
-      result = result.filter(p => p.categoria === selectedCategory);
+      result = result.filter(p => (p.familia_categoria ?? p.categoria) === selectedCategory);
     }
 
     if (availabilityFilter !== 'all') {
-      result = result.filter(p => p.modo_disponibilidad === availabilityFilter);
+      result = result.filter(p => disponibilidadDeStock(p.stock) === availabilityFilter);
     }
 
     if (sortOption === 'name-asc') {
@@ -145,7 +147,8 @@ export function useProducts(): UseProductsReturn {
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const p of allProducts) {
-      if (p.categoria) counts[p.categoria] = (counts[p.categoria] ?? 0) + 1;
+      const cat = p.familia_categoria ?? p.categoria;
+      if (cat) counts[cat] = (counts[cat] ?? 0) + 1;
     }
     return counts;
   }, [allProducts]);

@@ -1,5 +1,5 @@
 // src/pages/admin/views/ProductForm.tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useForm, Controller, type Resolver } from 'react-hook-form'
@@ -13,7 +13,7 @@ import { buildFamilyOptions, generateUniqueFamilyId, updateFamily, SIN_ASIGNAR_I
 import { toast } from 'sonner'
 import {
   ArrowLeft, Save, Loader2, FileText, Ruler, Sparkles, Plus, X, AlertTriangle,
-  Tag, Package, Weight, Zap, Boxes,
+  Tag, Package, Weight, Zap, Boxes, Lock,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 import { CATEGORIA_ICONS } from '@/lib/categoriaIcons'
@@ -115,7 +115,7 @@ function fromForm(v: FormValues): Record<string, unknown> {
     mostrar_precio:         v.mostrar_precio,
     stock:                  v.stock,
     disponible:             v.disponible,
-    modo_disponibilidad:    v.modo_disponibilidad,
+    modo_disponibilidad:    v.stock > 0 ? 'en_stock' : 'por_encargo',
     peso_kg:                v.peso_kg ?? null,
     volumen_m3:             v.volumen_m3 ?? null,
     capacidad:              nullIfEmpty(v.capacidad),
@@ -283,6 +283,23 @@ export function ProductForm() {
   const [loadError, setLoadError] = useState('')
   const [producto, setProducto] = useState<Producto | null>(null)
   const [familyOptions, setFamilyOptions] = useState<FamilyOption[]>([])
+
+  // Altura del tab "Básico" — se mide para que Especificaciones y
+  // Características estiren sus contenedores al mismo alto y el botón
+  // "Guardar cambios" quede en el mismo lugar en los tres tabs.
+  const basicoRef = useRef<HTMLDivElement>(null)
+  const [tabMinHeight, setTabMinHeight] = useState<number>(0)
+
+  useEffect(() => {
+    if (tab !== 'basico') return
+    const el = basicoRef.current
+    if (!el) return
+    const measure = () => setTabMinHeight(el.offsetHeight)
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [tab])
 
   const [familyId, setFamilyId] = useState<string | null>(null)
   const [familyPreview, setFamilyPreview] = useState<ProductFamily | null>(null)
@@ -536,6 +553,8 @@ export function ProductForm() {
   const cloudinaryUrl = watch('cloudinary_url')
   const cloudinaryImageId = watch('cloudinary_image_id')
   const caracteristicas = watch('caracteristicas')
+  const stock = watch('stock')
+  const disponibilidad = stock > 0 ? 'en_stock' : 'por_encargo'
 
   return (
     <div>
@@ -611,14 +630,14 @@ export function ProductForm() {
         </div>
 
         {tab === 'basico' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+          <div ref={basicoRef} className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
             <SectionCard
               icon={Tag}
               tint="bg-[#FFE4E6] text-[#C41B2E]"
               title="Identidad del producto"
               description={
                 isCarpeta
-                  ? 'Se edita desde "Editar familia" — se comparte con el resto de las variantes'
+                  ? 'Es su propia identidad — se mantiene aunque pertenezca a una familia'
                   : isChild
                     ? 'Nombre, categoría e imagen para identificarlo mientras no tiene familia'
                     : 'Nombre, categoría e imagen que va a mostrar el catálogo'
@@ -628,54 +647,67 @@ export function ProductForm() {
               {isEdit && wasPending && !isChild && (
                 <Hint>Este producto no tenía familia — al guardar se crea una para que pase a ser "único".</Hint>
               )}
-              <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <FieldLabel>Nombre *</FieldLabel>
-                  <Input
-                    {...register('nombre')}
-                    disabled={isCarpeta}
-                    className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}
-                    placeholder={isChild ? 'Para identificarlo en el selector' : 'Ej: Lavavajillas Industrial LV-500'}
-                  />
+              <div className="relative">
+                {isCarpeta && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-xl backdrop-blur-sm bg-white/55 pointer-events-none">
+                    <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1A1613]/85 text-white text-xs font-semibold shadow-sm">
+                      <Lock className="w-3.5 h-3.5" />
+                      Desactivado — pertenece a una familia
+                    </span>
+                    <p className="text-xs text-[#6B6159] text-center max-w-[80%]">
+                      Quitalo de la familia para poder editar su identidad manualmente.
+                    </p>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <FieldLabel>Nombre *</FieldLabel>
+                    <Input
+                      {...register('nombre')}
+                      disabled={isCarpeta}
+                      className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}
+                      placeholder={isChild ? 'Para identificarlo en el selector' : 'Ej: Lavavajillas Industrial LV-500'}
+                    />
+                  </div>
+                  <div>
+                    <FieldLabel>Categoría *</FieldLabel>
+                    <Controller
+                      control={control}
+                      name="categoria"
+                      render={({ field }) => (
+                        <Select value={field.value || undefined} onValueChange={field.onChange} disabled={isCarpeta}>
+                          <SelectTrigger className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}>
+                            <SelectValue placeholder="Seleccionar categoría..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CATEGORIAS.map(c => {
+                              const Icon = CATEGORIA_ICONS[c]
+                              return (
+                                <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                                  <span className="flex items-center gap-2">
+                                    <Icon className="w-3.5 h-3.5 opacity-70" />
+                                    {c}
+                                  </span>
+                                </SelectItem>
+                              )
+                            })}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <FieldLabel>Categoría *</FieldLabel>
-                  <Controller
-                    control={control}
-                    name="categoria"
-                    render={({ field }) => (
-                      <Select value={field.value || undefined} onValueChange={field.onChange} disabled={isCarpeta}>
-                        <SelectTrigger className={`${fieldCls} disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-[#FAF8F4]`}>
-                          <SelectValue placeholder="Seleccionar categoría..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CATEGORIAS.map(c => {
-                            const Icon = CATEGORIA_ICONS[c]
-                            return (
-                              <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
-                                <span className="flex items-center gap-2">
-                                  <Icon className="w-3.5 h-3.5 opacity-70" />
-                                  {c}
-                                </span>
-                              </SelectItem>
-                            )
-                          })}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
+                <ImageUpload
+                  size="lg"
+                  disabled={isCarpeta}
+                  url={cloudinaryUrl || null}
+                  publicId={cloudinaryImageId || null}
+                  onChange={(url, publicId) => {
+                    setValue('cloudinary_url', url ?? '')
+                    setValue('cloudinary_image_id', publicId ?? '')
+                  }}
+                />
               </div>
-              <ImageUpload
-                size="lg"
-                disabled={isCarpeta}
-                url={cloudinaryUrl || null}
-                publicId={cloudinaryImageId || null}
-                onChange={(url, publicId) => {
-                  setValue('cloudinary_url', url ?? '')
-                  setValue('cloudinary_image_id', publicId ?? '')
-                }}
-              />
               {isChild && (
                 <p className="flex items-start gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
                   <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
@@ -720,16 +752,27 @@ export function ProductForm() {
                 </div>
               </div>
               <div>
-                <FieldLabel>Modo de disponibilidad *</FieldLabel>
-                <div className="grid grid-cols-2 gap-3">
-                  {(['en_stock', 'por_encargo'] as const).map(opt => (
-                    <label key={opt} className="flex items-center gap-3 px-4 py-2.5 border border-[#EBE5DC] rounded-xl cursor-pointer hover:border-[#C41B2E]/50 has-[:checked]:border-[#C41B2E] has-[:checked]:bg-[rgba(196,27,46,0.03)] transition-all">
-                      <input type="radio" value={opt} {...register('modo_disponibilidad')} className="accent-[#C41B2E]" />
-                      <span className="text-sm font-medium text-[#1A1613]">
-                        {opt === 'en_stock' ? 'En stock' : 'Por encargo'}
-                      </span>
-                    </label>
-                  ))}
+                <FieldLabel>Disponibilidad</FieldLabel>
+                <div className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-colors ${
+                  disponibilidad === 'en_stock'
+                    ? 'bg-emerald-50 border-emerald-200'
+                    : 'bg-amber-50 border-amber-200'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                    disponibilidad === 'en_stock' ? 'bg-emerald-500' : 'bg-amber-400'
+                  }`} />
+                  <div className="min-w-0">
+                    <p className={`text-sm font-semibold ${
+                      disponibilidad === 'en_stock' ? 'text-emerald-700' : 'text-amber-700'
+                    }`}>
+                      {disponibilidad === 'en_stock' ? 'En stock' : 'Por encargo'}
+                    </p>
+                    <p className="text-xs text-[#6B6159] mt-0.5">
+                      {disponibilidad === 'en_stock'
+                        ? 'Se muestra como disponible en el catálogo'
+                        : 'Se muestra como por encargo — sin unidades disponibles'}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -761,16 +804,18 @@ export function ProductForm() {
         )}
 
         {tab === 'especificaciones' && (
-          <div className="space-y-5 min-h-[32rem]">
-            <p className="text-xs text-[#9E9080] italic">Todos los campos son opcionales.</p>
-
+          <div
+            className="grid grid-cols-1 lg:grid-cols-3 gap-5"
+            style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}
+          >
             <SectionCard
               icon={Ruler}
               tint="bg-sky-100 text-sky-600"
               title="Dimensiones externas"
               description="Medidas del gabinete — dejá el alto vacío si es regulable"
+              className="h-full flex flex-col"
             >
-              <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-4">
                 <div>
                   <FieldLabel>Ancho (mm)</FieldLabel>
                   <Input type="number" {...register('dim_ancho')} className={fieldCls} placeholder="—" />
@@ -783,8 +828,6 @@ export function ProductForm() {
                   <FieldLabel>Alto (mm)</FieldLabel>
                   <Input type="number" {...register('dim_alto')} className={fieldCls} placeholder="—" />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <FieldLabel>Alto mínimo (mm)</FieldLabel>
                   <Input type="number" {...register('dim_alto_min')} className={fieldCls} placeholder="—" />
@@ -802,8 +845,9 @@ export function ProductForm() {
               tint="bg-amber-100 text-amber-600"
               title="Peso y capacidad"
               description="Volumen, capacidad interna y peso para logística"
+              className="h-full flex flex-col"
             >
-              <div className="grid grid-cols-2 gap-5">
+              <div className="space-y-4">
                 <div>
                   <FieldLabel>Peso (kg)</FieldLabel>
                   <Input type="number" step="0.01" {...register('peso_kg')} className={fieldCls} placeholder="—" />
@@ -812,8 +856,6 @@ export function ProductForm() {
                   <FieldLabel>Volumen (m³)</FieldLabel>
                   <Input type="number" step="0.0001" {...register('volumen_m3')} className={fieldCls} placeholder="—" />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-5">
                 <div>
                   <FieldLabel>Capacidad</FieldLabel>
                   <Input {...register('capacidad')} className={fieldCls} placeholder='Ej: "50 L" o "20 bandejas"' />
@@ -830,8 +872,9 @@ export function ProductForm() {
               tint="bg-violet-100 text-violet-600"
               title="Datos técnicos"
               description="Potencia, consumo y rejilla — solo si aplica al equipo"
+              className="h-full flex flex-col"
             >
-              <div className="grid grid-cols-3 gap-5">
+              <div className="space-y-4">
                 <div>
                   <FieldLabel>Potencia (kW)</FieldLabel>
                   <Input type="number" step="0.01" {...register('potencia_kw')} className={fieldCls} placeholder="—" />
@@ -850,12 +893,16 @@ export function ProductForm() {
         )}
 
         {tab === 'caracteristicas' && (
-          <div className="space-y-5 min-h-[32rem]">
+          <div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-5"
+            style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}
+          >
             <SectionCard
               icon={Sparkles}
               tint="bg-teal-100 text-teal-600"
               title="Características generales"
               description="Bullets que se muestran en la ficha del producto"
+              className="h-full flex flex-col"
             >
               {isCarpeta ? (
                 <Hint>Se editan desde "Editar familia" — se comparten entre todos los productos de la carpeta.</Hint>
@@ -876,6 +923,7 @@ export function ProductForm() {
               tint="bg-indigo-100 text-indigo-600"
               title="Accesorios incluidos"
               description="Todo lo que viene de fábrica con esta variante"
+              className="h-full flex flex-col"
             >
               <ListField
                 items={accesorios}

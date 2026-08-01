@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { type Product } from '@/data/products';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { AvailabilityBadge } from './AvailabilityBadge';
+import { disponibilidadDeStock } from '@/lib/availability';
 import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
 
 interface ProductCardProps {
@@ -32,7 +33,7 @@ export function ProductCard({
   const isInQuoteList = variantInQuote != null;
 
   const aggregatedModo = useMemo(() => {
-    if (variants.some(v => v.modo_disponibilidad === 'en_stock')) return 'en_stock' as const;
+    if (variants.some(v => disponibilidadDeStock(v.stock) === 'en_stock')) return 'en_stock' as const;
     return 'por_encargo' as const;
   }, [variants]);
 
@@ -53,8 +54,8 @@ export function ProductCard({
         </div>
 
         <CloudinaryImage
-          src={product.cloudinary_url}
-          alt={product.nombre}
+          src={product.familia_cloudinary_url}
+          alt={product.familia_nombre}
           width={400}
           height={533}
           className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
@@ -83,10 +84,10 @@ export function ProductCard({
       {/* Info */}
       <div className="flex flex-col flex-1 px-3 pt-2.5 pb-3">
         <p className="product-card-category">
-          {product.categoria}
+          {product.familia_categoria}
         </p>
         <h3 className="product-card-title">
-          {product.nombre}
+          {product.familia_nombre}
         </h3>
 
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F0EAE2] gap-2">

@@ -196,7 +196,7 @@ export function FamilyForm() {
       return
     }
     invalidateProductosCache()
-    toast.success('Familia actualizada — se propagó a todas sus variantes')
+    toast.success('Familia actualizada')
     navigate('/admin/productos')
   }
 
@@ -238,7 +238,7 @@ export function FamilyForm() {
             Editar familia
           </h1>
           <p className="text-xs text-[#9E9080]">
-            Los cambios se aplican a las {variants.length} variante{variants.length !== 1 ? 's' : ''} de esta familia
+            Nombre, categoría e imagen de acá son los que ve el catálogo — cada variante conserva su propio nombre
           </p>
         </div>
       </div>
@@ -319,7 +319,7 @@ export function FamilyForm() {
                   to={`/admin/productos/${v.id}`}
                   className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm hover:bg-[#FAF8F4] transition-colors"
                 >
-                  <span className="text-[#1A1613] font-medium">{v.etiqueta ?? v.codigo}</span>
+                  <span className="text-[#1A1613] font-medium">{v.etiqueta || v.nombre}</span>
                   <span className="font-mono text-xs text-[#6B6159] bg-[#F4F0E8] px-1.5 py-0.5 rounded">{v.codigo}</span>
                 </Link>
               ))}

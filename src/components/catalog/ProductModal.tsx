@@ -12,6 +12,7 @@ import { whatsappConfig } from '@/data/company';
 import { AvailabilityBadge } from './AvailabilityBadge';
 import { getLenis } from '@/hooks/useLenis';
 import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
+import { disponibilidadDeStock } from '@/lib/availability';
 
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
@@ -119,7 +120,7 @@ export function ProductModal({
 
   if (!familyRef) return null;
 
-  const imageUrl = familyRef.cloudinary_url ?? PLACEHOLDER;
+  const imageUrl = familyRef.familia_cloudinary_url ?? PLACEHOLDER;
 
   const handleWhatsApp = () => {
     if (!product) return;
@@ -236,7 +237,7 @@ export function ProductModal({
   }
 
   const hasSpecs  = specs.length > 0;
-  const caracteristicas = product?.caracteristicas_generales ?? familyRef.caracteristicas_generales ?? [];
+  const caracteristicas = product?.caracteristicas_generales ?? familyRef.familia_caracteristicas_generales ?? [];
   const hasCaract = caracteristicas.length > 0;
 
   const trustBadges: { icon: LucideIcon; text: string }[] = [
@@ -335,7 +336,7 @@ export function ProductModal({
             </div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-[11px] font-mono text-[#9A8E82] truncate">{v.codigo}</span>
-              <AvailabilityBadge modo={v.modo_disponibilidad} size="sm" />
+              <AvailabilityBadge modo={disponibilidadDeStock(v.stock)} size="sm" />
             </div>
             {v.mostrar_precio && v.precio_usd != null && (
               <p className={`text-[13.5px] mt-2.5 pt-2.5 border-t font-bold ${active ? 'border-[#F5C5C9] text-[#C41B2E]' : 'border-[#F0EAE2] text-[#1A1613]'}`}>
@@ -372,7 +373,7 @@ export function ProductModal({
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
-              aria-label={familyRef.nombre}
+              aria-label={familyRef.familia_nombre}
               className="relative w-full h-[100dvh] rounded-none lg:h-[90vh] lg:max-h-[860px] lg:w-[94vw] lg:max-w-[1400px] lg:rounded-2xl lg:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
@@ -407,7 +408,7 @@ export function ProductModal({
               {/* Availability badge (mobile, top-left) */}
               {product && (
                 <div className="lg:hidden absolute top-3.5 left-3.5 z-30 shadow-sm rounded-md">
-                  <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+                  <AvailabilityBadge modo={disponibilidadDeStock(product.stock)} size="md" />
                 </div>
               )}
 
@@ -420,7 +421,7 @@ export function ProductModal({
                     {!imageLoaded && <div className="absolute inset-0 bg-[#EEEAE1] animate-pulse" />}
                     <motion.img
                       src={imageUrl}
-                      alt={familyRef.nombre}
+                      alt={familyRef.familia_nombre}
                       width={420}
                       height={494}
                       className="absolute inset-0 w-full h-full object-contain p-8"
@@ -432,7 +433,7 @@ export function ProductModal({
 
                     {product && (
                       <div className="absolute top-6 left-6">
-                        <AvailabilityBadge modo={product.modo_disponibilidad} size="md" />
+                        <AvailabilityBadge modo={disponibilidadDeStock(product.stock)} size="md" />
                       </div>
                     )}
 
@@ -468,9 +469,9 @@ export function ProductModal({
                   <div className="modal-product-header hidden lg:flex lg:items-start lg:justify-between lg:gap-8 lg:px-10 lg:pt-14 lg:pb-0">
                     <div className="min-w-0">
                       <div className="modal-product-header-category-row">
-                        <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{familyRef.categoria}</span>
+                        <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{familyRef.familia_categoria}</span>
                       </div>
-                      <h2 className="modal-product-header-title lg:pr-0">{familyRef.nombre}</h2>
+                      <h2 className="modal-product-header-title lg:pr-0">{familyRef.familia_nombre}</h2>
                     </div>
 
                     <img
@@ -494,8 +495,8 @@ export function ProductModal({
                         <div className="w-[164px] flex-shrink-0 self-start aspect-[3/4] rounded-xl overflow-hidden bg-[var(--warm-50)] border border-[#EBE5DC] relative">
                           {!imageLoaded && <div className="absolute inset-0 bg-[#E6E0D7] animate-pulse" />}
                           <CloudinaryImage
-                            src={familyRef.cloudinary_url}
-                            alt={familyRef.nombre}
+                            src={familyRef.familia_cloudinary_url}
+                            alt={familyRef.familia_nombre}
                             width={164}
                             height={218}
                             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -507,8 +508,8 @@ export function ProductModal({
                         {/* Logo + categoría + título */}
                         <div className="flex-1 min-w-0">
                           <img src="/images/logo/Logo.png" alt="Empero" className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
-                          <span className="modal-product-header-category block mb-1">{familyRef.categoria}</span>
-                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{familyRef.nombre}</h2>
+                          <span className="modal-product-header-category block mb-1">{familyRef.familia_categoria}</span>
+                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{familyRef.familia_nombre}</h2>
                         </div>
                       </div>
                     </div>

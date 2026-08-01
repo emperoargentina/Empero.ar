@@ -9,13 +9,14 @@ import {
   type FamilyGroup,
 } from '@/lib/adminFamilies'
 import { type Producto, CATEGORIAS, LOW_STOCK_THRESHOLD } from '@/types/producto'
+import { disponibilidadDeStock } from '@/lib/availability'
 import { CATEGORIA_ICONS } from '@/lib/categoriaIcons'
 import type { ProductFamily } from '@/types/family'
 import { toast } from 'sonner'
 import {
   Search, Plus, Pencil, Trash2, Package, AlertTriangle,
   Filter, Clock, ChevronRight, Layers, X, ArrowUpDown,
-  Loader2, FolderPlus, FolderOpen, CheckCircle2, XCircle, Truck,
+  Loader2, FolderPlus, FolderOpen, CheckCircle2, Truck,
 } from 'lucide-react'
 import { useNavigate, Link } from 'react-router-dom'
 import { CreateFamilyModal } from '@/components/admin/CreateFamilyModal'
@@ -33,19 +34,11 @@ const CHUNK = 30
 const BADGE_CLS = 'inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full w-28 border'
 
 function StockBadge({ p }: { p: Producto }) {
-  if (p.modo_disponibilidad === 'por_encargo') {
+  if (p.stock === 0) {
     return (
       <Badge variant="outline" className={`${BADGE_CLS} bg-amber-50 text-amber-700 border-amber-200`}>
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
         Por encargo
-      </Badge>
-    )
-  }
-  if (p.stock === 0) {
-    return (
-      <Badge variant="outline" className={`${BADGE_CLS} bg-red-50 text-red-600 border-red-200`}>
-        <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-        Sin stock
       </Badge>
     )
   }
@@ -157,9 +150,10 @@ function ProductRow({
 }
 
 function FamilyHeaderRow({
-  group, index, expanded, onToggle, onToggleVisible, onAddChild, onDelete,
+  group, family, index, expanded, onToggle, onToggleVisible, onAddChild, onDelete,
 }: {
   group: FamilyGroup
+  family: ProductFamily | undefined
   index: number
   expanded: boolean
   onToggle: () => void
@@ -168,9 +162,12 @@ function FamilyHeaderRow({
   onDelete: () => void
 }) {
   const rep = group.variants[0]
-  const totalStock = group.variants.reduce(
-    (sum, v) => sum + (v.modo_disponibilidad === 'en_stock' ? v.stock : 0), 0,
-  )
+  // El nombre/categoría/imagen del grupo son los de la familia — cada
+  // variante conserva su propia identidad, no se usa como representante.
+  const displayNombre = family?.nombre ?? rep.nombre
+  const displayCategoria = family?.categoria ?? rep.categoria
+  const displayImagen = family?.cloudinary_url ?? rep.cloudinary_url
+  const totalStock = group.variants.reduce((sum, v) => sum + v.stock, 0)
   const prices = group.variants.map(v => v.precio_usd).filter((v): v is number => v != null)
   const priceLabel = prices.length === 0
     ? null
@@ -193,14 +190,14 @@ function FamilyHeaderRow({
         <div className={`w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border transition-colors ${
           expanded ? 'bg-[#FFD1C0] border-[#F0A088]' : 'bg-[#F4F0E8] border-[#EBE5DC]'
         }`}>
-          {rep.cloudinary_url
-            ? <img src={rep.cloudinary_url} alt={rep.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
+          {displayImagen
+            ? <img src={displayImagen} alt={displayNombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
             : <Package className="w-4 h-4 text-[#C0B5A8]" />
           }
         </div>
       </td>
       <td className={`px-4 py-3 overflow-hidden ${cellY}`}>
-        <p className="font-semibold text-[#1A1613] truncate">{rep.nombre}</p>
+        <p className="font-semibold text-[#1A1613] truncate">{displayNombre}</p>
         <p className="text-[11px] text-[#4A4540] mt-0.5 flex items-center gap-1 truncate">
           <Layers className="w-3 h-3 text-[#C41B2E] flex-shrink-0" /> {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
         </p>
@@ -214,7 +211,7 @@ function FamilyHeaderRow({
         </span>
       </td>
       <td className={`px-4 py-3 hidden md:table-cell overflow-hidden ${cellY}`}>
-        <span className="text-xs text-[#1A1613] bg-[#FAF8F4] px-2 py-0.5 rounded-md inline-block max-w-full truncate align-bottom">{rep.categoria}</span>
+        <span className="text-xs text-[#1A1613] bg-[#FAF8F4] px-2 py-0.5 rounded-md inline-block max-w-full truncate align-bottom">{displayCategoria}</span>
       </td>
       <td className={`px-4 py-3 ${cellY}`}>
         <span className="text-xs font-medium text-[#1A1613] whitespace-nowrap">{totalStock} ud. en stock</span>
@@ -316,7 +313,7 @@ export function Products() {
       )
     }
     if (categoria) list = list.filter(p => p.categoria === categoria)
-    if (modo !== 'all') list = list.filter(p => p.modo_disponibilidad === modo)
+    if (modo !== 'all') list = list.filter(p => disponibilidadDeStock(p.stock) === modo)
     return list
   }, [allProductos, search, categoria, modo])
 
@@ -342,17 +339,25 @@ export function Products() {
   const unassignedChildren = useMemo(() => listUnassignedChildren(allProductos), [allProductos])
   const emptyFamilies      = useMemo(() => listEmptyFamilies(families, allProductos), [families, allProductos])
 
+  const familyById = useMemo(() => new Map(families.map(f => [f.id, f])), [families])
+  // Nombre a mostrar del grupo: el de la familia (que agrupa), no el de un
+  // hijo cualquiera — cada hijo conserva su propio nombre.
+  const groupDisplayName = useCallback(
+    (f: FamilyGroup) => familyById.get(f.familiaId)?.nombre ?? f.variants[0].nombre,
+    [familyById],
+  )
+
   const sortedFamilies = useMemo(() => {
     const list = [...familiesByTab]
     if (orden === 'nombre') {
-      list.sort((a, b) => a.variants[0].nombre.localeCompare(b.variants[0].nombre, 'es'))
+      list.sort((a, b) => groupDisplayName(a).localeCompare(groupDisplayName(b), 'es'))
     } else if (orden === 'precio') {
       list.sort((a, b) => (b.variants[0].precio_usd ?? -1) - (a.variants[0].precio_usd ?? -1))
     } else {
       list.sort((a, b) => b.variants[0].created_at.localeCompare(a.variants[0].created_at))
     }
     return list
-  }, [familiesByTab, orden])
+  }, [familiesByTab, orden, groupDisplayName])
 
   useEffect(() => { setDisplayCount(CHUNK) }, [search, categoria, modo, tab, orden])
 
@@ -474,10 +479,9 @@ export function Products() {
     await reloadAfterMutation()
   }
 
-  const stockOk = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > LOW_STOCK_THRESHOLD).length
-  const stockBajo = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length
-  const sinStock = allProductos.filter(p => p.modo_disponibilidad === 'en_stock' && p.stock === 0).length
-  const porEncargo = allProductos.filter(p => p.modo_disponibilidad === 'por_encargo').length
+  const stockOk = allProductos.filter(p => p.stock > LOW_STOCK_THRESHOLD).length
+  const stockBajo = allProductos.filter(p => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length
+  const porEncargo = allProductos.filter(p => p.stock === 0).length
 
   return (
     <>
@@ -537,7 +541,6 @@ export function Products() {
         {[
           { label: 'En stock', count: stockOk, icon: CheckCircle2, tint: 'bg-emerald-50 text-emerald-600 border-emerald-100', dot: 'bg-emerald-500' },
           { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'bg-amber-50 text-amber-600 border-amber-100', dot: 'bg-amber-500' },
-          { label: 'Sin stock', count: sinStock, icon: XCircle, tint: 'bg-red-50 text-red-600 border-red-100', dot: 'bg-red-500' },
           { label: 'Por encargo', count: porEncargo, icon: Truck, tint: 'bg-[#FFF7E6] text-[#B08A4A] border-[#EFE0BC]', dot: 'bg-amber-400' },
         ].filter(s => s.count > 0).map(s => {
           const Icon = s.icon
@@ -817,6 +820,7 @@ export function Products() {
                     <Fragment key={group.key}>
                       <FamilyHeaderRow
                         group={group}
+                        family={familyById.get(group.familiaId)}
                         index={i}
                         expanded={isExpanded}
                         onToggle={() => toggleExpanded(group.key)}
@@ -896,7 +900,7 @@ export function Products() {
         <DeleteFamilyModal
           open={Boolean(deletingFamily)}
           onOpenChange={open => { if (!open) setDeletingFamily(null) }}
-          familyName={deletingFamily.variants[0].nombre}
+          familyName={familyById.get(deletingFamily.familiaId)?.nombre ?? deletingFamily.variants[0].nombre}
           productCount={deletingFamily.variants.length}
           onKeepProducts={handleDeleteFamilyKeep}
           onDeleteProducts={handleDeleteFamilyCascade}

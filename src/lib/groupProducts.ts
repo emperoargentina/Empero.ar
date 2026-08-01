@@ -5,15 +5,11 @@ export interface ProductGroup {
   variants: Product[];
 }
 
+// El nombre propio del hijo es su identidad — es lo que lo distingue como
+// variante en el selector del modal. "etiqueta" ("Nombre de Producto hijo")
+// permite pisarlo puntualmente si el admin quiere un label más corto.
 export function variantLabel(p: Product): string {
-  if (p.etiqueta) return p.etiqueta;
-  if (p.capacidad) return p.capacidad;
-  const dim = p.dimensiones_mm;
-  if (dim && (dim.Ancho || dim.Profundidad || dim.Alto || dim.Alto_min)) {
-    const alto = dim.Alto ?? (dim.Alto_min != null && dim.Alto_max != null ? `${dim.Alto_min}–${dim.Alto_max}` : '—');
-    return `${dim.Ancho ?? '—'}×${dim.Profundidad ?? '—'}×${alto} mm`;
-  }
-  return p.codigo;
+  return p.etiqueta?.trim() || p.nombre;
 }
 
 export function groupProducts(products: Product[]): ProductGroup[] {
