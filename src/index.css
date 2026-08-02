@@ -637,3 +637,16 @@ img {
     hsl(353 76% 26%)
   );
 }
+
+/* ── Neutraliza el scroll-lock de Radix (Select/Dialog) en <body> ────
+   react-remove-scroll asume que <body> es el elemento que scrollea y le
+   agrega overflow:hidden + margin-right al abrir un Select/Dialog. Acá el
+   que scrollea es <html> (overflow-x: clip en html y body), así que ese
+   overflow:hidden no bloquea nada real — solo convierte a body en un
+   nuevo contenedor de scroll de la nada, lo que descuadra el header
+   sticky, y el margin-right suma espacio sin sacar ninguna scrollbar real.
+   Se pisa explícitamente para que body nunca cambie de layout al abrir. */
+html body[data-scroll-locked] {
+  overflow: visible !important;
+  margin-right: 0 !important;
+}
