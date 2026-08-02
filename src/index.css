@@ -226,7 +226,7 @@ img {
   }
 
   .product-card-title {
-    @apply flex-1 break-words whitespace-normal;
+    @apply break-words whitespace-normal overflow-hidden;
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
@@ -236,7 +236,9 @@ img {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    min-height: 2.7em;
+    /* rem, no em — así la altura no se achica junto con la fuente cuando
+       useShrinkToFit reduce el font-size para que el título largo entre. */
+    height: 2.52rem;
   }
 
   .modal-product-media-meta {

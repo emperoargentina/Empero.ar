@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { AvailabilityBadge } from './AvailabilityBadge';
 import { disponibilidadDeStock } from '@/lib/availability';
 import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
+import { useShrinkToFit } from '@/hooks/useShrinkToFit';
 
 interface ProductCardProps {
   variants: Product[];
@@ -36,6 +37,10 @@ export function ProductCard({
     if (variants.some(v => disponibilidadDeStock(v.stock) === 'en_stock')) return 'en_stock' as const;
     return 'por_encargo' as const;
   }, [variants]);
+
+  // Título a altura fija (2 líneas) — si es muy largo, se achica la fuente
+  // en vez de estirar la card por encima de sus vecinas en la grilla.
+  const titleRef = useShrinkToFit<HTMLHeadingElement>([product.familia_nombre]);
 
   return (
     <article
@@ -86,7 +91,7 @@ export function ProductCard({
         <p className="product-card-category">
           {product.familia_categoria}
         </p>
-        <h3 className="product-card-title">
+        <h3 ref={titleRef} className="product-card-title">
           {product.familia_nombre}
         </h3>
 
