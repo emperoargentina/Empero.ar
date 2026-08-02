@@ -516,9 +516,18 @@ export function ProductForm() {
       return
     }
 
+    // No hay trigger en Postgres que derive nombre/categoría/imagen/
+    // características desde product_families — se mandan explícitos acá,
+    // igual que en el caso "producto hijo". Para un producto único son 1:1
+    // con su familia personal, así que quedan siempre sincronizados entre sí.
     const payload = {
       ...fromForm(values),
       familia_id: famId,
+      nombre: values.nombre.trim(),
+      categoria: values.categoria,
+      cloudinary_url: nullIfEmpty(values.cloudinary_url),
+      cloudinary_image_id: nullIfEmpty(values.cloudinary_image_id),
+      caracteristicas_generales: values.caracteristicas.length ? values.caracteristicas : null,
       ...(isEdit ? {} : { id: crypto.randomUUID() }),
     }
 
