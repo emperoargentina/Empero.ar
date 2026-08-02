@@ -707,6 +707,7 @@ export function ProductForm() {
                     setValue('cloudinary_url', url ?? '')
                     setValue('cloudinary_image_id', publicId ?? '')
                   }}
+                  className="mt-4"
                 />
               </div>
               {isChild && (

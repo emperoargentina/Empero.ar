@@ -106,10 +106,10 @@ function ProductRow({
 
   return (
     <motion.tr
-      initial={nested ? { opacity: 0, y: -8 } : false}
+      initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={nested ? { opacity: 0, y: -8, transition: { duration: 0.15, ease: [0.4, 0, 1, 1] } } : undefined}
-      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1], delay: nested ? variantIndex * 0.035 : 0 }}
+      exit={{ opacity: 0, y: -8, transition: { duration: 0.15, ease: [0.4, 0, 1, 1] } }}
+      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1], delay: nested ? variantIndex * 0.035 : Math.min(index, 8) * 0.02 }}
       onClick={() => onNavigate(p.id)}
       className={`transition-colors cursor-pointer ${
         nested
@@ -206,7 +206,11 @@ function FamilyHeaderRow({
   const cellY = expanded ? 'border-y-2 border-[#C41B2E]/60' : 'border-y-2 border-transparent'
 
   return (
-    <tr
+    <motion.tr
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8, transition: { duration: 0.15, ease: [0.4, 0, 1, 1] } }}
+      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1], delay: Math.min(index, 8) * 0.02 }}
       onClick={onToggle}
       className={`transition-colors duration-200 cursor-pointer ${
         expanded
@@ -289,7 +293,7 @@ function FamilyHeaderRow({
           </Button>
         </div>
       </td>
-    </tr>
+    </motion.tr>
   )
 }
 
@@ -408,12 +412,13 @@ export function Products() {
   const totalCount      = sortedFamilies.reduce((n, f) => n + f.variants.length, 0)
   const visibleCount    = visibleFamilies.reduce((n, f) => n + f.variants.length, 0)
 
-  const hasActiveFilters = !!(search.trim() || categoria || modo !== 'all')
+  const hasActiveFilters = !!(search.trim() || categoria || modo !== 'all' || orden !== 'fecha')
 
   const clearFilters = () => {
     setSearch('')
     setCategoria('')
     setModo('all')
+    setOrden('fecha')
   }
 
   const toggleExpanded = (key: string) => {
@@ -629,40 +634,53 @@ export function Products() {
       </div>
 
       {/* Tabs: Todos / Únicos / Familias / Hijos */}
-      <Tabs
-        value={tab}
-        onValueChange={v => setTab(v as typeof tab)}
-        className="w-fit"
-      >
-        <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
-          {([
-            { key: 'todos', label: 'Todos', count: visibleProductos.length },
-            { key: 'unicos', label: 'Únicos', count: unicosCount },
-            { key: 'variantes', label: 'Familias', count: variantesCount },
-            { key: 'hijos', label: 'Sin asignar', count: hijosCount },
-          ] as const).map(t => (
-            <TabsTrigger
-              key={t.key}
-              value={t.key}
-              className="group relative rounded-lg px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
-            >
-              {tab === t.key && (
-                <motion.span
-                  layoutId="productos-tab-pill"
-                  className="absolute inset-0 rounded-lg bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
-                  transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-1.5">
-                {t.label}
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F0E8] text-[#9E9080] group-data-[state=active]:bg-white/25 group-data-[state=active]:text-white">
-                  {t.count}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <Tabs
+          value={tab}
+          onValueChange={v => setTab(v as typeof tab)}
+          className="w-fit"
+        >
+          <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
+            {([
+              { key: 'todos', label: 'Todos', count: visibleProductos.length },
+              { key: 'unicos', label: 'Únicos', count: unicosCount },
+              { key: 'variantes', label: 'Familias', count: variantesCount },
+              { key: 'hijos', label: 'Sin asignar', count: hijosCount },
+            ] as const).map(t => (
+              <TabsTrigger
+                key={t.key}
+                value={t.key}
+                className="group relative rounded-lg px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
+              >
+                {tab === t.key && (
+                  <motion.span
+                    layoutId="productos-tab-pill"
+                    className="absolute inset-0 rounded-lg bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
+                    transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  {t.label}
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F0E8] text-[#9E9080] group-data-[state=active]:bg-white/25 group-data-[state=active]:text-white">
+                    {t.count}
+                  </span>
                 </span>
-              </span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            onClick={clearFilters}
+            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
+          >
+            <X className="w-4 h-4" />
+            Eliminar filtros
+          </Button>
+        )}
+      </div>
 
       {/* Familias pendientes (vacías, esperando su primer producto hijo) */}
       {emptyFamilies.length > 0 && (
@@ -730,7 +748,12 @@ export function Products() {
           <Input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => {
+              setSearch(e.target.value)
+              setCategoria('')
+              setModo('all')
+              setOrden('fecha')
+            }}
             placeholder="Buscar por nombre o código..."
             className={`w-full pl-9 h-10 border-[#EBE5DC] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E] ${
               search ? 'border-[#C41B2E]/40' : ''
@@ -766,7 +789,9 @@ export function Products() {
         <div className="relative">
           <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={orden} onValueChange={v => setOrden(v as typeof orden)}>
-            <SelectTrigger className="pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px]">
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
+              orden !== 'fecha' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            }`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -792,17 +817,6 @@ export function Products() {
             </SelectContent>
           </Select>
         </div>
-
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            onClick={clearFilters}
-            className="h-10 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
-          >
-            <X className="w-4 h-4" />
-            Limpiar filtros
-          </Button>
-        )}
       </div>
 
       {/* Table */}

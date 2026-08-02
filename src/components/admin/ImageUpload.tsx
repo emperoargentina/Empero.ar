@@ -9,6 +9,7 @@ interface ImageUploadProps {
   onChange: (url: string | null, publicId: string | null) => void
   size?: 'md' | 'lg'
   disabled?: boolean
+  className?: string
 }
 
 // 'md' se dimensiona por ancho (tarjetas angostas); 'lg' se dimensiona por
@@ -49,7 +50,7 @@ async function toOptimizedWebp(file: File): Promise<File> {
   return new File([blob], newName, { type: 'image/webp' })
 }
 
-export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = false }: ImageUploadProps) {
+export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = false, className = '' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -140,7 +141,7 @@ export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = f
   }, [url, disabled])
 
   return (
-    <div>
+    <div className={className}>
       {url ? (
         <div className="w-fit mx-auto rounded-xl overflow-hidden border border-[#EBE5DC] bg-[#FAF8F4]">
           <div className={`relative ${SIZE_CLS[size]}`}>
