@@ -509,6 +509,11 @@ export function ProductModal({
                         <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{familyRef.familia_categoria}</span>
                       </div>
                       <h2 className="modal-product-header-title lg:pr-0">{familyRef.familia_nombre}</h2>
+                      {/* Con variantes, el código de cada una ya se ve en la tab "Variantes" —
+                         acá solo hace falta para el producto único, que no tiene esa tab. */}
+                      {!hasVariants && product && (
+                        <p className="mt-1.5 text-[12px] font-mono text-[#9A8E82]">{product.codigo}</p>
+                      )}
                     </div>
 
                     <img
@@ -547,6 +552,9 @@ export function ProductModal({
                           <img src="/images/logo/Logo.png" alt="Empero" className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
                           <span className="modal-product-header-category block mb-1">{familyRef.familia_categoria}</span>
                           <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{familyRef.familia_nombre}</h2>
+                          {!hasVariants && product && (
+                            <p className="mt-1 text-[11px] font-mono text-[#9A8E82]">{product.codigo}</p>
+                          )}
                         </div>
                       </div>
                     </div>
