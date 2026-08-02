@@ -239,6 +239,10 @@ export function ProductModal({
   const hasSpecs  = specs.length > 0;
   const caracteristicas = product?.caracteristicas_generales ?? familyRef.familia_caracteristicas_generales ?? [];
   const hasCaract = caracteristicas.length > 0;
+  // Venta a medida: reemplaza el panel de specs técnicas por un comentario
+  // libre (ver ProductForm admin) — no aplica a "Características".
+  const esAMedida = Boolean(product?.venta_a_medida);
+  const comentarioMedida = product?.comentario_medida ?? null;
 
   const trustBadges: { icon: LucideIcon; text: string }[] = [
     { icon: ShieldCheck, text: 'Equipamiento profesional de alta performance' },
@@ -250,6 +254,12 @@ export function ProductModal({
 
   const specsPanel = needsSelection ? (
     <p className="text-[13px] text-[#9A8E82] italic text-center py-10">Elegí una variante para ver sus especificaciones.</p>
+  ) : esAMedida ? (
+    <div className="rounded-2xl border border-[#EBE5DC] bg-white p-5">
+      <p className="text-[13.5px] text-[#3A3530] leading-relaxed whitespace-pre-line">
+        {comentarioMedida || 'Consultar por especificaciones'}
+      </p>
+    </div>
   ) : hasSpecs ? (
     <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white divide-y divide-[#F0EAE2]">
       {specs.map(s => (
@@ -541,7 +551,11 @@ export function ProductModal({
                                 <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
                                 <span className="text-[12.5px] font-semibold text-[#1A1613]">Especificaciones técnicas</span>
                               </div>
-                              {hasSpecs ? (
+                              {esAMedida ? (
+                                <p className="text-[13px] text-[#3A3530] leading-relaxed whitespace-pre-line">
+                                  {comentarioMedida || 'Consultar por especificaciones'}
+                                </p>
+                              ) : hasSpecs ? (
                                 <div className="divide-y divide-[#F5F1EB]">
                                   {specs.map((s, i) => (
                                     <div key={s.label} className={`flex items-center justify-between gap-2 px-1 py-3 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}`}>
@@ -608,7 +622,13 @@ export function ProductModal({
                               </span>
                               <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Especificaciones técnicas</span>
                             </div>
-                            {hasSpecs ? (
+                            {esAMedida ? (
+                              <div className="flex-1 flex items-center px-6 py-4">
+                                <p className="text-[12.5px] text-[#3A3530] leading-relaxed whitespace-pre-line">
+                                  {comentarioMedida || 'Consultar por especificaciones'}
+                                </p>
+                              </div>
+                            ) : hasSpecs ? (
                               <div className="divide-y divide-[#F0EAE2] flex-1">
                                 {specs.map(s => (
                                   <div key={s.label} className="flex items-center justify-between gap-2 px-6 py-3">

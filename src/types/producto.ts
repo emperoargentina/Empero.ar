@@ -26,6 +26,11 @@ export interface Producto {
   rejilla_mm: string | null
   accesorios_incluidos: string[] | null
   caracteristicas_generales: string[] | null
+  // Venta a medida: se fabrica/importa a pedido (no es stock inmediato) —
+  // mutuamente excluyente con "producto hijo" (ver ProductForm). Cuando está
+  // activo, el modal público muestra `comentario_medida` en vez de las specs.
+  venta_a_medida: boolean
+  comentario_medida: string | null
   created_at: string
   updated_at: string
 }

@@ -13,7 +13,7 @@ import { buildFamilyOptions, generateUniqueFamilyId, updateFamily, SIN_ASIGNAR_I
 import { toast } from 'sonner'
 import {
   ArrowLeft, Save, Loader2, FileText, Ruler, Sparkles, Plus, X, AlertTriangle,
-  Tag, Package, Weight, Zap, Boxes, Lock,
+  Tag, Package, Weight, Zap, Boxes, Lock, MessageSquare,
 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 import { CATEGORIA_ICONS } from '@/lib/categoriaIcons'
@@ -23,6 +23,17 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+
+// Texto inicial editable del comentario "a medida" — reemplaza las specs
+// técnicas tanto acá como en el modal público mientras el toggle esté activo.
+const DEFAULT_COMENTARIO_MEDIDA = `Información sobre medidas y especificaciones:
+
+Compras individuales: Disponibles únicamente en los productos con stock actual.
+
+Pedidos a medida: Requieren la compra de varias unidades ya que se fabrican e importan a pedido.
+
+💬 Escribinos por WhatsApp para consultar el stock disponible o asesorarte.`
 
 const schema = z.object({
   // Variante
@@ -46,6 +57,8 @@ const schema = z.object({
   consumo_gas_m3h:        z.coerce.number().nullable().optional(),
   rejilla_mm:             z.string().nullable().optional(),
   accesorios:             z.array(z.string()),
+  venta_a_medida:         z.boolean(),
+  comentario_medida:      z.string().nullable().optional(),
   // Nombre/categoría/imagen del producto — si es un producto hijo se guardan
   // directo en la fila (sin familia todavía); si no, arman/actualizan su
   // familia personal de 1 solo producto ("único"). No aplica si el producto
@@ -66,6 +79,7 @@ const EMPTY_DEFAULTS: FormValues = {
   dim_ancho: undefined, dim_prof: undefined, dim_alto: undefined, dim_alto_min: undefined, dim_alto_max: undefined,
   potencia_kw: undefined, consumo_gas_m3h: undefined, rejilla_mm: '',
   accesorios: [],
+  venta_a_medida: false, comentario_medida: '',
   nombre: '', categoria: '', cloudinary_url: '', cloudinary_image_id: '',
   caracteristicas: [],
 }
@@ -93,6 +107,8 @@ function toForm(p: Producto): FormValues {
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             p.accesorios_incluidos ?? [],
+    venta_a_medida:         p.venta_a_medida,
+    comentario_medida:      p.comentario_medida ?? '',
     nombre:                 p.nombre,
     categoria:              p.categoria,
     cloudinary_url:         p.cloudinary_url ?? '',
@@ -133,6 +149,8 @@ function fromForm(v: FormValues): Record<string, unknown> {
     consumo_gas_m3h:        v.consumo_gas_m3h ?? null,
     rejilla_mm:             nullIfEmpty(v.rejilla_mm),
     accesorios_incluidos:   v.accesorios.length ? v.accesorios : null,
+    venta_a_medida:         v.venta_a_medida,
+    comentario_medida:      v.venta_a_medida ? nullIfEmpty(v.comentario_medida) : null,
   }
 }
 
@@ -180,24 +198,26 @@ function SectionCard({
 }
 
 function ToggleRow({
-  label, hint, checked, onChange, color = 'brand',
+  label, hint, checked, onChange, color = 'brand', disabled = false,
 }: {
   label: string
   hint: string
   checked: boolean
   onChange: (value: boolean) => void
   color?: 'brand' | 'green'
+  disabled?: boolean
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 p-3 border border-[#EBE5DC] rounded-xl">
+    <div className={`flex items-center justify-between gap-3 p-3 border border-[#EBE5DC] rounded-xl ${disabled ? 'bg-[#FAF8F4]' : ''}`}>
       <div className="min-w-0">
-        <span className="text-sm font-medium text-[#1A1613] block truncate">{label}</span>
+        <span className={`text-sm font-medium block truncate ${disabled ? 'text-[#9E9080]' : 'text-[#1A1613]'}`}>{label}</span>
         <p className="text-xs text-[#9E9080] mt-0.5 truncate">{hint}</p>
       </div>
       <Switch
         checked={checked}
         onCheckedChange={onChange}
-        className={`flex-shrink-0 data-[state=unchecked]:bg-[#D8D0C6] ${
+        disabled={disabled}
+        className={`flex-shrink-0 data-[state=unchecked]:bg-[#D8D0C6] disabled:opacity-50 disabled:cursor-not-allowed ${
           color === 'green' ? 'data-[state=checked]:bg-emerald-500' : 'data-[state=checked]:bg-[#C41B2E]'
         }`}
       />
@@ -549,6 +569,14 @@ export function ProductForm() {
   const caracteristicas = watch('caracteristicas')
   const stock = watch('stock')
   const disponibilidad = stock > 0 ? 'en_stock' : 'por_encargo'
+  const ventaAMedida = watch('venta_a_medida')
+  const comentarioMedida = watch('comentario_medida')
+
+  // Mientras esté "a medida", el tab de specs técnicas se reemplaza por un
+  // comentario editable — mismo id de tab, solo cambia label/ícono/contenido.
+  const tabs = ventaAMedida
+    ? TABS.map(t => t.id === 'especificaciones' ? { ...t, label: 'Comentario', icon: MessageSquare } : t)
+    : TABS
 
   return (
     <div>
@@ -576,7 +604,7 @@ export function ProductForm() {
             className="w-fit"
           >
             <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-lg gap-0.5">
-              {TABS.map(({ id: tabId, label, icon: Icon }) => (
+              {tabs.map(({ id: tabId, label, icon: Icon }) => (
                 <TabsTrigger
                   key={tabId}
                   value={tabId}
@@ -792,20 +820,64 @@ export function ProductForm() {
                   onChange={v => setValue('mostrar_precio', v)}
                   color="green"
                 />
-                {!isCarpeta && (
-                  <ToggleRow
-                    label="Producto hijo"
-                    hint={isChild ? 'Sin familia todavía' : 'Producto único'}
-                    checked={isChild}
-                    onChange={setIsChild}
-                  />
-                )}
+                <ToggleRow
+                  label="Producto hijo"
+                  hint={
+                    isCarpeta
+                      ? 'Para quitarlo, desvinculá la familia arriba'
+                      : ventaAMedida
+                        ? 'Desactivá "Venta a medida" para poder tocarlo'
+                        : isChild
+                          ? 'Sin familia todavía'
+                          : 'Producto único'
+                  }
+                  checked={isCarpeta ? true : isChild}
+                  onChange={setIsChild}
+                  disabled={isCarpeta || ventaAMedida}
+                />
+                <ToggleRow
+                  label="Venta a medida"
+                  hint={
+                    isChild
+                      ? 'Desactivá "Producto hijo" para poder tocarlo'
+                      : ventaAMedida
+                        ? 'Se fabrica/importa a pedido'
+                        : 'Producto de stock normal'
+                  }
+                  checked={ventaAMedida}
+                  onChange={v => {
+                    setValue('venta_a_medida', v)
+                    if (v && !comentarioMedida?.trim()) {
+                      setValue('comentario_medida', DEFAULT_COMENTARIO_MEDIDA)
+                    }
+                  }}
+                  disabled={isChild}
+                />
               </div>
             </SectionCard>
           </div>
         )}
 
-        {tab === 'especificaciones' && (
+        {tab === 'especificaciones' && ventaAMedida && (
+          <div style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}>
+            <SectionCard
+              icon={MessageSquare}
+              tint="bg-violet-100 text-violet-600"
+              title="Comentario"
+              description="Reemplaza las especificaciones técnicas en el catálogo público mientras esté activa la venta a medida"
+              className="h-full flex flex-col"
+            >
+              <Textarea
+                {...register('comentario_medida')}
+                rows={10}
+                className="text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]"
+                placeholder="Escribí el comentario que va a ver el cliente..."
+              />
+            </SectionCard>
+          </div>
+        )}
+
+        {tab === 'especificaciones' && !ventaAMedida && (
           <div
             className="grid grid-cols-1 lg:grid-cols-3 gap-5"
             style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}
