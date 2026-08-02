@@ -600,23 +600,28 @@ export function ProductForm() {
           </Tabs>
 
           {isCarpeta && familyPreview && (
-            <div className="flex items-center gap-2 text-sm flex-wrap">
-              <span className="text-[#9E9080]">Pertenece a la familia:</span>
-              <Link
-                to={`/admin/familias/${familyId}`}
-                className="font-semibold text-[#1A1613] hover:text-[#C41B2E] transition-colors"
-              >
-                {familyPreview.nombre}
-              </Link>
-              <Badge variant="secondary" className="bg-[#FAF8F4] text-[#6B6159] border-[#EBE5DC] font-medium">
-                {familyPreview.categoria}
-              </Badge>
+            <div className="flex items-center gap-2.5 pl-2.5 pr-1.5 py-1.5 rounded-lg border border-[#EBE5DC] bg-white shadow-sm">
+              <div className="w-8 h-8 rounded-md overflow-hidden flex-shrink-0 bg-[#F4F0E8] border border-[#EBE5DC] flex items-center justify-center">
+                {familyPreview.cloudinary_url
+                  ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} width={32} height={32} className="w-full h-full object-cover" />
+                  : <Package className="w-3.5 h-3.5 text-[#C0B5A8]" />
+                }
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] text-[#9E9080] font-medium uppercase tracking-wider leading-none">Familia</p>
+                <Link
+                  to={`/admin/familias/${familyId}`}
+                  className="text-sm font-semibold text-[#1A1613] hover:text-[#C41B2E] transition-colors truncate block max-w-[140px] mt-0.5"
+                >
+                  {familyPreview.nombre}
+                </Link>
+              </div>
               <Button
                 type="button"
                 variant="destructive"
                 size="sm"
                 onClick={handleQuitarDeFamilia}
-                className="bg-red-50 text-red-600 border border-red-200 shadow-none hover:bg-red-100"
+                className="bg-red-50 text-red-600 border border-red-200 shadow-none hover:bg-red-100 flex-shrink-0 h-7 px-2.5"
               >
                 <X className="w-3.5 h-3.5" /> Quitar
               </Button>
