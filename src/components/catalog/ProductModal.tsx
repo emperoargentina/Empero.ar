@@ -128,11 +128,15 @@ export function ProductModal({
   // Falls back to "specs" (without writing state) if the selected tab isn't available:
   // "accesorios" without accesorios, or "variantes" when there's only one producto.
   const hasAccesorios = (product?.accesorios_incluidos?.length ?? 0) > 0;
+  const aclaracion = product?.aclaracion?.trim() || null;
+  // La tab "Accesorios" también sirve de lugar para la aclaración — se muestra
+  // si hay lo uno, lo otro, o ambos.
+  const showAccesoriosTab = hasAccesorios || Boolean(aclaracion);
   const effectiveTab: TabValue =
-    (activeTab === 'accesorios' && !hasAccesorios) || (activeTab === 'variantes' && !hasVariants)
+    (activeTab === 'accesorios' && !showAccesoriosTab) || (activeTab === 'variantes' && !hasVariants)
       ? 'specs'
       : activeTab;
-  const tabCount = (hasVariants ? 1 : 0) + 2 + (hasAccesorios ? 1 : 0);
+  const tabCount = (hasVariants ? 1 : 0) + 2 + (showAccesoriosTab ? 1 : 0);
 
   if (!familyRef) return null;
 
@@ -319,15 +323,24 @@ export function ProductModal({
   );
 
   const accesorios = product?.accesorios_incluidos ?? [];
-  const accesoriosPanel = hasAccesorios && (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 rounded-2xl border border-[#EBE5DC] bg-white p-5">
-      {accesorios.map((a, i) => (
-        <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13.5px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[6px]" />
-          {a}
-        </li>
-      ))}
-    </ul>
+  const accesoriosPanel = showAccesoriosTab && (
+    <div className="space-y-4">
+      {hasAccesorios && (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 rounded-2xl border border-[#EBE5DC] bg-white p-5">
+          {accesorios.map((a, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13.5px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[6px]" />
+              {a}
+            </li>
+          ))}
+        </ul>
+      )}
+      {aclaracion && (
+        <p className="text-[13px] text-[#6B6159] italic leading-relaxed rounded-2xl border border-[#EBE5DC] bg-[#FAF8F5] p-4">
+          {aclaracion}
+        </p>
+      )}
+    </div>
   );
 
   const variantesPanel = (
@@ -575,14 +588,14 @@ export function ProductModal({
                             {hasVariants && <TabsTrigger value="variantes" className={tabTriggerCls}>Variantes</TabsTrigger>}
                             <TabsTrigger value="specs" className={tabTriggerCls}>{esAMedida ? 'Comentario' : 'Especificaciones'}</TabsTrigger>
                             <TabsTrigger value="caract" className={tabTriggerCls}>Características</TabsTrigger>
-                            {hasAccesorios && <TabsTrigger value="accesorios" className={tabTriggerCls}>Accesorios</TabsTrigger>}
+                            {showAccesoriosTab && <TabsTrigger value="accesorios" className={tabTriggerCls}>Accesorios</TabsTrigger>}
                           </TabsList>
                         </div>
 
                         {hasVariants && <TabsContent value="variantes" className="mt-0">{variantesPanel}</TabsContent>}
                         <TabsContent value="specs" className="mt-0">{specsPanel}</TabsContent>
                         <TabsContent value="caract" className="mt-0">{caractPanel}</TabsContent>
-                        {hasAccesorios && <TabsContent value="accesorios" className="mt-0">{accesoriosPanel}</TabsContent>}
+                        {showAccesoriosTab && <TabsContent value="accesorios" className="mt-0">{accesoriosPanel}</TabsContent>}
                       </Tabs>
                     </div>
                   </div>

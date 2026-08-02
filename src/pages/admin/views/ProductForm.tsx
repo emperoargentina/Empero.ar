@@ -56,6 +56,7 @@ const schema = z.object({
   consumo_gas_m3h:        z.coerce.number().nullable().optional(),
   rejilla_mm:             z.string().nullable().optional(),
   accesorios:             z.array(z.string()),
+  aclaracion:             z.string().nullable().optional(),
   venta_a_medida:         z.boolean(),
   comentario_medida:      z.string().nullable().optional(),
   // Nombre/categoría/imagen del producto — si es un producto hijo se guardan
@@ -78,6 +79,7 @@ const EMPTY_DEFAULTS: FormValues = {
   dim_ancho: undefined, dim_prof: undefined, dim_alto: undefined, dim_alto_min: undefined, dim_alto_max: undefined,
   potencia_kw: undefined, consumo_gas_m3h: undefined, rejilla_mm: '',
   accesorios: [],
+  aclaracion: '',
   venta_a_medida: false, comentario_medida: '',
   nombre: '', categoria: '', cloudinary_url: '', cloudinary_image_id: '',
   caracteristicas: [],
@@ -106,6 +108,7 @@ function toForm(p: Producto): FormValues {
     consumo_gas_m3h:        p.consumo_gas_m3h ?? undefined,
     rejilla_mm:             p.rejilla_mm ?? '',
     accesorios:             p.accesorios_incluidos ?? [],
+    aclaracion:             p.aclaracion ?? '',
     venta_a_medida:         p.venta_a_medida,
     comentario_medida:      p.comentario_medida ?? '',
     nombre:                 p.nombre,
@@ -148,6 +151,7 @@ function fromForm(v: FormValues): Record<string, unknown> {
     consumo_gas_m3h:        v.consumo_gas_m3h ?? null,
     rejilla_mm:             nullIfEmpty(v.rejilla_mm),
     accesorios_incluidos:   v.accesorios.length ? v.accesorios : null,
+    aclaracion:             nullIfEmpty(v.aclaracion),
     venta_a_medida:         v.venta_a_medida,
     comentario_medida:      v.venta_a_medida ? nullIfEmpty(v.comentario_medida) : null,
   }
@@ -225,12 +229,17 @@ function ToggleRow({
 }
 
 function ListField({
-  hint, items, onChange, placeholder,
+  hint, items, onChange, placeholder, scrollable = false,
 }: {
   hint?: string
   items: string[]
   onChange: (items: string[]) => void
   placeholder?: string
+  // Para cuando el field vive en un espacio de alto fijo (ej. la mitad de
+  // una card compartida con otro campo): en vez de crecer y superponerse
+  // con lo de al lado, la lista de items scrollea internamente a partir de
+  // que se pasa del alto disponible.
+  scrollable?: boolean
 }) {
   const [draft, setDraft] = useState('')
 
@@ -242,8 +251,8 @@ function ListField({
   }
 
   return (
-    <div>
-      <div className="flex gap-2">
+    <div className={scrollable ? 'flex flex-col h-full min-h-0' : ''}>
+      <div className="flex gap-2 flex-shrink-0">
         <Input
           value={draft}
           onChange={e => setDraft(e.target.value)}
@@ -259,7 +268,11 @@ function ListField({
       </div>
       {hint && <Hint>{hint}</Hint>}
       {items.length > 0 && (
-        <div className="mt-3 rounded-lg border border-[#EBE5DC] overflow-hidden">
+        <div className={`mt-3 rounded-lg border border-[#EBE5DC] ${
+          // Alto de 2 filas — a partir del 3er item entra en scroll en vez de
+          // seguir creciendo y pisar lo que hay debajo (ej. "Aclaración opcional").
+          scrollable ? 'max-h-[99px] overflow-y-auto overflow-x-hidden flex-shrink-0' : 'overflow-hidden'
+        }`}>
           {items.map((item, i) => (
             <div
               key={i}
@@ -888,7 +901,7 @@ export function ProductForm() {
         {tab === 'especificaciones' && !ventaAMedida && (
           <div
             className="grid grid-cols-1 lg:grid-cols-3 gap-5"
-            style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}
+            style={tabMinHeight > 0 ? { gridAutoRows: `minmax(${tabMinHeight}px, auto)` } : undefined}
           >
             <SectionCard
               icon={Ruler}
@@ -977,7 +990,7 @@ export function ProductForm() {
         {tab === 'caracteristicas' && (
           <div
             className="grid grid-cols-1 lg:grid-cols-2 gap-5"
-            style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}
+            style={tabMinHeight > 0 ? { gridAutoRows: `minmax(${tabMinHeight}px, auto)` } : undefined}
           >
             <SectionCard
               icon={Sparkles}
@@ -1007,12 +1020,30 @@ export function ProductForm() {
               description="Todo lo que viene de fábrica con esta variante"
               className="h-full flex flex-col"
             >
-              <ListField
-                items={accesorios}
-                hint="Escribí un accesorio y presioná Enter o Agregar"
-                onChange={items => setValue('accesorios', items)}
-                placeholder="Ej: Cesta porta-vajilla"
-              />
+              <div className="flex flex-col h-full">
+                <div className="flex-1 min-h-0">
+                  <ListField
+                    items={accesorios}
+                    hint="Escribí un accesorio y presioná Enter o Agregar"
+                    onChange={items => setValue('accesorios', items)}
+                    placeholder="Ej: Cesta porta-vajilla"
+                    scrollable
+                  />
+                </div>
+
+                <div className="h-px bg-[#EBE5DC] my-4 flex-shrink-0" />
+
+                <div className="flex-1 min-h-0 flex flex-col">
+                  <FieldLabel>Aclaración opcional</FieldLabel>
+                  <Textarea
+                    {...register('aclaracion')}
+                    rows={3}
+                    className="flex-1 resize-none text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]"
+                    placeholder='Ej: "Este gabinete es para el Horno a Carbón PKF-40"'
+                  />
+                  <Hint>Para cuando el producto es específico para otro — se muestra en la ficha pública</Hint>
+                </div>
+              </div>
             </SectionCard>
           </div>
         )}

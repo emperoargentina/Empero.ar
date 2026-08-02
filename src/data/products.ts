@@ -37,6 +37,7 @@ export interface Product {
   rejilla_mm: string | null;
   accesorios_incluidos: string[] | null;
   caracteristicas_generales: string[] | null;
+  aclaracion: string | null;
   venta_a_medida: boolean;
   comentario_medida: string | null;
   created_at: string;

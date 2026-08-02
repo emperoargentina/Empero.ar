@@ -26,6 +26,9 @@ export interface Producto {
   rejilla_mm: string | null
   accesorios_incluidos: string[] | null
   caracteristicas_generales: string[] | null
+  // Nota libre y opcional — para casos como "este gabinete es para el Horno
+  // a Carbón PKF-40", cuando el producto es específico para otro producto.
+  aclaracion: string | null
   // Venta a medida: se fabrica/importa a pedido (no es stock inmediato) —
   // mutuamente excluyente con "producto hijo" (ver ProductForm). Cuando está
   // activo, el modal público muestra `comentario_medida` en vez de las specs.
