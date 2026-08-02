@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { Check, Plus, X, Settings, Package, Layers, Ruler, Weight, Box, ShoppingBasket, Power, Flame, Grid3X3, ShieldCheck, Award, type LucideIcon } from 'lucide-react';
+import { Check, Plus, X, Settings, Layers, Ruler, Weight, Box, ShoppingBasket, Power, Flame, Grid3X3, ShieldCheck, Award, MessageSquare, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
 import { variantLabel } from '@/lib/groupProducts';
@@ -17,6 +17,16 @@ import { disponibilidadDeStock } from '@/lib/availability';
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
 type TabValue = 'variantes' | 'specs' | 'caract' | 'accesorios';
+
+// Soporta **negrita** estilo markdown en el comentario de "venta a medida" —
+// alcanza con esto, no hace falta un parser de markdown completo.
+function renderConNegrita(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith('**') && part.endsWith('**')
+      ? <strong key={i} className="font-bold text-[#1A1613]">{part.slice(2, -2)}</strong>
+      : <span key={i}>{part}</span>
+  );
+}
 
 const WhatsAppSVG = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className ?? 'w-4 h-4 flex-shrink-0'} aria-hidden="true">
@@ -62,7 +72,8 @@ export function ProductModal({
     if (isOpen) {
       // Con varias variantes, no se preselecciona ninguna: hay que elegir explícitamente.
       setSelectedId(hasVariants ? null : (allVariants[0]?.id ?? null));
-      setActiveTab('variantes');
+      // Sin variantes no hay tab "Variantes" — arranca directo en specs.
+      setActiveTab(hasVariants ? 'variantes' : 'specs');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, initialProduct?.id, hasVariants]);
@@ -114,9 +125,14 @@ export function ProductModal({
     if (isOpen) setImageLoaded(false);
   }, [isOpen, familyRef?.id]);
 
-  // Falls back to "specs" (without writing state) if the selected variant has no accesorios
+  // Falls back to "specs" (without writing state) if the selected tab isn't available:
+  // "accesorios" without accesorios, or "variantes" when there's only one producto.
   const hasAccesorios = (product?.accesorios_incluidos?.length ?? 0) > 0;
-  const effectiveTab: TabValue = activeTab === 'accesorios' && !hasAccesorios ? 'specs' : activeTab;
+  const effectiveTab: TabValue =
+    (activeTab === 'accesorios' && !hasAccesorios) || (activeTab === 'variantes' && !hasVariants)
+      ? 'specs'
+      : activeTab;
+  const tabCount = (hasVariants ? 1 : 0) + 2 + (hasAccesorios ? 1 : 0);
 
   if (!familyRef) return null;
 
@@ -252,14 +268,25 @@ export function ProductModal({
 
   const tabTriggerCls = 'rounded-lg text-[12px] font-semibold text-[#6B6159] data-[state=active]:bg-white data-[state=active]:text-[#C41B2E] data-[state=active]:shadow-sm';
 
+  // Venta a medida: panel destacado con ícono arriba para llamar la atención
+  // sobre el comentario — reemplaza las specs técnicas en los tres layouts
+  // del modal (con variantes, sin variantes desktop, sin variantes mobile).
+  const comentarioPanel = (
+    <div className="rounded-2xl border border-[#F5C5C9] bg-[#FFF8F7] p-6 lg:p-7 flex flex-col items-center text-center">
+      <span className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] mb-2.5 flex-shrink-0">
+        <MessageSquare className="w-5 h-5 text-[#C41B2E]" strokeWidth={2} />
+      </span>
+      <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#C41B2E] mb-2.5">Importante</p>
+      <p className="text-[13.5px] text-[#3A3530] leading-relaxed whitespace-pre-line text-left">
+        {renderConNegrita(comentarioMedida || 'Consultar por especificaciones')}
+      </p>
+    </div>
+  );
+
   const specsPanel = needsSelection ? (
     <p className="text-[13px] text-[#9A8E82] italic text-center py-10">Elegí una variante para ver sus especificaciones.</p>
   ) : esAMedida ? (
-    <div className="rounded-2xl border border-[#EBE5DC] bg-white p-5">
-      <p className="text-[13.5px] text-[#3A3530] leading-relaxed whitespace-pre-line">
-        {comentarioMedida || 'Consultar por especificaciones'}
-      </p>
-    </div>
+    comentarioPanel
   ) : hasSpecs ? (
     <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white divide-y divide-[#F0EAE2]">
       {specs.map(s => (
@@ -495,7 +522,7 @@ export function ProductModal({
                   <div
                     ref={scrollRef}
                     data-lenis-prevent
-                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pt-5 pb-3 space-y-5 max-lg:px-0 max-lg:pt-0 max-lg:pb-4 max-lg:space-y-0 flex flex-col"
+                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pb-3 max-lg:px-0 max-lg:pb-4 flex flex-col"
                     style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}
                   >
                     {/* ===== MOBILE HERO (inside scroll so any touch scrolls) ===== */}
@@ -524,174 +551,32 @@ export function ProductModal({
                       </div>
                     </div>
 
-                    {hasVariants ? (
-                      <div className="px-3.5 pb-4 lg:px-0 lg:pb-0">
-                        <Tabs value={effectiveTab} onValueChange={v => setActiveTab(v as TabValue)}>
-                          <TabsList className={`grid w-full h-10 bg-[#F4F0E8] rounded-xl p-1 mb-4 ${hasAccesorios ? 'grid-cols-4' : 'grid-cols-3'}`}>
-                            <TabsTrigger value="variantes" className={tabTriggerCls}>Variantes</TabsTrigger>
-                            <TabsTrigger value="specs" className={tabTriggerCls}>Especificaciones</TabsTrigger>
+                    {/* Tabs unificado: con variantes agrega el tab "Variantes" adelante;
+                       sin variantes, arranca directo en Especificaciones/Comentario.
+                       El TabsList queda sticky arriba del scroll — el padding superior que
+                       antes tenía el contenedor de scroll ahora vive DENTRO del bloque
+                       sticky (pt-5 acá, no pt-5 en scrollRef) para que no haya ningún hueco
+                       que el sticky tenga que "atravesar" antes de fijarse: queda pegado
+                       arriba desde el primer pixel de scroll, sin saltos. */}
+                    <div className="px-3.5 pb-4 lg:px-0 lg:pb-0">
+                      <Tabs value={effectiveTab} onValueChange={v => setActiveTab(v as TabValue)}>
+                        <div className="sticky top-0 z-20 bg-white pt-0 lg:pt-5 pb-4">
+                          <TabsList className={`grid w-full h-10 bg-[#F4F0E8] rounded-xl p-1 ${
+                            tabCount === 4 ? 'grid-cols-4' : tabCount === 3 ? 'grid-cols-3' : 'grid-cols-2'
+                          }`}>
+                            {hasVariants && <TabsTrigger value="variantes" className={tabTriggerCls}>Variantes</TabsTrigger>}
+                            <TabsTrigger value="specs" className={tabTriggerCls}>{esAMedida ? 'Comentario' : 'Especificaciones'}</TabsTrigger>
                             <TabsTrigger value="caract" className={tabTriggerCls}>Características</TabsTrigger>
                             {hasAccesorios && <TabsTrigger value="accesorios" className={tabTriggerCls}>Accesorios</TabsTrigger>}
                           </TabsList>
-
-                          <TabsContent value="variantes" className="mt-0">{variantesPanel}</TabsContent>
-                          <TabsContent value="specs" className="mt-0">{specsPanel}</TabsContent>
-                          <TabsContent value="caract" className="mt-0">{caractPanel}</TabsContent>
-                          {hasAccesorios && <TabsContent value="accesorios" className="mt-0">{accesoriosPanel}</TabsContent>}
-                        </Tabs>
-                      </div>
-                    ) : (
-                      <>
-                        {/* Mobile content wrapper */}
-                        <div className="lg:hidden px-3.5 pb-4 space-y-3.5">
-                          {/* Mobile: combined specs + características */}
-                          <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm overflow-hidden">
-                            <div className="p-4 pb-4">
-                              <div className="flex items-center gap-1.5 mb-2.5">
-                                <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
-                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Especificaciones técnicas</span>
-                              </div>
-                              {esAMedida ? (
-                                <p className="text-[13px] text-[#3A3530] leading-relaxed whitespace-pre-line">
-                                  {comentarioMedida || 'Consultar por especificaciones'}
-                                </p>
-                              ) : hasSpecs ? (
-                                <div className="divide-y divide-[#F5F1EB]">
-                                  {specs.map((s, i) => (
-                                    <div key={s.label} className={`flex items-center justify-between gap-2 px-1 py-3 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F5]'}`}>
-                                      <span className="flex items-center gap-2 min-w-0">
-                                        <s.icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />
-                                        <span className="text-[13.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
-                                      </span>
-                                      <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13.5px]">{s.value}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por especificaciones</p>
-                              )}
-                            </div>
-                            <div className="h-px bg-[#EBE5DC] mx-4" />
-                            <div className="p-4 pt-4">
-                              <div className="flex items-center gap-1.5 mb-3">
-                                <Layers className="w-[18px] h-[18px] text-[#C41B2E]" />
-                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Características</span>
-                              </div>
-                              {hasCaract ? (
-                                <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
-                                  {caracteristicas.map((f, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
-                                      <span className="w-4 h-4 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                        <Check className="w-2.5 h-2.5 text-[#C41B2E]" strokeWidth={2.5} />
-                                      </span>
-                                      {f}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p className="text-[13px] text-[#9A8E82] italic text-center py-6">Consultar por características</p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Mobile: accesorios */}
-                          {hasAccesorios && (
-                            <div className="bg-white rounded-2xl border border-[#EBE5DC] shadow-sm p-4">
-                              <div className="flex items-center gap-1.5 mb-3">
-                                <Package className="w-[18px] h-[18px] text-[#C41B2E]" />
-                                <span className="text-[12.5px] font-semibold text-[#1A1613]">Accesorios incluidos</span>
-                              </div>
-                              <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
-                                {accesorios.map((a, i) => (
-                                  <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug text-[13px]">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
-                                    {a}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
                         </div>
 
-                        {/* Desktop: specs + características side by side */}
-                        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:items-stretch lg:flex-1 lg:min-h-0">
-                          <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
-                            <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
-                              <span className="w-9 h-9 rounded-full bg-[#FFF0F1] flex items-center justify-center flex-shrink-0">
-                                <Settings className="w-[18px] h-[18px] text-[#C41B2E]" />
-                              </span>
-                              <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Especificaciones técnicas</span>
-                            </div>
-                            {esAMedida ? (
-                              <div className="flex-1 flex items-center px-6 py-4">
-                                <p className="text-[12.5px] text-[#3A3530] leading-relaxed whitespace-pre-line">
-                                  {comentarioMedida || 'Consultar por especificaciones'}
-                                </p>
-                              </div>
-                            ) : hasSpecs ? (
-                              <div className="divide-y divide-[#F0EAE2] flex-1">
-                                {specs.map(s => (
-                                  <div key={s.label} className="flex items-center justify-between gap-2 px-6 py-3">
-                                    <span className="flex items-center gap-2.5 min-w-0">
-                                      <s.icon className="w-[16px] h-[16px] text-[#C41B2E] flex-shrink-0" />
-                                      <span className="text-[12.5px] text-[#6B6159] font-medium truncate">{s.label}</span>
-                                    </span>
-                                    <span className="font-semibold text-[#1A1613] text-right ml-3 flex-shrink-0 text-[13px]">{s.value}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="flex-1 flex items-center justify-center">
-                                <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por especificaciones</p>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="rounded-2xl border border-[#EBE5DC] overflow-hidden bg-white flex flex-col h-full">
-                            <div className="flex items-center gap-2.5 px-6 py-4 border-b border-[#EBE5DC] flex-shrink-0">
-                              <span className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                                <ShieldCheck className="w-[18px] h-[18px] text-emerald-600" />
-                              </span>
-                              <span className="modal-product-section-label text-[12px] tracking-[0.1em]">Características</span>
-                            </div>
-                            {hasCaract ? (
-                              <ul className="px-6 py-4 space-y-3 flex-1">
-                                {caracteristicas.map((f, i) => (
-                                  <li key={i} className="flex items-start gap-2.5 text-[#3A3530] leading-snug text-[13px]">
-                                    <span className="w-[18px] h-[18px] rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-[1px]">
-                                      <Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} />
-                                    </span>
-                                    {f}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <div className="flex-1 flex items-center justify-center">
-                                <p className="text-[12.5px] text-[#9A8E82] italic">Consultar por características</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Desktop: accesorios */}
-                        {hasAccesorios && (
-                          <div className="hidden lg:block lg:rounded-2xl lg:border lg:border-[#EBE5DC] lg:overflow-hidden">
-                            <div className="flex items-center gap-2.5 lg:px-6 lg:py-4 lg:border-b lg:border-[#EBE5DC]">
-                              <Package className="lg:w-[18px] lg:h-[18px] text-[#C41B2E]" />
-                              <span className="modal-product-section-label lg:text-[13px] lg:tracking-[0.1em]">Accesorios incluidos</span>
-                            </div>
-                            <ul className="lg:gap-y-2 lg:px-6 lg:py-5 grid grid-cols-2 gap-x-3">
-                              {accesorios.map((a, i) => (
-                                <li key={i} className="flex items-start gap-2 text-[#3A3530] leading-snug lg:text-[14.5px]">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#C41B2E] flex-shrink-0 mt-[4px]" />
-                                  {a}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </>
-                    )}
+                        {hasVariants && <TabsContent value="variantes" className="mt-0">{variantesPanel}</TabsContent>}
+                        <TabsContent value="specs" className="mt-0">{specsPanel}</TabsContent>
+                        <TabsContent value="caract" className="mt-0">{caractPanel}</TabsContent>
+                        {hasAccesorios && <TabsContent value="accesorios" className="mt-0">{accesoriosPanel}</TabsContent>}
+                      </Tabs>
+                    </div>
                   </div>
 
                   {/* CTAs */}

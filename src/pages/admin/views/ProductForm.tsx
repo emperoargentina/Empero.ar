@@ -27,11 +27,10 @@ import { Textarea } from '@/components/ui/textarea'
 
 // Texto inicial editable del comentario "a medida" — reemplaza las specs
 // técnicas tanto acá como en el modal público mientras el toggle esté activo.
-const DEFAULT_COMENTARIO_MEDIDA = `Información sobre medidas y especificaciones:
+// Soporta **negrita** estilo markdown — se renderiza en el modal público.
+const DEFAULT_COMENTARIO_MEDIDA = `**Compras individuales:** disponibles ÚNICAMENTE en los productos con stock actual.
 
-Compras individuales: Disponibles únicamente en los productos con stock actual.
-
-Pedidos a medida: Requieren la compra de varias unidades ya que se fabrican e importan a pedido.
+**Pedidos a medida:** requieren la compra de VARIAS UNIDADES, ya que se fabrican e importan a pedido.
 
 💬 Escribinos por WhatsApp para consultar el stock disponible o asesorarte.`
 
