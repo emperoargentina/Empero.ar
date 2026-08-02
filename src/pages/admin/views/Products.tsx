@@ -444,17 +444,17 @@ export function Products() {
     return () => obs.disconnect()
   }, [hasMore, loadingMore, loading])
 
-  const reloadAfterMutation = async () => {
-    invalidateProductosCache()
-    await load(true)
-  }
-
+  // Las mutaciones actualizan el estado local directamente — no se vuelve a
+  // pedir toda la lista de productos a Supabase por cada acción. El cache
+  // compartido sí se invalida, para que otras vistas (catálogo público) no
+  // sirvan datos viejos la próxima vez que lo pidan.
   const handleDelete = async (p: Producto) => {
     if (!confirm(`¿Eliminar "${p.nombre}"? Esta acción no se puede deshacer.`)) return
     const { error } = await supabase.from('products').delete().eq('id', p.id)
     if (error) { toast.error('Error al eliminar: ' + error.message); return }
+    setAllProductos(prev => prev.filter(x => x.id !== p.id))
+    invalidateProductosCache()
     toast.success('Producto eliminado')
-    await reloadAfterMutation()
   }
 
   const handleToggleDisponible = async (p: Producto) => {
@@ -463,65 +463,78 @@ export function Products() {
       .update({ disponible: !p.disponible })
       .eq('id', p.id)
     if (error) { toast.error('Error al actualizar: ' + error.message); return }
+    setAllProductos(prev => prev.map(x => x.id === p.id ? { ...x, disponible: !p.disponible } : x))
+    invalidateProductosCache()
     toast.success(`Producto ${!p.disponible ? 'activado' : 'desactivado'}`)
-    await reloadAfterMutation()
   }
 
   const handleToggleFamilyVisible = async (group: FamilyGroup) => {
     const next = !group.variants.every(v => v.disponible)
-    const ids = group.variants.map(v => v.id)
-    const { error } = await supabase.from('products').update({ disponible: next }).in('id', ids)
+    const ids = new Set(group.variants.map(v => v.id))
+    const { error } = await supabase.from('products').update({ disponible: next }).in('id', [...ids])
     if (error) { toast.error('Error al actualizar: ' + error.message); return }
-    toast.success(`${ids.length} variante${ids.length !== 1 ? 's' : ''} ${next ? 'activada' : 'desactivada'}${ids.length !== 1 ? 's' : ''}`)
-    await reloadAfterMutation()
+    setAllProductos(prev => prev.map(x => ids.has(x.id) ? { ...x, disponible: next } : x))
+    invalidateProductosCache()
+    toast.success(`${ids.size} variante${ids.size !== 1 ? 's' : ''} ${next ? 'activada' : 'desactivada'}${ids.size !== 1 ? 's' : ''}`)
   }
 
   const handleNavigate = (id: string) => navigate(`/admin/productos/${id}`)
 
   const handleCreateFamily = async (nombre: string) => {
-    const { error } = await createEmptyFamily(nombre)
-    if (error) { toast.error('Error al crear la familia: ' + error); return }
+    const { data, error } = await createEmptyFamily(nombre)
+    if (error || !data) { toast.error('Error al crear la familia: ' + error); return }
+    setFamilies(prev => [...prev, data].sort((a, b) => a.nombre.localeCompare(b.nombre)))
     toast.success('Familia creada — agregale productos hijo cuando quieras')
     setCreateFamilyOpen(false)
-    await reloadAfterMutation()
   }
 
   const handleDeleteFamilyKeep = async () => {
     if (!deletingFamily) return
     const { error } = await deleteFamilyKeepProducts(deletingFamily.familiaId)
     if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    const ids = new Set(deletingFamily.variants.map(v => v.id))
+    setAllProductos(prev => prev.map(x => ids.has(x.id) ? { ...x, familia_id: SIN_ASIGNAR_ID } : x))
+    setFamilies(prev => prev.filter(f => f.id !== deletingFamily.familiaId))
+    invalidateProductosCache()
     toast.success('Familia eliminada — los productos quedaron como hijos huérfanos')
     setDeletingFamily(null)
-    await reloadAfterMutation()
   }
 
   const handleDeleteFamilyCascade = async () => {
     if (!deletingFamily) return
     const { error } = await deleteFamilyWithProducts(deletingFamily.familiaId)
     if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    const ids = new Set(deletingFamily.variants.map(v => v.id))
+    setAllProductos(prev => prev.filter(x => !ids.has(x.id)))
+    setFamilies(prev => prev.filter(f => f.id !== deletingFamily.familiaId))
+    invalidateProductosCache()
     toast.success('Familia y productos vinculados eliminados')
     setDeletingFamily(null)
-    await reloadAfterMutation()
   }
 
   const handleDeleteEmptyFamily = async (fam: ProductFamily) => {
     if (!confirm(`¿Eliminar la familia pendiente "${fam.nombre}"? No tiene productos vinculados.`)) return
     const { error } = await deleteFamily(fam.id)
     if (error) { toast.error('Error al eliminar la familia: ' + error); return }
+    setFamilies(prev => prev.filter(f => f.id !== fam.id))
     toast.success('Familia pendiente eliminada')
-    await reloadAfterMutation()
   }
 
   const handleAddChildren = async (productIds: string[], categoriaBatch: string) => {
     if (!pickerFamily) return
     const { error } = await addChildrenToFamily(pickerFamily, productIds, categoriaBatch)
     if (error) { toast.error('Error al agregar productos: ' + error); return }
+    const ids = new Set(productIds)
+    setAllProductos(prev => prev.map(x => ids.has(x.id) ? { ...x, familia_id: pickerFamily.id } : x))
+    if (!pickerFamily.categoria) {
+      setFamilies(prev => prev.map(f => f.id === pickerFamily.id ? { ...f, categoria: categoriaBatch } : f))
+    }
+    invalidateProductosCache()
     toast.success(`${productIds.length} producto${productIds.length !== 1 ? 's' : ''} agregado${productIds.length !== 1 ? 's' : ''} a «${pickerFamily.nombre}»`)
     setPickerFamily(null)
-    await reloadAfterMutation()
   }
 
-  const stockOk = allProductos.filter(p => p.stock > LOW_STOCK_THRESHOLD).length
+  const stockOk = allProductos.filter(p => p.stock > 0).length
   const stockBajo = allProductos.filter(p => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD).length
   const porEncargo = allProductos.filter(p => p.stock === 0).length
 
@@ -580,6 +593,15 @@ export function Products() {
 
       {/* Stats */}
       <div className="flex flex-wrap gap-3">
+        <div className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
+            <Package className="w-5 h-5 text-white" strokeWidth={1.8} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
+            <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 truncate">Total productos</p>
+          </div>
+        </div>
         {[
           { label: 'En stock', count: stockOk, icon: ShoppingCart, tint: 'from-emerald-600 to-emerald-500', dot: 'bg-emerald-500' },
           { label: 'Stock bajo', count: stockBajo, icon: AlertTriangle, tint: 'from-orange-500 to-amber-400', dot: 'bg-amber-500' },
@@ -604,15 +626,6 @@ export function Products() {
             </div>
           )
         })}
-        <div className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
-            <Package className="w-5 h-5 text-white" strokeWidth={1.8} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
-            <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 truncate">Total productos</p>
-          </div>
-        </div>
       </div>
 
       {/* Tabs: Todos / Únicos / Familias / Hijos */}
@@ -623,7 +636,7 @@ export function Products() {
       >
         <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
           {([
-            { key: 'todos', label: 'Todos', count: familyGroups.length },
+            { key: 'todos', label: 'Todos', count: visibleProductos.length },
             { key: 'unicos', label: 'Únicos', count: unicosCount },
             { key: 'variantes', label: 'Familias', count: variantesCount },
             { key: 'hijos', label: 'Sin asignar', count: hijosCount },
