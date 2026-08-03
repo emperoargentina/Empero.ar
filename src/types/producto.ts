@@ -42,7 +42,7 @@ export type ProductoInsert = Omit<Producto, 'id' | 'created_at' | 'updated_at'>
 export type ProductoUpdate = Partial<ProductoInsert>
 
 export const CATEGORIAS = [
-  'Acero',
+  'Bases',
   'Cocinas',
   'Cucipastas',
   'Distribución',
@@ -50,12 +50,11 @@ export const CATEGORIAS = [
   'Freidoras',
   'Hornos',
   'Lavado',
-  'Mesas',
+  'Mueblería',
   'Parrillas',
   'Planchas',
   'Refrigeración',
   'Servicio',
-  'Superficies',
 ] as const
 
 export type Categoria = (typeof CATEGORIAS)[number]

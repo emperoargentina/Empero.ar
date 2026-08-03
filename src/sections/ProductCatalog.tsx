@@ -34,7 +34,7 @@ const AVAILABILITY_OPTIONS: { value: AvailabilityFilter; label: string; dot: str
 const CATEGORY_ORDER = [
   'Refrigeración', 'Lavado', 'Hornos',
   'Cocinas', 'Freidoras', 'Planchas', 'Parrillas',
-  'Distribución', 'Servicio', 'Mesas', 'Superficies', 'Acero', 'Elaboración', 'Cucipastas',
+  'Distribución', 'Servicio', 'Mueblería', 'Bases', 'Elaboración', 'Cucipastas',
 ];
 
 const orderedCategories = CATEGORY_ORDER

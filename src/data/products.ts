@@ -91,11 +91,6 @@ export const categories: Category[] = [
     color: { bg: '#ECFEFF', text: '#0E7490', border: '#67E8F9' },
   },
   {
-    id: 'Mesas', name: 'Mesas', shortName: 'Mesas', icon: 'Table2',
-    description: 'Mesas de trabajo y preparación',
-    color: { bg: '#F8FAFC', text: '#475569', border: '#CBD5E1' },
-  },
-  {
     id: 'Parrillas', name: 'Parrillas', shortName: 'Parrillas', icon: 'Flame',
     description: 'Parrillas y asadores industriales',
     color: { bg: '#FEF3C7', text: '#92400E', border: '#FCD34D' },
@@ -111,13 +106,13 @@ export const categories: Category[] = [
     color: { bg: '#F0F9FF', text: '#0369A1', border: '#7DD3FC' },
   },
   {
-    id: 'Superficies', name: 'Superficies', shortName: 'Superficies', icon: 'Layers',
+    id: 'Bases', name: 'Bases', shortName: 'Bases', icon: 'Layers',
     description: 'Mesadas, estantes y superficies de trabajo',
     color: { bg: '#F9FAFB', text: '#4B5563', border: '#D1D5DB' },
   },
   {
-    id: 'Acero', name: 'Acero', shortName: 'Acero', icon: 'Warehouse',
-    description: 'Estanterías y muebles de acero inoxidable',
+    id: 'Mueblería', name: 'Mueblería', shortName: 'Mueblería', icon: 'Warehouse',
+    description: 'Mesas, estanterías y muebles de acero inoxidable',
     color: { bg: '#F8FAFC', text: '#334155', border: '#CBD5E1' },
   },
   {
