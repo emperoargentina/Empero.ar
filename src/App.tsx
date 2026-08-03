@@ -15,6 +15,7 @@ import { type Product } from './data/products';
 import { ScrollTrigger } from '@/lib/gsap';
 
 const Nosotros = lazy(() => import('./sections/Manufactura').then(m => ({ default: m.Nosotros })));
+const EnviosPostventa = lazy(() => import('./sections/EnviosPostventa').then(m => ({ default: m.EnviosPostventa })));
 const ContactForm = lazy(() => import('./sections/ContactForm').then(m => ({ default: m.ContactForm })));
 const Footer = lazy(() => import('./sections/Footer').then(m => ({ default: m.Footer })));
 
@@ -131,6 +132,8 @@ function App() {
           />
 
           <Suspense fallback={null}><Nosotros /></Suspense>
+
+          <Suspense fallback={null}><EnviosPostventa /></Suspense>
 
           <Suspense fallback={null}><ContactForm /></Suspense>
         </main>

@@ -154,6 +154,7 @@ export function Navigation({
     { name: 'Inicio', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
     { name: 'Productos', action: () => scrollToSection('catalogo'), hasDropdown: true },
     { name: 'Nosotros', action: () => scrollToSection('nosotros') },
+    { name: 'Envíos', action: () => scrollToSection('envios-postventa') },
     { name: 'Contacto', action: () => scrollToSection('contacto') },
   ];
 
