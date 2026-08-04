@@ -619,8 +619,9 @@ export function ProductForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div data-tour="tour-form-tabs" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <Tabs
+            data-tour="tour-form-tabs"
             value={tab}
             onValueChange={v => setTab(v as Tab)}
             className="w-full sm:w-fit overflow-x-auto"
@@ -1056,9 +1057,9 @@ export function ProductForm() {
           </div>
         )}
 
-        <div data-tour="tour-form-submit" className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC] flex-wrap">
+        <div className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC] flex-wrap">
           <span className="text-xs text-[#9E9080]">* Campos obligatorios</span>
-          <Button type="submit" variant="brand" disabled={isSubmitting} className="px-6 py-2.5 h-auto rounded-xl">
+          <Button data-tour="tour-form-submit" type="submit" variant="brand" disabled={isSubmitting} className="px-6 py-2.5 h-auto rounded-xl">
             {isSubmitting
               ? <><Loader2 className="w-4 h-4 animate-spin" />Guardando...</>
               : <><Save className="w-4 h-4" />{isEdit ? 'Guardar cambios' : 'Crear producto'}</>

@@ -15,6 +15,11 @@ export function AdminTourButton() {
   const [showLabel, setShowLabel] = useState(false)
   const driverRef = useRef<Driver | null>(null)
 
+  // FamilyForm tiene su propia barra fija de "Guardar cambios" pegada abajo
+  // a la derecha — en ese mismo rincón donde vive este botón. Se corre para
+  // arriba ahí para no taparla.
+  const hasFixedSubmitBar = /^\/admin\/familias\/[^/]+$/.test(location.pathname)
+
   useEffect(() => {
     return () => { driverRef.current?.destroy() }
   }, [])
@@ -120,7 +125,9 @@ export function AdminTourButton() {
       onMouseEnter={() => setShowLabel(true)}
       onMouseLeave={() => setShowLabel(false)}
       aria-label="Cómo funciona el panel"
-      className="fixed bottom-6 right-6 z-40 flex items-center text-white rounded-full cursor-pointer overflow-hidden select-none"
+      className={`fixed right-6 z-40 flex items-center text-white rounded-full cursor-pointer overflow-hidden select-none ${
+        hasFixedSubmitBar ? 'bottom-20 lg:bottom-24' : 'bottom-6'
+      }`}
       style={{
         background: 'linear-gradient(135deg, #C41B2E 0%, #B51426 100%)',
         boxShadow: '0 4px 20px rgba(196,27,46,0.35), 0 1px 4px rgba(0,0,0,0.12)',

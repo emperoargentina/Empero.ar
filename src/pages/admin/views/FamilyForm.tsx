@@ -338,9 +338,10 @@ export function FamilyForm() {
           </SectionCard>
         </div>
 
-        <div data-tour="tour-family-form-submit" className="fixed bottom-0 inset-x-0 lg:inset-x-auto lg:right-6 lg:bottom-6 z-30 border-t lg:border-0 border-[#EBE5DC] bg-white/95 lg:bg-transparent backdrop-blur lg:backdrop-blur-none shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:shadow-none">
+        <div className="fixed bottom-0 inset-x-0 lg:inset-x-auto lg:right-6 lg:bottom-6 z-30 border-t lg:border-0 border-[#EBE5DC] bg-white/95 lg:bg-transparent backdrop-blur lg:backdrop-blur-none shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:shadow-none">
           <div className="px-4 py-3 lg:p-0 flex justify-end">
             <Button
+              data-tour="tour-family-form-submit"
               type="submit"
               variant="brand"
               disabled={isSubmitting}

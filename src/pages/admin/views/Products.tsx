@@ -855,8 +855,9 @@ export function Products() {
       </div>
 
       {/* Tabs: Todos / Únicos / Familias / Hijos — desktop */}
-      <div data-tour="tour-prod-tabs" className="hidden md:flex md:flex-wrap md:items-center md:justify-between gap-3">
+      <div className="hidden md:flex md:flex-wrap md:items-center md:justify-between gap-3">
         <Tabs
+          data-tour="tour-prod-tabs"
           value={tab}
           onValueChange={v => setTab(v as typeof tab)}
           className="w-fit"
