@@ -136,7 +136,7 @@ export function Destacados() {
       </div>
 
       {/* 5 slots */}
-      <div className="order-3 md:order-none grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      <div data-tour="tour-dest-slots" className="order-3 md:order-none grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {Array.from({ length: MAX_DESTACADOS }).map((_, i) => {
           const prod = destacados[i]
           const isSaving = !!prod && savingId === prod.id
@@ -238,7 +238,7 @@ export function Destacados() {
 
       {/* Search to add */}
       {!seleccionLlena && (
-        <div className="order-1 md:order-none bg-white rounded-xl border border-[#EBE5DC] shadow-sm overflow-hidden">
+        <div data-tour="tour-dest-search" className="order-1 md:order-none bg-white rounded-xl border border-[#EBE5DC] shadow-sm overflow-hidden">
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
@@ -293,7 +293,7 @@ export function Destacados() {
       )}
 
       {/* Summary */}
-      <div className="order-2 md:order-none flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-white rounded-xl border border-[#EBE5DC] px-5 py-4 shadow-sm">
+      <div data-tour="tour-dest-summary" className="order-2 md:order-none flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-white rounded-xl border border-[#EBE5DC] px-5 py-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <div className="flex gap-1">
             {Array.from({ length: MAX_DESTACADOS }).map((_, i) => (

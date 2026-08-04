@@ -1,0 +1,90 @@
+/* Skin de driver.js con la estética de Empero — solo se carga en el admin. */
+
+.driver-popover.empero-tour-popover {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px -8px rgba(26, 22, 19, 0.28), 0 0 0 1px rgba(235, 229, 220, 0.9);
+  padding: 20px 22px;
+  max-width: 340px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.empero-tour-popover .driver-popover-title {
+  font-family: 'Fraunces', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #1a1613;
+  margin-bottom: 6px;
+}
+
+.empero-tour-popover .driver-popover-description {
+  color: #6b6159;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.empero-tour-popover .driver-popover-progress-text {
+  color: #9e9080;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.empero-tour-popover .driver-popover-footer {
+  margin-top: 16px;
+}
+
+.empero-tour-popover .driver-popover-footer-btn {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 7px 14px;
+  text-shadow: none;
+  border: none;
+  transition: filter 0.15s ease;
+}
+
+.empero-tour-popover .driver-popover-next-btn,
+.empero-tour-popover .driver-popover-done-btn {
+  background: linear-gradient(135deg, #c41b2e 0%, #b51426 100%);
+  color: #ffffff;
+}
+
+.empero-tour-popover .driver-popover-next-btn:hover,
+.empero-tour-popover .driver-popover-done-btn:hover {
+  filter: brightness(1.08);
+}
+
+.empero-tour-popover .driver-popover-prev-btn {
+  background: #f4f0e8;
+  color: #6b6159;
+}
+
+.empero-tour-popover .driver-popover-prev-btn:hover {
+  background: #ebe5dc;
+}
+
+.empero-tour-popover .driver-popover-close-btn {
+  color: #c0b5a8;
+}
+
+.empero-tour-popover .driver-popover-close-btn:hover {
+  color: #c41b2e;
+}
+
+.empero-tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: #ffffff;
+}
+.empero-tour-popover .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: #ffffff;
+}
+.empero-tour-popover .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: #ffffff;
+}
+.empero-tour-popover .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: #ffffff;
+}
+
+.driver-active-element {
+  border-radius: 10px !important;
+}

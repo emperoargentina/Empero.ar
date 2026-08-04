@@ -271,6 +271,7 @@ function FamilyHeaderRow({
             onClick={e => { e.stopPropagation(); onAddChild() }}
             className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]"
             title="Agregar producto hijo huérfano"
+            data-tour="tour-prod-add-child"
           >
             <Plus className="w-3.5 h-3.5" />
           </Button>
@@ -405,6 +406,7 @@ function FamilyCardMobile({
           onClick={e => { e.stopPropagation(); onAddChild() }}
           className="w-9 h-9 flex items-center justify-center rounded-lg text-[#6B6159] bg-[#F4F0E8] hover:bg-[#EBE5DC] active:scale-[0.97] transition-all cursor-pointer"
           title="Agregar producto hijo huérfano"
+          data-tour="tour-prod-add-child"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -705,7 +707,7 @@ export function Products() {
       `}</style>
     <div className="space-y-5 max-w-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#1A1613] tracking-tight">Productos</h1>
           <p className="text-sm text-[#9E9080] mt-0.5">
@@ -720,11 +722,11 @@ export function Products() {
             )}
           </p>
         </div>
-        <div className="hidden md:flex md:items-center gap-2">
+        <div data-tour="tour-prod-actions-desktop" className="hidden md:flex md:items-center gap-2">
           <Button
             variant="brandOutline"
             onClick={() => setCreateFamilyOpen(true)}
-            className="w-full sm:w-auto justify-center px-4 py-2.5 h-auto rounded-xl"
+            className="px-4 py-2.5 h-auto rounded-xl"
           >
             <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
             Crear familia
@@ -732,7 +734,7 @@ export function Products() {
           <Button
             variant="brand"
             onClick={() => navigate('/admin/productos/nuevo')}
-            className="w-full sm:w-auto justify-center px-5 py-2.5 h-auto rounded-xl"
+            className="px-5 py-2.5 h-auto rounded-xl"
           >
             <Plus className="w-4 h-4" />
             Agregar producto
@@ -741,7 +743,7 @@ export function Products() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
+      <div data-tour="tour-prod-stats" className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
         <div className="sm:flex-1 sm:basis-[150px] sm:min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 shadow-sm">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
             <Package className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" strokeWidth={1.8} />
@@ -778,7 +780,7 @@ export function Products() {
       </div>
 
       {/* Mobile: acciones — debajo de las estadísticas */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:hidden">
+      <div data-tour="tour-prod-actions-mobile" className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:hidden">
         <Button
           variant="brandOutline"
           onClick={() => setCreateFamilyOpen(true)}
@@ -798,7 +800,7 @@ export function Products() {
       </div>
 
       {/* Mobile: búsqueda + botón de filtros (como en el catálogo público) */}
-      <div className="flex md:hidden items-center gap-2">
+      <div data-tour="tour-prod-searchbar" className="flex md:hidden items-center gap-2">
         <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
           <Input
@@ -837,7 +839,7 @@ export function Products() {
       </div>
 
       {/* Tabs: Todos / Únicos / Familias / Hijos — desktop */}
-      <div className="hidden md:flex md:items-center md:justify-between gap-3">
+      <div data-tour="tour-prod-tabs" className="hidden md:flex md:flex-wrap md:items-center md:justify-between gap-3">
         <Tabs
           value={tab}
           onValueChange={v => setTab(v as typeof tab)}
@@ -877,7 +879,7 @@ export function Products() {
           <Button
             variant="ghost"
             onClick={clearFilters}
-            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium self-start sm:self-auto"
+            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
           >
             <X className="w-4 h-4" />
             Eliminar filtros
@@ -946,7 +948,7 @@ export function Products() {
           ? 'border-[#C41B2E]/50 ring-2 ring-[#C41B2E]/10'
           : 'border-[#EBE5DC]'
       }`}>
-        <div className="relative w-full sm:flex-1 sm:min-w-[200px]">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
           <Input
             type="text"
@@ -964,10 +966,10 @@ export function Products() {
           />
         </div>
 
-        <div className="relative w-full sm:w-auto">
+        <div className="relative">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={categoria || 'all'} onValueChange={v => setCategoria(v === 'all' ? '' : v)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[200px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
               categoria ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue placeholder="Todas las categorías" />
@@ -989,10 +991,10 @@ export function Products() {
           </Select>
         </div>
 
-        <div className="relative w-full sm:w-auto">
+        <div className="relative">
           <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={orden} onValueChange={v => setOrden(v as typeof orden)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[200px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
               orden !== 'fecha' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue />
@@ -1005,10 +1007,10 @@ export function Products() {
           </Select>
         </div>
 
-        <div className="relative w-full sm:w-auto">
+        <div className="relative">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={modo} onValueChange={v => setModo(v as typeof modo)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[180px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[180px] ${
               modo !== 'all' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue />
@@ -1170,7 +1172,7 @@ export function Products() {
       </Sheet>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-[#EBE5DC] overflow-hidden shadow-sm">
+      <div data-tour="tour-prod-list" className="bg-white rounded-xl border border-[#EBE5DC] overflow-hidden shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center h-72">
             <div className="flex flex-col items-center gap-5">

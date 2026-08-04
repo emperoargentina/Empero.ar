@@ -15,6 +15,7 @@ import {
   SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail,
   SidebarSeparator, SidebarTrigger, useSidebar,
 } from '@/components/ui/sidebar'
+import { AdminTourButton } from '@/components/admin/AdminTourButton'
 
 interface Props { session: Session }
 
@@ -61,7 +62,7 @@ function SidebarInner({
           <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-white/10 blur-3xl pointer-events-none" />
           {collapsed ? (
             <div className="flex flex-col items-center gap-3">
-              <Link to="/" title="Ir al sitio" className="opacity-90 hover:opacity-100 transition-opacity">
+              <Link to="/" title="Ir al sitio" data-tour="tour-logo" className="opacity-90 hover:opacity-100 transition-opacity">
                 <img
                   src="/images/logo/Logo.png"
                   alt="Empero"
@@ -74,7 +75,7 @@ function SidebarInner({
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link to="/" title="Ir al sitio" className="opacity-90 hover:opacity-100 transition-opacity flex-shrink-0">
+              <Link to="/" title="Ir al sitio" data-tour="tour-logo" className="opacity-90 hover:opacity-100 transition-opacity flex-shrink-0">
                 <img
                   src="/images/logo/Logo.png"
                   alt="Empero"
@@ -95,7 +96,7 @@ function SidebarInner({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu data-tour="tour-nav">
               {NAV.map(item => {
                 const active = location.pathname === item.path
                 const Icon = item.icon
@@ -131,6 +132,7 @@ function SidebarInner({
                 tooltip={purging ? 'Reseteando...' : 'Resetear caché'}
                 onClick={onPurgeCache}
                 disabled={purging}
+                data-tour="tour-cache"
                 className="w-44 justify-center rounded-lg px-5 py-2.5 h-auto text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
               >
                 <RefreshCw className={purging ? 'animate-spin' : ''} />
@@ -222,6 +224,8 @@ export function AdminPanel({ session }: Props) {
             <Outlet />
           </main>
         </SidebarInset>
+
+        <AdminTourButton />
       </SidebarProvider>
     </div>
   )

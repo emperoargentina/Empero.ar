@@ -353,7 +353,7 @@ export function Dashboard() {
       )}
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+      <div data-tour="tour-dash-stats" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
         {STAT_CARDS.map(card => (
           <StatCard
             key={card.key}
@@ -370,7 +370,7 @@ export function Dashboard() {
       {/* Middle section: health + chart side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Estructura del catálogo: únicos / familias / hijos sin asignar */}
-        <div className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
+        <div data-tour="tour-dash-structure" className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-xl bg-[#FFF0F1] flex items-center justify-center">
               <Layers className="w-4.5 h-4.5 text-[#C41B2E]" />
@@ -398,7 +398,7 @@ export function Dashboard() {
         </div>
 
         {/* Donut chart */}
-        <div className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
+        <div data-tour="tour-dash-donut" className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 rounded-xl bg-[#1A1613]/5 flex items-center justify-center">
               <Eye className="w-4.5 h-4.5 text-[#6B6159]" />
@@ -427,7 +427,7 @@ export function Dashboard() {
 
       {/* Alerts section */}
       {alerts.length > 0 && (
-        <div className="bg-white rounded-2xl border border-[#EBE5DC] overflow-hidden shadow-sm">
+        <div data-tour="tour-dash-alerts" className="bg-white rounded-2xl border border-[#EBE5DC] overflow-hidden shadow-sm">
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#EBE5DC] bg-white">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center">
@@ -456,7 +456,7 @@ export function Dashboard() {
       )}
 
       {alerts.length === 0 && (
-        <div className="bg-gradient-to-r from-emerald-50 to-emerald-50/50 border border-emerald-100 rounded-2xl overflow-hidden">
+        <div data-tour="tour-dash-alerts" className="bg-gradient-to-r from-emerald-50 to-emerald-50/50 border border-emerald-100 rounded-2xl overflow-hidden">
           <div className="flex items-center gap-4 px-6 py-5">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
               <Package className="w-5 h-5 text-emerald-600" />
