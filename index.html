@@ -6,25 +6,42 @@
 
     <!-- SEO Meta Tags -->
     <title>Empero Argentina — Equipamiento Gastronómico Industrial</title>
-    <meta name="description" content="Distribuidores oficiales de Empero en Argentina. Más de 3.000 productos para cocinas industriales, restaurantes y hoteles. Marca turca con presencia en 90+ países." />
+    <meta name="description" content="Distribuidor oficial de Empero en Argentina. +3.000 productos para cocinas industriales, restaurantes y hoteles. Marca turca presente en 90+ países." />
     <meta name="keywords" content="equipamiento gastronomico, cocina industrial, Empero Argentina, lavavajillas industrial, hornos profesionales, freidoras, refrigeración industrial" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.empero.com.ar/" />
 
     <!-- Mobile Status Bar Configuration -->
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#15120F" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Empero Argentina — Equipamiento Gastronómico Industrial" />
-    <meta property="og:description" content="Distribuidores oficiales de Empero en Argentina. +3.000 productos para cocinas profesionales." />
+    <meta property="og:description" content="Distribuidor oficial de Empero en Argentina. +3.000 productos para cocinas profesionales." />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content="Empero Argentina" />
     <meta property="og:url" content="https://www.empero.com.ar/" />
+    <meta property="og:image" content="https://www.empero.com.ar/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://www.empero.com.ar/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Empero Argentina — Equipamiento gastronómico profesional e industrial" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Empero Argentina — Equipamiento Gastronómico Industrial" />
+    <meta name="twitter:description" content="Distribuidor oficial de Empero en Argentina. +3.000 productos para cocinas profesionales." />
+    <meta name="twitter:image" content="https://www.empero.com.ar/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Empero Argentina — Equipamiento gastronómico profesional e industrial" />
+    <!-- Si Empero tiene cuenta de X/Twitter, descomentá y poné el usuario:
+    <meta name="twitter:site" content="@empero" /> -->
 
     <!-- Critical asset preloads (LCP) -->
+    <link rel="preload" as="image" href="/images/Visuales/heroteo.webp" type="image/webp" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/logo/Logo.png" />
 
     <!-- Google Fonts: preconnect first, then non-render-blocking stylesheet load -->
@@ -46,9 +63,41 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" />
     </noscript>
 
-    <!-- Favicon -->
+    <!-- Favicons & PWA -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Structured data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.empero.com.ar/#organization",
+            "name": "Empero Argentina",
+            "url": "https://www.empero.com.ar/",
+            "logo": "https://www.empero.com.ar/images/logo/Logo.png",
+            "image": "https://www.empero.com.ar/og-image.jpg",
+            "description": "Distribuidor oficial de Empero en Argentina. Equipamiento gastronómico profesional e industrial para restaurantes, hoteles y cocinas industriales.",
+            "areaServed": "AR"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.empero.com.ar/#website",
+            "url": "https://www.empero.com.ar/",
+            "name": "Empero Argentina",
+            "inLanguage": "es-AR",
+            "publisher": { "@id": "https://www.empero.com.ar/#organization" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body style="background-color: #15120F">
     <div id="root"></div>

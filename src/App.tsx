@@ -30,7 +30,7 @@ function App() {
       const img = new Image();
       img.onload = () => resolve();
       img.onerror = () => resolve();
-      img.src = '/images/Visuales/HeroImage.webp';
+      img.src = '/images/Visuales/heroteo.webp';
     });
     Promise.all([prefetchProducts(), heroImageReady]).finally(() => setIsDataReady(true));
   }, []);

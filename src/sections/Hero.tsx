@@ -122,9 +122,11 @@ export function Hero({ isReady = false }: HeroProps) {
       <div ref={bgRef} className="absolute inset-0 z-0" style={{ willChange: 'transform' }}>
         <div className="absolute inset-0 hero-kenburns">
           <img
-            src="/images/Visuales/heroteo.png"
+            src="/images/Visuales/heroteo.webp"
             alt="Cocina industrial profesional Empero"
             className="w-full h-full object-cover"
+            width={1600}
+            height={838}
             fetchPriority="high"
             decoding="async"
           />
