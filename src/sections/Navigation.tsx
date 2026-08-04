@@ -24,6 +24,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -371,6 +372,7 @@ export function Navigation({
                 </span>
               )}
             </SheetTitle>
+            <SheetDescription className="sr-only">Productos agregados a tu lista de cotización</SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto px-5 py-5">

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getProductos, getCacheAge } from '@/lib/productosCache'
-import { listFamilies, groupProductosByFamily, SIN_ASIGNAR_ID } from '@/lib/adminFamilies'
+import { listFamilies, listEmptyFamilies, groupProductosByFamily, SIN_ASIGNAR_ID } from '@/lib/adminFamilies'
 import { type Producto, LOW_STOCK_THRESHOLD } from '@/types/producto'
 import {
   Package, TrendingDown, AlertTriangle, ShoppingCart, ArrowRight, Clock,
-  TrendingUp, Eye, Folder,
+  Layers, Eye, Folder, FolderOpen,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -15,6 +15,10 @@ interface Stats {
   enStock: number
   porEncargo: number
   stockBajo: number
+  unicos: number
+  enFamilias: number
+  huerfanos: number
+  familiasPendientes: number
 }
 
 const STAT_CARDS = [
@@ -57,27 +61,58 @@ const STAT_CARDS = [
 ]
 
 function StatCard({
-  label, value, icon: Icon, gradient, sub,
+  label, value, icon: Icon, gradient, sub, className = '',
 }: {
   label: string
   value: number
   icon: React.ElementType
   gradient: string
   sub?: string
+  className?: string
 }) {
   return (
-    <div className="group relative bg-white rounded-2xl p-6 border border-[#EBE5DC] hover:border-[#D8D0C4] transition-all duration-300 hover:shadow-[0_8px_32px_-8px_rgba(26,22,19,0.12)]">
-      <div className="flex items-start gap-4">
-        <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-          <Icon className="w-5.5 h-5.5 text-white" strokeWidth={1.8} />
+    <div className={`group relative bg-white rounded-2xl p-4 sm:p-6 border border-[#EBE5DC] hover:border-[#D8D0C4] transition-all duration-300 hover:shadow-[0_8px_32px_-8px_rgba(26,22,19,0.12)] ${className}`}>
+      <div className="flex flex-col sm:flex-row sm:items-start gap-2.5 sm:gap-4">
+        <div className={`relative w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+          <Icon className="w-4 h-4 sm:w-5.5 sm:h-5.5 text-white" strokeWidth={1.8} />
           <div className="absolute inset-0 rounded-xl bg-white/[0.08] opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-3xl font-bold text-[#1A1613] tabular-nums tracking-tight">{value}</p>
-          <p className="text-sm text-[#6B6159] font-medium mt-0.5">{label}</p>
-          {sub && <p className="text-xs text-[#9E9080] mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3" />{sub}</p>}
+          <p className="text-2xl sm:text-3xl font-bold text-[#1A1613] tabular-nums tracking-tight">{value}</p>
+          <p className="text-xs sm:text-sm text-[#6B6159] font-medium mt-0.5">{label}</p>
+          {sub && <p className="text-[11px] sm:text-xs text-[#9E9080] mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3 flex-shrink-0" />{sub}</p>}
         </div>
       </div>
+    </div>
+  )
+}
+
+function CatalogStructureBars({ stats }: { stats: Stats }) {
+  const items = [
+    { label: 'Productos únicos', value: stats.unicos, gradient: 'from-sky-500 to-sky-400' },
+    { label: 'En familias (variantes)', value: stats.enFamilias, gradient: 'from-[#C41B2E] to-[#E0526B]' },
+    { label: 'Hijos sin asignar', value: stats.huerfanos, gradient: 'from-amber-500 to-amber-400' },
+  ]
+  return (
+    <div className="space-y-3">
+      {items.map(i => (
+        <div key={i.label}>
+          <div className="flex items-center justify-between text-sm mb-1.5">
+            <span className="text-[#6B6159] font-medium">{i.label}</span>
+            <span className="text-[#1A1613] font-semibold tabular-nums">
+              {i.value} <span className="text-[#9E9080] font-normal">
+                ({stats.total > 0 ? Math.round(i.value / stats.total * 100) : 0}%)
+              </span>
+            </span>
+          </div>
+          <div className="h-2 bg-[#F4F0E8] rounded-full overflow-hidden">
+            <div
+              className={`h-full bg-gradient-to-r ${i.gradient} rounded-full transition-all duration-500`}
+              style={{ width: `${stats.total > 0 ? i.value / stats.total * 100 : 0}%` }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -222,12 +257,27 @@ export function Dashboard() {
         productos.filter(p => p.familia_id !== SIN_ASIGNAR_ID),
       ).filter(g => g.variants.length > 1 && !carpetasIds.has(g.familiaId))
 
+      // Estructura del catálogo: únicos vs. productos dentro de familias vs.
+      // hijos huérfanos (creados pero sin asignar todavía a una familia).
+      const asignados = productos.filter(p => p.familia_id !== SIN_ASIGNAR_ID)
+      const gruposAsignados = groupProductosByFamily(asignados)
+      const esGrupoFamilia = (g: { familiaId: string; variants: Producto[] }) =>
+        g.variants.length > 1 || carpetasIds.has(g.familiaId)
+      const unicos     = gruposAsignados.filter(g => !esGrupoFamilia(g)).length
+      const enFamilias = gruposAsignados.filter(esGrupoFamilia).reduce((n, g) => n + g.variants.length, 0)
+      const huerfanos  = productos.length - asignados.length
+      const familiasPendientes = familiesResult.error ? 0 : listEmptyFamilies(familiesResult.data, productos).length
+
       setStats({
         total:      productos.length,
         familias:   carpetas.length + gruposMultiVariante.length,
         enStock:    enStock.length,
         porEncargo: productos.filter(p => p.stock === 0).length,
         stockBajo:  enStock.filter(p => p.stock <= LOW_STOCK_THRESHOLD).length,
+        unicos,
+        enFamilias,
+        huerfanos,
+        familiasPendientes,
       })
 
       setAlerts(
@@ -303,7 +353,7 @@ export function Dashboard() {
       )}
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
         {STAT_CARDS.map(card => (
           <StatCard
             key={card.key}
@@ -312,43 +362,39 @@ export function Dashboard() {
             icon={card.icon}
             gradient={card.gradient}
             sub={card.sub}
+            className={card.key === 'familias' ? 'hidden sm:block' : ''}
           />
         ))}
       </div>
 
       {/* Middle section: health + chart side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Health bars */}
+        {/* Estructura del catálogo: únicos / familias / hijos sin asignar */}
         <div className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
-              <TrendingUp className="w-4.5 h-4.5 text-emerald-600" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFF0F1] flex items-center justify-center">
+              <Layers className="w-4.5 h-4.5 text-[#C41B2E]" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-[#1A1613]">Salud del inventario</h3>
-              <p className="text-xs text-[#9E9080]">Distribución de productos</p>
+              <h3 className="text-sm font-semibold text-[#1A1613]">Estructura del catálogo</h3>
+              <p className="text-xs text-[#9E9080]">Únicos, familias e hijos sin asignar</p>
             </div>
           </div>
-          <div className="space-y-3">
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1.5">
-                <span className="text-[#6B6159] font-medium">En stock</span>
-                <span className="text-[#1A1613] font-semibold">{Math.round(stats.enStock / stats.total * 100)}%</span>
-              </div>
-              <div className="h-2 bg-[#F4F0E8] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500" style={{ width: `${stats.enStock / stats.total * 100}%` }} />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1.5">
-                <span className="text-[#6B6159] font-medium">Por encargo</span>
-                <span className="text-[#1A1613] font-semibold">{Math.round(stats.porEncargo / stats.total * 100)}%</span>
-              </div>
-              <div className="h-2 bg-[#F4F0E8] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-amber-400 to-amber-300 rounded-full transition-all duration-500" style={{ width: `${stats.porEncargo / stats.total * 100}%` }} />
-              </div>
-            </div>
-          </div>
+
+          <CatalogStructureBars stats={stats} />
+
+          {stats.familiasPendientes > 0 && (
+            <button
+              onClick={() => navigate('/admin/productos')}
+              className="mt-4 w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-[#FFF8F5] border border-[#F5C6BA] hover:bg-[#FFF0EA] transition-colors cursor-pointer"
+            >
+              <span className="flex items-center gap-2 text-xs font-medium text-[#C41B2E]">
+                <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" />
+                {stats.familiasPendientes} familia{stats.familiasPendientes !== 1 ? 's' : ''} pendiente{stats.familiasPendientes !== 1 ? 's' : ''} · sin productos todavía
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#C41B2E] flex-shrink-0" />
+            </button>
+          )}
         </div>
 
         {/* Donut chart */}

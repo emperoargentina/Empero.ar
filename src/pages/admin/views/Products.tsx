@@ -28,6 +28,7 @@ import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet'
 
 const CHUNK = 30
 
@@ -297,6 +298,147 @@ function FamilyHeaderRow({
   )
 }
 
+function ProductCardMobile({
+  p, nested, onNavigate, onDelete,
+}: {
+  p: Producto
+  nested?: boolean
+  onNavigate: (id: string) => void
+  onDelete: (p: Producto) => void
+}) {
+  return (
+    <div className={`relative ${nested ? 'bg-[#FFF8F5]' : ''}`}>
+      {nested && <span className="absolute left-4 top-3 bottom-3 w-[3px] rounded-full bg-[#C41B2E]/40" />}
+      <div
+        onClick={() => onNavigate(p.id)}
+        className={`flex gap-3 p-3.5 pb-2.5 active:bg-[#F4F0E8] transition-colors cursor-pointer ${nested ? 'pl-8' : ''}`}
+      >
+        <div className="w-11 h-11 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
+          {p.cloudinary_url
+            ? <img src={p.cloudinary_url} alt={p.nombre} width={44} height={44} loading="lazy" className="w-full h-full object-cover" />
+            : <Package className="w-4.5 h-4.5 text-[#C0B5A8]" />
+          }
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-[#1A1613] text-sm truncate">{p.nombre}</p>
+          <div className="flex items-center gap-1.5 text-[11px] text-[#9E9080] mt-0.5 flex-wrap">
+            <span className="font-mono bg-[#F4F0E8] px-1.5 py-0.5 rounded">{p.codigo}</span>
+            {p.categoria && <span className="truncate">{p.categoria}</span>}
+          </div>
+          <div className="mt-2">
+            <StockBadge p={p} />
+          </div>
+        </div>
+      </div>
+
+      <div className={`flex items-center gap-2 px-3.5 pb-3 ${nested ? 'pl-8' : ''}`}>
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onNavigate(p.id) }}
+          className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs font-semibold text-[#6B6159] bg-[#F4F0E8] hover:bg-[#EBE5DC] active:scale-[0.97] transition-all cursor-pointer"
+        >
+          <Pencil className="w-3.5 h-3.5" /> Editar
+        </button>
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onDelete(p) }}
+          className="flex-1 flex items-center justify-center gap-1.5 h-9 rounded-lg text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 active:scale-[0.97] transition-all cursor-pointer"
+        >
+          <Trash2 className="w-3.5 h-3.5" /> Eliminar
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function FamilyCardMobile({
+  group, family, expanded, onToggle, onAddChild, onDelete, onNavigate, onDeleteProduct,
+}: {
+  group: FamilyGroup
+  family: ProductFamily | undefined
+  expanded: boolean
+  onToggle: () => void
+  onAddChild: () => void
+  onDelete: () => void
+  onNavigate: (id: string) => void
+  onDeleteProduct: (p: Producto) => void
+}) {
+  const rep = group.variants[0]
+  const displayNombre = family?.nombre ?? rep.nombre
+  const displayCategoria = family?.categoria ?? rep.categoria
+  const displayImagen = family?.cloudinary_url ?? rep.cloudinary_url
+
+  return (
+    <div className={expanded ? 'bg-[#FFF8F5]' : ''}>
+      <div onClick={onToggle} className="flex gap-3 p-3.5 active:bg-[#F4F0E8] transition-colors cursor-pointer">
+        <div className={`w-11 h-11 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border transition-colors ${
+          expanded ? 'bg-[#FFD1C0] border-[#F0A088]' : 'bg-[#F4F0E8] border-[#EBE5DC]'
+        }`}>
+          {displayImagen
+            ? <img src={displayImagen} alt={displayNombre} width={44} height={44} loading="lazy" className="w-full h-full object-cover" />
+            : <Package className="w-4.5 h-4.5 text-[#C0B5A8]" />
+          }
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="font-semibold text-[#1A1613] text-sm truncate">{displayNombre}</p>
+              {displayCategoria && <p className="text-[11px] text-[#9E9080] truncate mt-0.5">{displayCategoria}</p>}
+            </div>
+            <ChevronRight className={`w-4 h-4 text-[#C41B2E] flex-shrink-0 mt-0.5 transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} />
+          </div>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#C41B2E]">
+              <Layers className="w-3 h-3 flex-shrink-0" />
+              {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="mt-2">
+            <FamilyAvailabilityBadge variants={group.variants} />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 px-3.5 pb-3 pl-[3.75rem]">
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onAddChild() }}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-[#6B6159] bg-[#F4F0E8] hover:bg-[#EBE5DC] active:scale-[0.97] transition-all cursor-pointer"
+          title="Agregar producto hijo huérfano"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+        <Link
+          to={`/admin/familias/${group.familiaId}`}
+          onClick={e => e.stopPropagation()}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-[#6B6159] bg-[#F4F0E8] hover:bg-[#EBE5DC] active:scale-[0.97] transition-all"
+          title="Editar familia"
+        >
+          <Pencil className="w-4 h-4" />
+        </Link>
+        <button
+          type="button"
+          onClick={e => { e.stopPropagation(); onDelete() }}
+          className="w-9 h-9 flex items-center justify-center rounded-lg text-red-600 bg-red-50 hover:bg-red-100 active:scale-[0.97] transition-all cursor-pointer"
+          title="Eliminar familia"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+
+      {expanded && group.variants.map(v => (
+        <ProductCardMobile
+          key={v.id}
+          p={v}
+          nested
+          onNavigate={onNavigate}
+          onDelete={onDeleteProduct}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function Products() {
   const [allProductos, setAllProductos] = useState<Producto[]>([])
   const [families, setFamilies]         = useState<ProductFamily[]>([])
@@ -312,6 +454,7 @@ export function Products() {
   const [orden, setOrden]               = useState<'fecha' | 'nombre' | 'precio'>('fecha')
   const [displayCount, setDisplayCount] = useState(CHUNK)
   const [expandedKey, setExpandedKey]   = useState<string | null>(null)
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [createFamilyOpen, setCreateFamilyOpen] = useState(false)
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null)
   const [deletingFamily, setDeletingFamily] = useState<FamilyGroup | null>(null)
@@ -413,6 +556,7 @@ export function Products() {
   const visibleCount    = visibleFamilies.reduce((n, f) => n + f.variants.length, 0)
 
   const hasActiveFilters = !!(search.trim() || categoria || modo !== 'all' || orden !== 'fecha')
+  const mobileActiveCount = (categoria ? 1 : 0) + (modo !== 'all' ? 1 : 0) + (orden !== 'fecha' ? 1 : 0) + (tab !== 'todos' ? 1 : 0)
 
   const clearFilters = () => {
     setSearch('')
@@ -561,7 +705,7 @@ export function Products() {
       `}</style>
     <div className="space-y-5 max-w-full">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#1A1613] tracking-tight">Productos</h1>
           <p className="text-sm text-[#9E9080] mt-0.5">
@@ -576,11 +720,11 @@ export function Products() {
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex md:items-center gap-2">
           <Button
             variant="brandOutline"
             onClick={() => setCreateFamilyOpen(true)}
-            className="px-4 py-2.5 h-auto rounded-xl"
+            className="w-full sm:w-auto justify-center px-4 py-2.5 h-auto rounded-xl"
           >
             <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
             Crear familia
@@ -588,7 +732,7 @@ export function Products() {
           <Button
             variant="brand"
             onClick={() => navigate('/admin/productos/nuevo')}
-            className="px-5 py-2.5 h-auto rounded-xl"
+            className="w-full sm:w-auto justify-center px-5 py-2.5 h-auto rounded-xl"
           >
             <Plus className="w-4 h-4" />
             Agregar producto
@@ -597,14 +741,14 @@ export function Products() {
       </div>
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-3">
-        <div className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
-            <Package className="w-5 h-5 text-white" strokeWidth={1.8} />
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3">
+        <div className="sm:flex-1 sm:basis-[150px] sm:min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 shadow-sm">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#1A1613] to-[#2A2623] flex items-center justify-center flex-shrink-0 shadow-lg">
+            <Package className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" strokeWidth={1.8} />
           </div>
           <div className="min-w-0">
-            <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
-            <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 truncate">Total productos</p>
+            <p className="text-xl sm:text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{allProductos.length}</p>
+            <p className="text-[10px] sm:text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 truncate">Total productos</p>
           </div>
         </div>
         {[
@@ -616,14 +760,14 @@ export function Products() {
           return (
             <div
               key={s.label}
-              className="flex-1 basis-[150px] min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3.5 flex items-center gap-3 shadow-sm"
+              className="sm:flex-1 sm:basis-[150px] sm:min-w-[150px] bg-white rounded-xl border border-[#EBE5DC] p-3 sm:p-3.5 flex items-center gap-2.5 sm:gap-3 shadow-sm"
             >
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 shadow-lg ${s.tint}`}>
-                <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
+              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 shadow-lg ${s.tint}`}>
+                <Icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" strokeWidth={1.8} />
               </div>
               <div className="min-w-0">
-                <p className="text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{s.count}</p>
-                <p className="text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 flex items-center gap-1.5 truncate">
+                <p className="text-xl sm:text-2xl font-bold text-[#1A1613] leading-none tabular-nums">{s.count}</p>
+                <p className="text-[10px] sm:text-[11px] font-medium text-[#9E9080] uppercase tracking-wider mt-1 flex items-center gap-1.5 truncate">
                   <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${s.dot}`} />
                   {s.label}
                 </p>
@@ -633,14 +777,73 @@ export function Products() {
         })}
       </div>
 
-      {/* Tabs: Todos / Únicos / Familias / Hijos */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
+      {/* Mobile: acciones — debajo de las estadísticas */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:hidden">
+        <Button
+          variant="brandOutline"
+          onClick={() => setCreateFamilyOpen(true)}
+          className="w-full sm:w-auto justify-center px-4 py-2.5 h-auto rounded-xl"
+        >
+          <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
+          Crear familia
+        </Button>
+        <Button
+          variant="brand"
+          onClick={() => navigate('/admin/productos/nuevo')}
+          className="w-full sm:w-auto justify-center px-5 py-2.5 h-auto rounded-xl"
+        >
+          <Plus className="w-4 h-4" />
+          Agregar producto
+        </Button>
+      </div>
+
+      {/* Mobile: búsqueda + botón de filtros (como en el catálogo público) */}
+      <div className="flex md:hidden items-center gap-2">
+        <div className="relative flex-1 min-w-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
+          <Input
+            type="text"
+            value={search}
+            onChange={e => {
+              setSearch(e.target.value)
+              setCategoria('')
+              setModo('all')
+              setOrden('fecha')
+            }}
+            placeholder="Buscar por nombre o código..."
+            className={`w-full pl-9 h-11 bg-white border border-[#D8D0C4] shadow-sm focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E] ${
+              search ? 'border-[#C41B2E]/40' : ''
+            }`}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setMobileFilterOpen(true)}
+          aria-label="Abrir filtros"
+          className={`flex items-center gap-2 px-4 h-11 rounded-xl text-[13px] font-semibold border transition-all duration-150 cursor-pointer flex-shrink-0 ${
+            mobileActiveCount > 0
+              ? 'bg-[#C41B2E] text-white border-[#C41B2E] shadow-sm'
+              : 'bg-white text-[#1A1613] border-[#EBE5DC] shadow-sm'
+          }`}
+        >
+          <Filter className="w-4 h-4" />
+          Filtros
+          {mobileActiveCount > 0 && (
+            <span className="w-5 h-5 rounded-full bg-white/25 text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-white/40">
+              {mobileActiveCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* Tabs: Todos / Únicos / Familias / Hijos — desktop */}
+      <div className="hidden md:flex md:items-center md:justify-between gap-3">
         <Tabs
           value={tab}
           onValueChange={v => setTab(v as typeof tab)}
           className="w-fit"
         >
-          <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1">
+          <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-xl gap-1 w-max">
             {([
               { key: 'todos', label: 'Todos', count: visibleProductos.length },
               { key: 'unicos', label: 'Únicos', count: unicosCount },
@@ -650,7 +853,7 @@ export function Products() {
               <TabsTrigger
                 key={t.key}
                 value={t.key}
-                className="group relative rounded-lg px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
+                className="group relative rounded-lg px-3 sm:px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
               >
                 {tab === t.key && (
                   <motion.span
@@ -674,7 +877,7 @@ export function Products() {
           <Button
             variant="ghost"
             onClick={clearFilters}
-            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
+            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium self-start sm:self-auto"
           >
             <X className="w-4 h-4" />
             Eliminar filtros
@@ -737,13 +940,13 @@ export function Products() {
         </div>
       )}
 
-      {/* Filters */}
-      <div className={`bg-white rounded-xl border p-4 flex flex-wrap gap-3 items-center shadow-sm transition-colors ${
+      {/* Filters — desktop */}
+      <div className={`hidden md:flex bg-white rounded-xl border p-4 flex-wrap gap-3 items-center shadow-sm transition-colors ${
         hasActiveFilters
           ? 'border-[#C41B2E]/50 ring-2 ring-[#C41B2E]/10'
           : 'border-[#EBE5DC]'
       }`}>
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative w-full sm:flex-1 sm:min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
           <Input
             type="text"
@@ -761,10 +964,10 @@ export function Products() {
           />
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={categoria || 'all'} onValueChange={v => setCategoria(v === 'all' ? '' : v)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[200px] ${
               categoria ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue placeholder="Todas las categorías" />
@@ -786,10 +989,10 @@ export function Products() {
           </Select>
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={orden} onValueChange={v => setOrden(v as typeof orden)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[200px] ${
               orden !== 'fecha' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue />
@@ -802,10 +1005,10 @@ export function Products() {
           </Select>
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={modo} onValueChange={v => setModo(v as typeof modo)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[180px] ${
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-full sm:w-[180px] ${
               modo !== 'all' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
             }`}>
               <SelectValue />
@@ -818,6 +1021,153 @@ export function Products() {
           </Select>
         </div>
       </div>
+
+      {/* Filtros — mobile (sheet inferior) */}
+      <Sheet open={mobileFilterOpen} onOpenChange={setMobileFilterOpen}>
+        <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl p-0 flex flex-col gap-0">
+          <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC] flex-shrink-0">
+            <SheetTitle className="text-[13px] font-bold text-[#1A1613]">Filtros</SheetTitle>
+            <SheetDescription className="sr-only">Filtrá y ordená la lista de productos</SheetDescription>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto">
+            <div className="px-4 pt-4 pb-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Ver</p>
+              <div className="flex flex-col gap-0.5">
+                {([
+                  { key: 'todos', label: 'Todos', count: visibleProductos.length },
+                  { key: 'unicos', label: 'Únicos', count: unicosCount },
+                  { key: 'variantes', label: 'Familias', count: variantesCount },
+                  { key: 'hijos', label: 'Sin asignar', count: hijosCount },
+                ] as const).map(t => (
+                  <label
+                    key={t.key}
+                    className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
+                      tab === t.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="mobile-tab"
+                      checked={tab === t.key}
+                      onChange={() => setTab(t.key)}
+                      className="w-4 h-4 accent-[#C41B2E]"
+                    />
+                    <span className={`flex-1 text-[13px] font-medium ${tab === t.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+                      {t.label}
+                    </span>
+                    <span className="text-[11px] text-[#9E9080]">({t.count})</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-[#EBE5DC] mx-4 my-2" />
+
+            <div className="px-4 py-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Categoría</p>
+              <div className="flex flex-col gap-0.5">
+                <label className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
+                  categoria === '' ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                }`}>
+                  <input
+                    type="radio"
+                    name="mobile-categoria"
+                    checked={categoria === ''}
+                    onChange={() => setCategoria('')}
+                    className="w-4 h-4 accent-[#C41B2E]"
+                  />
+                  <span className={`flex-1 text-[13px] font-medium ${categoria === '' ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+                    Todas las categorías
+                  </span>
+                </label>
+                {CATEGORIAS.map(c => {
+                  const Icon = CATEGORIA_ICONS[c]
+                  const active = categoria === c
+                  return (
+                    <label key={c} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${active ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                      <input
+                        type="radio"
+                        name="mobile-categoria"
+                        checked={active}
+                        onChange={() => setCategoria(c)}
+                        className="w-4 h-4 accent-[#C41B2E]"
+                      />
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
+                      <span className={`flex-1 text-[13px] font-medium ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{c}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="h-px bg-[#EBE5DC] mx-4 my-2" />
+
+            <div className="px-4 py-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Ordenar por</p>
+              <div className="flex flex-col gap-0.5">
+                {([
+                  { key: 'fecha', label: 'Fecha de creación' },
+                  { key: 'nombre', label: 'Nombre' },
+                  { key: 'precio', label: 'Precio' },
+                ] as const).map(o => (
+                  <label key={o.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${orden === o.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                    <input
+                      type="radio"
+                      name="mobile-orden"
+                      checked={orden === o.key}
+                      onChange={() => setOrden(o.key)}
+                      className="w-4 h-4 accent-[#C41B2E]"
+                    />
+                    <span className={`flex-1 text-[13px] font-medium ${orden === o.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{o.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-[#EBE5DC] mx-4 my-2" />
+
+            <div className="px-4 pb-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Stock</p>
+              <div className="flex flex-col gap-0.5">
+                {([
+                  { key: 'all', label: 'Todos' },
+                  { key: 'en_stock', label: 'En stock' },
+                  { key: 'por_encargo', label: 'Por encargo' },
+                ] as const).map(m => (
+                  <label key={m.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${modo === m.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                    <input
+                      type="radio"
+                      name="mobile-modo"
+                      checked={modo === m.key}
+                      onChange={() => setModo(m.key)}
+                      className="w-4 h-4 accent-[#C41B2E]"
+                    />
+                    <span className={`flex-1 text-[13px] font-medium ${modo === m.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{m.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <SheetFooter className="px-4 py-4 border-t border-[#EBE5DC] flex-row gap-3 flex-shrink-0">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer"
+            >
+              Limpiar
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileFilterOpen(false)}
+              className="flex-[2] py-2.5 rounded-xl text-[13px] font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer shadow-sm"
+            >
+              Ver {totalCount} producto{totalCount !== 1 ? 's' : ''}
+            </button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-[#EBE5DC] overflow-hidden shadow-sm">
@@ -847,7 +1197,42 @@ export function Products() {
             <p className="text-xs text-[#C0B5A8]">Probá con otros filtros o términos de búsqueda</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          {/* Mobile / tablet chico: lista de tarjetas */}
+          <div className="md:hidden divide-y divide-[#F0EAE2]">
+            {visibleFamilies.map(group => {
+              if (!isCarpetaGroup(group)) {
+                return (
+                  <ProductCardMobile
+                    key={group.key}
+                    p={group.variants[0]}
+                    onNavigate={handleNavigate}
+                    onDelete={handleDelete}
+                  />
+                )
+              }
+              const isExpanded = expandedKey === group.key
+              return (
+                <FamilyCardMobile
+                  key={group.key}
+                  group={group}
+                  family={familyById.get(group.familiaId)}
+                  expanded={isExpanded}
+                  onToggle={() => toggleExpanded(group.key)}
+                  onAddChild={() => {
+                    const fam = families.find(f => f.id === group.familiaId)
+                    if (fam) setPickerFamily(fam)
+                  }}
+                  onDelete={() => setDeletingFamily(group)}
+                  onNavigate={handleNavigate}
+                  onDeleteProduct={handleDelete}
+                />
+              )
+            })}
+          </div>
+
+          {/* Tablet grande / desktop: tabla completa */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm table-fixed min-w-[820px]">
               <colgroup>
                 <col className="w-[8%]" />
@@ -923,6 +1308,7 @@ export function Products() {
               </tbody>
             </table>
           </div>
+          </>
         )}
 
         {/* Infinite scroll sentinel */}

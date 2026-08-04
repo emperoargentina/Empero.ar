@@ -7,7 +7,7 @@ import {
 import type { ComponentType } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { categories } from '@/data/products';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { AvailabilityFilter } from '@/hooks/useProducts';
 
@@ -259,6 +259,7 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
             <SheetTitle className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1A1613]">
               Filtros
             </SheetTitle>
+            <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto">
             <FilterContent {...props} />

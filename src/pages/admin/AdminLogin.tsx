@@ -58,7 +58,7 @@ export function AdminLogin() {
         >
           <div className="h-1 bg-gradient-to-r from-transparent via-[#C41B2E] to-transparent" />
 
-          <div className="px-10 pt-10 pb-8">
+          <div className="px-6 sm:px-10 pt-10 pb-8">
             <div className="text-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C41B2E] to-[#B51426] flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#C41B2E]/25">
                 <Package className="w-7 h-7 text-white" />

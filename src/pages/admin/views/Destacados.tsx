@@ -4,7 +4,7 @@ import { getProductos, invalidateProductosCache } from '@/lib/productosCache'
 import { invalidatePublicProductsCache } from '@/hooks/useProducts'
 import type { Producto } from '@/types/producto'
 import { toast } from 'sonner'
-import { Search, Star, Package, X, Loader2, Check, Plus, GripVertical } from 'lucide-react'
+import { Search, Star, Package, X, Loader2, Check, Plus, GripVertical, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
 const MAX_DESTACADOS = 5
@@ -123,7 +123,7 @@ export function Destacados() {
   }
 
   return (
-    <div className="space-y-6 max-w-full">
+    <div className="flex flex-col gap-6 max-w-full">
       <div>
         <h1 className="text-2xl font-bold text-[#1A1613] tracking-tight flex items-center gap-2.5">
           <Star className="w-6 h-6 text-[#C41B2E] fill-[#C41B2E]" />
@@ -136,7 +136,7 @@ export function Destacados() {
       </div>
 
       {/* 5 slots */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      <div className="order-3 md:order-none grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {Array.from({ length: MAX_DESTACADOS }).map((_, i) => {
           const prod = destacados[i]
           const isSaving = !!prod && savingId === prod.id
@@ -172,13 +172,13 @@ export function Destacados() {
                       {i + 1}
                     </span>
                   </div>
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 p-1 rounded-md bg-white/90 text-[#C0B5A8] opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+                  <div className="hidden sm:block absolute top-2 left-1/2 -translate-x-1/2 z-10 p-1 rounded-md bg-white/90 text-[#C0B5A8] opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
                     <GripVertical className="w-4 h-4" />
                   </div>
                   <button
                     onClick={() => toggleDestacado(prod)}
                     disabled={isSaving}
-                    className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-white/90 text-[#9E9080] opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm cursor-pointer"
+                    className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-white/90 text-[#9E9080] opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm cursor-pointer"
                     aria-label={`Quitar ${prod.nombre} de destacados`}
                   >
                     {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
@@ -199,7 +199,28 @@ export function Destacados() {
                     <div className="p-3 space-y-1.5 flex-[2] flex flex-col">
                       <span className="font-mono text-[10px] text-[#9E9080] bg-[#F4F0E8] px-1.5 py-0.5 rounded self-start">{prod.codigo}</span>
                       <p className="text-sm font-semibold text-[#1A1613] line-clamp-2 leading-snug">{prod.nombre}</p>
-                      <p className="text-[11px] text-[#C41B2E] font-medium uppercase tracking-wide mt-auto truncate">{prod.categoria}</p>
+                      <div className="mt-auto flex items-center justify-between gap-1">
+                        <p className="text-[11px] text-[#C41B2E] font-medium uppercase tracking-wide truncate">{prod.categoria}</p>
+                        {/* Reordenar por toque — el drag & drop no funciona en touch */}
+                        <div className="sm:hidden flex items-center gap-0.5 flex-shrink-0">
+                          <button
+                            onClick={e => { e.stopPropagation(); if (i > 0) reorderDestacados(i, i - 1) }}
+                            disabled={i === 0}
+                            className="p-1 rounded-md text-[#9E9080] disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                            aria-label="Mover antes"
+                          >
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={e => { e.stopPropagation(); if (i < destacados.length - 1) reorderDestacados(i, i + 1) }}
+                            disabled={i >= destacados.length - 1}
+                            className="p-1 rounded-md text-[#9E9080] disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                            aria-label="Mover después"
+                          >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -217,7 +238,7 @@ export function Destacados() {
 
       {/* Search to add */}
       {!seleccionLlena && (
-        <div className="bg-white rounded-xl border border-[#EBE5DC] shadow-sm overflow-hidden">
+        <div className="order-1 md:order-none bg-white rounded-xl border border-[#EBE5DC] shadow-sm overflow-hidden">
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C0B5A8] z-10" />
@@ -272,8 +293,8 @@ export function Destacados() {
       )}
 
       {/* Summary */}
-      <div className="flex items-center justify-between bg-white rounded-xl border border-[#EBE5DC] px-5 py-4 shadow-sm">
-        <div className="flex items-center gap-3">
+      <div className="order-2 md:order-none flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-white rounded-xl border border-[#EBE5DC] px-5 py-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
           <div className="flex gap-1">
             {Array.from({ length: MAX_DESTACADOS }).map((_, i) => (
               <div
@@ -288,11 +309,11 @@ export function Destacados() {
               </div>
             ))}
           </div>
-          <span className="text-sm text-[#6B6159] font-medium">
+          <span className="text-sm text-[#6B6159] font-medium whitespace-nowrap">
             {destacados.length} de {MAX_DESTACADOS} seleccionados
           </span>
         </div>
-        <span className="text-xs text-[#C0B5A8]">{allProducts.length} productos en total</span>
+        <span className="text-xs text-[#C0B5A8] whitespace-nowrap">{allProducts.length} productos en total</span>
       </div>
     </div>
   )

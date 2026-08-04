@@ -18,7 +18,7 @@ import { ProductModal } from '@/components/catalog/ProductModal';
 import { Pagination } from '@/components/catalog/Pagination';
 import { FeaturedCarousel } from '@/components/catalog/FeaturedCarousel';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
@@ -454,6 +454,7 @@ export function ProductCatalog({
         <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl p-0 flex flex-col gap-0">
           <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC] flex-shrink-0">
             <SheetTitle className="text-[13px] font-bold text-[#1A1613]">Filtros</SheetTitle>
+            <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto">

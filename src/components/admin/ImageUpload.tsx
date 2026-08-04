@@ -16,8 +16,8 @@ interface ImageUploadProps {
 // alto relativo al viewport, para llenar bien la pantalla sin forzar scroll
 // en pantallas más chicas.
 const SIZE_CLS = {
-  md: 'w-[220px] aspect-square',
-  lg: 'h-[54vh] max-h-[520px] min-h-[280px] aspect-square',
+  md: 'w-[220px] max-w-full aspect-square',
+  lg: 'w-full aspect-square sm:w-auto sm:h-[54vh] sm:max-h-[520px] sm:min-h-[280px]',
 }
 
 const MAX_MB = 10
@@ -143,7 +143,7 @@ export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = f
   return (
     <div className={className}>
       {url ? (
-        <div className="w-fit mx-auto rounded-xl overflow-hidden border border-[#EBE5DC] bg-[#FAF8F4]">
+        <div className={`${size === 'lg' ? 'w-full sm:w-fit' : 'w-fit'} mx-auto rounded-xl overflow-hidden border border-[#EBE5DC] bg-[#FAF8F4]`}>
           <div className={`relative ${SIZE_CLS[size]}`}>
             <img src={url} alt="preview" className="w-full h-full object-cover block" />
             {!disabled && (

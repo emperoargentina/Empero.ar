@@ -607,8 +607,8 @@ export function ProductForm() {
             <ArrowLeft className="w-4 h-4" />
           </Link>
         </Button>
-        <div>
-          <h1 className="text-lg font-bold text-[#1A1613]">
+        <div className="min-w-0">
+          <h1 className="text-lg font-bold text-[#1A1613] truncate">
             {isEdit ? (producto?.nombre ?? 'Editar producto') : 'Agregar producto'}
           </h1>
           <p className="text-xs text-[#9E9080]">
@@ -618,18 +618,18 @@ export function ProductForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <Tabs
             value={tab}
             onValueChange={v => setTab(v as Tab)}
-            className="w-fit"
+            className="w-full sm:w-fit overflow-x-auto"
           >
-            <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-lg gap-0.5">
+            <TabsList className="bg-white border border-[#EBE5DC] shadow-sm h-auto p-1 rounded-lg gap-0.5 w-max">
               {tabs.map(({ id: tabId, label, icon: Icon }) => (
                 <TabsTrigger
                   key={tabId}
                   value={tabId}
-                  className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors"
+                  className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
                 >
                   {tab === tabId && (
                     <motion.span
@@ -709,7 +709,7 @@ export function ProductForm() {
                     </p>
                   </div>
                 )}
-                <div className="grid grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <FieldLabel>Nombre *</FieldLabel>
                     <Input
@@ -774,7 +774,7 @@ export function ProductForm() {
               description="Código, precio, stock y visibilidad de esta variante puntual"
               className="h-full flex flex-col"
             >
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <FieldLabel>Código *</FieldLabel>
                   <Input {...register('codigo')} className={fieldCls} placeholder="Ej: EMP.LV-500" />
@@ -790,7 +790,7 @@ export function ProductForm() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <FieldLabel>Precio (USD)</FieldLabel>
                   <Input type="number" step="0.01" min="0" {...register('precio_usd')} className={fieldCls} placeholder="0.00" />
@@ -826,7 +826,7 @@ export function ProductForm() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <ToggleRow
                   label="Visible en el catálogo"
                   hint={disponible ? 'Aparece en la tienda' : 'Está oculto'}
@@ -1048,7 +1048,7 @@ export function ProductForm() {
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC]">
+        <div className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC] flex-wrap">
           <span className="text-xs text-[#9E9080]">* Campos obligatorios</span>
           <Button type="submit" variant="brand" disabled={isSubmitting} className="px-6 py-2.5 h-auto rounded-xl">
             {isSubmitting

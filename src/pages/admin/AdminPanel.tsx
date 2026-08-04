@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { invalidateProductosCache } from '@/lib/productosCache'
@@ -46,8 +46,13 @@ function SidebarInner({
 }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { state } = useSidebar()
+  const { state, isMobile, setOpenMobile } = useSidebar()
   const collapsed = state === 'collapsed'
+
+  const goTo = (path: string) => {
+    navigate(path)
+    if (isMobile) setOpenMobile(false)
+  }
 
   return (
     <>
@@ -56,24 +61,28 @@ function SidebarInner({
           <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-white/10 blur-3xl pointer-events-none" />
           {collapsed ? (
             <div className="flex flex-col items-center gap-3">
-              <img
-                src="/images/logo/Logo.png"
-                alt="Empero"
-                width={480}
-                height={333}
-                className="w-auto h-9 object-contain brightness-0 invert select-none"
-              />
+              <Link to="/" title="Ir al sitio" className="opacity-90 hover:opacity-100 transition-opacity">
+                <img
+                  src="/images/logo/Logo.png"
+                  alt="Empero"
+                  width={480}
+                  height={333}
+                  className="w-auto h-9 object-contain brightness-0 invert select-none"
+                />
+              </Link>
               <SidebarCollapseButton />
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <img
-                src="/images/logo/Logo.png"
-                alt="Empero"
-                width={480}
-                height={333}
-                className="w-auto h-10 object-contain brightness-0 invert select-none flex-shrink-0"
-              />
+              <Link to="/" title="Ir al sitio" className="opacity-90 hover:opacity-100 transition-opacity flex-shrink-0">
+                <img
+                  src="/images/logo/Logo.png"
+                  alt="Empero"
+                  width={480}
+                  height={333}
+                  className="w-auto h-10 object-contain brightness-0 invert select-none"
+                />
+              </Link>
               <p className="min-w-0 flex-1 text-white/50 text-[11px] font-medium uppercase tracking-[0.14em] truncate">
                 Panel administrativo
               </p>
@@ -95,7 +104,7 @@ function SidebarInner({
                     <SidebarMenuButton
                       isActive={active}
                       tooltip={item.label}
-                      onClick={() => navigate(item.path)}
+                      onClick={() => goTo(item.path)}
                       className={`rounded-lg px-3 py-2.5 h-auto text-sm font-medium ${
                         active
                           ? 'bg-white text-[#C41B2E] hover:bg-white hover:text-[#C41B2E] shadow-md shadow-black/10'
@@ -191,7 +200,7 @@ export function AdminPanel({ session }: Props) {
 
         <SidebarInset className="relative bg-transparent">
           <header className="bg-white/80 backdrop-blur-lg border-b border-[#EBE5DC] px-4 lg:px-8 h-16 flex items-center gap-3 flex-shrink-0 sticky top-0 z-10 shadow-sm">
-            <SidebarTrigger className="lg:hidden text-[#6B6159] hover:bg-[#F4F0E8] w-9 h-9" />
+            <SidebarTrigger className="md:hidden text-white bg-[#C41B2E] hover:bg-[#B51426] hover:text-white rounded-lg w-9 h-9 shadow-sm shadow-[#C41B2E]/25" />
 
             <div className="flex items-center gap-2 text-sm">
               <span className="text-[#9E9080] font-medium">Empero Admin</span>
@@ -209,7 +218,7 @@ export function AdminPanel({ session }: Props) {
             </div>
           </header>
 
-          <main className="flex-1 p-6 lg:p-8 overflow-auto">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
             <Outlet />
           </main>
         </SidebarInset>
