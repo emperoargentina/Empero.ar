@@ -1,7 +1,9 @@
 {
   "regions": ["gru1"],
   "rewrites": [
-    { "source": "/sw.js",     "destination": "/sw.js" },
+    { "source": "/sw.js",         "destination": "/sw.js" },
+    { "source": "/sitemap.xml",   "destination": "/sitemap.xml" },
+    { "source": "/robots.txt",    "destination": "/robots.txt" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/(.*)",     "destination": "/index.html" }
   ],
