@@ -81,26 +81,68 @@
             "@type": "Organization",
             "@id": "https://www.empero.com.ar/#organization",
             "name": "Empero Argentina",
+            "alternateName": ["Empero AR", "Empero Argentina - Equipamiento Gastronómico"],
             "url": "https://www.empero.com.ar/",
-            "logo": "https://www.empero.com.ar/images/logo/Logo.png",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.empero.com.ar/images/logo/Logo.png",
+              "width": 480,
+              "height": 333
+            },
             "image": "https://www.empero.com.ar/og-image.jpg",
-            "description": "Distribuidor oficial de Empero en Argentina. Equipamiento gastronómico profesional e industrial para restaurantes, hoteles y cocinas industriales.",
-            "areaServed": "AR"
+            "description": "Distribuidor oficial de Empero en Argentina. Equipamiento gastronómico profesional e industrial para restaurantes, hoteles y cocinas industriales. +3.000 productos con respaldo local.",
+            "slogan": "Distribuidor oficial de Empero en Argentina",
+            "email": "empero.argentina@gmail.com",
+            "telephone": "+54 11 3228-6523",
+            "knowsLanguage": ["es-AR"],
+            "areaServed": {
+              "@type": "Country",
+              "name": "Argentina"
+            },
+            "brand": {
+              "@type": "Brand",
+              "name": "Empero"
+            },
+            "sameAs": [
+              "https://www.instagram.com/empero.argentina"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+54 11 3228-6523",
+              "contactType": "customer service",
+              "areaServed": "AR",
+              "availableLanguage": ["Spanish"]
+            }
           },
           {
             "@type": "WebSite",
             "@id": "https://www.empero.com.ar/#website",
             "url": "https://www.empero.com.ar/",
             "name": "Empero Argentina",
+            "alternateName": "Empero Argentina — Equipamiento Gastronómico Industrial",
             "inLanguage": "es-AR",
-            "publisher": { "@id": "https://www.empero.com.ar/#organization" }
+            "publisher": { "@id": "https://www.empero.com.ar/#organization" },
+            "about": { "@id": "https://www.empero.com.ar/#organization" }
           }
         ]
       }
     </script>
+    <!--
+      NOTA SEO LOCAL:
+      - Dirección omitida a propósito (es un depósito, no local al público). Correcto no publicarla.
+        En Google Business Profile podés crear un "negocio con área de servicio" que oculta la
+        dirección exacta pero igual te posiciona en Argentina — esa es la vía recomendada.
+      - Si en el futuro sumás Facebook/LinkedIn propios de Argentina, agregalos al array "sameAs".
+    -->
   </head>
   <body style="background-color: #15120F">
-    <div id="root"></div>
+    <div id="root">
+      <!-- H1 para crawlers sin JS. React (createRoot) reemplaza este contenido al montar,
+           por lo que en la app renderizada el único H1 es el del Hero. -->
+      <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">
+        Empero Argentina — Equipamiento gastronómico profesional e industrial
+      </h1>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
