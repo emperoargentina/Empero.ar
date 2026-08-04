@@ -6,7 +6,7 @@ import { HelpCircle } from 'lucide-react'
 import { driver, type Driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 import '@/styles/admin-tour.css'
-import { getAdminTourSteps, isSidebarTourStep } from '@/lib/adminTour'
+import { getAdminTourSteps, isSidebarTourStep, stepRequiredTab, stepBeforeShow, clickFormTab } from '@/lib/adminTour'
 import { useSidebar } from '@/components/ui/sidebar'
 
 export function AdminTourButton() {
@@ -37,7 +37,12 @@ export function AdminTourButton() {
     }
 
     driverRef.current?.destroy()
-    const driverObj = driver({
+    // eslint-disable-next-line prefer-const -- se auto-referencia desde los hooks de abajo
+    let driverObj: Driver | null = null
+    // Evita que un doble click dispare dos cambios de tab superpuestos
+    // mientras la transición de 220ms todavía está en curso.
+    let transitioning = false
+    driverObj = driver({
       steps,
       showProgress: true,
       progressText: '{{current}} de {{total}}',
@@ -51,6 +56,47 @@ export function AdminTourButton() {
       stageRadius: 10,
       smoothScroll: true,
       allowClose: true,
+      skipMissingElement: true,
+      waitForElement: 400,
+      // Algunos pasos (formulario de producto, o el "+" de huérfanos en
+      // Productos) viven detrás de un tab de React o necesitan que se
+      // despliegue algo antes de existir — antes de avanzar/retroceder, se
+      // prepara el terreno a mano y recién ahí se deja que driver.js
+      // resuelva el elemento (que hasta ese momento ni estaba en el DOM).
+      onNextClick: (_element, _step, opts) => {
+        if (transitioning) return
+        const idx = opts.index ?? 0
+        const next = steps[idx + 1]
+        const tab = stepRequiredTab(next)
+        const before = stepBeforeShow(next)
+        if (tab) {
+          transitioning = true
+          clickFormTab(tab)
+          setTimeout(() => { transitioning = false; driverObj?.moveNext() }, 220)
+        } else if (before) {
+          transitioning = true
+          Promise.resolve(before()).then(() => { transitioning = false; driverObj?.moveNext() })
+        } else {
+          driverObj?.moveNext()
+        }
+      },
+      onPrevClick: (_element, _step, opts) => {
+        if (transitioning) return
+        const idx = opts.index ?? 0
+        const prev = steps[idx - 1]
+        const tab = stepRequiredTab(prev)
+        const before = stepBeforeShow(prev)
+        if (tab) {
+          transitioning = true
+          clickFormTab(tab)
+          setTimeout(() => { transitioning = false; driverObj?.movePrevious() }, 220)
+        } else if (before) {
+          transitioning = true
+          Promise.resolve(before()).then(() => { transitioning = false; driverObj?.movePrevious() })
+        } else {
+          driverObj?.movePrevious()
+        }
+      },
       onHighlightStarted: (_element, step) => {
         if (sidebarOpenedByTour && !isSidebarTourStep(step)) {
           sidebarOpenedByTour = false

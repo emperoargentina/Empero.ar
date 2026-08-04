@@ -37,7 +37,7 @@ const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0
 
 // Card de sección con icono de color — mismo lenguaje visual que ProductForm.
 function SectionCard({
-  icon: Icon, tint, title, description, className = '', children,
+  icon: Icon, tint, title, description, className = '', children, dataTour,
 }: {
   icon: React.ElementType
   tint: string
@@ -45,9 +45,10 @@ function SectionCard({
   description?: string
   className?: string
   children: React.ReactNode
+  dataTour?: string
 }) {
   return (
-    <div className={`rounded-xl border border-[#EBE5DC] bg-white overflow-hidden ${className}`}>
+    <div data-tour={dataTour} className={`rounded-xl border border-[#EBE5DC] bg-white overflow-hidden ${className}`}>
       <div className="flex items-start gap-3 px-5 py-4 border-b border-[#EBE5DC] bg-[#FCFBF9]">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${tint}`}>
           <Icon className="w-4 h-4" />
@@ -246,6 +247,7 @@ export function FamilyForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-full pb-24 lg:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
           <SectionCard
+            dataTour="tour-family-form-identity"
             icon={Tag}
             tint="bg-[#FFE4E6] text-[#C41B2E]"
             title="Datos de la familia"
@@ -306,6 +308,7 @@ export function FamilyForm() {
           </SectionCard>
 
           <SectionCard
+            dataTour="tour-family-form-variants"
             icon={Boxes}
             tint="bg-indigo-100 text-indigo-600"
             title="Variantes de esta familia"
@@ -335,7 +338,7 @@ export function FamilyForm() {
           </SectionCard>
         </div>
 
-        <div className="fixed bottom-0 inset-x-0 lg:inset-x-auto lg:right-6 lg:bottom-6 z-30 border-t lg:border-0 border-[#EBE5DC] bg-white/95 lg:bg-transparent backdrop-blur lg:backdrop-blur-none shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:shadow-none">
+        <div data-tour="tour-family-form-submit" className="fixed bottom-0 inset-x-0 lg:inset-x-auto lg:right-6 lg:bottom-6 z-30 border-t lg:border-0 border-[#EBE5DC] bg-white/95 lg:bg-transparent backdrop-blur lg:backdrop-blur-none shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:shadow-none">
           <div className="px-4 py-3 lg:p-0 flex justify-end">
             <Button
               type="submit"

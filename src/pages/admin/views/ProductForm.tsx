@@ -175,7 +175,7 @@ const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0
 // relacionados y hace mucho más fácil escanear tabs largos como
 // "Especificaciones" o "Características".
 function SectionCard({
-  icon: Icon, tint, title, description, className = '', children,
+  icon: Icon, tint, title, description, className = '', children, dataTour,
 }: {
   icon: React.ElementType
   tint: string
@@ -183,9 +183,10 @@ function SectionCard({
   description?: string
   className?: string
   children: React.ReactNode
+  dataTour?: string
 }) {
   return (
-    <div className={`rounded-xl border border-[#EBE5DC] bg-white overflow-hidden ${className}`}>
+    <div data-tour={dataTour} className={`rounded-xl border border-[#EBE5DC] bg-white overflow-hidden ${className}`}>
       <div className="flex items-start gap-3 px-5 py-4 border-b border-[#EBE5DC] bg-[#FCFBF9]">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${tint}`}>
           <Icon className="w-4 h-4" />
@@ -618,7 +619,7 @@ export function ProductForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div data-tour="tour-form-tabs" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <Tabs
             value={tab}
             onValueChange={v => setTab(v as Tab)}
@@ -629,6 +630,7 @@ export function ProductForm() {
                 <TabsTrigger
                   key={tabId}
                   value={tabId}
+                  data-tour-tab={tabId}
                   className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
                 >
                   {tab === tabId && (
@@ -648,7 +650,7 @@ export function ProductForm() {
           </Tabs>
 
           {isCarpeta && familyPreview && (
-            <div className="flex items-center gap-2.5 pl-2.5 pr-1.5 py-1.5 rounded-lg border border-[#EBE5DC] bg-white shadow-sm">
+            <div data-tour="tour-form-family-badge" className="flex items-center gap-2.5 pl-2.5 pr-1.5 py-1.5 rounded-lg border border-[#EBE5DC] bg-white shadow-sm">
               <div className="w-8 h-8 rounded-md overflow-hidden flex-shrink-0 bg-[#F4F0E8] border border-[#EBE5DC] flex items-center justify-center">
                 {familyPreview.cloudinary_url
                   ? <img src={familyPreview.cloudinary_url} alt={familyPreview.nombre} width={32} height={32} className="w-full h-full object-cover" />
@@ -680,6 +682,7 @@ export function ProductForm() {
         {tab === 'basico' && (
           <div ref={basicoRef} className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
             <SectionCard
+              dataTour="tour-form-identity"
               icon={Tag}
               tint="bg-[#FFE4E6] text-[#C41B2E]"
               title="Identidad del producto"
@@ -768,6 +771,7 @@ export function ProductForm() {
             </SectionCard>
 
             <SectionCard
+              dataTour="tour-form-variant"
               icon={Package}
               tint="bg-slate-100 text-slate-600"
               title="Datos de la variante"
@@ -826,7 +830,7 @@ export function ProductForm() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div data-tour="tour-form-toggles" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <ToggleRow
                   label="Visible en el catálogo"
                   hint={disponible ? 'Aparece en la tienda' : 'Está oculto'}
@@ -882,6 +886,7 @@ export function ProductForm() {
         {tab === 'especificaciones' && ventaAMedida && (
           <div style={tabMinHeight > 0 ? { minHeight: tabMinHeight } : undefined}>
             <SectionCard
+              dataTour="tour-form-comentario"
               icon={MessageSquare}
               tint="bg-violet-100 text-violet-600"
               title="Comentario"
@@ -900,6 +905,7 @@ export function ProductForm() {
 
         {tab === 'especificaciones' && !ventaAMedida && (
           <div
+            data-tour="tour-form-specs"
             className="grid grid-cols-1 lg:grid-cols-3 gap-5"
             style={tabMinHeight > 0 ? { gridAutoRows: `minmax(${tabMinHeight}px, auto)` } : undefined}
           >
@@ -993,6 +999,7 @@ export function ProductForm() {
             style={tabMinHeight > 0 ? { gridAutoRows: `minmax(${tabMinHeight}px, auto)` } : undefined}
           >
             <SectionCard
+              dataTour="tour-form-caracteristicas"
               icon={Sparkles}
               tint="bg-teal-100 text-teal-600"
               title="Características generales"
@@ -1014,6 +1021,7 @@ export function ProductForm() {
             </SectionCard>
 
             <SectionCard
+              dataTour="tour-form-accesorios"
               icon={Boxes}
               tint="bg-indigo-100 text-indigo-600"
               title="Accesorios incluidos"
@@ -1048,7 +1056,7 @@ export function ProductForm() {
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC] flex-wrap">
+        <div data-tour="tour-form-submit" className="flex items-center justify-end gap-3 mt-7 pt-5 border-t border-[#EBE5DC] flex-wrap">
           <span className="text-xs text-[#9E9080]">* Campos obligatorios</span>
           <Button type="submit" variant="brand" disabled={isSubmitting} className="px-6 py-2.5 h-auto rounded-xl">
             {isSubmitting

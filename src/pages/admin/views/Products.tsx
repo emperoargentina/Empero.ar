@@ -29,6 +29,7 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet'
+import { registerProductsTourSetTab } from '@/lib/adminTour'
 
 const CHUNK = 30
 
@@ -213,6 +214,8 @@ function FamilyHeaderRow({
       exit={{ opacity: 0, y: -8, transition: { duration: 0.15, ease: [0.4, 0, 1, 1] } }}
       transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1], delay: Math.min(index, 8) * 0.02 }}
       onClick={onToggle}
+      data-tour="tour-prod-family-row"
+      data-expanded={expanded}
       className={`transition-colors duration-200 cursor-pointer ${
         expanded
           ? 'bg-[#FFE1D6] hover:bg-[#FFD4C5]'
@@ -371,7 +374,12 @@ function FamilyCardMobile({
 
   return (
     <div className={expanded ? 'bg-[#FFF8F5]' : ''}>
-      <div onClick={onToggle} className="flex gap-3 p-3.5 active:bg-[#F4F0E8] transition-colors cursor-pointer">
+      <div
+        onClick={onToggle}
+        data-tour="tour-prod-family-row"
+        data-expanded={expanded}
+        className="flex gap-3 p-3.5 active:bg-[#F4F0E8] transition-colors cursor-pointer"
+      >
         <div className={`w-11 h-11 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border transition-colors ${
           expanded ? 'bg-[#FFD1C0] border-[#F0A088]' : 'bg-[#F4F0E8] border-[#EBE5DC]'
         }`}>
@@ -479,6 +487,14 @@ export function Products() {
   }, [])
 
   useEffect(() => { load() }, [load])
+
+  // Le da al tour del admin una forma de cambiar el filtro Todos/Únicos/
+  // Familias/Sin asignar por estado de React directamente, sin depender de
+  // simular clicks (ver src/lib/adminTour.ts).
+  useEffect(() => {
+    registerProductsTourSetTab(setTab)
+    return () => registerProductsTourSetTab(null)
+  }, [])
 
   const filtered = useMemo(() => {
     let list = allProductos
@@ -889,7 +905,7 @@ export function Products() {
 
       {/* Familias pendientes (vacías, esperando su primer producto hijo) */}
       {emptyFamilies.length > 0 && (
-        <div className="bg-[#FFF8F5] border border-[#F5C6BA] rounded-xl p-4 space-y-3">
+        <div data-tour="tour-prod-pending" className="bg-[#FFF8F5] border border-[#F5C6BA] rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold text-[#C41B2E] uppercase tracking-wider flex items-center gap-1.5">
               <FolderOpen className="w-3.5 h-3.5" />
