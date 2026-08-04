@@ -202,7 +202,7 @@ function SectionCard({
 }
 
 function ToggleRow({
-  label, hint, checked, onChange, color = 'brand', disabled = false,
+  label, hint, checked, onChange, color = 'brand', disabled = false, dataTour,
 }: {
   label: string
   hint: string
@@ -210,9 +210,10 @@ function ToggleRow({
   onChange: (value: boolean) => void
   color?: 'brand' | 'green'
   disabled?: boolean
+  dataTour?: string
 }) {
   return (
-    <div className={`flex items-center justify-between gap-3 p-3 border border-[#EBE5DC] rounded-xl ${disabled ? 'bg-[#FAF8F4]' : ''}`}>
+    <div data-tour={dataTour} className={`flex items-center justify-between gap-3 p-3 border border-[#EBE5DC] rounded-xl ${disabled ? 'bg-[#FAF8F4]' : ''}`}>
       <div className="min-w-0">
         <span className={`text-sm font-medium block truncate ${disabled ? 'text-[#9E9080]' : 'text-[#1A1613]'}`}>{label}</span>
         <p className="text-xs text-[#9E9080] mt-0.5 truncate">{hint}</p>
@@ -831,8 +832,9 @@ export function ProductForm() {
                   </div>
                 </div>
               </div>
-              <div data-tour="tour-form-toggles" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <ToggleRow
+                  dataTour="tour-form-toggle-visible"
                   label="Visible en el catálogo"
                   hint={disponible ? 'Aparece en la tienda' : 'Está oculto'}
                   checked={disponible}
@@ -840,6 +842,7 @@ export function ProductForm() {
                   color="green"
                 />
                 <ToggleRow
+                  dataTour="tour-form-toggle-precio"
                   label="Mostrar precio"
                   hint={mostrarPrecio ? 'Se muestra en la ficha' : 'Precio oculto'}
                   checked={mostrarPrecio}
@@ -847,6 +850,7 @@ export function ProductForm() {
                   color="green"
                 />
                 <ToggleRow
+                  dataTour="tour-form-toggle-hijo"
                   label="Producto hijo"
                   hint={
                     isCarpeta
@@ -862,6 +866,7 @@ export function ProductForm() {
                   disabled={isCarpeta || ventaAMedida}
                 />
                 <ToggleRow
+                  dataTour="tour-form-toggle-medida"
                   label="Venta a medida"
                   hint={
                     isChild

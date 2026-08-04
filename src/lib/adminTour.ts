@@ -337,10 +337,40 @@ const productFormSteps: FormTourStepDef[] = [
   },
   {
     tab: 'basico',
-    selectors: ['[data-tour="tour-form-toggles"]'],
+    selectors: ['[data-tour="tour-form-toggle-visible"]'],
     popover: {
-      title: '4 interruptores importantes',
-      description: '"Visible" lo muestra u oculta del catálogo sin borrarlo. "Mostrar precio" controla si el precio se ve en la ficha. "Producto hijo" lo convierte en huérfano — sin familia hasta que lo asignes desde Productos. "Venta a medida" cambia la pestaña Especificaciones por un comentario libre, para productos que se fabrican a pedido.',
+      title: 'Interruptor 1: Visible en el catálogo',
+      description: 'Lo muestra u oculta del catálogo público sin borrarlo. Sirve para pausar un producto un tiempo (por ej. si se te acabó y no sabés cuándo repone el proveedor) sin perder toda la ficha ya cargada.',
+      side: 'top',
+      align: 'start',
+    },
+  },
+  {
+    tab: 'basico',
+    selectors: ['[data-tour="tour-form-toggle-precio"]'],
+    popover: {
+      title: 'Interruptor 2: Mostrar precio',
+      description: 'Decide si el precio aparece directo en la ficha pública. Apagalo si preferís que el cliente lo consulte por WhatsApp en vez de verlo en la página — por ejemplo, para productos con precio muy variable.',
+      side: 'top',
+      align: 'start',
+    },
+  },
+  {
+    tab: 'basico',
+    selectors: ['[data-tour="tour-form-toggle-hijo"]'],
+    popover: {
+      title: 'Interruptor 3: Producto hijo',
+      description: 'Lo convierte en huérfano: queda guardado suelto, sin familia, hasta que lo asignes a una carpeta desde Productos. Se usa para variantes que todavía no armaste como familia, o para desarmar una asignación existente.',
+      side: 'top',
+      align: 'start',
+    },
+  },
+  {
+    tab: 'basico',
+    selectors: ['[data-tour="tour-form-toggle-medida"]'],
+    popover: {
+      title: 'Interruptor 4: Venta a medida',
+      description: 'Para productos que se fabrican o importan a pedido, sin stock fijo. Reemplaza la pestaña Especificaciones por un comentario libre donde le explicás al cliente cómo funciona la compra a medida.',
       side: 'top',
       align: 'start',
     },
