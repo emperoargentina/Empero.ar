@@ -1,7 +1,7 @@
 // src/components/admin/CreateFamilyModal.tsx
 import { useEffect, useState } from 'react'
 import { Loader2, FolderPlus } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -35,9 +35,9 @@ export function CreateFamilyModal({ open, onOpenChange, onConfirm }: CreateFamil
             <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
             Crear familia
           </DialogTitle>
-          <p className="text-xs text-[#9E9080]">
+          <DialogDescription className="text-xs text-[#9E9080]">
             Solo el nombre — es una carpeta vacía hasta que le agregues productos hijo. La categoría se toma del primer producto que le agregues.
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-5 py-5">

@@ -1,7 +1,7 @@
 // src/components/admin/FamilyChildPickerModal.tsx
 import { useEffect, useMemo, useState } from 'react'
 import { Search, Package, Loader2, UserPlus } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { Producto } from '@/types/producto'
@@ -63,11 +63,11 @@ export function FamilyChildPickerModal({
             <UserPlus className="w-4 h-4 text-[#C41B2E]" />
             Agregar producto hijo a «{family.nombre}»
           </DialogTitle>
-          <p className="text-xs text-[#9E9080]">
+          <DialogDescription className="text-xs text-[#9E9080]">
             {family.categoria
               ? `Solo se muestran hijos de categoría "${family.categoria}"`
               : 'La categoría de la familia se toma del primer lote que agregues'}
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-5 pt-4">

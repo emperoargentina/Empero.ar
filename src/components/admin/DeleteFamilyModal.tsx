@@ -1,7 +1,7 @@
 // src/components/admin/DeleteFamilyModal.tsx
 import { useState } from 'react'
 import { Loader2, Trash2, FolderX, AlertTriangle } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 interface DeleteFamilyModalProps {
@@ -38,11 +38,11 @@ export function DeleteFamilyModal({
             <Trash2 className="w-4 h-4 text-[#C41B2E]" />
             Eliminar familia «{familyName}»
           </DialogTitle>
-          <p className="text-xs text-[#9E9080]">
+          <DialogDescription className="text-xs text-[#9E9080]">
             {productCount > 0
               ? `Tiene ${productCount} producto${productCount !== 1 ? 's' : ''} vinculado${productCount !== 1 ? 's' : ''}. Elegí qué hacer con ${productCount !== 1 ? 'ellos' : 'él'}.`
               : 'Esta familia no tiene productos vinculados.'}
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="px-5 py-4 space-y-2.5">

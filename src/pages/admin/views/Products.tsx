@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { getProductos, invalidateProductosCache, getCacheAge } from '@/lib/productosCache'
@@ -887,7 +887,7 @@ export function Products() {
                   }
                   const isExpanded = expandedKey === group.key
                   return (
-                    <Fragment key={group.key}>
+                    <React.Fragment key={group.key}>
                       <FamilyHeaderRow
                         group={group}
                         family={familyById.get(group.familiaId)}
@@ -917,7 +917,7 @@ export function Products() {
                           />
                         ))}
                       </AnimatePresence>
-                    </Fragment>
+                    </React.Fragment>
                   )
                 })}
               </tbody>
