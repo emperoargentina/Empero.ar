@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { productCardImage } from '@/lib/cloudinaryUrl';
 import {
   Package, Filter, Search, X,
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
@@ -136,24 +135,6 @@ export function ProductCatalog({
     return groupedProducts.slice(start, start + itemsPerPage);
   }, [groupedProducts, currentPage, totalPages, itemsPerPage]);
 
-  // Preload first visible page images for instant display
-  useEffect(() => {
-    const imgs = paginatedGroups
-      .slice(0, 6)
-      .map(g => g.variants[0]?.cloudinary_url)
-      .filter(Boolean) as string[];
-    const links: HTMLLinkElement[] = imgs.map(url => {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
-      link.href = productCardImage(url);
-      link.fetchPriority = 'high';
-      document.head.appendChild(link);
-      return link;
-    });
-    return () => links.forEach(l => l.remove());
-  }, [paginatedGroups]);
-
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory, availabilityFilter]);
@@ -225,6 +206,15 @@ export function ProductCatalog({
     clearFilters();
     setLocalSearch('');
   }, [clearFilters]);
+
+  // Al escribir en el buscador se limpian los filtros de categoría/disponibilidad
+  const handleSearchChange = useCallback((value: string) => {
+    setLocalSearch(value);
+    if (value.trim()) {
+      setSelectedCategory(null);
+      setAvailabilityFilter('all');
+    }
+  }, [setSelectedCategory, setAvailabilityFilter]);
 
   const hasActiveFilters = selectedCategory !== null || availabilityFilter !== 'all';
   const activeFilterCount = (selectedCategory !== null ? 1 : 0) + (availabilityFilter !== 'all' ? 1 : 0);
@@ -304,7 +294,7 @@ export function ProductCatalog({
                   type="text"
                   placeholder="Buscar producto por nombre o código..."
                   value={localSearch}
-                  onChange={e => setLocalSearch(e.target.value)}
+                  onChange={e => handleSearchChange(e.target.value)}
                   aria-label="Buscar productos"
                   className="w-full pl-12 pr-10 py-3 bg-white border border-[#E8E2D9] rounded-2xl text-[13.5px] text-[#1A1613] placeholder:text-[#7B7064] focus:outline-none focus:border-[#C41B2E]/40 focus:shadow-[0_0_0_3px_rgba(196,27,46,0.08)] transition-all duration-200 shadow-sm"
                 />
