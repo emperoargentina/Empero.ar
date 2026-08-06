@@ -441,13 +441,13 @@ export function ProductCatalog({
 
       {/* ── Mobile filter sheet ── */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
-        <SheetContent side="bottom" className="h-[85vh] rounded-t-2xl p-0 flex flex-col gap-0">
+        <SheetContent side="bottom" className="h-[85dvh] max-h-[85dvh] rounded-t-2xl p-0 flex flex-col gap-0">
           <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC] flex-shrink-0">
             <SheetTitle className="text-[13px] font-bold text-[#1A1613]">Filtros</SheetTitle>
             <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             <div className="px-4 pt-4 pb-2">
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Categoría</p>
               <div className="flex flex-col gap-0.5">
@@ -490,7 +490,7 @@ export function ProductCatalog({
             </div>
           </div>
 
-          <SheetFooter className="px-4 py-4 border-t border-[#EBE5DC] flex-row gap-3 flex-shrink-0">
+          <SheetFooter className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#EBE5DC] flex-row gap-3 flex-shrink-0">
             <button onClick={handleClearFilters} className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer">
               Limpiar
             </button>
