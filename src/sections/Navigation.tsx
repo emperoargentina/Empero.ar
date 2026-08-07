@@ -178,7 +178,7 @@ export function Navigation({
               duration: 0.6,
               ease: [0.4, 0, 0.2, 1],
             }}
-            className={`relative border-b lg:border transition-[border-radius,padding] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            className={`relative border-b lg:border transition-[border-radius,padding] duration-700 ease-in-out ${
               isScrolled
                 ? 'lg:rounded-b-2xl lg:py-3 lg:px-10 xl:px-14'
                 : 'lg:rounded-none py-0 lg:py-5'
