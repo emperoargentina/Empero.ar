@@ -99,6 +99,28 @@ img {
   html {
     scroll-behavior: smooth;
     overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* === Escalado fluido de la raíz (rem-based) ===
+     Toda la UI usa rem (Tailwind + clases custom), así que al escalar el
+     font-size del <html> todo escala en conjunto — mismo efecto que el zoom
+     del navegador, sin scrollbars ni saltos de breakpoint.
+     Referencia: 16px, que es como se diseñó la página en 2K sobre el monitor
+     de 27". En laptops de 13–14" (~1280–1536px CSS) la raíz baja a ~12.8px
+     (≈ 80% de 16px) para que el 100% por defecto se vea como el 80% de zoom
+     que hoy usás en la laptop. Monitores 2560px+ mantienen los 16px.
+     Mobile/tablet (<1024px) quedan intactos con su layout responsive propio. */
+  @media (min-width: 1024px) {
+    html {
+      font-size: clamp(12.8px, calc(9.6px + 0.25vw), 16px);
+    }
+  }
+  @media (min-width: 2560px) {
+    html {
+      font-size: 16px;
+    }
   }
 
   body {
