@@ -7,6 +7,28 @@ const MAX_BYTES = 10 * 1024 * 1024
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
 const CLOUDINARY_FOLDER = 'empero/productos'
 
+// Orígenes permitidos para llamadas cross-origin desde el navegador. Las
+// llamadas del propio sitio son same-origin y no pasan por CORS, así que
+// esto no cambia el comportamiento normal — solo bloquea que otras webs
+// invoquen esta API desde el navegador de un tercero.
+const ALLOWED_ORIGINS = [
+  'https://www.empero.com.ar',
+  'https://empero.com.ar',
+  'http://localhost:5173',
+  'http://localhost:3000',
+]
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get('Origin') ?? ''
+  const allowed = ALLOWED_ORIGINS.includes(origin)
+  return {
+    'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    Vary: 'Origin',
+  }
+}
+
 async function sha1Hex(input: string): Promise<string> {
   const data = new TextEncoder().encode(input)
   const hashBuffer = await crypto.subtle.digest('SHA-1', data)
@@ -16,11 +38,7 @@ async function sha1Hex(input: string): Promise<string> {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  const cors = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  }
+  const cors = corsHeaders(req)
 
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors })
   if (req.method !== 'POST') {
