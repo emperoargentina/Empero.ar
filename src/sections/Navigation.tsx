@@ -240,7 +240,7 @@ export function Navigation({
                           transition={{ duration: 0.18, ease: 'easeOut' }}
                           className={`mt-3 absolute top-full -left-8 z-50 ${isScrolled ? 'pt-0' : 'pt-2'}`}
                         >
-                          <div className={`w-[480px] bg-white border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.1)] py-2 overflow-hidden ${isScrolled ? 'rounded-b-2xl rounded-t-none' : 'rounded-2xl'}`}>
+                          <div className={`w-[480px] max-w-[calc(100vw_-_2rem)] bg-white border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.1)] py-2 overflow-hidden ${isScrolled ? 'rounded-b-2xl rounded-t-none' : 'rounded-2xl'}`}>
                             <button
                               onClick={() => { scrollToSection('catalogo'); setIsProductsOpen(false); }}
                               className="w-full text-left px-5 py-2.5 text-sm font-semibold text-[#C41B2E] hover:bg-[#FFF0F1] transition-colors flex items-center gap-2 cursor-pointer"

@@ -154,7 +154,7 @@ export function Hero({ isReady = false }: HeroProps) {
 
           {/* Title */}
           <div className="hero-entrance hero-title mb-5 lg:mb-6">
-            <h1 className="text-[2.8rem] leading-[1.0] sm:text-6xl md:text-[4.5rem] lg:text-[6.5rem] xl:text-[7.5rem] font-serif font-[560] text-white tracking-[-0.025em]">
+            <h1 className="text-[clamp(2.8rem,6.5vw,6.5rem)] leading-[1.0] font-serif font-[560] text-white tracking-[-0.025em]">
               Equipamiento
               <br />
               <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>

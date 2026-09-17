@@ -185,12 +185,12 @@ export function AdminPanel({ session }: Props) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F4F0E8] via-[#FAF8F5] to-[#EDE8E0]">
+    <div className="min-h-screen bg-gradient-to-br from-[#F4F0E8] via-[#FAF8F5] to-[#EDE8E0] relative overflow-x-clip">
       <Toaster richColors position="top-right" />
 
-      <SidebarProvider>
-        <div className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#C41B2E]/[0.03] blur-[120px] pointer-events-none -z-0" />
-        <div className="fixed bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#C41B2E]/[0.02] blur-[100px] pointer-events-none -z-0" />
+      <SidebarProvider defaultOpen={typeof window !== 'undefined' ? window.innerWidth >= 1440 : true}>
+        <div className="fixed top-0 right-0 w-[600px] max-w-[100vw] h-[600px] rounded-full bg-[#C41B2E]/[0.03] blur-[120px] pointer-events-none -z-0" />
+        <div className="fixed bottom-0 left-0 w-[400px] max-w-[100vw] h-[400px] rounded-full bg-[#C41B2E]/[0.02] blur-[100px] pointer-events-none -z-0" />
 
         <Sidebar collapsible="icon" className="border-r border-white/10">
           <SidebarInner
@@ -220,7 +220,7 @@ export function AdminPanel({ session }: Props) {
             </div>
           </header>
 
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+          <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-auto">
             <Outlet />
           </main>
         </SidebarInset>

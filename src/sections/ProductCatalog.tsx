@@ -42,8 +42,8 @@ const orderedCategories = CATEGORY_ORDER
 
 function getItemsPerPage(): number {
   const w = window.innerWidth;
-  if (w >= 1536) return 20;
-  if (w >= 1280) return 16;
+  if (w >= 1536) return 16;
+  if (w >= 1280) return 12;
   if (w >= 1024) return 12;
   if (w >= 640)  return 8;
   return 6;
@@ -356,7 +356,7 @@ export function ProductCatalog({
             )}
 
             {loading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
@@ -375,7 +375,7 @@ export function ProductCatalog({
                     initial="initial"
                     animate="enter"
                     exit="exit"
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mb-10"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 mb-10"
                   >
                     {paginatedGroups.map(group => (
                       <motion.div

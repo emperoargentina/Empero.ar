@@ -185,7 +185,7 @@ export function ContactForm() {
 
               <h2
                 className="font-serif font-[560] leading-none mb-8"
-                style={{ fontSize: 'clamp(4rem, 8vw, 7rem)', letterSpacing: '-0.02em', color: '#1A1613' }}
+                style={{ fontSize: 'clamp(2.75rem, 5vw, 4.5rem)', letterSpacing: '-0.02em', color: '#1A1613' }}
               >
                 Hablemos<span style={{ color: '#C41B2E' }}>.</span>
               </h2>

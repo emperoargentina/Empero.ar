@@ -55,17 +55,25 @@ function App() {
   }, []);
 
   // ScrollTrigger midió posiciones mientras el wrapper tenía overflow-hidden
-  // (altura real ocultada durante el preload) — hay que recalcular una vez
-  // que el layout final queda visible, o el scroll queda desincronizado.
+  // (altura real ocultada durante el preload) y las sections lazy
+  // (Nosotros/Envios/Contacto/Footer) llegan después por code-splitting.
+  // Recalcular varias veces para que el scroll llegue hasta el footer.
   useEffect(() => {
     if (isLoading) return;
+    const refresh = () => ScrollTrigger.refresh();
     let raf2 = 0;
     const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => ScrollTrigger.refresh());
+      raf2 = requestAnimationFrame(refresh);
     });
+    const t1 = setTimeout(refresh, 500);
+    const t2 = setTimeout(refresh, 1500);
+    window.addEventListener('load', refresh);
     return () => {
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('load', refresh);
     };
   }, [isLoading]);
 
