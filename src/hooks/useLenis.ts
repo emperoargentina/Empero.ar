@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
-import { gsap, ScrollTrigger } from '@/lib/gsap';
+import 'lenis/dist/lenis.css';
 
 let _lenis: Lenis | null = null;
 
@@ -8,26 +8,32 @@ export function getLenis(): Lenis | null {
   return _lenis;
 }
 
+// Scroll suave con inercia — solo para quien no pidió reducir movimiento.
+// Con prefers-reduced-motion queda el scroll nativo del navegador.
 export function useLenis() {
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    _lenis = lenis;
-    lenis.on('scroll', ScrollTrigger.update);
-
-    const ticker = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(ticker);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      lenis.off('scroll', ScrollTrigger.update);
-      gsap.ticker.remove(ticker);
-      lenis.destroy();
+    const start = () => {
+      if (_lenis || media.matches) return;
+      _lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        autoRaf: true,
+      });
+    };
+    const stop = () => {
+      _lenis?.destroy();
       _lenis = null;
+    };
+    const onChange = () => (media.matches ? stop() : start());
+
+    start();
+    media.addEventListener('change', onChange);
+    return () => {
+      media.removeEventListener('change', onChange);
+      stop();
     };
   }, []);
 }

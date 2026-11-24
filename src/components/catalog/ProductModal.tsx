@@ -1,18 +1,19 @@
 import { createPortal } from 'react-dom';
 import { Check, Plus, X, Settings, Layers, Ruler, Weight, Box, ShoppingBasket, Power, Flame, Grid3X3, ShieldCheck, Award, MessageSquare, type LucideIcon } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { type Product } from '@/data/products';
 import { variantLabel } from '@/lib/groupProducts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Swal from 'sweetalert2';
 import { motion, AnimatePresence, type TargetAndTransition } from 'framer-motion';
-
-type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
-import { whatsappConfig } from '@/data/company';
 import { AvailabilityBadge } from './AvailabilityBadge';
 import { getLenis } from '@/hooks/useLenis';
 import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 import { disponibilidadDeStock } from '@/lib/availability';
+import { getProductWhatsAppURL } from '@/lib/whatsapp';
+
+type WebkitBlurTarget = TargetAndTransition & { WebkitBackdropFilter?: string };
 
 const PLACEHOLDER = '/images/Card/Noimagecard.png';
 
@@ -27,12 +28,6 @@ function renderConNegrita(text: string) {
       : <span key={i}>{part}</span>
   );
 }
-
-const WhatsAppSVG = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className ?? 'w-4 h-4 flex-shrink-0'} aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-  </svg>
-);
 
 interface ProductModalProps {
   product: Product | null;
@@ -56,8 +51,10 @@ export function ProductModal({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabValue>('variantes');
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
   const allVariants = useMemo(
     () => (variants && variants.length > 0 ? variants : initialProduct ? [initialProduct] : []),
@@ -105,20 +102,35 @@ export function ProductModal({
     };
   }, [isOpen]);
 
-  // Escape key
+  // Escape cierra — salvo que venga de un <dialog> nativo abierto encima
+  // (la confirmación de "Quitar"), que maneja su propio Escape.
   useEffect(() => {
     if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if ((e.target as Element | null)?.closest?.('dialog[open]')) return;
+      onClose();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
-  // Focus trap
+  // Modal accesible: el resto del sitio (#root) queda inerte — ni el foco ni
+  // los lectores de pantalla salen del modal — y al cerrar el foco vuelve al
+  // elemento que lo abrió.
   useEffect(() => {
-    if (isOpen && dialogRef.current) {
-      const el = dialogRef.current.querySelector<HTMLElement>('button, [tabindex]');
-      el?.focus();
-    }
+    if (!isOpen) return;
+    const opener = document.activeElement as HTMLElement | null;
+    const root = document.getElementById('root');
+    if (root) root.inert = true;
+    const raf = requestAnimationFrame(() => {
+      dialogRef.current?.querySelector<HTMLElement>('[data-autofocus]')?.focus();
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      if (root) root.inert = false;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -142,99 +154,14 @@ export function ProductModal({
 
   const imageUrl = familyRef.familia_cloudinary_url ?? PLACEHOLDER;
 
-  const handleWhatsApp = () => {
-    if (!product) return;
-    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre, product.codigo));
-    window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank');
-  };
-
   const handleSelectVariant = (id: string) => {
     setSelectedId(id);
   };
 
-  const handleQuoteToggle = async () => {
+  const handleQuoteToggle = () => {
     if (!product) return;
-    if (!isInQuoteList) {
-      onAddToQuote?.(product);
-      return;
-    }
-
-    const result = await Swal.fire({
-      html: `
-        <div style="padding:48px 36px 12px;text-align:center;box-sizing:border-box">
-          <!-- Premium Icon Wrapper -->
-          <div style="
-            width:84px;height:84px;border-radius:50%;
-            background:linear-gradient(135deg,#FFF0F1 0%,#FFE4E6 100%);
-            border:2px solid #F5C5C9;
-            display:flex;align-items:center;justify-content:center;
-            margin:0 auto 26px;
-            box-shadow:0 8px 24px rgba(196,27,46,0.12);
-            position:relative;
-          ">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#C41B2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-            </svg>
-          </div>
-          <!-- Title -->
-          <h3 style="
-            font-family:'Fraunces',Georgia,serif;
-            font-size:24px;font-weight:600;
-            color:#1A1613;margin:0 0 12px;
-            letter-spacing:-0.02em;line-height:1.2
-          ">¿Quitar producto?</h3>
-          <!-- Subtitle -->
-          <p style="
-            font-family:'DM Sans',system-ui,sans-serif;
-            font-size:14px;color:#6B6159;
-            margin:0 0 32px;line-height:1.6
-          ">
-            Vas a eliminar <strong style="color:#1A1613;font-weight:600">${product.nombre}</strong> de tu lista de cotización.
-          </p>
-          <!-- Custom Buttons Grid -->
-          <div style="display:flex;gap:12px;width:100%">
-            <button id="swal-cancel-btn" style="
-              flex:1;height:52px;border-radius:14px;cursor:pointer;
-              border:1px solid #E8E2D9;background:#FAF8F5;
-              color:#6B6159;font-family:'DM Sans',system-ui,sans-serif;
-              font-size:14px;font-weight:600;transition:all 0.2s ease;
-              outline:none;
-            " onmouseover="this.style.background='#EBE5DC';this.style.borderColor='#D0C7BA'" onmouseout="this.style.background='#FAF8F5';this.style.borderColor='#E8E2D9'">
-              Cancelar
-            </button>
-            <button id="swal-confirm-btn" style="
-              flex:1;height:52px;border-radius:14px;cursor:pointer;
-              border:none;color:#ffffff;
-              background:linear-gradient(135deg,#C41B2E 0%,#B51426 100%);
-              font-family:'DM Sans',system-ui,sans-serif;
-              font-size:14px;font-weight:600;
-              box-shadow:0 6px 20px rgba(196,27,46,0.3);
-              transition:all 0.2s ease;
-              outline:none;
-            " onmouseover="this.style.opacity='0.92';this.style.boxShadow='0 8px 24px rgba(196,27,46,0.4)'" onmouseout="this.style.opacity='1';this.style.boxShadow='0 6px 20px rgba(196,27,46,0.3)'"
-               onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">
-              Quitar
-            </button>
-          </div>
-        </div>
-      `,
-      showConfirmButton: false,
-      showCancelButton: false,
-      background: '#FFFFFF',
-      width: 460,
-      padding: 0,
-      customClass: { popup: 'swal-empero-popup' },
-      showClass: { popup: 'swal-empero-enter' },
-      hideClass: { popup: 'swal-empero-leave' },
-      didOpen: () => {
-        document.getElementById('swal-confirm-btn')?.addEventListener('click', () => Swal.clickConfirm());
-        document.getElementById('swal-cancel-btn')?.addEventListener('click', () => Swal.clickCancel());
-      },
-    });
-
-    if (result.isConfirmed) {
-      onRemoveFromQuote?.(product.id);
-    }
+    if (isInQuoteList) setConfirmRemoveOpen(true);
+    else onAddToQuote?.(product);
   };
 
   // Specs (based on the currently selected variant)
@@ -365,6 +292,8 @@ export function ProductModal({
         return (
           <button
             key={v.id}
+            type="button"
+            aria-pressed={active}
             onClick={() => handleSelectVariant(v.id)}
             className={`group relative text-left px-4 py-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${
               active
@@ -381,7 +310,7 @@ export function ProductModal({
                   active ? 'bg-[#C41B2E] border-[#C41B2E]' : 'border-[#D8D0C4] group-hover:border-[#C41B2E]/50'
                 }`}
               >
-                {active && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                {active && <Check className="w-3 h-3 text-white" strokeWidth={3} aria-hidden="true" />}
               </span>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -423,8 +352,8 @@ export function ProductModal({
               ref={dialogRef}
               role="dialog"
               aria-modal="true"
-              aria-label={familyRef.familia_nombre}
-              className="relative w-full h-[100dvh] rounded-none lg:h-[90vh] lg:max-h-[860px] lg:w-[94vw] lg:max-w-[1400px] lg:rounded-2xl lg:overflow-hidden bg-white pointer-events-auto"
+              aria-labelledby={titleId}
+              className="relative w-full h-[100dvh] rounded-none lg:h-[90dvh] lg:max-h-[860px] lg:w-[94vw] lg:max-w-[1400px] lg:rounded-2xl lg:overflow-hidden bg-white pointer-events-auto"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -446,13 +375,15 @@ export function ProductModal({
             >
               {/* Close */}
               <motion.button
+                type="button"
+                data-autofocus
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="absolute top-3 right-3 z-30 w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-full lg:rounded-lg bg-white/90 lg:bg-white backdrop-blur-sm lg:backdrop-blur-none shadow-sm lg:shadow-md border border-transparent lg:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 lg:duration-150 cursor-pointer outline-none"
+                className="absolute top-3 right-3 z-30 w-10 h-10 lg:w-11 lg:h-11 flex items-center justify-center rounded-full lg:rounded-lg bg-white/90 lg:bg-white backdrop-blur-sm lg:backdrop-blur-none shadow-sm lg:shadow-md border border-transparent lg:border-[#E8E2D9] text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] hover:border-[#C41B2E]/30 hover:shadow-lg transition-colors duration-200 lg:duration-150 cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.94 }}
               >
-                <X className="w-5 h-5" strokeWidth={2.25} />
+                <X className="w-5 h-5" strokeWidth={2.25} aria-hidden="true" />
               </motion.button>
 
               {/* Availability badge (mobile, top-left) */}
@@ -474,6 +405,7 @@ export function ProductModal({
                       alt={familyRef.familia_nombre}
                       width={420}
                       height={494}
+                      decoding="async"
                       className="absolute inset-0 w-full h-full object-contain p-8"
                       initial={{ opacity: 0, scale: 1.04 }}
                       animate={imageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }}
@@ -521,7 +453,7 @@ export function ProductModal({
                       <div className="modal-product-header-category-row">
                         <span className="modal-product-header-category lg:text-[15px] lg:tracking-[0.14em]">{familyRef.familia_categoria}</span>
                       </div>
-                      <h2 className="modal-product-header-title lg:pr-0">{familyRef.familia_nombre}</h2>
+                      <h2 id={titleId} className="modal-product-header-title lg:pr-0">{familyRef.familia_nombre}</h2>
                       {/* Con variantes, el código de cada una ya se ve en la tab "Variantes" —
                          acá solo hace falta para el producto único, que no tiene esa tab. */}
                       {!hasVariants && product && (
@@ -531,7 +463,9 @@ export function ProductModal({
 
                     <img
                       src="/images/logo/Logo.png"
-                      alt="Empero"
+                      alt=""
+                      width={480}
+                      height={333}
                       className="h-14 w-auto object-contain flex-shrink-0 lg:mt-6"
                     />
                   </div>
@@ -540,8 +474,8 @@ export function ProductModal({
                   <div
                     ref={scrollRef}
                     data-lenis-prevent
-                    className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-10 pb-3 max-lg:px-0 max-lg:pb-4 flex flex-col"
-                    style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y', overscrollBehavior: 'contain' }}
+                    className="flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar px-10 pb-3 max-lg:px-0 max-lg:pb-4 flex flex-col"
+                    style={{ touchAction: 'pan-y' }}
                   >
                     {/* ===== MOBILE HERO (inside scroll so any touch scrolls) ===== */}
                     <div className="lg:hidden px-4 pt-14 pb-3.5">
@@ -562,9 +496,9 @@ export function ProductModal({
                         </div>
                         {/* Logo + categoría + título */}
                         <div className="flex-1 min-w-0">
-                          <img src="/images/logo/Logo.png" alt="Empero" className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
+                          <img src="/images/logo/Logo.png" alt="" width={480} height={333} className="h-14 w-auto object-contain object-left mt-3.5 mb-2.5" />
                           <span className="modal-product-header-category block mb-1">{familyRef.familia_categoria}</span>
-                          <h2 className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]">{familyRef.familia_nombre}</h2>
+                          <p className="modal-product-header-title !pr-0 !text-[1.15rem] !leading-[1.2]" aria-hidden="true">{familyRef.familia_nombre}</p>
                           {!hasVariants && product && (
                             <p className="mt-1 text-[11px] font-mono text-[#9A8E82]">{product.codigo}</p>
                           )}
@@ -603,26 +537,37 @@ export function ProductModal({
                   {/* CTAs */}
                   <div className="flex-shrink-0 px-5 py-5 border-t border-[#EBE5DC] bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:shadow-none lg:min-h-[140px] lg:flex lg:flex-col lg:justify-center">
                     {needsSelection && (
-                      <p className="text-center text-[12px] font-semibold text-[#C41B2E] mb-2.5">
+                      <p role="status" className="text-center text-[12px] font-semibold text-[#C41B2E] mb-2.5">
                         Elegí una variante para continuar
                       </p>
                     )}
                     <div className="flex gap-2 lg:gap-4">
-                      <motion.button
-                        className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white ${
-                          needsSelection ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
-                        }`}
-                        style={{ background: 'linear-gradient(135deg, #25d366 0%, #1da851 100%)', boxShadow: '0 4px 14px rgba(37,211,102,0.28)' }}
-                        onClick={handleWhatsApp}
-                        disabled={needsSelection}
-                        whileHover={needsSelection ? undefined : { scale: 1.015 }}
-                        whileTap={needsSelection ? undefined : { scale: 0.97 }}
-                      >
-                        <WhatsAppSVG className="w-4 h-4 lg:w-6 lg:h-6 flex-shrink-0" />
-                        WhatsApp
-                      </motion.button>
+                      {product ? (
+                        <motion.a
+                          href={getProductWhatsAppURL(product.nombre, product.codigo)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Consultar ${product.nombre} por WhatsApp`}
+                          className="flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white bg-gradient-to-br from-[#25d366] to-[#1da851] shadow-[0_4px_14px_rgba(37,211,102,0.28)]"
+                          whileHover={{ scale: 1.015 }}
+                          whileTap={{ scale: 0.97 }}
+                        >
+                          <WhatsAppIcon className="w-4 h-4 lg:w-6 lg:h-6 flex-shrink-0" />
+                          WhatsApp
+                        </motion.a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          className="flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-2 lg:gap-3 text-white bg-gradient-to-br from-[#25d366] to-[#1da851] opacity-40 cursor-not-allowed"
+                        >
+                          <WhatsAppIcon className="w-4 h-4 lg:w-6 lg:h-6 flex-shrink-0" />
+                          WhatsApp
+                        </button>
+                      )}
 
                       <motion.button
+                        type="button"
                         className={`flex-1 h-12 lg:h-16 rounded-xl lg:rounded-2xl text-[13px] lg:text-[17px] font-semibold flex items-center justify-center gap-1.5 lg:gap-2.5 transition-colors duration-200 lg:duration-150 border ${
                           needsSelection
                             ? 'opacity-40 cursor-not-allowed pointer-events-none bg-[#C41B2E] text-white border-[#C41B2E]'
@@ -636,8 +581,8 @@ export function ProductModal({
                         whileTap={needsSelection ? undefined : { scale: 0.97 }}
                       >
                         {isInQuoteList
-                          ? <><X className="w-3.5 h-3.5 lg:w-5 lg:h-5" /> Quitar de la lista</>
-                          : <><Plus className="w-3.5 h-3.5 lg:w-5 lg:h-5" /> Agregar a lista</>
+                          ? <><X className="w-3.5 h-3.5 lg:w-5 lg:h-5" aria-hidden="true" /> Quitar de la lista</>
+                          : <><Plus className="w-3.5 h-3.5 lg:w-5 lg:h-5" aria-hidden="true" /> Agregar a lista</>
                         }
                       </motion.button>
                     </div>
@@ -652,6 +597,19 @@ export function ProductModal({
         </AnimatePresence>,
         document.body
       )}
+
+      <ConfirmDialog
+        isOpen={confirmRemoveOpen}
+        title="¿Quitar producto?"
+        description={product ? `Vas a sacar "${product.nombre}" de tu lista de cotización.` : undefined}
+        confirmLabel="Quitar"
+        cancelLabel="Cancelar"
+        onConfirm={() => {
+          if (product) onRemoveFromQuote?.(product.id);
+          setConfirmRemoveOpen(false);
+        }}
+        onCancel={() => setConfirmRemoveOpen(false)}
+      />
     </>
   );
 }

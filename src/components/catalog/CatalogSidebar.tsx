@@ -56,10 +56,10 @@ function FilterContent({
   return (
     <div className="flex flex-col gap-5 p-4 overflow-y-auto">
       {/* Categoría */}
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#7B7064] mb-2.5 px-1">
+      <fieldset>
+        <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-2.5 px-1">
           Categoría
-        </p>
+        </legend>
         <div className="flex flex-col gap-0.5">
           <label className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors duration-150 ${
             selectedCategory === null ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
@@ -107,15 +107,15 @@ function FilterContent({
             );
           })}
         </div>
-      </div>
+      </fieldset>
 
       <div className="h-px bg-[#EBE5DC]" />
 
       {/* Disponibilidad */}
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#7B7064] mb-2.5 px-1">
+      <fieldset>
+        <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-2.5 px-1">
           Disponibilidad
-        </p>
+        </legend>
         <div className="flex flex-col gap-0.5">
           {AVAILABILITY_OPTIONS.map(opt => (
             <label
@@ -140,12 +140,13 @@ function FilterContent({
             </label>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Limpiar filtros */}
       <AnimatePresence>
         {hasActiveFilters && (
           <motion.button
+            type="button"
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -153,7 +154,7 @@ function FilterContent({
             onClick={onClearFilters}
             className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer w-full"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3.5 h-3.5" aria-hidden="true" />
             Limpiar filtros
           </motion.button>
         )}
@@ -177,7 +178,7 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#C41B2E]" />
             <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1A1613]">Filtros</span>
           </div>
-          <div className="overflow-y-auto flex-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#E8E2D9] [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="thin-scroll overflow-y-auto overscroll-contain flex-1" data-lenis-prevent>
             <FilterContent {...props} />
           </div>
         </div>
@@ -186,13 +187,14 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
       {/* ── Tablet: narrow icon bar ── */}
       <aside
         className="hidden md:block lg:hidden w-14 flex-shrink-0 sticky"
-        style={{ top: '80px', maxHeight: 'calc(100vh - 96px)', alignSelf: 'flex-start' }}
+        style={{ top: '80px', maxHeight: 'calc(100dvh - 96px)', alignSelf: 'flex-start' }}
       >
         <div className="bg-white border border-[#EBE5DC] rounded-2xl overflow-hidden shadow-sm flex flex-col h-full">
           {/* Header icon — opens full panel */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
+                type="button"
                 onClick={() => setTabletOpen(true)}
                 aria-label="Abrir filtros"
                 className="w-full flex items-center justify-center py-3 border-b border-[#F0EAE2] hover:bg-[#F5F0EA] transition-colors cursor-pointer"
@@ -204,12 +206,14 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
           </Tooltip>
 
           {/* Scrollable icons */}
-          <div className="overflow-y-auto flex-1 [&::-webkit-scrollbar]:hidden">
+          <div className="overflow-y-auto flex-1 no-scrollbar" data-lenis-prevent>
             {/* Todas */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  type="button"
                   onClick={() => props.onCategoryChange(null)}
+                  aria-pressed={props.selectedCategory === null}
                   aria-label="Todas las categorías"
                   className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                     props.selectedCategory === null
@@ -231,7 +235,9 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                 <Tooltip key={cat.id}>
                   <TooltipTrigger asChild>
                     <button
+                      type="button"
                       onClick={() => props.onCategoryChange(active ? null : cat.id)}
+                      aria-pressed={active}
                       aria-label={cat.name}
                       className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                         active
@@ -254,14 +260,14 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
 
       {/* ── Tablet: Sheet panel (slides from left) ── */}
       <Sheet open={tabletOpen} onOpenChange={setTabletOpen}>
-        <SheetContent side="left" className="w-72 p-0 flex flex-col gap-0">
+        <SheetContent side="left" className="w-72 p-0 flex flex-col gap-0 lg:hidden">
           <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC]">
             <SheetTitle className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1A1613]">
               Filtros
             </SheetTitle>
             <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>
           </SheetHeader>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto overscroll-contain" data-lenis-prevent>
             <FilterContent {...props} />
           </div>
         </SheetContent>

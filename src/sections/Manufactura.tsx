@@ -32,7 +32,7 @@ const stats = [
 
 export function Nosotros() {
   return (
-    <section id="nosotros" className="py-20 lg:py-28 bg-white relative">
+    <section id="nosotros" aria-labelledby="nosotros-title" className="py-20 lg:py-28 bg-white relative">
       <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
@@ -49,12 +49,12 @@ export function Nosotros() {
             </div>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.08}>
-            <h2 className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
+            <h2 id="nosotros-title" className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
               Quiénes <em className="not-italic text-[#C41B2E]">somos</em>
             </h2>
           </AnimatedSection>
           <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#7B7064] mt-4 max-w-2xl mx-auto text-base leading-relaxed">
+            <p className="text-[#6B6159] mt-4 max-w-2xl mx-auto text-base leading-relaxed text-pretty">
               Somos distribuidores oficiales de <strong className="text-[#1A1613]">Empero</strong> en Argentina &mdash;
               una de las marcas líder en equipamiento gastronómico industrial a nivel mundial, con más de 40 años de historia y presencia en más de 90 países.
             </p>
@@ -68,13 +68,13 @@ export function Nosotros() {
           <AnimatedSection direction="left">
             <div className="grid grid-cols-2 gap-3 h-[480px] sm:h-[540px]">
               <div className="row-span-2 overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.main.src} srcSet={IMAGES.main.srcSet} sizes="(min-width: 1024px) 380px, 45vw" alt="Cocina industrial Empero" width={900} height={1100} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.main.src} srcSet={IMAGES.main.srcSet} sizes="(min-width: 1024px) 380px, 45vw" alt="Cocina industrial profesional en funcionamiento" width={900} height={1100} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.topRight.src} srcSet={IMAGES.topRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Horno industrial" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.topRight.src} srcSet={IMAGES.topRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Horno industrial en una cocina profesional" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
               <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.botRight.src} srcSet={IMAGES.botRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Equipamiento profesional" width={600} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={IMAGES.botRight.src} srcSet={IMAGES.botRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Equipamiento gastronómico de acero inoxidable" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
             </div>
           </AnimatedSection>
@@ -88,24 +88,24 @@ export function Nosotros() {
               <h3 className="text-2xl md:text-3xl font-serif font-[560] text-[#1A1613] leading-tight mb-6">
                 40 años fabricando equipamiento gastronómico de clase mundial
               </h3>
-              <p className="text-[#7B7064] leading-relaxed mb-5 text-[15px] text-justify">
+              <p className="text-[#6B6159] leading-relaxed mb-5 text-[15px] text-pretty">
                 Empero nació en <strong className="text-[#4A4540]">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="text-[#4A4540]">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="text-[#4A4540]">Empero Group</strong>, consolidando una planta de producción de más de <strong className="text-[#4A4540]">60.000 m²</strong> en Konya, Turquía.
               </p>
-              <p className="text-[#7B7064] leading-relaxed mb-8 text-[15px] text-justify">
+              <p className="text-[#6B6159] leading-relaxed mb-8 text-[15px] text-pretty">
                 Hoy Empero fabrica más de <strong className="text-[#4A4540]">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="text-[#4A4540]">90 países</strong>. <strong className="text-[#1A1613]">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
               </p>
 
               {/* Values */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {companyConfig.values.map((val) => (
-                  <div key={val} className="flex items-center gap-2.5">
-                    <div className="w-5 h-5 bg-[rgba(196,27,46,0.1)] rounded-full flex items-center justify-center flex-shrink-0 border border-[rgba(196,27,46,0.25)]">
+                  <li key={val} className="flex items-center gap-2.5">
+                    <span aria-hidden="true" className="w-5 h-5 bg-[rgba(196,27,46,0.1)] rounded-full flex items-center justify-center flex-shrink-0 border border-[rgba(196,27,46,0.25)]">
                       <Check className="w-2.5 h-2.5 text-[#C41B2E]" />
-                    </div>
+                    </span>
                     <span className="text-sm text-[#4A4540] font-medium leading-snug">{val}</span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </AnimatedSection>
         </div>
@@ -115,7 +115,7 @@ export function Nosotros() {
           <div className="grid grid-cols-3 gap-3 h-52 sm:h-64 mb-14">
             {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((img, i) => (
               <div key={i} className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 350px, 30vw" alt={`Imagen ${i + 1}`} width={700} height={500} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
+                <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 350px, 30vw" alt="" width={700} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
               </div>
             ))}
           </div>
@@ -140,28 +140,32 @@ export function Nosotros() {
               }}
             />
 
-            <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <dl className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {stats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
+                  className="flex flex-col-reverse items-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.08 * i, duration: 0.4 }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4"
-                    style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)' }}
-                  >
-                    <stat.icon className="w-4.5 h-4.5 text-white" />
-                  </div>
-                  <div className="text-4xl font-serif font-[560] text-white tracking-tight leading-none mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-white/90 font-medium">{stat.label}</div>
+                  <dt className="text-sm text-white font-medium">{stat.label}</dt>
+                  <dd className="flex flex-col items-center mb-1">
+                    <span
+                      aria-hidden="true"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4"
+                      style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)' }}
+                    >
+                      <stat.icon className="w-[18px] h-[18px] text-white" />
+                    </span>
+                    <span className="text-4xl font-serif font-[560] text-white tracking-tight leading-none">
+                      {stat.value}
+                    </span>
+                  </dd>
                 </motion.div>
               ))}
-            </div>
+            </dl>
           </div>
         </AnimatedSection>
 

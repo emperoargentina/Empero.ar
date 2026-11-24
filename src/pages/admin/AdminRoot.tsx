@@ -9,6 +9,7 @@ import { Products } from './views/Products'
 import { ProductForm } from './views/ProductForm'
 import { FamilyForm } from './views/FamilyForm'
 import { Destacados } from './views/Destacados'
+import { Consultas } from './views/Consultas'
 
 export function AdminRoot() {
   const [session, setSession] = useState<Session | null>(null)
@@ -45,6 +46,7 @@ export function AdminRoot() {
         <Route path="productos/:id" element={<ProductForm />} />
         <Route path="familias/:id" element={<FamilyForm />} />
         <Route path="destacados" element={<Destacados />} />
+        <Route path="consultas" element={<Consultas />} />
       </Route>
     </Routes>
   )

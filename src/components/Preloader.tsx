@@ -36,6 +36,8 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
 
   return (
     <motion.div
+      role="status"
+      aria-label="Cargando Empero Argentina"
       className="fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col"
       style={{ backgroundColor: '#000000' }}
       exit={{ y: '-100%' }}
@@ -66,6 +68,7 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
         >
           {/* SVG ring — empieza desde arriba (rotate -90deg), se dibuja en sentido horario */}
           <motion.svg
+            aria-hidden="true"
             className="absolute inset-0 w-full h-full"
             viewBox="0 0 100 100"
             style={{ rotate: '-90deg' }}
@@ -97,7 +100,9 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
           {/* Logo */}
           <motion.img
             src="/images/logo/Logo.png"
-            alt="Empero"
+            alt=""
+            width={480}
+            height={333}
             className="brightness-0 invert relative z-10"
             style={{ width: 'clamp(230px, 32vw, 360px)', objectFit: 'contain' }}
             initial={{ opacity: 0, y: 12 }}

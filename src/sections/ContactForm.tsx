@@ -1,173 +1,178 @@
-import { useState, type ReactNode } from 'react';
-import { Phone, Mail, Send, CheckCircle2, ChevronRight, User, Building2, MessageSquare, ShieldCheck } from 'lucide-react';
-import { companyConfig, whatsappConfig } from '@/data/company';
-import { AnimatedSection } from '@/components/animations/AnimatedSection';
+import { useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { Phone, Mail, Send, CheckCircle2, ChevronRight, User, Building2, MessageSquare, ShieldCheck, AlertCircle, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { companyConfig } from '@/data/company';
+import { AnimatedSection } from '@/components/animations/AnimatedSection';
+import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
+import { getWhatsAppURL } from '@/lib/whatsapp';
+import type { ConsultaInput } from '@/types/consulta';
 
-const WhatsAppIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-  </svg>
-);
+// ── Field ────────────────────────────────────────────────────────────────────
+// Validación nativa (required, type=email, minlength) + :user-invalid en CSS:
+// el error aparece recién cuando la persona terminó de completar el campo o
+// intentó enviar, nunca mientras escribe. aria-invalid y aria-describedby se
+// sincronizan con ese mismo estado para lectores de pantalla.
 
-// ── Input ────────────────────────────────────────────────────────────────────
+type FieldElement = HTMLInputElement | HTMLTextAreaElement;
 
-function InputField({
-  id, name, label, type = 'text', required, value, onChange, placeholder, icon,
-}: {
-  id: string; name: string; label: string; type?: string;
-  required?: boolean; value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string; icon?: ReactNode;
-}) {
-  const [focused, setFocused] = useState(false);
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="block mb-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors duration-200"
-        style={{ color: focused ? '#C41B2E' : '#9A8E82' }}
-      >
-        {label}{required && <span className="ml-1 text-[#C41B2E]/60">*</span>}
-      </label>
-      <div className="relative">
-        {icon && (
-          <span
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-200"
-            style={{ color: focused ? '#C41B2E' : '#B0A498' }}
-          >
-            {icon}
-          </span>
-        )}
-        <input
-          id={id} name={name} type={type} required={required}
-          value={value} onChange={onChange} placeholder={placeholder}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className={`w-full ${icon ? 'pl-11' : 'pl-4'} pr-4 text-[13.5px] focus:outline-none transition-all duration-200`}
-          style={{
-            height: '48px',
-            color: '#1A1613',
-            background: focused ? '#fff' : '#F9F6F2',
-            border: `1px solid ${focused ? 'rgba(196,27,46,0.45)' : 'rgba(0,0,0,0.1)'}`,
-            borderRadius: '10px',
-            boxShadow: focused
-              ? '0 0 0 3px rgba(196,27,46,0.08)'
-              : '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        />
-      </div>
-    </div>
-  );
+interface FieldProps {
+  label: string;
+  name: keyof ConsultaInput;
+  icon: ReactNode;
+  error: string;
+  hint?: string;
+  required?: boolean;
+  multiline?: boolean;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  textareaProps?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+  onInvalidField: (el: FieldElement) => void;
 }
 
-function TextareaField({
-  id, name, label, required, value, onChange, placeholder, rows = 5, icon,
-}: {
-  id: string; name: string; label: string; required?: boolean;
-  value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  placeholder: string; rows?: number; icon?: ReactNode;
-}) {
-  const [focused, setFocused] = useState(false);
+function isUserInvalid(el: FieldElement): boolean {
+  try {
+    return el.matches(':user-invalid');
+  } catch {
+    return !el.validity.valid;
+  }
+}
+
+function Field({ label, name, icon, error, hint, required, multiline, inputProps, textareaProps, onInvalidField }: FieldProps) {
+  const id = useId();
+  const hintId = `${id}-hint`;
+  const errorId = `${id}-error`;
+  const [invalid, setInvalid] = useState(false);
+
+  const describedBy = [hint ? hintId : null, invalid ? errorId : null].filter(Boolean).join(' ') || undefined;
+
+  const common = {
+    id,
+    name,
+    required,
+    'aria-invalid': invalid,
+    'aria-describedby': describedBy,
+    className: `field-control ${multiline ? 'field-control--multiline' : ''}`,
+    onBlur: (e: React.FocusEvent<FieldElement>) => setInvalid(isUserInvalid(e.currentTarget)),
+    onInput: (e: React.FormEvent<FieldElement>) => {
+      if (invalid && e.currentTarget.validity.valid) setInvalid(false);
+    },
+    onInvalid: (e: React.FormEvent<FieldElement>) => {
+      // Sin globo nativo: mostramos nuestro propio mensaje y movemos el foco.
+      e.preventDefault();
+      setInvalid(true);
+      onInvalidField(e.currentTarget);
+    },
+  };
+
   return (
-    <div>
-      <label
-        htmlFor={id}
-        className="block mb-2.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors duration-200"
-        style={{ color: focused ? '#C41B2E' : '#9A8E82' }}
-      >
-        {label}{required && <span className="ml-1 text-[#C41B2E]/60">*</span>}
+    <div className="field">
+      <label htmlFor={id} className="field-label">
+        {label}
+        {required && <span className="ml-1 text-[#C41B2E]/70" aria-hidden="true">*</span>}
       </label>
+      {hint && <p id={hintId} className="field-hint">{hint}</p>}
       <div className="relative">
-        {icon && (
-          <span
-            className="absolute left-3.5 top-3.5 pointer-events-none transition-colors duration-200"
-            style={{ color: focused ? '#C41B2E' : '#B0A498' }}
-          >
-            {icon}
-          </span>
-        )}
-        <textarea
-          id={id} name={name} required={required} rows={rows}
-          value={value} onChange={onChange} placeholder={placeholder}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          className={`w-full ${icon ? 'pl-11' : 'pl-4'} pr-4 py-3.5 text-[13.5px] focus:outline-none transition-all duration-200 resize-none leading-relaxed`}
-          style={{
-            color: '#1A1613',
-            background: focused ? '#fff' : '#F9F6F2',
-            border: `1px solid ${focused ? 'rgba(196,27,46,0.45)' : 'rgba(0,0,0,0.1)'}`,
-            borderRadius: '10px',
-            boxShadow: focused
-              ? '0 0 0 3px rgba(196,27,46,0.08)'
-              : '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        />
+        <span className={`field-icon ${multiline ? 'top-3.5' : 'top-1/2 -translate-y-1/2'}`} aria-hidden="true">
+          {icon}
+        </span>
+        {multiline
+          ? <textarea {...common} {...textareaProps} />
+          : <input {...common} {...inputProps} />}
       </div>
+      <p id={errorId} className="field-error">
+        <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" role="img" aria-label="Error" />
+        {error}
+      </p>
     </div>
   );
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
 
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
+function readForm(form: HTMLFormElement): ConsultaInput {
+  const data = new FormData(form);
+  const get = (k: keyof ConsultaInput) => String(data.get(k) ?? '').trim();
+  return {
+    nombre: get('nombre'),
+    email: get('email'),
+    telefono: get('telefono'),
+    empresa: get('empresa'),
+    mensaje: get('mensaje'),
+    website: get('website'),
+  };
+}
+
+function whatsappFallbackMessage(c: ConsultaInput): string {
+  const intro = `Hola, soy ${c.nombre || '…'}${c.empresa ? ` de ${c.empresa}` : ''}.`;
+  const contacto = [c.email && `Email: ${c.email}`, c.telefono && `Tel: ${c.telefono}`].filter(Boolean).join(' · ');
+  return [intro, '', c.mensaje, contacto ? `\n${contacto}` : ''].join('\n').trim();
+}
+
 export function ContactForm() {
-  const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', company: '', message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+  const lastPayload = useRef<ConsultaInput | null>(null);
+  const firstInvalidFocused = useRef(false);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', phone: '', company: '', message: '' });
-    }, 4000);
+  const handleInvalidField = (el: FieldElement) => {
+    if (firstInvalidFocused.current) return;
+    firstInvalidFocused.current = true;
+    el.focus();
+    queueMicrotask(() => { firstInvalidFocused.current = false; });
   };
 
-  const handleWhatsAppClick = () => {
-    const message = encodeURIComponent(whatsappConfig.defaultMessage);
-    window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${message}`, '_blank');
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (status === 'sending') return;
+    const form = e.currentTarget;
+    const payload = readForm(form);
+    lastPayload.current = payload;
+    setStatus('sending');
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/consultas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const body: { error?: string } = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'No pudimos enviar tu consulta.');
+      form.reset();
+      setStatus('sent');
+      requestAnimationFrame(() => successHeadingRef.current?.focus());
+    } catch (err) {
+      setErrorMsg(err instanceof Error && err.message !== 'Failed to fetch'
+        ? err.message
+        : 'No hay conexión con el servidor.');
+      setStatus('error');
+    }
   };
 
   const channels = [
     {
       key: 'phone', label: 'Teléfono', value: companyConfig.contact.phone,
-      sub: 'Lun – Vie · 9 a 18 hs', icon: <Phone className="w-5.5 h-5.5" />,
-      href: `tel:${companyConfig.contact.phone}`, color: '#C41B2E',
+      sub: 'Lun – Vie · 9 a 18 hs', icon: <Phone className="w-5 h-5" />,
+      href: `tel:${companyConfig.contact.phone.replace(/[^\d+]/g, '')}`, external: false, color: '#C41B2E',
     },
     {
       key: 'email', label: 'Email', value: companyConfig.contact.email,
-      sub: 'Respuesta en < 24 hs', icon: <Mail className="w-5.5 h-5.5" />,
-      href: `mailto:${companyConfig.contact.email}`, color: '#C41B2E',
+      sub: 'Respuesta en < 24 hs', icon: <Mail className="w-5 h-5" />,
+      href: `mailto:${companyConfig.contact.email}`, external: false, color: '#C41B2E',
     },
     {
       key: 'whatsapp', label: 'WhatsApp', value: 'Escribinos ahora',
       sub: 'Respuesta inmediata', icon: <WhatsAppIcon className="w-5 h-5" />,
-      href: null as string | null, color: '#25D366',
+      href: getWhatsAppURL(), external: true, color: '#25D366',
     },
   ];
 
   return (
-    <section id="contacto" className="relative overflow-hidden" style={{ background: '#F4F0E8' }}>
-      {/* Top divider */}
-      <div className="absolute top-0 inset-x-0 h-px" style={{ background: 'rgba(0,0,0,0.08)' }} />
-
-      {/* Grain */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.04]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: '256px 256px',
-        }}
-      />
+    <section id="contacto" aria-labelledby="contacto-title" className="relative overflow-hidden bg-[#F4F0E8]">
+      <div className="absolute top-0 inset-x-0 h-px bg-black/[0.08]" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-grain" />
 
       <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-24 lg:py-36">
         <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 items-start">
@@ -175,7 +180,6 @@ export function ContactForm() {
           {/* ── LEFT ── */}
           <AnimatedSection direction="up">
             <div className="lg:sticky lg:top-28">
-
               <div className="flex items-center gap-3 mb-10">
                 <div className="h-px w-8 bg-[#C41B2E]" />
                 <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C41B2E]">
@@ -184,121 +188,77 @@ export function ContactForm() {
               </div>
 
               <h2
-                className="font-serif font-[560] leading-none mb-8"
-                style={{ fontSize: 'clamp(2.75rem, 5vw, 4.5rem)', letterSpacing: '-0.02em', color: '#1A1613' }}
+                id="contacto-title"
+                className="font-serif font-[560] leading-none mb-8 text-[#1A1613] tracking-[-0.02em] text-[clamp(2.75rem,1.6rem+3.2vw,4.5rem)]"
               >
-                Hablemos<span style={{ color: '#C41B2E' }}>.</span>
+                Hablemos<span className="text-[#C41B2E]">.</span>
               </h2>
 
-              <p className="text-lg leading-relaxed mb-14 max-w-[400px]" style={{ color: '#7A6E65' }}>
+              <p className="text-lg leading-relaxed mb-14 max-w-[400px] text-[#7A6E65]">
                 Consultas sobre equipamiento, precios y disponibilidad. Respondemos en menos de 24&nbsp;hs.
               </p>
 
-              {/* Channels */}
               <ul className="flex flex-col gap-2.5">
-                {channels.map((ch) => {
-                  const content = (
-                    <>
-                      <div
-                        className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 group-hover:scale-105"
-                        style={{ color: '#C41B2E' }}
-                      >
+                {channels.map((ch) => (
+                  <li key={ch.key}>
+                    <a
+                      href={ch.href}
+                      {...(ch.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      className="contact-channel group"
+                    >
+                      <span className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-[#C41B2E] transition-transform duration-200 motion-safe:group-hover:scale-105">
                         {ch.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10.5px] font-semibold uppercase tracking-[0.1em] mb-0.5" style={{ color: '#B0A498' }}>
-                          {ch.label}
-                        </p>
-                        <p className="text-sm font-semibold truncate transition-colors duration-200" style={{ color: '#1A1613' }}>
-                          {ch.value}
-                        </p>
-                        <p className="text-[11.5px] mt-0.5" style={{ color: '#B0A498' }}>
-                          {ch.sub}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-center flex-shrink-0 transition-all duration-200 group-hover:translate-x-0.5">
-                        <ChevronRight className="w-4 h-4" strokeWidth={2.5} style={{ color: ch.color }} />
-                      </div>
-                    </>
-                  );
-
-                  const itemClass = 'group flex items-center gap-4 p-3.5 rounded-2xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 min-h-[96px]';
-                  const itemStyle = {
-                    background: '#FBF9F5',
-                    border: '1px solid rgba(0,0,0,0.06)',
-                    boxShadow: '0 2px 8px rgba(26,22,19,0.04)',
-                  };
-
-                  return (
-                    <li key={ch.key}>
-                      {ch.href ? (
-                        <a href={ch.href} className={itemClass} style={itemStyle}>
-                          {content}
-                        </a>
-                      ) : (
-                        <button type="button" onClick={handleWhatsAppClick} className={`${itemClass} w-full text-left`} style={itemStyle}>
-                          {content}
-                        </button>
-                      )}
-                    </li>
-                  );
-                })}
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[10.5px] font-semibold uppercase tracking-[0.1em] mb-0.5 text-[#857870]">{ch.label}</span>
+                        <span className="block text-sm font-semibold truncate text-[#1A1613]">{ch.value}</span>
+                        <span className="block text-[11.5px] mt-0.5 text-[#857870]">{ch.sub}</span>
+                      </span>
+                      <ChevronRight
+                        className="w-4 h-4 flex-shrink-0 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
+                        strokeWidth={2.5}
+                        style={{ color: ch.color }}
+                        aria-hidden="true"
+                      />
+                    </a>
+                  </li>
+                ))}
               </ul>
 
-              {/* Trust badge */}
-              <div
-                className="flex items-center gap-4 p-3.5 rounded-2xl mt-2.5 min-h-[96px]"
-                style={{ background: '#FBF9F5', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 2px 8px rgba(26,22,19,0.04)' }}
-              >
-                <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ color: '#C41B2E' }}
-                >
+              <div className="contact-channel mt-2.5 cursor-default hover:translate-y-0">
+                <span className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-[#C41B2E]">
                   <ShieldCheck className="w-6 h-6" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold" style={{ color: '#1A1613' }}>
-                    Tus datos están seguros
-                  </p>
-                  <p className="text-[11.5px] mt-0.5 leading-snug" style={{ color: '#B0A498' }}>
-                    No compartimos tu información con terceros.
-                  </p>
-                </div>
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="block text-sm font-semibold text-[#1A1613]">Tus datos están seguros</span>
+                  <span className="block text-[11.5px] mt-0.5 leading-snug text-[#857870]">
+                    Solo los usamos para responder tu consulta. No los compartimos con terceros.
+                  </span>
+                </span>
               </div>
             </div>
           </AnimatedSection>
 
           {/* ── RIGHT: Form card ── */}
           <AnimatedSection direction="up" delay={0.1} className="lg:max-w-[660px] lg:ml-auto w-full">
-            <div
-              className="rounded-2xl overflow-hidden"
-              style={{
-                background: '#FFFFFF',
-                border: '1px solid rgba(0,0,0,0.06)',
-                boxShadow: '0 32px 90px rgba(26,22,19,0.14), 0 10px 30px rgba(26,22,19,0.07), 0 20px 60px rgba(196,27,46,0.06)',
-              }}
-            >
-              {/* Header */}
-              <div className="px-8 sm:px-10 py-7">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C41B2E] mb-2">
-                  Consulta
-                </p>
+            <div className="rounded-2xl overflow-hidden bg-white border border-black/[0.06] shadow-[0_32px_90px_rgba(26,22,19,0.14),0_10px_30px_rgba(26,22,19,0.07),0_20px_60px_rgba(196,27,46,0.06)]">
+              <div className="px-6 sm:px-10 py-7">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C41B2E] mb-2">Consulta</p>
                 <div className="flex items-center gap-2.5 mb-3">
-                  <Send className="w-4.5 h-4.5 flex-shrink-0" style={{ color: '#C41B2E' }} />
-                  <h3 className="font-serif font-[560]" style={{ fontSize: '1.3rem', color: '#1A1613' }}>
+                  <Send className="w-[18px] h-[18px] flex-shrink-0 text-[#C41B2E]" aria-hidden="true" />
+                  <h3 id="consulta-form-title" className="font-serif font-[560] text-[1.3rem] text-[#1A1613]">
                     Envianos tu mensaje
                   </h3>
                 </div>
-                {/* Decorative accent — not a full-width separator */}
-                <div style={{ width: '120px', height: '2px', background: '#C41B2E', opacity: 0.35 }} />
+                <div className="w-[120px] h-0.5 bg-[#C41B2E] opacity-35" />
               </div>
 
-              {/* Body */}
-              <div className="px-8 sm:px-10 py-9">
-                <AnimatePresence mode="wait">
-                  {isSubmitted ? (
+              <div className="px-6 sm:px-10 pb-9 pt-2">
+                <AnimatePresence mode="wait" initial={false}>
+                  {status === 'sent' ? (
                     <motion.div
                       key="success"
+                      role="status"
                       className="flex flex-col items-center justify-center py-16 text-center"
                       initial={{ opacity: 0, scale: 0.97 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -306,116 +266,145 @@ export function ContactForm() {
                       transition={{ duration: 0.3 }}
                     >
                       <motion.div
-                        className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
-                        style={{ background: 'rgba(196,27,46,0.06)', border: '1px solid rgba(196,27,46,0.15)' }}
+                        className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[#C41B2E]/[0.06] border border-[#C41B2E]/15"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 360, damping: 16, delay: 0.1 }}
                       >
-                        <CheckCircle2 className="w-7 h-7 text-[#C41B2E]" />
+                        <CheckCircle2 className="w-7 h-7 text-[#C41B2E]" aria-hidden="true" />
                       </motion.div>
-                      <h4 className="font-serif font-[560] mb-2" style={{ fontSize: '1.2rem', color: '#1A1613' }}>
-                        Mensaje enviado
+                      <h4 ref={successHeadingRef} tabIndex={-1} className="font-serif font-[560] mb-2 text-[1.2rem] text-[#1A1613] outline-none">
+                        ¡Recibimos tu consulta!
                       </h4>
-                      <p className="text-sm" style={{ color: '#9A8E82' }}>
-                        Te responderemos en menos de 24&nbsp;hs.
+                      <p className="text-sm text-[#6B6159] max-w-xs text-pretty">
+                        Te respondemos al email que dejaste en menos de 24&nbsp;hs hábiles.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => setStatus('idle')}
+                        className="mt-7 inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-[#EBE5DC] text-[13px] font-semibold text-[#6B6159] hover:bg-[#F4F0E8] cursor-pointer"
+                      >
+                        <RotateCcw className="w-4 h-4" aria-hidden="true" />
+                        Enviar otra consulta
+                      </button>
                     </motion.div>
                   ) : (
                     <motion.form
                       key="form"
                       onSubmit={handleSubmit}
+                      aria-labelledby="consulta-form-title"
+                      aria-busy={status === 'sending'}
                       className="flex flex-col gap-6"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <InputField
-                        id="name" name="name" label="Nombre" required
-                        value={formData.name} onChange={handleChange} placeholder="Juan Pérez"
+                      <Field
+                        label="Nombre" name="nombre" required
                         icon={<User className="w-4 h-4" />}
+                        error="Escribí tu nombre."
+                        onInvalidField={handleInvalidField}
+                        inputProps={{ type: 'text', autoComplete: 'name', maxLength: 120, placeholder: 'Juan Pérez', enterKeyHint: 'next' }}
                       />
 
                       <div className="grid sm:grid-cols-2 gap-5">
-                        <InputField
-                          id="email" name="email" label="Email" type="email" required
-                          value={formData.email} onChange={handleChange} placeholder="juan@empresa.com"
+                        <Field
+                          label="Email" name="email" required
                           icon={<Mail className="w-4 h-4" />}
+                          error="Ingresá un email válido, por ejemplo juan@empresa.com."
+                          onInvalidField={handleInvalidField}
+                          inputProps={{
+                            type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: 254,
+                            placeholder: 'juan@empresa.com', autoCapitalize: 'none', autoCorrect: 'off',
+                            spellCheck: false, enterKeyHint: 'next',
+                          }}
                         />
-                        <InputField
-                          id="phone" name="phone" label="Teléfono" type="tel"
-                          value={formData.phone} onChange={handleChange} placeholder="+54 11 1234-5678"
+                        <Field
+                          label="Teléfono" name="telefono"
                           icon={<Phone className="w-4 h-4" />}
+                          error="Revisá el número de teléfono."
+                          onInvalidField={handleInvalidField}
+                          inputProps={{
+                            type: 'tel', autoComplete: 'tel', inputMode: 'tel', maxLength: 40,
+                            placeholder: '+54 11 1234-5678', enterKeyHint: 'next',
+                          }}
                         />
                       </div>
 
-                      <InputField
-                        id="company" name="company" label="Empresa"
-                        value={formData.company} onChange={handleChange} placeholder="Nombre de tu empresa (opcional)"
+                      <Field
+                        label="Empresa" name="empresa"
                         icon={<Building2 className="w-4 h-4" />}
+                        error="Revisá el nombre de la empresa."
+                        onInvalidField={handleInvalidField}
+                        inputProps={{ type: 'text', autoComplete: 'organization', maxLength: 120, placeholder: 'Nombre de tu empresa (opcional)', enterKeyHint: 'next' }}
                       />
 
-                      <TextareaField
-                        id="message" name="message" label="Mensaje" required rows={5}
-                        value={formData.message} onChange={handleChange}
-                        placeholder="Contanos qué equipamiento te interesa, cantidad, o cualquier consulta…"
+                      <Field
+                        label="Mensaje" name="mensaje" required multiline
                         icon={<MessageSquare className="w-4 h-4" />}
+                        hint="Contanos qué equipo te interesa, cantidades y para qué tipo de cocina."
+                        error="Contanos un poco más (mínimo 10 caracteres)."
+                        onInvalidField={handleInvalidField}
+                        textareaProps={{ rows: 5, minLength: 10, maxLength: 5000, placeholder: 'Ej: Necesito un horno convector de 10 bandejas para un restaurante…' }}
                       />
+
+                      {/* Honeypot anti-spam: invisible y fuera del orden de tabulación. */}
+                      <div className="hidden" aria-hidden="true">
+                        <label htmlFor="consulta-website">No completar</label>
+                        <input id="consulta-website" type="text" name="website" tabIndex={-1} autoComplete="off" />
+                      </div>
+
+                      {status === 'error' && (
+                        <div role="alert" className="flex gap-3 rounded-xl border border-[#F5C5C9] bg-[#FFF6F6] p-4 text-[13px] text-[#3A3530]">
+                          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#C41B2E]" aria-hidden="true" />
+                          <div className="space-y-2">
+                            <p><strong className="text-[#1A1613]">No se pudo enviar.</strong> {errorMsg} Probá de nuevo o mandanos la consulta por WhatsApp.</p>
+                            <a
+                              href={getWhatsAppURL(lastPayload.current ? whatsappFallbackMessage(lastPayload.current) : undefined)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 font-semibold text-[#128C4A] underline underline-offset-2"
+                            >
+                              <WhatsAppIcon className="w-4 h-4" />
+                              Enviar por WhatsApp
+                            </a>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="pt-1">
                         <motion.button
                           type="submit"
-                          disabled={isSubmitting}
-                          className="relative w-full h-[52px] rounded-xl text-[13px] font-semibold text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed overflow-hidden flex items-center justify-center gap-2.5"
-                          style={{
-                            background: 'linear-gradient(135deg, #C41B2E 0%, #9e1424 100%)',
-                            boxShadow: '0 4px 20px rgba(196,27,46,0.25), inset 0 1px 0 rgba(255,255,255,0.1)',
-                          }}
-                          whileHover={!isSubmitting ? {
-                            boxShadow: '0 8px 32px rgba(196,27,46,0.35), inset 0 1px 0 rgba(255,255,255,0.1)',
-                          } : {}}
-                          whileTap={!isSubmitting ? { scale: 0.99 } : {}}
+                          disabled={status === 'sending'}
+                          className="relative w-full h-[52px] rounded-xl text-[14px] font-semibold text-white cursor-pointer disabled:opacity-60 disabled:cursor-wait overflow-hidden flex items-center justify-center gap-2.5 bg-gradient-to-br from-[#C41B2E] to-[#9e1424] shadow-[0_4px_20px_rgba(196,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.1)]"
+                          whileHover={status !== 'sending' ? { boxShadow: '0 8px 32px rgba(196,27,46,0.35), inset 0 1px 0 rgba(255,255,255,0.1)' } : {}}
+                          whileTap={status !== 'sending' ? { scale: 0.99 } : {}}
                           transition={{ duration: 0.15 }}
                         >
-                          {/* Shimmer */}
-                          <motion.div
-                            className="absolute inset-y-0 left-0 w-1/2 pointer-events-none"
-                            style={{
-                              background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.14) 50%, transparent 100%)',
-                            }}
-                            animate={{ x: ['-100%', '250%'] }}
-                            transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
-                          />
-
-                          {isSubmitting ? (
+                          {status === 'sending' ? (
                             <>
-                              <motion.span
-                                className="block w-4 h-4 border-2 rounded-full"
-                                style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'white' }}
-                                animate={{ rotate: 360 }}
-                                transition={{ repeat: Infinity, duration: 0.7, ease: 'linear' }}
-                              />
+                              <span className="spinner" aria-hidden="true" />
                               Enviando…
                             </>
                           ) : (
                             <>
-                              <Send className="w-4 h-4" />
-                              Enviar mensaje
+                              <Send className="w-4 h-4" aria-hidden="true" />
+                              Enviar consulta
                             </>
                           )}
                         </motion.button>
 
-                        <p className="text-center mt-4 text-[11.5px]" style={{ color: '#B0A498' }}>
+                        <p className="text-center mt-4 text-[12px] text-[#857870]">
                           También podés escribirnos por{' '}
-                          <button
-                            type="button"
-                            onClick={handleWhatsAppClick}
-                            className="underline underline-offset-2 cursor-pointer transition-colors duration-150 font-semibold hover:text-[#9E1424]"
-                            style={{ color: '#C41B2E' }}
+                          <a
+                            href={getWhatsAppURL()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline underline-offset-2 font-semibold text-[#C41B2E] hover:text-[#9E1424]"
                           >
                             WhatsApp
-                          </button>
+                          </a>
                         </p>
                       </div>
                     </motion.form>

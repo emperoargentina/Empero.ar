@@ -16,6 +16,10 @@ interface ProductCardProps {
   quoteListIds?: string[];
 }
 
+// Card clickeable con acción propia (patrón "stretched button"): el título es
+// un <button> cuyo ::after cubre toda la card, así toda la superficie abre el
+// detalle, se puede usar con teclado y el botón "Agregar" sigue siendo un
+// control independiente por encima (ver .product-card en index.css).
 export function ProductCard({
   variants,
   onViewDetails,
@@ -44,14 +48,13 @@ export function ProductCard({
 
   return (
     <article
-      className={`group relative cursor-pointer bg-white flex flex-col overflow-hidden rounded-lg border shadow-sm transition-[transform,box-shadow,colors] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(26,22,19,0.12)] ${
+      className={`product-card group relative bg-white flex flex-col overflow-hidden rounded-lg border shadow-sm ${
         isInQuoteList ? 'border-emerald-300 shadow-emerald-100' : 'border-[#E8E2D9]'
       }`}
-      onClick={() => onViewDetails(product, variants)}
     >
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EAE2] flex-shrink-0">
-        <div className="absolute inset-0 z-10 bg-[#1A1613]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
+        <div className="product-card__overlay absolute inset-0 z-10 bg-[#1A1613]/45 opacity-0 transition-opacity duration-200 flex items-center justify-center pointer-events-none" aria-hidden="true">
           <span className="flex items-center gap-1.5 text-white text-[11px] font-semibold bg-white/25 px-4 py-1.5 rounded-full border border-white/25">
             <Eye className="w-3 h-3" />
             Ver detalles
@@ -60,27 +63,28 @@ export function ProductCard({
 
         <CloudinaryImage
           src={product.familia_cloudinary_url}
-          alt={product.familia_nombre}
+          alt=""
           width={400}
           height={533}
-          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          sizes="(min-width: 1536px) 18vw, (min-width: 1280px) 24vw, (min-width: 1024px) 34vw, (min-width: 640px) 48vw, 92vw"
+          className="product-card__img w-full h-full object-cover"
           placeholderClass="w-full h-full object-contain p-6"
         />
 
-        <div className="absolute bottom-2.5 left-2.5 z-20">
+        <div className="absolute bottom-2.5 left-2.5 z-20 pointer-events-none">
           <AvailabilityBadge modo={aggregatedModo} size="sm" />
         </div>
 
         <AnimatePresence>
           {isInQuoteList && (
             <motion.div
-              className="absolute top-2.5 right-2.5 z-20 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-md"
+              className="absolute top-2.5 right-2.5 z-20 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-md pointer-events-none"
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 480, damping: 22 }}
             >
-              <Check className="w-3.5 h-3.5 text-white" />
+              <Check className="w-3.5 h-3.5 text-white" role="img" aria-label="En tu lista" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -92,37 +96,45 @@ export function ProductCard({
           {product.familia_categoria}
         </p>
         <h3 ref={titleRef} className="product-card-title">
-          {product.familia_nombre}
+          <button
+            type="button"
+            className="product-card__link"
+            onClick={() => onViewDetails(product, variants)}
+          >
+            {product.familia_nombre}
+          </button>
         </h3>
 
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F0EAE2] gap-2">
           {hasVariants ? (
-            <span className="flex items-center gap-1.5 text-[10.5px] font-semibold text-[#7B7064] min-w-0">
-              <Layers className="w-3.5 h-3.5 text-[#C41B2E] flex-shrink-0" />
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold text-[#6B6159] min-w-0">
+              <Layers className="w-3.5 h-3.5 text-[#C41B2E] flex-shrink-0" aria-hidden="true" />
               <span className="truncate">{variants.length} variantes</span>
             </span>
           ) : (
-            <span className="text-[10.5px] font-mono text-[#9A8E82] truncate">{product.codigo}</span>
+            <span className="text-[11px] font-mono text-[#7B7064] truncate">{product.codigo}</span>
           )}
 
           <button
-            onClick={(e) => {
-              e.stopPropagation();
+            type="button"
+            onClick={() => {
               if (hasVariants) { onViewDetails(product, variants); return; }
               if (isInQuoteList) setConfirmRemoveOpen(true);
               else onAddToQuote?.(product);
             }}
-            aria-label={hasVariants ? `Ver variantes de ${product.nombre}` : (isInQuoteList ? `Quitar ${product.nombre} de la lista` : `Agregar ${product.nombre}`)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[10.5px] font-semibold transition-all duration-150 cursor-pointer ${
+            aria-label={hasVariants
+              ? `Ver opciones de ${product.familia_nombre}`
+              : (isInQuoteList ? `En lista: quitar ${product.nombre}` : `Agregar ${product.nombre} a la lista`)}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 min-h-8 rounded-lg text-[11px] font-semibold transition-colors duration-150 cursor-pointer ${
               isInQuoteList
-                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
                 : 'bg-[#C41B2E] text-white hover:bg-[#B51426] shadow-sm shadow-red-900/15'
             }`}
           >
             {hasVariants ? (
               'Ver opciones'
             ) : isInQuoteList ? (
-              <><Check className="w-3 h-3" /> En lista</>
+              <><Check className="w-3 h-3" aria-hidden="true" /> En lista</>
             ) : (
               'Agregar'
             )}

@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
+import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { Navigation } from './sections/Navigation';
-import { Hero } from './sections/Hero';
-import { ProductCatalog } from './sections/ProductCatalog';
+import { Hero, HERO_IMAGE_SRC } from './sections/Hero';
+import { ProductCatalog, type CategoryRequest } from './sections/ProductCatalog';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { Preloader } from './components/Preloader';
 import { ProductModal } from './components/catalog/ProductModal';
@@ -11,8 +11,8 @@ import { useLenis } from './hooks/useLenis';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { prefetchProducts, useProducts } from './hooks/useProducts';
 import { groupProducts } from './lib/groupProducts';
+import { scrollToId } from './lib/scroll';
 import { type Product } from './data/products';
-import { ScrollTrigger } from '@/lib/gsap';
 
 const Nosotros = lazy(() => import('./sections/Manufactura').then(m => ({ default: m.Nosotros })));
 const EnviosPostventa = lazy(() => import('./sections/EnviosPostventa').then(m => ({ default: m.EnviosPostventa })));
@@ -23,14 +23,16 @@ function App() {
   useLenis();
   const [isLoading, setIsLoading] = useState(true);
   const [isDataReady, setIsDataReady] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // Objeto nuevo en cada click: elegir dos veces la misma categoría desde el
+  // menú vuelve a aplicarla aunque el catálogo haya cambiado de filtro.
+  const [categoryRequest, setCategoryRequest] = useState<CategoryRequest | null>(null);
 
   useEffect(() => {
     const heroImageReady = new Promise<void>((resolve) => {
       const img = new Image();
       img.onload = () => resolve();
       img.onerror = () => resolve();
-      img.src = '/images/Visuales/heroteo.webp';
+      img.src = HERO_IMAGE_SRC;
     });
     Promise.all([prefetchProducts(), heroImageReady]).finally(() => setIsDataReady(true));
   }, []);
@@ -42,6 +44,7 @@ function App() {
     updateQuantity,
     updateNotes,
     clearList,
+    syncProducts,
     totalItems,
   } = useQuoteList();
 
@@ -50,41 +53,20 @@ function App() {
   const [quoteModalVariants, setQuoteModalVariants] = useState<Product[]>([]);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
 
+  // La lista guardada en localStorage puede tener datos viejos (nombre, código):
+  // se actualizan apenas llega el catálogo.
+  useEffect(() => {
+    syncProducts(allProducts);
+  }, [allProducts, syncProducts]);
+
   const handlePreloaderComplete = useCallback(() => {
     setIsLoading(false);
   }, []);
 
-  // ScrollTrigger midió posiciones mientras el wrapper tenía overflow-hidden
-  // (altura real ocultada durante el preload) y las sections lazy
-  // (Nosotros/Envios/Contacto/Footer) llegan después por code-splitting.
-  // Recalcular varias veces para que el scroll llegue hasta el footer.
-  useEffect(() => {
-    if (isLoading) return;
-    const refresh = () => ScrollTrigger.refresh();
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(refresh);
-    });
-    const t1 = setTimeout(refresh, 500);
-    const t2 = setTimeout(refresh, 1500);
-    window.addEventListener('load', refresh);
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-      clearTimeout(t1);
-      clearTimeout(t2);
-      window.removeEventListener('load', refresh);
-    };
-  }, [isLoading]);
-
   const handleCategorySelect = useCallback((categoryId: string) => {
-    setSelectedCategory(categoryId);
-    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
+    setCategoryRequest({ id: categoryId });
+    scrollToId('catalogo');
   }, []);
-
-  const handleAddToQuote = useCallback((product: typeof quoteItems[0]['product']) => {
-    addItem(product);
-  }, [addItem]);
 
   const handleOpenProductFromQuote = useCallback((product: Product) => {
     const group = groupProducts(allProducts).find(g =>
@@ -103,66 +85,70 @@ function App() {
     }, 200);
   }, []);
 
-  const quoteListIds = quoteItems.map(item => item.product.id);
+  const quoteListIds = useMemo(() => quoteItems.map(item => item.product.id), [quoteItems]);
 
   return (
-    <TooltipProvider>
-      <AnimatePresence>
-        {isLoading && (
-          <Preloader
-            key="preloader"
-            onComplete={handlePreloaderComplete}
-            isDataReady={isDataReady}
-          />
-        )}
-      </AnimatePresence>
+    <MotionConfig reducedMotion="user">
+      <TooltipProvider>
+        <AnimatePresence>
+          {isLoading && (
+            <Preloader
+              key="preloader"
+              onComplete={handlePreloaderComplete}
+              isDataReady={isDataReady}
+            />
+          )}
+        </AnimatePresence>
 
-      <div className={`min-h-screen bg-[#FAFAF8] ${isLoading ? 'overflow-hidden max-h-screen' : ''}`}>
-        <Navigation
-          onCategorySelect={handleCategorySelect}
-          quoteItems={quoteItems}
-          onRemoveFromQuote={removeItem}
-          onUpdateQuantity={updateQuantity}
-          onUpdateNotes={updateNotes}
-          onClearQuote={clearList}
-          totalQuoteItems={totalItems}
-          onProductClick={handleOpenProductFromQuote}
-        />
+        <a href="#contenido" className="skip-link">Saltar al contenido</a>
 
-        <main>
-          <Hero isReady={!isLoading} />
-
-          <ProductCatalog
-            initialCategory={selectedCategory}
-            onAddToQuote={handleAddToQuote}
+        <div className={`min-h-svh bg-[var(--page-bg)] ${isLoading ? 'overflow-hidden max-h-svh' : ''}`}>
+          <Navigation
+            onCategorySelect={handleCategorySelect}
+            quoteItems={quoteItems}
             onRemoveFromQuote={removeItem}
-            quoteListIds={quoteListIds}
+            onUpdateQuantity={updateQuantity}
+            onUpdateNotes={updateNotes}
+            onClearQuote={clearList}
+            totalQuoteItems={totalItems}
+            onProductClick={handleOpenProductFromQuote}
           />
 
-          <Suspense fallback={null}><Nosotros /></Suspense>
+          <main id="contenido" tabIndex={-1} className="outline-none">
+            <Hero isReady={!isLoading} />
 
-          <Suspense fallback={null}><EnviosPostventa /></Suspense>
+            <ProductCatalog
+              categoryRequest={categoryRequest}
+              onAddToQuote={addItem}
+              onRemoveFromQuote={removeItem}
+              quoteListIds={quoteListIds}
+            />
 
-          <Suspense fallback={null}><ContactForm /></Suspense>
-        </main>
+            <Suspense fallback={null}><Nosotros /></Suspense>
 
-        <Suspense fallback={null}>
-          <Footer onCategorySelect={handleCategorySelect} />
-        </Suspense>
+            <Suspense fallback={null}><EnviosPostventa /></Suspense>
 
-        <WhatsAppFloat />
-      </div>
+            <Suspense fallback={null}><ContactForm /></Suspense>
+          </main>
 
-      <ProductModal
-        product={quoteModalProduct}
-        variants={quoteModalVariants}
-        isOpen={isQuoteModalOpen}
-        onClose={handleCloseQuoteModal}
-        onAddToQuote={handleAddToQuote}
-        onRemoveFromQuote={removeItem}
-        quoteListIds={quoteListIds}
-      />
-    </TooltipProvider>
+          <Suspense fallback={null}>
+            <Footer onCategorySelect={handleCategorySelect} />
+          </Suspense>
+
+          <WhatsAppFloat />
+        </div>
+
+        <ProductModal
+          product={quoteModalProduct}
+          variants={quoteModalVariants}
+          isOpen={isQuoteModalOpen}
+          onClose={handleCloseQuoteModal}
+          onAddToQuote={addItem}
+          onRemoveFromQuote={removeItem}
+          quoteListIds={quoteListIds}
+        />
+      </TooltipProvider>
+    </MotionConfig>
   );
 }
 

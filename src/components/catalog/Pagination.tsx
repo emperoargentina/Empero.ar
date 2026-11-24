@@ -25,9 +25,10 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
     'flex items-center justify-center w-9 h-9 rounded-xl text-[13px] font-medium transition-all duration-150 cursor-pointer select-none border';
 
   return (
-    <div className="flex items-center justify-center gap-1.5 py-2">
+    <nav aria-label="Paginación del catálogo" className="flex items-center justify-center gap-1.5 py-2">
       {/* Prev */}
       <button
+        type="button"
         onClick={onPrev}
         disabled={currentPage === 1}
         aria-label="Página anterior"
@@ -37,7 +38,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
             : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
         }`}
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-4 h-4" aria-hidden="true" />
       </button>
 
       {/* Page numbers */}
@@ -45,6 +46,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
         page === null ? (
           <span
             key={`ellipsis-${i}`}
+            aria-hidden="true"
             className="w-9 h-9 flex items-center justify-center text-[#7B7064] text-[13px] select-none"
           >
             ···
@@ -52,6 +54,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
         ) : (
           <motion.button
             key={page}
+            type="button"
             onClick={() => onPageChange(page)}
             aria-label={`Ir a página ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
@@ -70,6 +73,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
 
       {/* Next */}
       <button
+        type="button"
         onClick={onNext}
         disabled={currentPage === totalPages}
         aria-label="Página siguiente"
@@ -79,8 +83,8 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
             : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
         }`}
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-4 h-4" aria-hidden="true" />
       </button>
-    </div>
+    </nav>
   );
 }

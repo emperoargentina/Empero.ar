@@ -6,7 +6,7 @@ import { invalidateProductosCache } from '@/lib/productosCache'
 import { Toaster, toast } from 'sonner'
 import {
   Package, LogOut, RefreshCw,
-  ChevronLeft, LayoutDashboard, Star,
+  ChevronLeft, LayoutDashboard, Star, Inbox,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,6 +23,7 @@ const NAV = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/productos', label: 'Productos', icon: Package },
   { path: '/admin/destacados', label: 'Destacados', icon: Star },
+  { path: '/admin/consultas', label: 'Consultas', icon: Inbox },
 ]
 
 function SidebarCollapseButton() {

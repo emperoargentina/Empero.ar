@@ -1,136 +1,45 @@
 import { ArrowDown, Package, Award, Users, Shield, Zap, Star } from 'lucide-react';
-import { useEffect, useRef } from 'react';
-import { companyConfig } from '@/data/company';
-import { gsap } from '@/lib/gsap';
+import { handleAnchorClick } from '@/lib/scroll';
+
+export const HERO_IMAGE_SRC = '/images/Visuales/heroteo.webp';
 
 interface HeroProps {
   isReady?: boolean;
 }
 
+const STATS = [
+  { key: 'years',     display: '40+',    label: 'Años de marca',      icon: Award },
+  { key: 'products',  display: '3.000+', label: 'Tipos de productos', icon: Package },
+  { key: 'countries', display: '90+',    label: 'Países',             icon: Users },
+];
+
+// Animaciones 100% CSS (ver .hero en index.css):
+//  - Entrada escalonada cuando termina el preloader (data-ready).
+//  - Parallax del fondo y fade del contenido con scroll-driven animations
+//    (animation-timeline: view()), en el compositor, sin listeners de scroll.
+//  - Todo dentro de prefers-reduced-motion: no-preference.
 export function Hero({ isReady = false }: HeroProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const bgRef      = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const countRefs  = useRef<{ products: number; years: number; clients: number }>({
-    products: 0, years: 0, clients: 0,
-  });
-  const statsAnimated = useRef(false);
-
-  useEffect(() => {
-    if (!isReady) return;
-
-    const ctx = gsap.context(() => {
-      gsap.timeline({ defaults: { ease: 'power3.out' } })
-        .fromTo('.hero-tag',    { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 })
-        .fromTo('.hero-title',  { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.55 }, '-=0.2')
-        .fromTo('.hero-desc',   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 }, '-=0.2')
-        .fromTo('.hero-cta',    { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35 }, '-=0.2')
-        .fromTo('.hero-stats',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 },  '-=0.15');
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [isReady]);
-
-  useEffect(() => {
-    const mm = gsap.matchMedia();
-
-    // Parallax scroll-scrub es costoso en GPUs móviles (repaint por frame de
-    // scroll) — solo se activa desde lg, donde el hardware lo sostiene bien.
-    mm.add('(min-width: 1024px)', () => {
-      const ctx = gsap.context(() => {
-        gsap.to(bgRef.current, {
-          yPercent: 30,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-        });
-
-        gsap.to(contentRef.current, {
-          opacity: 0,
-          scale: 0.94,
-          y: -50,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: '40% top',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        });
-      }, sectionRef);
-
-      return () => ctx.revert();
-    });
-
-    return () => mm.revert();
-  }, []);
-
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!statsRef.current || statsAnimated.current) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || statsAnimated.current) return;
-      statsAnimated.current = true;
-
-      const targets = {
-        products: companyConfig.stats.products,
-        years: companyConfig.stats.years,
-        clients: companyConfig.stats.clients,
-      };
-      const duration = 2000;
-      const start = Date.now();
-
-      const tick = () => {
-        const progress = Math.min((Date.now() - start) / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
-        countRefs.current = {
-          products: Math.floor(targets.products * ease),
-          years: Math.floor(targets.years * ease),
-          clients: Math.floor(targets.clients * ease),
-        };
-        document.querySelectorAll('[data-count]').forEach(el => {
-          const key = el.getAttribute('data-count') as keyof typeof countRefs.current;
-          el.textContent = String(countRefs.current[key]);
-        });
-        if (progress < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }, { threshold: 0.5 });
-
-    observer.observe(statsRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollToCatalog = () => {
-    document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section
-      ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 lg:pt-0"
+      id="inicio"
+      aria-labelledby="hero-title"
+      data-ready={isReady || undefined}
+      className="hero relative min-h-svh flex items-center justify-center overflow-clip pt-16 lg:pt-0"
     >
       {/* Background */}
-      <div ref={bgRef} className="absolute inset-0 z-0" style={{ willChange: 'transform' }}>
-        <div className="absolute inset-0 hero-kenburns">
+      <div className="hero-bg absolute inset-0 z-0" aria-hidden="true">
+        <div className="hero-kenburns absolute inset-0">
           <img
-            src="/images/Visuales/heroteo.webp"
-            alt="Cocina industrial profesional Empero"
+            src={HERO_IMAGE_SRC}
+            alt=""
             className="w-full h-full object-cover"
             width={1600}
-            height={838}
+            height={837}
             fetchPriority="high"
-            decoding="async"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black/90" />
-        {/* Subtle red glow — blur radius grande es caro en GPUs móviles, solo desktop */}
+        {/* Brillo rojo sutil — blur grande es caro en GPUs móviles, solo desktop */}
         <div className="hidden lg:block absolute inset-0 z-[1] pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#C41B2E]/[0.06] rounded-full blur-[140px]" />
           <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#C41B2E]/[0.04] rounded-full blur-[120px]" />
@@ -138,98 +47,91 @@ export function Hero({ isReady = false }: HeroProps) {
       </div>
 
       {/* Content */}
-      <div ref={contentRef} className="relative z-10 w-full container-custom py-16 lg:py-24" style={{ willChange: 'transform, opacity' }}>
+      <div className="hero-content relative z-10 w-full container-custom py-16 lg:py-24">
         <div className="max-w-4xl mx-auto text-center">
 
-          {/* Ornament + tagline */}
-          <div className="hero-entrance hero-tag mb-5 lg:mb-6">
+          <div className="hero-step mb-5 lg:mb-6" style={{ '--step': 0 } as React.CSSProperties}>
             <div className="flex items-center justify-center gap-3 mb-3">
               <div className="h-px w-10 bg-gradient-to-r from-transparent to-[#C41B2E]/50" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C41B2E]/80">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#E0485A]">
                 Distribuidor oficial &bull; Argentina
-              </span>
+              </p>
               <div className="h-px w-10 bg-gradient-to-l from-transparent to-[#C41B2E]/50" />
             </div>
           </div>
 
-          {/* Title */}
-          <div className="hero-entrance hero-title mb-5 lg:mb-6">
-            <h1 className="text-[clamp(2.8rem,6.5vw,6.5rem)] leading-[1.0] font-serif font-[560] text-white tracking-[-0.025em]">
+          <div className="hero-step mb-5 lg:mb-6" style={{ '--step': 1 } as React.CSSProperties}>
+            <h1
+              id="hero-title"
+              className="text-[clamp(2.8rem,1.6rem+5vw,6.5rem)] leading-[1.0] font-serif font-[560] text-white tracking-[-0.025em]"
+            >
               Equipamiento
               <br />
-              <em className="not-italic" style={{ color: '#C41B2E' }}>gastronómico</em>
+              <em className="not-italic text-[#E0283D]">gastronómico</em>
               <br />
               profesional
             </h1>
           </div>
 
-          {/* Description */}
-          <div className="hero-entrance hero-desc mb-6 lg:mb-7">
-            <p className="text-base md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed font-light px-2">
+          <div className="hero-step mb-6 lg:mb-7" style={{ '--step': 2 } as React.CSSProperties}>
+            <p className="text-base md:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed font-light px-2 text-pretty">
               Distribuidores oficiales de Empero en Argentina &mdash; marca turca con más de 40 años,
               más de 3.000 productos y presencia en 90+ países.
             </p>
           </div>
 
-          {/* CTA */}
-          <div className="hero-entrance hero-cta mb-7 lg:mb-10">
-            <button
-              onClick={scrollToCatalog}
-              className="group inline-flex items-center gap-3 px-9 text-base font-semibold rounded-full cursor-pointer transition-all duration-300 bg-[#C41B2E] text-white hover:bg-[#E02035]"
-              style={{ paddingTop: '15px', paddingBottom: '15px', boxShadow: '0 0 0 1px rgba(196,27,46,0.4), 0 8px 32px rgba(196,27,46,0.35)' }}
+          <div className="hero-step mb-7 lg:mb-10" style={{ '--step': 3 } as React.CSSProperties}>
+            <a
+              href="#catalogo"
+              onClick={handleAnchorClick}
+              className="group inline-flex items-center gap-3 px-9 py-[15px] text-base font-semibold rounded-full transition-colors duration-300 bg-[#C41B2E] text-white hover:bg-[#E02035] shadow-[0_0_0_1px_rgba(196,27,46,0.4),0_8px_32px_rgba(196,27,46,0.35)]"
             >
-              <Package className="w-5 h-5 flex-shrink-0" />
+              <Package className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               Ver catálogo
-              <ArrowDown className="w-4 h-4 opacity-60 transition-transform duration-300 group-hover:translate-y-0.5" />
-            </button>
+              <ArrowDown className="w-4 h-4 opacity-60 transition-transform duration-300 motion-safe:group-hover:translate-y-0.5" aria-hidden="true" />
+            </a>
 
-            {/* Trust indicators */}
-            <div className="flex items-center justify-center gap-5 mt-7">
-              <span className="flex items-center gap-2 text-white/50 text-xs font-medium">
-                <Shield className="w-3.5 h-3.5 text-white/25" />
+            <ul className="flex items-center justify-center gap-5 mt-7">
+              <li className="flex items-center gap-2 text-white/65 text-xs font-medium">
+                <Shield className="w-3.5 h-3.5 text-white/40" aria-hidden="true" />
                 Garantía certificada
-              </span>
-              <span className="w-px h-3.5 bg-white/10" />
-              <span className="flex items-center gap-2 text-white/50 text-xs font-medium">
-                <Zap className="w-3.5 h-3.5 text-white/25" />
+              </li>
+              <li aria-hidden="true" className="w-px h-3.5 bg-white/10" />
+              <li className="flex items-center gap-2 text-white/65 text-xs font-medium">
+                <Zap className="w-3.5 h-3.5 text-white/40" aria-hidden="true" />
                 Respuesta en 24h
-              </span>
-              <span className="w-px h-3.5 bg-white/10 hidden sm:block" />
-              <span className="hidden sm:flex items-center gap-2 text-white/50 text-xs font-medium">
-                <Star className="w-3.5 h-3.5 text-white/25" />
+              </li>
+              <li aria-hidden="true" className="w-px h-3.5 bg-white/10 hidden sm:block" />
+              <li className="hidden sm:flex items-center gap-2 text-white/65 text-xs font-medium">
+                <Star className="w-3.5 h-3.5 text-white/40" aria-hidden="true" />
                 +5000 clientes
-              </span>
-            </div>
+              </li>
+            </ul>
           </div>
 
-          {/* Stats */}
-          <div ref={statsRef} className="hero-entrance hero-stats [@media(max-height:900px)]:hidden">
-            <div className="grid grid-cols-3 gap-3 sm:gap-5 max-w-sm sm:max-w-xl mx-auto">
-              {[
-                { key: 'years',    display: '40+',    label: 'Años de marca',       icon: Award },
-                { key: 'products', display: '3.000+', label: 'Tipos de productos',  icon: Package },
-                { key: 'countries', display: '90+',   label: 'Países',              icon: Users },
-              ].map(({ key, display, label, icon: Icon }) => (
+          <div className="hero-step [@media(max-height:900px)]:hidden" style={{ '--step': 4 } as React.CSSProperties}>
+            <dl className="grid grid-cols-3 gap-3 sm:gap-5 max-w-sm sm:max-w-xl mx-auto">
+              {STATS.map(({ key, display, label, icon: Icon }) => (
                 <div
                   key={key}
-                  className="text-center px-3 py-4 sm:px-4 sm:py-5 rounded-2xl border border-[rgba(196,27,46,0.14)]"
-                  style={{ background: 'rgba(21,17,14,0.55)' }}
+                  className="flex flex-col-reverse items-center text-center px-3 py-4 sm:px-4 sm:py-5 rounded-2xl border border-[rgba(196,27,46,0.14)] bg-[rgba(21,17,14,0.55)]"
                 >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[rgba(196,27,46,0.1)] rounded-lg flex items-center justify-center mx-auto mb-2.5">
-                    <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C41B2E]" />
-                  </div>
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-none">
-                    {display}
-                  </div>
-                  <div className="text-[11px] sm:text-xs text-white/50 mt-1.5 font-medium">{label}</div>
+                  <dt className="text-[11px] sm:text-xs text-white/60 mt-1.5 font-medium">{label}</dt>
+                  <dd className="flex flex-col items-center">
+                    <span className="w-7 h-7 sm:w-8 sm:h-8 bg-[rgba(196,27,46,0.1)] rounded-lg flex items-center justify-center mb-2.5" aria-hidden="true">
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C41B2E]" />
+                    </span>
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-none">
+                      {display}
+                    </span>
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
 
         </div>
       </div>
-
     </section>
   );
 }

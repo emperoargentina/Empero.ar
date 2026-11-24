@@ -1,12 +1,12 @@
-'use client'
-
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, Package, Ruler, Weight, Zap, Flame, ArrowLeft, ArrowRight } from 'lucide-react'
-import { productCardImage } from '@/lib/cloudinaryUrl'
-import { whatsappConfig } from '@/data/company'
+import { Star, Ruler, Weight, Zap, Flame, ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react'
 import type { Product } from '@/data/products'
 import { AnimatedSection } from '@/components/animations/AnimatedSection'
+import { CloudinaryImage } from '@/components/ui/CloudinaryImage'
+import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon'
+import { getProductWhatsAppURL } from '@/lib/whatsapp'
+import { prefersReducedMotion } from '@/lib/scroll'
 
 interface Props {
   products: Product[]
@@ -15,12 +15,6 @@ interface Props {
   onRemoveFromQuote?: (productId: string) => void
   quoteListIds?: string[]
 }
-
-const WhatsAppSVG = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className ?? 'w-4 h-4 flex-shrink-0'} aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-  </svg>
-)
 
 function formatDim(dims: Product['dimensiones_mm']): string | null {
   if (!dims) return null
@@ -35,35 +29,70 @@ const slideVariants = {
 }
 
 const MAX_FEATURES = 4
+const AUTOPLAY_MS = 7500
 
+// Carrusel accesible: región con aria-roledescription, slides etiquetadas
+// "N de M", anuncio del producto al navegar, botón visible de pausa
+// (WCAG 2.2.2) y autoplay que se detiene con hover, foco, pestaña oculta,
+// fuera de pantalla o prefers-reduced-motion (arranca pausado).
 export function FeaturedCarousel({ products, onViewDetails }: Props) {
   const [[page, dir], setPage] = useState([0, 0])
-  const [paused, setPaused] = useState(false)
+  const [userPaused, setUserPaused] = useState(prefersReducedMotion)
+  const [hovering, setHovering] = useState(false)
+  const [focusWithin, setFocusWithin] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [announcement, setAnnouncement] = useState('')
   const [maxFeatures, setMaxFeatures] = useState(MAX_FEATURES)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const contentBoxRef = useRef<HTMLDivElement>(null)
   const contentInnerRef = useRef<HTMLDivElement>(null)
 
   const len = products.length
+  const paused = userPaused || hovering || focusWithin || !visible
 
   const paginate = useCallback((newDir: number) => {
-    setPage(([p, _]) => {
-      const next = (p + newDir + len) % len
-      return [next, newDir]
-    })
+    setPage(([p]) => [(p + newDir + len) % len, newDir])
   }, [len])
 
-  const next = useCallback(() => paginate(1), [paginate])
-  const prev = useCallback(() => paginate(-1), [paginate])
-  const goTo = useCallback((i: number) => {
-    setPage(([p, _]) => [i, i > p ? 1 : -1])
+  // Navegación del usuario: además de mover, anuncia el producto.
+  const navigate = useCallback((target: number, direction: number) => {
+    const index = (target + len) % len
+    setPage([index, direction])
+    const prod = products[index]
+    if (prod) setAnnouncement(`Producto ${index + 1} de ${len}: ${prod.nombre}`)
+  }, [len, products])
+
+  const next = useCallback(() => navigate(page + 1, 1), [navigate, page])
+  const prev = useCallback(() => navigate(page - 1, -1), [navigate, page])
+  const goTo = useCallback((i: number) => navigate(i, i > page ? 1 : -1), [navigate, page])
+
+  // Solo corre el autoplay mientras el carrusel está en pantalla y la pestaña visible.
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const io = new IntersectionObserver(([entry]) => {
+      setVisible(entry.isIntersecting && document.visibilityState === 'visible')
+    }, { threshold: 0.35 })
+    io.observe(el)
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') setVisible(false)
+      else {
+        const rect = el.getBoundingClientRect()
+        setVisible(rect.top < window.innerHeight && rect.bottom > 0)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      io.disconnect()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [])
 
   useEffect(() => {
     if (len <= 1 || paused) return
-    timerRef.current = setInterval(next, 7500)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [len, paused, next])
+    const timer = setInterval(() => paginate(1), AUTOPLAY_MS)
+    return () => clearInterval(timer)
+  }, [len, paused, paginate])
 
   // Reset feature-trimming for the new slide during render (cheaper than an effect + extra pass).
   const [trimmedForPage, setTrimmedForPage] = useState(page)
@@ -106,14 +135,14 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
 
   const features = (product.caracteristicas_generales || []).slice(0, maxFeatures)
 
-  const handleWhatsApp = () => {
-    const msg = encodeURIComponent(whatsappConfig.messageTemplate(product.nombre, product.codigo))
-    window.open(`https://wa.me/${whatsappConfig.phoneNumber}?text=${msg}`, '_blank')
-  }
-
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-[#FAFAF8] relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
+    <section
+      ref={sectionRef}
+      aria-roledescription="carrusel"
+      aria-labelledby="destacados-title"
+      className="py-12 sm:py-16 lg:py-20 bg-[var(--page-bg)] relative overflow-hidden"
+    >
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[#C41B2E]/[0.02] blur-[120px]" />
       </div>
 
@@ -127,21 +156,27 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
               </span>
               <div className="h-px w-10 sm:w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center">
+            <h2 id="destacados-title" className="text-3xl sm:text-4xl md:text-5xl font-serif font-[560] text-[#1A1613] flex items-center justify-center gap-[0.25em]">
               Productos <em className="not-italic text-[#C41B2E]">Destacados</em>
             </h2>
           </div>
         </AnimatedSection>
 
         <div
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovering(true) }}
+          onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHovering(false) }}
+          onFocus={() => setFocusWithin(true)}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocusWithin(false) }}
           className="relative select-none"
         >
+          <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
           <div className="overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_-20px_rgba(26,22,19,0.18)]">
             <AnimatePresence initial={false} custom={dir} mode="popLayout">
               <motion.div
                 key={page}
+                role="group"
+                aria-roledescription="producto"
+                aria-label={`${page + 1} de ${len}`}
                 custom={dir}
                 variants={slideVariants}
                 initial="enter"
@@ -155,37 +190,41 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
                   if (info.offset.x < -60) next()
                   else if (info.offset.x > 60) prev()
                 }}
+                style={{ touchAction: 'pan-y' }}
                 className="bg-white border border-[#E8E2D9] cursor-grab active:cursor-grabbing"
               >
                 <div className="flex flex-col lg:flex-row relative lg:justify-center">
                   {/* Top hairline — same signature red glow as the footer/header dividers */}
-                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#C41B2E]/50 to-transparent z-10" />
+                  <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#C41B2E]/50 to-transparent z-10" />
 
                   {/* Badge top-left */}
                   <span className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#C41B2E] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg shadow-[#C41B2E]/25">
-                    <Star className="w-3 h-3 fill-white" />
+                    <Star className="w-3 h-3 fill-white" aria-hidden="true" />
                     Destacado
                   </span>
 
                   {/* Logo — quiet watermark, not competing with the product */}
                   <img
                     src="/images/logo/Logo.png"
-                    alt="Empero"
+                    alt=""
+                    width={480}
+                    height={333}
+                    loading="lazy"
                     className="absolute top-4 right-4 sm:top-6 sm:right-6 h-9 sm:h-12 lg:h-14 w-auto object-contain opacity-60 z-10"
                   />
 
                   {/* Image — blends straight into the white card, fixed height keeps every slide the same size */}
                   <div className="lg:w-[440px] xl:w-[520px] flex-shrink-0 p-4 sm:p-5 xl:p-5">
                     <div className="relative overflow-hidden h-[200px] sm:h-[260px] lg:h-full flex items-center justify-center px-4 py-6">
-                      {product.cloudinary_url ? (
-                        <img
-                          src={productCardImage(product.cloudinary_url)}
-                          alt={product.nombre}
-                          className="w-full h-full object-contain"
-                        />
-                      ) : (
-                        <Package className="w-20 h-20 text-[#D8D0C6]" />
-                      )}
+                      <CloudinaryImage
+                        src={product.cloudinary_url ?? product.familia_cloudinary_url}
+                        alt={product.nombre}
+                        width={480}
+                        height={640}
+                        sizes="(min-width: 1280px) 480px, (min-width: 1024px) 400px, 80vw"
+                        className="w-full h-full object-contain"
+                        placeholderClass="w-full h-full object-contain p-6"
+                      />
                     </div>
                   </div>
 
@@ -223,8 +262,8 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
                         <div className="mt-6 border-t border-[#E8E2D9] divide-y divide-[#E8E2D9]">
                           {specs.map(s => (
                             <div key={s.label} className="flex items-center justify-between py-2 gap-4">
-                              <span className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[#9E9080] flex-shrink-0">
-                                <s.icon className="w-3 h-3 text-[#C41B2E]/70" />
+                              <span className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[#7B7064] flex-shrink-0">
+                                <s.icon className="w-3 h-3 text-[#C41B2E]/70" aria-hidden="true" />
                                 {s.label}
                               </span>
                               <span className="font-mono text-xs sm:text-[13px] text-[#2C2825] text-right truncate">
@@ -249,20 +288,25 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
                       {/* Ver detalles + WhatsApp — pinned to the bottom so both buttons land at the same height on every card */}
                       <div className="mt-auto pt-6 flex flex-col sm:flex-row gap-2.5">
                         <button
+                          type="button"
                           onClick={() => onViewDetails(product)}
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C41B2E] text-white rounded-lg text-sm font-semibold hover:bg-[#B51426] transition-all duration-200 shadow-sm cursor-pointer"
+                          aria-label={`Ver detalles de ${product.nombre}`}
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C41B2E] text-white rounded-lg text-sm font-semibold hover:bg-[#B51426] transition-colors duration-200 shadow-sm cursor-pointer"
                         >
                           Ver detalles
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4" aria-hidden="true" />
                         </button>
 
-                        <button
-                          onClick={handleWhatsApp}
-                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#25D366] hover:bg-[#1EAF56] transition-all duration-200 cursor-pointer shadow-sm"
+                        <a
+                          href={getProductWhatsAppURL(product.nombre, product.codigo)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Consultar ${product.nombre} por WhatsApp`}
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#1EAF56] hover:bg-[#178F46] transition-colors duration-200 shadow-sm"
                         >
-                          <WhatsAppSVG className="w-4 h-4" />
+                          <WhatsAppIcon className="w-4 h-4" />
                           WhatsApp
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -273,44 +317,51 @@ export function FeaturedCarousel({ products, onViewDetails }: Props) {
 
           {/* Editorial pagination — progress ticks + prev/next, one consistent control at every breakpoint */}
           {len > 1 && (
-            <div className="flex items-center gap-3 sm:gap-4 mt-6 sm:mt-7">
+            <div className="flex items-center gap-2 sm:gap-4 mt-6 sm:mt-7">
               <button
-                onClick={prev}
-                className="flex-shrink-0 w-9 h-9 rounded-full border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:border-[#C41B2E]/40 hover:text-[#C41B2E] transition-colors duration-200 cursor-pointer"
-                aria-label="Anterior"
+                type="button"
+                onClick={() => setUserPaused(p => !p)}
+                className="carousel-btn"
+                aria-label={userPaused ? 'Reproducir carrusel' : 'Pausar carrusel'}
               >
-                <ArrowLeft className="w-4 h-4" />
+                {userPaused
+                  ? <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
+                  : <Pause className="w-3.5 h-3.5 fill-current" aria-hidden="true" />}
               </button>
 
-              <div className="flex-1 flex items-center gap-1.5">
-                {products.map((_, i) => (
+              <button type="button" onClick={prev} className="carousel-btn" aria-label="Producto anterior">
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+              </button>
+
+              <div className="flex-1 flex items-center gap-1" role="group" aria-label="Elegir producto">
+                {products.map((p, i) => (
                   <button
-                    key={i}
+                    key={p.id}
+                    type="button"
                     onClick={() => goTo(i)}
-                    className="relative flex-1 h-[3px] rounded-full bg-[#E8E2D9] hover:bg-[#D8D0C6] transition-colors duration-300 cursor-pointer overflow-hidden"
-                    aria-label={`Ir al producto ${i + 1}`}
+                    aria-current={i === page ? 'true' : undefined}
+                    aria-label={`Producto ${i + 1}: ${p.nombre}`}
+                    className="carousel-marker group/marker relative flex-1 py-2.5 cursor-pointer"
                   >
-                    {i === page && (
-                      <motion.span
-                        layoutId="featured-carousel-active-tick"
-                        className="absolute inset-0 rounded-full bg-[#C41B2E]"
-                        transition={{ type: 'spring', stiffness: 500, damping: 40, mass: 0.6 }}
-                      />
-                    )}
+                    <span className="block relative h-[3px] group-aria-[current=true]/marker:h-[5px] rounded-full bg-[#E8E2D9] group-hover/marker:bg-[#D8D0C6] transition-[height,background-color] duration-300 overflow-hidden">
+                      {i === page && (
+                        <motion.span
+                          layoutId="featured-carousel-active-tick"
+                          className="absolute inset-0 rounded-full bg-[#C41B2E]"
+                          transition={{ type: 'spring', stiffness: 500, damping: 40, mass: 0.6 }}
+                        />
+                      )}
+                    </span>
                   </button>
                 ))}
               </div>
 
-              <span className="flex-shrink-0 font-mono text-xs tracking-wide text-[#9E9080]">
+              <span className="flex-shrink-0 font-mono text-xs tracking-wide text-[#7B7064] tabular-nums" aria-hidden="true">
                 {String(page + 1).padStart(2, '0')} / {String(len).padStart(2, '0')}
               </span>
 
-              <button
-                onClick={next}
-                className="flex-shrink-0 w-9 h-9 rounded-full border border-[#E8E2D9] flex items-center justify-center text-[#6B6159] hover:border-[#C41B2E]/40 hover:text-[#C41B2E] transition-colors duration-200 cursor-pointer"
-                aria-label="Siguiente"
-              >
-                <ArrowRight className="w-4 h-4" />
+              <button type="button" onClick={next} className="carousel-btn" aria-label="Producto siguiente">
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
           )}

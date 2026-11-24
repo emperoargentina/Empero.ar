@@ -1,8 +1,10 @@
 // =============================================================================
 // useQuoteList Hook - Gestión de lista de cotización
 // =============================================================================
+// La lista se guarda en localStorage: sobrevive a recargas y se sincroniza
+// entre pestañas abiertas del sitio.
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { type Product } from '@/data/products';
 
 export interface QuoteItem {
@@ -18,20 +20,54 @@ interface UseQuoteListReturn {
   updateQuantity: (productId: string, quantity: number) => void;
   updateNotes: (productId: string, notes: string) => void;
   clearList: () => void;
+  /** Reemplaza los productos guardados por su versión más reciente del catálogo. */
+  syncProducts: (products: Product[]) => void;
   totalItems: number;
-  isInList: (productId: string) => boolean;
-  generateWhatsAppMessage: () => string;
+}
+
+const STORAGE_KEY = 'empero_quote_v1';
+const MAX_QUANTITY = 999;
+
+function isQuoteItem(value: unknown): value is QuoteItem {
+  if (!value || typeof value !== 'object') return false;
+  const item = value as Partial<QuoteItem>;
+  return typeof item.product?.id === 'string' && typeof item.quantity === 'number' && typeof item.notes === 'string';
+}
+
+function readStored(): QuoteItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter(isQuoteItem) : [];
+  } catch {
+    return [];
+  }
 }
 
 export function useQuoteList(): UseQuoteListReturn {
-  const [items, setItems] = useState<QuoteItem[]>([]);
+  const [items, setItems] = useState<QuoteItem[]>(readStored);
+
+  useEffect(() => {
+    try {
+      if (items.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      else localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Storage bloqueado (modo privado, cuota) — la lista sigue en memoria.
+    }
+  }, [items]);
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) setItems(readStored());
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const addItem = useCallback((product: Product) => {
     setItems(prev => {
-      // Check if already exists
-      if (prev.some(item => item.product.id === product.id)) {
-        return prev;
-      }
+      if (prev.some(item => item.product.id === product.id)) return prev;
       return [...prev, { product, quantity: 1, notes: '' }];
     });
   }, []);
@@ -41,19 +77,16 @@ export function useQuoteList(): UseQuoteListReturn {
   }, []);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity < 1) return;
+    if (!Number.isFinite(quantity) || quantity < 1) return;
+    const safe = Math.min(Math.floor(quantity), MAX_QUANTITY);
     setItems(prev =>
-      prev.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+      prev.map(item => (item.product.id === productId ? { ...item, quantity: safe } : item))
     );
   }, []);
 
   const updateNotes = useCallback((productId: string, notes: string) => {
     setItems(prev =>
-      prev.map(item =>
-        item.product.id === productId ? { ...item, notes } : item
-      )
+      prev.map(item => (item.product.id === productId ? { ...item, notes } : item))
     );
   }, []);
 
@@ -61,32 +94,22 @@ export function useQuoteList(): UseQuoteListReturn {
     setItems([]);
   }, []);
 
-  const isInList = useCallback((productId: string) => {
-    return items.some(item => item.product.id === productId);
-  }, [items]);
+  const syncProducts = useCallback((products: Product[]) => {
+    if (!products.length) return;
+    const byId = new Map(products.map(p => [p.id, p]));
+    setItems(prev => {
+      let changed = false;
+      const next = prev.map(item => {
+        const fresh = byId.get(item.product.id);
+        if (!fresh || fresh === item.product || fresh.updated_at === item.product.updated_at) return item;
+        changed = true;
+        return { ...item, product: fresh };
+      });
+      return changed ? next : prev;
+    });
+  }, []);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-
-  const generateWhatsAppMessage = useCallback(() => {
-    if (items.length === 0) return '';
-
-    let message = 'Hola, quiero cotizar los siguientes productos:\n\n';
-    
-    items.forEach((item, index) => {
-      message += `${index + 1}. ${item.product.nombre}`;
-      message += ` (Código: ${item.product.codigo})`;
-      message += ` - Cantidad: ${item.quantity}`;
-      if (item.notes) {
-        message += ` - Notas: ${item.notes}`;
-      }
-      message += '\n';
-    });
-
-    message += `\nTotal de productos: ${totalItems}`;
-    message += '\n\nQuedo atento a su respuesta. Gracias!';
-
-    return message;
-  }, [items, totalItems]);
 
   return {
     items,
@@ -95,8 +118,7 @@ export function useQuoteList(): UseQuoteListReturn {
     updateQuantity,
     updateNotes,
     clearList,
+    syncProducts,
     totalItems,
-    isInList,
-    generateWhatsAppMessage,
   };
 }
