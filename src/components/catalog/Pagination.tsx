@@ -22,7 +22,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
   const pages = getVisiblePages(currentPage, totalPages);
 
   const btnBase =
-    'flex items-center justify-center w-9 h-9 rounded-xl text-[13px] font-medium transition-all duration-150 cursor-pointer select-none border';
+    'flex items-center justify-center w-9 h-9 rounded-xl text-[0.8125rem] font-medium transition-all duration-150 cursor-pointer select-none border';
 
   return (
     <nav aria-label="Paginación del catálogo" className="flex items-center justify-center gap-1.5 py-2">
@@ -34,8 +34,8 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
         aria-label="Página anterior"
         className={`${btnBase} ${
           currentPage === 1
-            ? 'border-[#EBE5DC] text-[#C8BFB5] bg-white cursor-not-allowed'
-            : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+            ? 'border-ink-200 text-ink-300 bg-white cursor-not-allowed'
+            : 'border-ink-200 text-ink-600 bg-white hover:border-brand hover:text-brand hover:bg-brand-50'
         }`}
       >
         <ChevronLeft className="w-4 h-4" aria-hidden="true" />
@@ -47,7 +47,7 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
           <span
             key={`ellipsis-${i}`}
             aria-hidden="true"
-            className="w-9 h-9 flex items-center justify-center text-[#7B7064] text-[13px] select-none"
+            className="w-9 h-9 flex items-center justify-center text-ink-500 text-[0.8125rem] select-none"
           >
             ···
           </span>
@@ -60,8 +60,8 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
             aria-current={page === currentPage ? 'page' : undefined}
             className={`${btnBase} ${
               page === currentPage
-                ? 'bg-[#C41B2E] border-[#C41B2E] text-white shadow-sm'
-                : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+                ? 'bg-brand border-brand text-white shadow-sm'
+                : 'border-ink-200 text-ink-600 bg-white hover:border-brand hover:text-brand hover:bg-brand-50'
             }`}
             whileTap={{ scale: 0.93 }}
             transition={{ duration: 0.1 }}
@@ -79,8 +79,8 @@ export function Pagination({ currentPage, totalPages, onPrev, onNext, onPageChan
         aria-label="Página siguiente"
         className={`${btnBase} ${
           currentPage === totalPages
-            ? 'border-[#EBE5DC] text-[#C8BFB5] bg-white cursor-not-allowed'
-            : 'border-[#E8E2D9] text-[#6B6159] bg-white hover:border-[#C41B2E] hover:text-[#C41B2E] hover:bg-[#FFF8F8]'
+            ? 'border-ink-200 text-ink-300 bg-white cursor-not-allowed'
+            : 'border-ink-200 text-ink-600 bg-white hover:border-brand hover:text-brand hover:bg-brand-50'
         }`}
       >
         <ChevronRight className="w-4 h-4" aria-hidden="true" />

@@ -169,7 +169,7 @@ function ErrorText({ children }: { children: React.ReactNode }) {
   return <p className="mt-1 text-xs text-red-500">{children}</p>
 }
 
-const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]'
+const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C3151B]/15 focus-visible:border-[#C3151B]'
 
 // Card de sección con icono de color — agrupa visualmente los campos
 // relacionados y hace mucho más fácil escanear tabs largos como
@@ -223,7 +223,7 @@ function ToggleRow({
         onCheckedChange={onChange}
         disabled={disabled}
         className={`flex-shrink-0 data-[state=unchecked]:bg-[#D8D0C6] disabled:opacity-50 disabled:cursor-not-allowed ${
-          color === 'green' ? 'data-[state=checked]:bg-emerald-500' : 'data-[state=checked]:bg-[#C41B2E]'
+          color === 'green' ? 'data-[state=checked]:bg-emerald-500' : 'data-[state=checked]:bg-[#C3151B]'
         }`}
       />
     </div>
@@ -567,7 +567,7 @@ export function ProductForm() {
   if (isEdit && loading) {
     return (
       <div className="flex items-center gap-3 py-24 justify-center">
-        <Loader2 className="w-5 h-5 animate-spin text-[#C41B2E]" />
+        <Loader2 className="w-5 h-5 animate-spin text-[#C3151B]" />
         <span className="text-sm text-[#9E9080]">Cargando producto...</span>
       </div>
     )
@@ -577,7 +577,7 @@ export function ProductForm() {
     return (
       <div className="space-y-4">
         <div className="p-4 rounded-lg text-sm bg-red-50 text-red-600">{loadError}</div>
-        <Link to="/admin/productos" className="inline-flex items-center gap-2 text-sm font-medium text-[#C41B2E]">
+        <Link to="/admin/productos" className="inline-flex items-center gap-2 text-sm font-medium text-[#C3151B]">
           <ArrowLeft className="w-4 h-4" /> Volver al listado
         </Link>
       </div>
@@ -633,12 +633,12 @@ export function ProductForm() {
                   key={tabId}
                   value={tabId}
                   data-tour-tab={tabId}
-                  className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
+                  className="group relative gap-1.5 rounded-md px-3 py-1.5 text-[#6B6159] hover:text-[#C3151B] hover:bg-[#FDF2F2] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
                 >
                   {tab === tabId && (
                     <motion.span
                       layoutId="productform-tab-pill"
-                      className="absolute inset-0 rounded-md bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
+                      className="absolute inset-0 rounded-md bg-[#C3151B] shadow-[0_2px_8px_rgba(195,21,27,0.35)]"
                       transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                     />
                   )}
@@ -663,7 +663,7 @@ export function ProductForm() {
                 <p className="text-[10px] text-[#9E9080] font-medium uppercase tracking-wider leading-none">Familia</p>
                 <Link
                   to={`/admin/familias/${familyId}`}
-                  className="text-sm font-semibold text-[#1A1613] hover:text-[#C41B2E] transition-colors truncate block max-w-[140px] mt-0.5"
+                  className="text-sm font-semibold text-[#1A1613] hover:text-[#C3151B] transition-colors truncate block max-w-[140px] mt-0.5"
                 >
                   {familyPreview.nombre}
                 </Link>
@@ -686,7 +686,7 @@ export function ProductForm() {
             <SectionCard
               dataTour="tour-form-identity"
               icon={Tag}
-              tint="bg-[#FFE4E6] text-[#C41B2E]"
+              tint="bg-[#FFE4E6] text-[#C3151B]"
               title="Identidad del producto"
               description={
                 isCarpeta
@@ -738,7 +738,7 @@ export function ProductForm() {
                             {CATEGORIAS.map(c => {
                               const Icon = CATEGORIA_ICONS[c]
                               return (
-                                <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                                <SelectItem key={c} value={c} className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">
                                   <span className="flex items-center gap-2">
                                     <Icon className="w-3.5 h-3.5 opacity-70" />
                                     {c}
@@ -902,7 +902,7 @@ export function ProductForm() {
               <Textarea
                 {...register('comentario_medida')}
                 rows={10}
-                className="text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]"
+                className="text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C3151B]/15 focus-visible:border-[#C3151B]"
                 placeholder="Escribí el comentario que va a ver el cliente..."
               />
             </SectionCard>
@@ -1052,7 +1052,7 @@ export function ProductForm() {
                   <Textarea
                     {...register('aclaracion')}
                     rows={3}
-                    className="flex-1 resize-none text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]"
+                    className="flex-1 resize-none text-sm border-[#EBE5DC] bg-white text-[#1A1613] focus-visible:ring-2 focus-visible:ring-[#C3151B]/15 focus-visible:border-[#C3151B]"
                     placeholder='Ej: "Este gabinete es para el Horno a Carbón PKF-40"'
                   />
                   <Hint>Para cuando el producto es específico para otro — se muestra en la ficha pública</Hint>

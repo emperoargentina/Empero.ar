@@ -38,6 +38,38 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Paleta del sitio público (CSS vars en index.css, canales RGB para
+        // soportar opacidad: bg-brand/10, border-ink-200/60…).
+        ink: {
+          50:  "rgb(var(--ink-50) / <alpha-value>)",
+          100: "rgb(var(--ink-100) / <alpha-value>)",
+          150: "rgb(var(--ink-150) / <alpha-value>)",
+          200: "rgb(var(--ink-200) / <alpha-value>)",
+          300: "rgb(var(--ink-300) / <alpha-value>)",
+          400: "rgb(var(--ink-400) / <alpha-value>)",
+          500: "rgb(var(--ink-500) / <alpha-value>)",
+          600: "rgb(var(--ink-600) / <alpha-value>)",
+          700: "rgb(var(--ink-700) / <alpha-value>)",
+          800: "rgb(var(--ink-800) / <alpha-value>)",
+          900: "rgb(var(--ink-900) / <alpha-value>)",
+          950: "rgb(var(--ink-950) / <alpha-value>)",
+        },
+        brand: {
+          DEFAULT: "rgb(var(--brand-600) / <alpha-value>)",
+          50:  "rgb(var(--brand-50) / <alpha-value>)",
+          100: "rgb(var(--brand-100) / <alpha-value>)",
+          200: "rgb(var(--brand-200) / <alpha-value>)",
+          400: "rgb(var(--brand-400) / <alpha-value>)",
+          600: "rgb(var(--brand-600) / <alpha-value>)",
+          700: "rgb(var(--brand-700) / <alpha-value>)",
+          800: "rgb(var(--brand-800) / <alpha-value>)",
+        },
+        whatsapp: {
+          DEFAULT: "rgb(var(--whatsapp-600) / <alpha-value>)",
+          500: "rgb(var(--whatsapp-500) / <alpha-value>)",
+          600: "rgb(var(--whatsapp-600) / <alpha-value>)",
+          700: "rgb(var(--whatsapp-700) / <alpha-value>)",
+        },
         gold: {
           50:  'rgba(200, 169, 110, 0.06)',
           100: 'rgba(200, 169, 110, 0.12)',
@@ -75,9 +107,11 @@ module.exports = {
         },
       },
       fontFamily: {
+        // Fraunces (serif editorial) para títulos + DM Sans para texto.
         display: ['"Fraunces"', 'Georgia', 'serif'],
         serif:   ['"Fraunces"', 'Georgia', 'serif'],
         sans:    ['"DM Sans"', 'system-ui', 'sans-serif'],
+        // Códigos de producto y especificaciones técnicas.
         mono:    ['"DM Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {

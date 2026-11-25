@@ -103,7 +103,7 @@ function ProductRow({
   onDelete: (p: Producto) => void
 }) {
   const cellY = nested
-    ? `${isFirst ? 'border-t border-[#C41B2E]/30' : ''} ${isLast ? 'border-b border-[#C41B2E]/30' : ''}`
+    ? `${isFirst ? 'border-t border-[#C3151B]/30' : ''} ${isLast ? 'border-b border-[#C3151B]/30' : ''}`
     : ''
 
   return (
@@ -119,8 +119,8 @@ function ProductRow({
           : `${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`
       }`}
     >
-      <td className={`px-4 py-3 ${cellY} ${nested ? 'pl-10 relative border-l border-[#C41B2E]/30' : ''}`}>
-        {nested && <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-full bg-[#C41B2E]/40" />}
+      <td className={`px-4 py-3 ${cellY} ${nested ? 'pl-10 relative border-l border-[#C3151B]/30' : ''}`}>
+        {nested && <span className="absolute left-4 top-1/2 -translate-y-1/2 w-[3px] h-8 rounded-full bg-[#C3151B]/40" />}
         <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
           {p.cloudinary_url
             ? <img src={p.cloudinary_url} alt={p.nombre} width={36} height={36} loading="lazy" className="w-full h-full object-cover" />
@@ -154,13 +154,13 @@ function ProductRow({
           className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-[#D8D0C6]"
         />
       </td>
-      <td className={`px-4 py-3 ${cellY} ${nested ? 'border-r border-[#C41B2E]/30' : ''}`}>
+      <td className={`px-4 py-3 ${cellY} ${nested ? 'border-r border-[#C3151B]/30' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
           <Button
             variant="ghost"
             size="iconSm"
             onClick={e => { e.stopPropagation(); onNavigate(p.id) }}
-            className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]"
+            className="text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2]"
             title="Editar"
           >
             <Pencil className="w-3.5 h-3.5" />
@@ -205,7 +205,7 @@ function FamilyHeaderRow({
       ? `US$ ${Math.min(...prices).toLocaleString('es-AR')}`
       : `US$ ${Math.min(...prices).toLocaleString('es-AR')}–${Math.max(...prices).toLocaleString('es-AR')}`
   const allVisible = group.variants.every(v => v.disponible)
-  const cellY = expanded ? 'border-y-2 border-[#C41B2E]/60' : 'border-y-2 border-transparent'
+  const cellY = expanded ? 'border-y-2 border-[#C3151B]/60' : 'border-y-2 border-transparent'
 
   return (
     <motion.tr
@@ -222,7 +222,7 @@ function FamilyHeaderRow({
           : `${index % 2 === 0 ? 'bg-white' : 'bg-[#FAF8F4]/50'} hover:bg-[#F4F0E8]`
       }`}
     >
-      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-l-2 border-[#C41B2E]/60' : ''}`}>
+      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-l-2 border-[#C3151B]/60' : ''}`}>
         <div className={`w-9 h-9 rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center border transition-colors ${
           expanded ? 'bg-[#FFD1C0] border-[#F0A088]' : 'bg-[#F4F0E8] border-[#EBE5DC]'
         }`}>
@@ -235,12 +235,12 @@ function FamilyHeaderRow({
       <td className={`px-4 py-3 overflow-hidden ${cellY}`}>
         <p className="font-semibold text-[#1A1613] truncate">{displayNombre}</p>
         <p className="text-[11px] text-[#4A4540] mt-0.5 flex items-center gap-1 truncate">
-          <Layers className="w-3 h-3 text-[#C41B2E] flex-shrink-0" /> {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
+          <Layers className="w-3 h-3 text-[#C3151B] flex-shrink-0" /> {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
         </p>
       </td>
       <td className={`px-4 py-3 ${cellY}`}>
         <span className={`inline-flex items-center gap-1 text-xs font-semibold px-1.5 py-1 rounded-full transition-colors whitespace-nowrap ${
-          expanded ? 'bg-[#C41B2E] text-white' : 'text-[#C41B2E]'
+          expanded ? 'bg-[#C3151B] text-white' : 'text-[#C3151B]'
         }`}>
           <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 flex-shrink-0 ${expanded ? 'rotate-90' : ''}`} />
           {group.variants.length} producto{group.variants.length !== 1 ? 's' : ''}
@@ -266,19 +266,19 @@ function FamilyHeaderRow({
           title={allVisible ? 'Ocultar todas las variantes' : 'Mostrar todas las variantes'}
         />
       </td>
-      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-r-2 border-[#C41B2E]/60' : ''}`}>
+      <td className={`px-4 py-3 ${cellY} ${expanded ? 'border-r-2 border-[#C3151B]/60' : ''}`}>
         <div className="flex items-center gap-1 justify-end">
           <Button
             variant="ghost"
             size="iconSm"
             onClick={e => { e.stopPropagation(); onAddChild() }}
-            className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]"
+            className="text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2]"
             title="Agregar producto hijo huérfano"
             data-tour="tour-prod-add-child"
           >
             <Plus className="w-3.5 h-3.5" />
           </Button>
-          <Button asChild variant="ghost" size="iconSm" className="text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]">
+          <Button asChild variant="ghost" size="iconSm" className="text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2]">
             <Link
               to={`/admin/familias/${group.familiaId}`}
               onClick={e => e.stopPropagation()}
@@ -312,7 +312,7 @@ function ProductCardMobile({
 }) {
   return (
     <div className={`relative ${nested ? 'bg-[#FFF8F5]' : ''}`}>
-      {nested && <span className="absolute left-4 top-3 bottom-3 w-[3px] rounded-full bg-[#C41B2E]/40" />}
+      {nested && <span className="absolute left-4 top-3 bottom-3 w-[3px] rounded-full bg-[#C3151B]/40" />}
       <div
         onClick={() => onNavigate(p.id)}
         className={`flex gap-3 p-3.5 pb-2.5 active:bg-[#F4F0E8] transition-colors cursor-pointer ${nested ? 'pl-8' : ''}`}
@@ -394,10 +394,10 @@ function FamilyCardMobile({
               <p className="font-semibold text-[#1A1613] text-sm truncate">{displayNombre}</p>
               {displayCategoria && <p className="text-[11px] text-[#9E9080] truncate mt-0.5">{displayCategoria}</p>}
             </div>
-            <ChevronRight className={`w-4 h-4 text-[#C41B2E] flex-shrink-0 mt-0.5 transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} />
+            <ChevronRight className={`w-4 h-4 text-[#C3151B] flex-shrink-0 mt-0.5 transition-transform duration-200 ${expanded ? 'rotate-90' : ''}`} />
           </div>
           <div className="flex items-center gap-3 mt-2">
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#C41B2E]">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#C3151B]">
               <Layers className="w-3 h-3 flex-shrink-0" />
               {group.variants.length} variante{group.variants.length !== 1 ? 's' : ''}
             </span>
@@ -744,7 +744,7 @@ export function Products() {
             onClick={() => setCreateFamilyOpen(true)}
             className="px-4 py-2.5 h-auto rounded-xl"
           >
-            <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
+            <FolderPlus className="w-4 h-4 text-[#C3151B]" />
             Crear familia
           </Button>
           <Button
@@ -802,7 +802,7 @@ export function Products() {
           onClick={() => setCreateFamilyOpen(true)}
           className="w-full sm:w-auto justify-center px-4 py-2.5 h-auto rounded-xl"
         >
-          <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
+          <FolderPlus className="w-4 h-4 text-[#C3151B]" />
           Crear familia
         </Button>
         <Button
@@ -829,8 +829,8 @@ export function Products() {
               setOrden('fecha')
             }}
             placeholder="Buscar por nombre o código..."
-            className={`w-full pl-9 h-11 bg-white border border-[#D8D0C4] shadow-sm focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E] ${
-              search ? 'border-[#C41B2E]/40' : ''
+            className={`w-full pl-9 h-11 bg-white border border-[#D8D0C4] shadow-sm focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B] ${
+              search ? 'border-[#C3151B]/40' : ''
             }`}
           />
         </div>
@@ -840,7 +840,7 @@ export function Products() {
           aria-label="Abrir filtros"
           className={`flex items-center gap-2 px-4 h-11 rounded-xl text-[13px] font-semibold border transition-all duration-150 cursor-pointer flex-shrink-0 ${
             mobileActiveCount > 0
-              ? 'bg-[#C41B2E] text-white border-[#C41B2E] shadow-sm'
+              ? 'bg-[#C3151B] text-white border-[#C3151B] shadow-sm'
               : 'bg-white text-[#1A1613] border-[#EBE5DC] shadow-sm'
           }`}
         >
@@ -872,12 +872,12 @@ export function Products() {
               <TabsTrigger
                 key={t.key}
                 value={t.key}
-                className="group relative rounded-lg px-3 sm:px-4 py-1.5 text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
+                className="group relative rounded-lg px-3 sm:px-4 py-1.5 text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2] data-[state=active]:text-white data-[state=active]:hover:bg-transparent data-[state=active]:hover:text-white transition-colors whitespace-nowrap"
               >
                 {tab === t.key && (
                   <motion.span
                     layoutId="productos-tab-pill"
-                    className="absolute inset-0 rounded-lg bg-[#C41B2E] shadow-[0_2px_8px_rgba(196,27,46,0.35)]"
+                    className="absolute inset-0 rounded-lg bg-[#C3151B] shadow-[0_2px_8px_rgba(195,21,27,0.35)]"
                     transition={{ type: 'spring', bounce: 0.18, duration: 0.45 }}
                   />
                 )}
@@ -896,7 +896,7 @@ export function Products() {
           <Button
             variant="ghost"
             onClick={clearFilters}
-            className="h-9 px-4 rounded-xl gap-1.5 text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] font-medium"
+            className="h-9 px-4 rounded-xl gap-1.5 text-[#C3151B] hover:bg-[#FDF2F2] hover:text-[#C3151B] font-medium"
           >
             <X className="w-4 h-4" />
             Eliminar filtros
@@ -908,7 +908,7 @@ export function Products() {
       {emptyFamilies.length > 0 && (
         <div data-tour="tour-prod-pending" className="bg-[#FFF8F5] border border-[#F5C6BA] rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-[#C41B2E] uppercase tracking-wider flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-[#C3151B] uppercase tracking-wider flex items-center gap-1.5">
               <FolderOpen className="w-3.5 h-3.5" />
               Familias pendientes — sin productos todavía
             </p>
@@ -922,14 +922,14 @@ export function Products() {
             {emptyFamilies.map(fam => (
               <div
                 key={fam.id}
-                className="flex items-center gap-1 pl-1 pr-1.5 py-1 rounded-lg border border-[#EBE5DC] bg-white hover:border-[#C41B2E]/40 transition-colors"
+                className="flex items-center gap-1 pl-1 pr-1.5 py-1 rounded-lg border border-[#EBE5DC] bg-white hover:border-[#C3151B]/40 transition-colors"
               >
                 <Button
                   variant="ghost"
                   onClick={() => setPickerFamily(fam)}
-                  className="px-2.5 py-1.5 h-auto rounded-md font-medium hover:bg-[#FFF0F1]"
+                  className="px-2.5 py-1.5 h-auto rounded-md font-medium hover:bg-[#FDF2F2]"
                 >
-                  <Layers className="w-3.5 h-3.5 text-[#C41B2E]" />
+                  <Layers className="w-3.5 h-3.5 text-[#C3151B]" />
                   {fam.nombre}
                   <span className="text-[11px] text-[#9E9080]">· agregar hijo</span>
                 </Button>
@@ -962,7 +962,7 @@ export function Products() {
       {/* Filters — desktop */}
       <div className={`hidden md:flex bg-white rounded-xl border p-4 flex-wrap gap-3 items-center shadow-sm transition-colors ${
         hasActiveFilters
-          ? 'border-[#C41B2E]/50 ring-2 ring-[#C41B2E]/10'
+          ? 'border-[#C3151B]/50 ring-2 ring-[#C3151B]/10'
           : 'border-[#EBE5DC]'
       }`}>
         <div className="relative flex-1 min-w-[200px]">
@@ -977,8 +977,8 @@ export function Products() {
               setOrden('fecha')
             }}
             placeholder="Buscar por nombre o código..."
-            className={`w-full pl-9 h-10 border-[#EBE5DC] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E] ${
-              search ? 'border-[#C41B2E]/40' : ''
+            className={`w-full pl-9 h-10 border-[#EBE5DC] focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B] ${
+              search ? 'border-[#C3151B]/40' : ''
             }`}
           />
         </div>
@@ -986,17 +986,17 @@ export function Products() {
         <div className="relative">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={categoria || 'all'} onValueChange={v => setCategoria(v === 'all' ? '' : v)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
-              categoria ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C3151B]/10 focus:border-[#C3151B] w-[200px] ${
+              categoria ? 'border-[#C3151B]/40 text-[#C3151B]' : ''
             }`}>
               <SelectValue placeholder="Todas las categorías" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Todas las categorías</SelectItem>
+              <SelectItem value="all" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Todas las categorías</SelectItem>
               {CATEGORIAS.map(c => {
                 const Icon = CATEGORIA_ICONS[c]
                 return (
-                  <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                  <SelectItem key={c} value={c} className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">
                     <span className="flex items-center gap-2">
                       <Icon className="w-3.5 h-3.5 opacity-70" />
                       {c}
@@ -1011,15 +1011,15 @@ export function Products() {
         <div className="relative">
           <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={orden} onValueChange={v => setOrden(v as typeof orden)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[200px] ${
-              orden !== 'fecha' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C3151B]/10 focus:border-[#C3151B] w-[200px] ${
+              orden !== 'fecha' ? 'border-[#C3151B]/40 text-[#C3151B]' : ''
             }`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="fecha" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por fecha de creación</SelectItem>
-              <SelectItem value="nombre" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por nombre</SelectItem>
-              <SelectItem value="precio" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Por precio</SelectItem>
+              <SelectItem value="fecha" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Por fecha de creación</SelectItem>
+              <SelectItem value="nombre" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Por nombre</SelectItem>
+              <SelectItem value="precio" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Por precio</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -1027,15 +1027,15 @@ export function Products() {
         <div className="relative">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#C0B5A8] pointer-events-none z-10" />
           <Select value={modo} onValueChange={v => setModo(v as typeof modo)}>
-            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C41B2E]/10 focus:border-[#C41B2E] w-[180px] ${
-              modo !== 'all' ? 'border-[#C41B2E]/40 text-[#C41B2E]' : ''
+            <SelectTrigger className={`pl-8 h-10 border-[#EBE5DC] focus:ring-2 focus:ring-[#C3151B]/10 focus:border-[#C3151B] w-[180px] ${
+              modo !== 'all' ? 'border-[#C3151B]/40 text-[#C3151B]' : ''
             }`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: Todos</SelectItem>
-              <SelectItem value="en_stock" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: En stock</SelectItem>
-              <SelectItem value="por_encargo" className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">Stock: Por encargo</SelectItem>
+              <SelectItem value="all" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Stock: Todos</SelectItem>
+              <SelectItem value="en_stock" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Stock: En stock</SelectItem>
+              <SelectItem value="por_encargo" className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">Stock: Por encargo</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -1062,7 +1062,7 @@ export function Products() {
                   <label
                     key={t.key}
                     className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
-                      tab === t.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                      tab === t.key ? 'bg-[#FDF2F2]' : 'hover:bg-[#F5F0EA]'
                     }`}
                   >
                     <input
@@ -1070,9 +1070,9 @@ export function Products() {
                       name="mobile-tab"
                       checked={tab === t.key}
                       onChange={() => setTab(t.key)}
-                      className="w-4 h-4 accent-[#C41B2E]"
+                      className="w-4 h-4 accent-[#C3151B]"
                     />
-                    <span className={`flex-1 text-[13px] font-medium ${tab === t.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+                    <span className={`flex-1 text-[13px] font-medium ${tab === t.key ? 'text-[#C3151B]' : 'text-[#3A3530]'}`}>
                       {t.label}
                     </span>
                     <span className="text-[11px] text-[#9E9080]">({t.count})</span>
@@ -1087,16 +1087,16 @@ export function Products() {
               <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#9A8E82] mb-3">Categoría</p>
               <div className="flex flex-col gap-0.5">
                 <label className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
-                  categoria === '' ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                  categoria === '' ? 'bg-[#FDF2F2]' : 'hover:bg-[#F5F0EA]'
                 }`}>
                   <input
                     type="radio"
                     name="mobile-categoria"
                     checked={categoria === ''}
                     onChange={() => setCategoria('')}
-                    className="w-4 h-4 accent-[#C41B2E]"
+                    className="w-4 h-4 accent-[#C3151B]"
                   />
-                  <span className={`flex-1 text-[13px] font-medium ${categoria === '' ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+                  <span className={`flex-1 text-[13px] font-medium ${categoria === '' ? 'text-[#C3151B]' : 'text-[#3A3530]'}`}>
                     Todas las categorías
                   </span>
                 </label>
@@ -1104,16 +1104,16 @@ export function Products() {
                   const Icon = CATEGORIA_ICONS[c]
                   const active = categoria === c
                   return (
-                    <label key={c} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${active ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                    <label key={c} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${active ? 'bg-[#FDF2F2]' : 'hover:bg-[#F5F0EA]'}`}>
                       <input
                         type="radio"
                         name="mobile-categoria"
                         checked={active}
                         onChange={() => setCategoria(c)}
-                        className="w-4 h-4 accent-[#C41B2E]"
+                        className="w-4 h-4 accent-[#C3151B]"
                       />
-                      <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
-                      <span className={`flex-1 text-[13px] font-medium ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{c}</span>
+                      <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C3151B]' : 'text-[#9A8E82]'}`} />
+                      <span className={`flex-1 text-[13px] font-medium ${active ? 'text-[#C3151B]' : 'text-[#3A3530]'}`}>{c}</span>
                     </label>
                   )
                 })}
@@ -1130,15 +1130,15 @@ export function Products() {
                   { key: 'nombre', label: 'Nombre' },
                   { key: 'precio', label: 'Precio' },
                 ] as const).map(o => (
-                  <label key={o.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${orden === o.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                  <label key={o.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${orden === o.key ? 'bg-[#FDF2F2]' : 'hover:bg-[#F5F0EA]'}`}>
                     <input
                       type="radio"
                       name="mobile-orden"
                       checked={orden === o.key}
                       onChange={() => setOrden(o.key)}
-                      className="w-4 h-4 accent-[#C41B2E]"
+                      className="w-4 h-4 accent-[#C3151B]"
                     />
-                    <span className={`flex-1 text-[13px] font-medium ${orden === o.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{o.label}</span>
+                    <span className={`flex-1 text-[13px] font-medium ${orden === o.key ? 'text-[#C3151B]' : 'text-[#3A3530]'}`}>{o.label}</span>
                   </label>
                 ))}
               </div>
@@ -1154,15 +1154,15 @@ export function Products() {
                   { key: 'en_stock', label: 'En stock' },
                   { key: 'por_encargo', label: 'Por encargo' },
                 ] as const).map(m => (
-                  <label key={m.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${modo === m.key ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
+                  <label key={m.key} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${modo === m.key ? 'bg-[#FDF2F2]' : 'hover:bg-[#F5F0EA]'}`}>
                     <input
                       type="radio"
                       name="mobile-modo"
                       checked={modo === m.key}
                       onChange={() => setModo(m.key)}
-                      className="w-4 h-4 accent-[#C41B2E]"
+                      className="w-4 h-4 accent-[#C3151B]"
                     />
-                    <span className={`flex-1 text-[13px] font-medium ${modo === m.key ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{m.label}</span>
+                    <span className={`flex-1 text-[13px] font-medium ${modo === m.key ? 'text-[#C3151B]' : 'text-[#3A3530]'}`}>{m.label}</span>
                   </label>
                 ))}
               </div>
@@ -1173,14 +1173,14 @@ export function Products() {
             <button
               type="button"
               onClick={clearFilters}
-              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer"
+              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-[#C3151B] bg-[rgba(195,21,27,0.06)] hover:bg-[rgba(195,21,27,0.1)] border border-[rgba(195,21,27,0.2)] transition-colors cursor-pointer"
             >
               Limpiar
             </button>
             <button
               type="button"
               onClick={() => setMobileFilterOpen(false)}
-              className="flex-[2] py-2.5 rounded-xl text-[13px] font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer shadow-sm"
+              className="flex-[2] py-2.5 rounded-xl text-[13px] font-semibold text-white bg-[#C3151B] hover:bg-[#A51116] transition-colors cursor-pointer shadow-sm"
             >
               Ver {totalCount} producto{totalCount !== 1 ? 's' : ''}
             </button>
@@ -1194,15 +1194,15 @@ export function Products() {
           <div className="flex items-center justify-center h-72">
             <div className="flex flex-col items-center gap-5">
               <div className="relative">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C41B2E] to-[#B51426] flex items-center justify-center shadow-lg shadow-[#C41B2E]/20 animate-[loadPulse_1.4s_ease-in-out_infinite]">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C3151B] to-[#A51116] flex items-center justify-center shadow-lg shadow-[#C3151B]/20 animate-[loadPulse_1.4s_ease-in-out_infinite]">
                   <Package className="w-7 h-7 text-white" />
                 </div>
-                <div className="absolute -inset-2 rounded-2xl border-2 border-[#C41B2E]/20 animate-[loadRing_1.8s_linear_infinite]" />
+                <div className="absolute -inset-2 rounded-2xl border-2 border-[#C3151B]/20 animate-[loadRing_1.8s_linear_infinite]" />
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#C41B2E] animate-[loadDot_1.2s_ease-in-out_infinite]" />
-                <span className="w-2 h-2 rounded-full bg-[#C41B2E] animate-[loadDot_1.2s_ease-in-out_infinite_0.2s]" />
-                <span className="w-2 h-2 rounded-full bg-[#C41B2E] animate-[loadDot_1.2s_ease-in-out_infinite_0.4s]" />
+                <span className="w-2 h-2 rounded-full bg-[#C3151B] animate-[loadDot_1.2s_ease-in-out_infinite]" />
+                <span className="w-2 h-2 rounded-full bg-[#C3151B] animate-[loadDot_1.2s_ease-in-out_infinite_0.2s]" />
+                <span className="w-2 h-2 rounded-full bg-[#C3151B] animate-[loadDot_1.2s_ease-in-out_infinite_0.4s]" />
               </div>
               <p className="text-sm text-[#9E9080] font-medium">Cargando productos...</p>
             </div>

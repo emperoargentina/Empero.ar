@@ -1,14 +1,11 @@
 import type { ComponentType } from 'react';
 import { useState, useEffect, useRef, useId } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import {
   Menu,
   ChevronDown,
   ClipboardList,
-  Plus,
-  Minus,
-  Trash2,
-  ChevronUp,
   Package,
   ArrowRight,
   ChefHat, Utensils, Store, Settings2, Zap, Flame,
@@ -24,10 +21,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetTrigger,
 } from '@/components/ui/sheet';
-import { Textarea } from '@/components/ui/textarea';
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
-import { CloudinaryImage } from '@/components/ui/CloudinaryImage';
+import { QuoteListPanel } from '@/components/quote/QuoteListPanel';
 import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 import type { QuoteItem } from '@/hooks/useQuoteList';
 
@@ -55,7 +51,14 @@ const NAV_LINKS = [
   { name: 'Contacto', href: '#contacto' },
 ];
 
-type ConfirmState = { kind: 'remove'; item: QuoteItem } | { kind: 'clear' } | null;
+const mobileMenuItem: Variants = {
+  hidden: { opacity: 0, y: 7 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.075 + index * 0.027, duration: 0.22, ease: 'easeOut' },
+  }),
+};
 
 function pluralProductos(n: number): string {
   return `${n} ${n === 1 ? 'producto' : 'productos'}`;
@@ -75,8 +78,7 @@ export function Navigation({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
-  const [expandedItem, setExpandedItem] = useState<string | null>(null);
-  const [confirm, setConfirm] = useState<ConfirmState>(null);
+  const reduceMotion = useReducedMotion();
   const productsTriggerRef = useRef<HTMLButtonElement>(null);
   const productsItemRef = useRef<HTMLDivElement>(null);
   const hoverPreview = useRef(false);
@@ -136,36 +138,34 @@ export function Navigation({
     })))
   );
 
-  const closeConfirm = () => setConfirm(null);
-
   const quoteLabel = totalQuoteItems > 0
     ? `Mi lista de cotización, ${pluralProductos(totalQuoteItems)}`
     : 'Mi lista de cotización';
 
   const linkTone = isScrolled
-    ? 'text-[#6B6159] hover:text-[#1A1613] hover:bg-[#F4F0E8]'
+    ? 'text-ink-600 hover:text-ink-900 hover:bg-ink-100'
     : 'text-white/85 hover:text-white hover:bg-white/10';
 
   return (
-    <>
+    <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
       {/* ── Navbar ─────────────────────────────────────────────── */}
       <header data-site-header data-dark-surface={isScrolled ? undefined : true} className="fixed top-0 left-0 right-0 z-[45]">
-        <div className="w-full max-w-[1600px] mx-auto px-0 sm:px-6 lg:px-8 xl:px-10">
+        <div className="w-full max-w-[100rem] mx-auto px-0 sm:px-6 lg:px-8 xl:px-10">
           <motion.div
             animate={isScrolled ? {
-              backgroundColor: 'rgba(250,250,248,1)',
-              boxShadow: '0 1px 0 rgba(196,27,46,0.15), 0 6px 32px rgba(26,22,19,0.08)',
-              borderColor: 'rgba(196,27,46,0.18)',
+              backgroundColor: 'rgba(250,250,248,0.94)',
+              boxShadow: '0 1px 0 rgba(195,21,27,0.14), 0 10px 32px -12px rgba(26,22,19,0.16)',
+              borderColor: 'rgba(195,21,27,0.16)',
             } : {
-              backgroundColor: 'rgba(0,0,0,0)',
+              backgroundColor: 'rgba(250,250,248,0)',
               boxShadow: '0 0 0 rgba(0,0,0,0)',
-              borderColor: 'rgba(196,27,46,0)',
+              borderColor: 'rgba(195,21,27,0)',
             }}
-            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className={`relative border-b lg:border transition-[border-radius,padding] duration-700 ease-in-out ${
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            className={`nav-bar relative border-b lg:border transition-[border-radius,padding] duration-500 ease-in-out ${
               isScrolled
-                ? 'lg:rounded-b-2xl lg:py-3 lg:px-10 xl:px-14'
-                : 'lg:rounded-none py-0 lg:py-5'
+                ? 'is-scrolled lg:rounded-b-2xl lg:py-2.5 px-3 sm:px-0 lg:px-8 xl:px-12'
+                : 'px-3 sm:px-0 lg:rounded-none lg:py-3.5'
             }`}
           >
             {!isScrolled && (
@@ -178,7 +178,7 @@ export function Navigation({
                 href="#inicio"
                 onClick={handleAnchorClick}
                 aria-label={`${companyConfig.name} Argentina — inicio`}
-                className="flex items-center flex-shrink-0 ml-3 sm:ml-0 rounded-md"
+                className="flex items-center flex-shrink-0 rounded-md"
               >
                 <img
                   src="/images/logo/Logo.png"
@@ -186,7 +186,7 @@ export function Navigation({
                   width={480}
                   height={333}
                   className={`transition-all duration-300 w-auto ${
-                    isScrolled ? 'h-9 lg:h-9' : 'h-10 lg:h-12 brightness-0 invert'
+                    isScrolled ? 'h-9 lg:h-9' : 'h-10 lg:h-10 brightness-0 invert'
                   }`}
                 />
               </a>
@@ -241,17 +241,17 @@ export function Navigation({
                                 transition={{ duration: 0.18, ease: 'easeOut' }}
                                 className="absolute top-full -left-8 z-50 pt-3"
                               >
-                                <div className={`w-[480px] max-w-[calc(100dvw_-_2rem)] bg-white border border-[#EBE5DC] shadow-xl shadow-[rgba(26,22,19,0.1)] py-2 overflow-hidden ${isScrolled ? 'rounded-b-2xl rounded-t-none' : 'rounded-2xl'}`}>
+                                <div className="w-[30rem] max-w-[calc(100dvw_-_2rem)] bg-white border border-ink-200 rounded-2xl py-2 overflow-hidden shadow-[var(--shadow-lg)]">
                                   <a
                                     href="#catalogo"
                                     onClick={(e) => handleAnchorClick(e, () => setIsProductsOpen(false))}
-                                    className="w-full text-left px-5 py-2.5 text-sm font-semibold text-[#C41B2E] hover:bg-[#FFF0F1] transition-colors flex items-center gap-2"
+                                    className="w-full text-left px-5 py-3 text-sm font-semibold text-brand hover:bg-brand-50 transition-colors flex items-center gap-2"
                                   >
                                     <Package className="w-4 h-4" aria-hidden="true" />
                                     Ver todos los productos
                                     <ArrowRight className="w-3.5 h-3.5 ml-auto" aria-hidden="true" />
                                   </a>
-                                  <div className="h-px bg-[#EBE5DC] mx-4 my-1" />
+                                  <div className="h-px bg-ink-200 mx-4 my-1" />
                                   <ul className="grid grid-cols-2 gap-x-3 gap-y-0.5 px-4 py-3" aria-label="Categorías">
                                     {categories.map((cat) => {
                                       const Icon = CATEGORY_ICONS[cat.icon];
@@ -260,9 +260,9 @@ export function Navigation({
                                           <button
                                             type="button"
                                             onClick={() => handleCategoryClick(cat.id)}
-                                            className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-sm text-[#6B6159] hover:bg-[#F4F0E8] hover:text-[#1A1613] transition-colors cursor-pointer"
+                                            className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-md text-[0.875rem] text-ink-700 hover:bg-ink-100 hover:text-ink-900 transition-colors cursor-pointer"
                                           >
-                                            {Icon && <Icon className="w-[18px] h-[18px] text-[#C41B2E] flex-shrink-0" />}
+                                            {Icon && <Icon className="w-[1.125rem] h-[1.125rem] text-brand flex-shrink-0" />}
                                             <span className="truncate">{cat.name}</span>
                                           </button>
                                         </li>
@@ -296,16 +296,16 @@ export function Navigation({
                   type="button"
                   onClick={() => setIsQuoteOpen(true)}
                   aria-label={quoteLabel}
-                  className={`hidden lg:flex relative items-center gap-2 px-3.5 py-2 rounded-xl transition-colors duration-150 cursor-pointer border ${
+                  className={`hidden lg:flex relative items-center gap-2 px-3.5 py-2 rounded-xl transition-colors duration-150 cursor-pointer border text-sm font-medium ${
                     isScrolled
-                      ? 'bg-[#F4F0E8] hover:bg-[#EBE5DC] text-[#6B6159] border-[#EBE5DC]'
-                      : 'bg-white/20 hover:bg-white/30 text-white border-white/15'
+                      ? 'bg-ink-100 hover:bg-ink-200 text-ink-700 border-ink-200'
+                      : 'bg-white/15 hover:bg-white/25 text-white border-white/15'
                   }`}
                 >
                   <ClipboardList className="w-4 h-4" aria-hidden="true" />
-                  <span className="text-sm font-medium">Mi lista</span>
+                  Mi lista
                   {totalQuoteItems > 0 && (
-                    <span aria-hidden="true" className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center tabular-nums">
+                    <span aria-hidden="true" className="absolute -top-1.5 -right-1.5 min-w-[1.125rem] h-[1.125rem] px-1 bg-brand text-white text-[0.625rem] font-bold rounded-full flex items-center justify-center tabular-nums ring-2 ring-[var(--page-bg)]">
                       {totalQuoteItems}
                     </span>
                   )}
@@ -314,7 +314,7 @@ export function Navigation({
                 <a
                   href="#catalogo"
                   onClick={handleAnchorClick}
-                  className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-150 bg-[#C41B2E] text-white hover:bg-[#B51426] shadow-[0_2px_12px_rgba(196,27,46,0.25)]"
+                  className="hidden lg:inline-flex btn btn-sm btn-primary"
                 >
                   <Package className="w-4 h-4" aria-hidden="true" />
                   Catálogo
@@ -322,37 +322,33 @@ export function Navigation({
 
                 {/* Mobile */}
                 <div className="lg:hidden flex items-center gap-0.5">
-                  {totalQuoteItems > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setIsQuoteOpen(true)}
-                      className={`relative flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
-                        isScrolled
-                          ? 'w-11 h-11 text-[#6B6159] hover:bg-[#F4F0E8]'
-                          : 'w-12 h-12 text-white hover:bg-white/10'
-                      }`}
-                      aria-label={quoteLabel}
-                    >
-                      <ClipboardList className={isScrolled ? 'w-5 h-5' : 'w-6 h-6'} aria-hidden="true" />
-                      <span aria-hidden="true" className="absolute top-2 right-2 min-w-[17px] h-[17px] px-1 bg-[#C41B2E] text-white text-[10px] font-black rounded-full flex items-center justify-center tabular-nums">
-                        {totalQuoteItems}
-                      </span>
-                    </button>
-                  )}
                   <button
                     type="button"
-                    onClick={() => setIsMobileMenuOpen(true)}
-                    aria-expanded={isMobileMenuOpen}
-                    aria-haspopup="dialog"
-                    className={`flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
-                      isScrolled
-                        ? 'w-11 h-11 text-[#1A1613] hover:bg-[#F4F0E8]'
-                        : 'w-12 h-12 text-white hover:bg-white/10'
+                    onClick={() => setIsQuoteOpen(true)}
+                    className={`relative flex items-center justify-center w-11 h-11 rounded-xl transition-colors cursor-pointer ${
+                      isScrolled ? 'text-ink-700 hover:bg-ink-100' : 'text-white hover:bg-white/10'
                     }`}
-                    aria-label="Abrir menú"
+                    aria-label={quoteLabel}
+                    aria-haspopup="dialog"
                   >
-                    <Menu className={isScrolled ? 'w-6 h-6' : 'w-7 h-7'} aria-hidden="true" />
+                    <ClipboardList className="w-[1.375rem] h-[1.375rem]" aria-hidden="true" />
+                    {totalQuoteItems > 0 && (
+                      <span aria-hidden="true" className="absolute top-1.5 right-1 min-w-[1.125rem] h-[1.125rem] px-1 bg-brand text-white text-[0.625rem] font-bold rounded-full flex items-center justify-center tabular-nums ring-2 ring-white/90">
+                        {totalQuoteItems}
+                      </span>
+                    )}
                   </button>
+                  <SheetTrigger asChild>
+                    <button
+                      type="button"
+                      className={`flex items-center justify-center w-11 h-11 rounded-xl transition-colors cursor-pointer ${
+                        isScrolled ? 'text-ink-900 hover:bg-ink-100' : 'text-white hover:bg-white/10'
+                      }`}
+                      aria-label="Abrir menú"
+                    >
+                      <Menu className="w-6 h-6" aria-hidden="true" />
+                    </button>
+                  </SheetTrigger>
                 </div>
               </div>
 
@@ -361,289 +357,121 @@ export function Navigation({
         </div>
       </header>
 
-      {/* ── Quote Sheet ─────────────────────────────────────────── */}
-      <Sheet open={isQuoteOpen} onOpenChange={setIsQuoteOpen}>
-        <SheetContent
-          side="right"
-          className="w-full sm:max-w-md p-0 flex flex-col overflow-hidden bg-white border-[#EBE5DC]"
-          // El ConfirmDialog vive adentro del Sheet: su Escape y sus clicks no deben cerrar la lista.
-          onEscapeKeyDown={(e) => { if (confirm) e.preventDefault(); }}
-          onInteractOutside={(e) => { if (confirm) e.preventDefault(); }}
-        >
-          <SheetHeader className="px-5 py-4 pr-14 border-b border-[#EBE5DC] flex-shrink-0">
-            <SheetTitle className="flex items-center gap-2.5">
-              <ClipboardList className="w-4 h-4 text-[#C41B2E]" aria-hidden="true" />
-              <span className="font-semibold text-[#1A1613] tracking-tight text-base">Mi lista</span>
-              {totalQuoteItems > 0 && (
-                <span className="ml-auto text-[11px] font-medium text-[#6B6159] bg-[#F4F0E8] px-2.5 py-1 rounded-sm border border-[#EBE5DC] tabular-nums">
-                  {pluralProductos(totalQuoteItems)}
-                </span>
-              )}
-            </SheetTitle>
-            <SheetDescription className="sr-only">
-              Productos agregados a tu lista de cotización. Se guardan en este dispositivo.
-            </SheetDescription>
-          </SheetHeader>
-
-          <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5" data-lenis-prevent>
-            {quoteItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                <div className="w-14 h-14 border border-[#EBE5DC] rounded-2xl flex items-center justify-center mb-4" aria-hidden="true">
-                  <ClipboardList className="w-6 h-6 text-[#7B7064]" />
-                </div>
-                <p className="text-sm font-semibold text-[#1A1613] mb-1">Lista vacía</p>
-                <p className="text-xs text-[#6B6159] max-w-[220px] leading-relaxed text-pretty">
-                  Explorá el catálogo y agregá productos para cotizar juntos.
-                </p>
-                <a
-                  href="#catalogo"
-                  onClick={(e) => handleAnchorClick(e, () => setIsQuoteOpen(false))}
-                  className="mt-5 inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-[#C41B2E] text-white text-[13px] font-semibold hover:bg-[#B51426]"
-                >
-                  <Package className="w-4 h-4" aria-hidden="true" />
-                  Ver catálogo
-                </a>
-              </div>
-            ) : (
-              <ul className="space-y-2.5">
-                {quoteItems.map((item) => {
-                  const notesId = `quote-notes-${item.product.id}`;
-                  const expanded = expandedItem === item.product.id;
-                  return (
-                    <li
-                      key={item.product.id}
-                      className="quote-item relative border border-[#EBE5DC] rounded-2xl overflow-hidden bg-[#FAF8F4] transition-[border-color,box-shadow] duration-150"
-                    >
-                      <div className="flex gap-3 p-3">
-                        <CloudinaryImage
-                          src={item.product.cloudinary_url ?? item.product.familia_cloudinary_url}
-                          alt=""
-                          width={56}
-                          height={56}
-                          className="w-14 h-14 object-cover rounded-xl flex-shrink-0 bg-[#EBE5DC]"
-                          placeholderClass="w-14 h-14 object-contain p-1.5 rounded-xl flex-shrink-0 bg-[#EBE5DC]"
-                          sizes="56px"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="product-card-category !mb-0.5">{item.product.categoria}</p>
-                          <h3 className="text-[13.5px] font-semibold text-[#1A1613] leading-snug line-clamp-2 font-sans">
-                            <button
-                              type="button"
-                              onClick={() => { onProductClick?.(item.product); setIsQuoteOpen(false); }}
-                              className="quote-item__link text-left cursor-pointer hover:text-[#C41B2E]"
-                            >
-                              {item.product.nombre}
-                            </button>
-                          </h3>
-                          <p className="text-[11px] font-mono text-[#6B6159] mt-0.5">#{item.product.codigo}</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setConfirm({ kind: 'remove', item })}
-                          aria-label={`Quitar ${item.product.nombre} de la lista`}
-                          className="w-8 h-8 -mr-1 -mt-1 flex items-center justify-center rounded-lg text-[#7B7064] hover:text-[#C41B2E] hover:bg-[#FFF0F1] transition-colors cursor-pointer flex-shrink-0 self-start"
-                        >
-                          <Trash2 className="w-4 h-4" aria-hidden="true" />
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-3 px-3 pb-3 border-t border-[#EBE5DC] pt-2.5">
-                        <div className="flex items-center border border-[#EBE5DC] rounded-lg overflow-hidden bg-white" role="group" aria-label={`Cantidad de ${item.product.nombre}`}>
-                          <button
-                            type="button"
-                            onClick={() => onUpdateQuantity?.(item.product.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                            aria-label="Restar uno"
-                            className="w-8 h-8 flex items-center justify-center text-[#6B6159] hover:bg-[#F4F0E8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
-                          >
-                            <Minus className="w-3.5 h-3.5" aria-hidden="true" />
-                          </button>
-                          <output className="w-9 text-center text-xs font-semibold text-[#1A1613] border-x border-[#EBE5DC] tabular-nums" aria-live="polite">
-                            {item.quantity}
-                          </output>
-                          <button
-                            type="button"
-                            onClick={() => onUpdateQuantity?.(item.product.id, item.quantity + 1)}
-                            aria-label="Sumar uno"
-                            className="w-8 h-8 flex items-center justify-center text-[#6B6159] hover:bg-[#F4F0E8] transition-colors cursor-pointer"
-                          >
-                            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-                          </button>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setExpandedItem(expanded ? null : item.product.id)}
-                          aria-expanded={expanded}
-                          aria-controls={notesId}
-                          className="text-[12px] font-medium text-[#6B6159] hover:text-[#C41B2E] transition-colors cursor-pointer flex items-center gap-1 min-h-8"
-                        >
-                          {expanded
-                            ? <><ChevronUp className="w-3.5 h-3.5" aria-hidden="true" /> Ocultar nota</>
-                            : <><ChevronDown className="w-3.5 h-3.5" aria-hidden="true" /> {item.notes ? 'Editar nota' : 'Añadir nota'}</>}
-                        </button>
-                      </div>
-
-                      {expanded && (
-                        <div id={notesId} className="px-3 pb-3">
-                          <label htmlFor={`${notesId}-field`} className="sr-only">Nota para {item.product.nombre}</label>
-                          <Textarea
-                            id={`${notesId}-field`}
-                            placeholder="Especificaciones, consultas..."
-                            value={item.notes}
-                            maxLength={500}
-                            onChange={(e) => onUpdateNotes?.(item.product.id, e.target.value)}
-                            className="text-base sm:text-xs resize-none rounded-lg border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#7B7064] focus:border-[#C41B2E]"
-                            rows={2}
-                          />
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-
-          {quoteItems.length > 0 && (
-            <div className="px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#EBE5DC] flex-shrink-0 space-y-2 bg-white">
-              <a
-                href={quoteHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setIsQuoteOpen(false)}
-                className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-xl transition-colors bg-[#25D366] hover:bg-[#1EAF56] shadow-[0_2px_16px_rgba(37,211,102,0.2)]"
-              >
-                <WhatsAppIcon className="w-4 h-4" />
-                Enviar lista por WhatsApp
-              </a>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setConfirm({ kind: 'clear' })}
-                  className="flex-1 h-10 flex items-center justify-center gap-1.5 text-[12px] font-medium text-[#6B6159] hover:text-[#C41B2E] border border-[#EBE5DC] rounded-xl transition-colors cursor-pointer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-                  Vaciar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsQuoteOpen(false)}
-                  className="flex-1 h-10 text-[12px] font-medium text-[#6B6159] hover:text-[#1A1613] border border-[#EBE5DC] rounded-xl transition-colors cursor-pointer"
-                >
-                  Seguir viendo
-                </button>
-              </div>
-            </div>
-          )}
-
-          <ConfirmDialog
-            portal={false}
-            isOpen={confirm !== null}
-            title={confirm?.kind === 'remove'
-              ? `¿Quitar "${confirm.item.product.nombre}" de tu lista?`
-              : '¿Vaciar toda la lista?'}
-            description={confirm?.kind === 'remove'
-              ? 'Vas a sacarlo de tu lista de cotización, pero podés volver a agregarlo cuando quieras.'
-              : `Se quitan los ${pluralProductos(quoteItems.length)} de tu lista de cotización.`}
-            confirmLabel={confirm?.kind === 'clear' ? 'Vaciar' : 'Quitar'}
-            cancelLabel="Cancelar"
-            onConfirm={() => {
-              if (confirm?.kind === 'remove') onRemoveFromQuote?.(confirm.item.product.id);
-              if (confirm?.kind === 'clear') onClearQuote?.();
-              closeConfirm();
-            }}
-            onCancel={closeConfirm}
-          />
-        </SheetContent>
-      </Sheet>
+      {/* ── Mi lista: hoja inferior en mobile, panel flotante en desktop ── */}
+      <QuoteListPanel
+        open={isQuoteOpen}
+        onOpenChange={setIsQuoteOpen}
+        items={quoteItems}
+        whatsappHref={quoteHref}
+        onRemove={onRemoveFromQuote}
+        onUpdateQuantity={onUpdateQuantity}
+        onUpdateNotes={onUpdateNotes}
+        onClear={onClearQuote}
+        onProductClick={onProductClick}
+      />
 
       {/* ── Mobile menu (Radix Sheet: foco atrapado, Escape, fondo inerte) ── */}
-      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-        <SheetContent
-          side="right"
-          className="lg:hidden w-[min(22rem,88dvw)] max-w-none sm:max-w-none p-0 flex flex-col gap-0 bg-white border-l border-[#EBE5DC] [&>button:first-child]:top-4 [&>button:first-child]:right-4 [&>button:first-child]:w-9 [&>button:first-child]:h-9 [&>button:first-child]:flex [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-lg [&>button:first-child]:opacity-100 [&>button:first-child]:text-[#6B6159] [&>button:first-child:hover]:bg-[#F4F0E8] [&>button:first-child_svg]:w-5 [&>button:first-child_svg]:h-5"
+      <SheetContent
+        side="right"
+        closeLabel="Cerrar menú"
+        overlayClassName="bg-ink-950/45 duration-200 motion-reduce:animate-none"
+        className="lg:hidden w-[min(22rem,88dvw)] max-w-none sm:max-w-none p-0 flex flex-col gap-0 bg-ink-50 border-l border-ink-200 data-[state=open]:duration-300 data-[state=closed]:duration-200 motion-reduce:!animate-none [&>button:first-child]:top-2.5 [&>button:first-child]:right-4 [&>button:first-child]:w-11 [&>button:first-child]:h-11 [&>button:first-child]:flex [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-xl [&>button:first-child]:opacity-100 [&>button:first-child]:text-ink-600 [&>button:first-child]:bg-transparent [&>button:first-child:hover]:bg-ink-100 [&>button:first-child_svg]:w-5 [&>button:first-child_svg]:h-5"
+      >
+        <SheetHeader className="flex-row items-center h-16 px-5 border-b border-ink-200 space-y-0 flex-shrink-0">
+          <SheetTitle>
+            <img
+              src="/images/logo/Logo.png"
+              alt={`${companyConfig.name} — menú`}
+              width={480}
+              height={333}
+              loading="lazy"
+              className="h-7 w-auto"
+            />
+          </SheetTitle>
+          <SheetDescription className="sr-only">Navegación del sitio</SheetDescription>
+        </SheetHeader>
+
+        <motion.nav
+          initial={reduceMotion ? false : 'hidden'}
+          animate="visible"
+          aria-label="Menú móvil"
+          className="p-5 flex flex-col flex-1 min-h-0 overflow-y-auto overscroll-contain"
+          data-lenis-prevent
         >
-          <SheetHeader className="flex-row items-center h-16 px-5 border-b border-[#EBE5DC] space-y-0 flex-shrink-0">
-            <SheetTitle>
-              <img
-                src="/images/logo/Logo.png"
-                alt={`${companyConfig.name} — menú`}
-                width={480}
-                height={333}
-                loading="lazy"
-                className="h-7 w-auto"
-              />
-            </SheetTitle>
-            <SheetDescription className="sr-only">Navegación del sitio</SheetDescription>
-          </SheetHeader>
-
-          <nav aria-label="Menú móvil" className="p-5 flex flex-col flex-1 min-h-0 overflow-y-auto overscroll-contain" data-lenis-prevent>
-            <button
-              type="button"
-              onClick={() => { closeMobile(); setIsQuoteOpen(true); }}
-              className="flex items-center gap-3 w-full p-3.5 bg-[#FAF8F4] hover:bg-[#F4F0E8] rounded-xl mb-5 transition-colors cursor-pointer border border-[#EBE5DC] text-left"
-            >
-              <span className="relative w-9 h-9 border border-[#EBE5DC] rounded-lg flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                <ClipboardList className="w-4 h-4 text-[#C41B2E]" />
-                {totalQuoteItems > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-[#C41B2E] text-white text-[9px] font-black rounded-full flex items-center justify-center tabular-nums">
-                    {totalQuoteItems}
-                  </span>
-                )}
-              </span>
-              <span>
-                <span className="block font-semibold text-[#1A1613] text-sm">Mi lista de cotización</span>
-                <span className="block text-[12px] text-[#6B6159] mt-0.5">
-                  {totalQuoteItems > 0 ? pluralProductos(totalQuoteItems) : 'Sin productos aún'}
+          <motion.button
+            variants={mobileMenuItem}
+            custom={0}
+            type="button"
+            onClick={() => { closeMobile(); setIsQuoteOpen(true); }}
+            className="flex items-center gap-3 w-full p-3.5 bg-white hover:bg-ink-100 rounded-xl mb-4 transition-colors cursor-pointer border border-ink-200 text-left"
+          >
+            <span className="relative w-9 h-9 border border-ink-200 rounded-lg flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              <ClipboardList className="w-4 h-4 text-brand" />
+              {totalQuoteItems > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-brand text-white text-[0.5625rem] font-black rounded-full flex items-center justify-center tabular-nums">
+                  {totalQuoteItems}
                 </span>
+              )}
+            </span>
+            <span>
+              <span className="block font-semibold text-ink-900 text-sm">Mi lista de cotización</span>
+              <span className="block text-[0.75rem] text-ink-600 mt-0.5">
+                {totalQuoteItems > 0 ? pluralProductos(totalQuoteItems) : 'Sin productos aún'}
               </span>
-            </button>
+            </span>
+          </motion.button>
 
-            <ul className="space-y-0.5">
-              {NAV_LINKS.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleAnchorClick(e, closeMobile)}
-                    className="flex items-center w-full text-base font-medium text-[#1A1613] px-3 py-3 rounded-lg hover:bg-[#F4F0E8] hover:text-[#C41B2E] transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                  {link.hasDropdown && (
-                    <ul className="grid grid-cols-2 gap-0.5 pl-3 pb-2" aria-label="Categorías">
-                      {categories.map((cat) => (
-                        <li key={cat.id}>
+          <ul className="space-y-0.5">
+            {NAV_LINKS.map((link, index) => (
+              <motion.li key={link.name} variants={mobileMenuItem} custom={index + 1}>
+                <a
+                  href={link.href}
+                  onClick={(e) => handleAnchorClick(e, closeMobile)}
+                  className="group flex items-center justify-between gap-3 w-full text-base font-semibold text-ink-900 px-3 py-3 rounded-lg hover:bg-ink-100 hover:text-brand transition-colors"
+                >
+                  {link.name}
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 text-ink-500 group-hover:text-brand" />
+                </a>
+                {link.hasDropdown && (
+                  <ul className="mb-2 grid grid-cols-2 gap-1.5 rounded-2xl bg-ink-100/75 p-1.5" aria-label="Categorías de productos">
+                    {categories.map((cat) => {
+                      const Icon = CATEGORY_ICONS[cat.icon] ?? Package;
+
+                      return (
+                        <li key={cat.id} className="min-w-0">
                           <button
                             type="button"
                             onClick={() => handleCategoryClick(cat.id)}
-                            className="block w-full text-left text-sm text-[#6B6159] px-3 py-2.5 rounded-lg hover:text-[#C41B2E] hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer truncate"
+                            className="group flex min-h-11 w-full cursor-pointer items-center gap-1.5 rounded-xl border border-ink-200 bg-white px-1.5 py-1.5 text-left text-xs font-semibold leading-tight text-ink-800 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand min-[380px]:gap-2 min-[380px]:px-2"
                           >
-                            {cat.name}
+                            <span aria-hidden="true" className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-brand-50 text-brand transition-colors group-hover:bg-brand-100">
+                              <Icon className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="min-w-0 [overflow-wrap:anywhere]">{cat.name}</span>
                           </button>
                         </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
+                      );
+                    })}
+                  </ul>
+                )}
+              </motion.li>
+            ))}
+          </ul>
 
-            <div className="mt-auto pt-5 border-t border-[#EBE5DC]">
-              <a
-                href={getWhatsAppURL()}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMobile}
-                className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-white rounded-xl bg-[#25D366] hover:bg-[#1EAF56] shadow-[0_2px_12px_rgba(37,211,102,0.25)]"
-              >
-                <WhatsAppIcon className="w-4 h-4" />
-                Cotizar por WhatsApp
-              </a>
-            </div>
-          </nav>
-        </SheetContent>
-      </Sheet>
-    </>
+          <motion.div variants={mobileMenuItem} custom={NAV_LINKS.length + 1} className="mt-auto pt-5 border-t border-ink-200">
+            <a
+              href={getWhatsAppURL()}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobile}
+              className="btn btn-lg btn-whatsapp w-full"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              Cotizar por WhatsApp
+            </a>
+          </motion.div>
+        </motion.nav>
+      </SheetContent>
+    </Sheet>
   );
 }

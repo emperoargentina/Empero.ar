@@ -59,11 +59,13 @@ export function CloudinaryImage({
       decoding="async"
       fetchPriority={priority ? 'high' : undefined}
       onLoad={() => { setLoaded(true); onLoad?.(); }}
-      style={{
+      // El blur solo mientras carga: con object-contain quedaba visible en
+      // los márgenes de la foto como un recuadro gris.
+      style={loaded ? undefined : {
         backgroundImage: `url(${blurUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        opacity: loaded ? 1 : 0.99,
+        opacity: 0.99,
       }}
     />
   );

@@ -33,8 +33,8 @@ const STAT_CARDS = [
     key: 'familias' as const,
     label: 'Familias',
     icon: Folder,
-    gradient: 'from-[#C41B2E] to-[#E0526B]',
-    bg: 'bg-[#C41B2E]',
+    gradient: 'from-[#C3151B] to-[#E0526B]',
+    bg: 'bg-[#C3151B]',
   },
   {
     key: 'enStock' as const,
@@ -90,7 +90,7 @@ function StatCard({
 function CatalogStructureBars({ stats }: { stats: Stats }) {
   const items = [
     { label: 'Productos únicos', value: stats.unicos, gradient: 'from-sky-500 to-sky-400' },
-    { label: 'En familias (variantes)', value: stats.enFamilias, gradient: 'from-[#C41B2E] to-[#E0526B]' },
+    { label: 'En familias (variantes)', value: stats.enFamilias, gradient: 'from-[#C3151B] to-[#E0526B]' },
     { label: 'Hijos sin asignar', value: stats.huerfanos, gradient: 'from-amber-500 to-amber-400' },
   ]
   return (
@@ -191,7 +191,7 @@ function AlertRow({ p }: { p: Producto }) {
         {p.stock} ud.
       </div>
 
-      <ArrowRight className="w-4 h-4 text-[#C0B5A8] group-hover:text-[#C41B2E] transition-colors flex-shrink-0" />
+      <ArrowRight className="w-4 h-4 text-[#C0B5A8] group-hover:text-[#C3151B] transition-colors flex-shrink-0" />
     </div>
   )
 }
@@ -298,7 +298,7 @@ export function Dashboard() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-[2.5px] border-[#C41B2E] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-[2.5px] border-[#C3151B] border-t-transparent rounded-full animate-spin" />
           <p className="text-sm text-[#9E9080] font-medium">Cargando dashboard...</p>
         </div>
       </div>
@@ -372,8 +372,8 @@ export function Dashboard() {
         {/* Estructura del catálogo: únicos / familias / hijos sin asignar */}
         <div data-tour="tour-dash-structure" className="bg-white rounded-2xl border border-[#EBE5DC] p-5">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-[#FFF0F1] flex items-center justify-center">
-              <Layers className="w-4.5 h-4.5 text-[#C41B2E]" />
+            <div className="w-9 h-9 rounded-xl bg-[#FDF2F2] flex items-center justify-center">
+              <Layers className="w-4.5 h-4.5 text-[#C3151B]" />
             </div>
             <div>
               <h3 className="text-sm font-semibold text-[#1A1613]">Estructura del catálogo</h3>
@@ -388,11 +388,11 @@ export function Dashboard() {
               onClick={() => navigate('/admin/productos')}
               className="mt-4 w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-[#FFF8F5] border border-[#F5C6BA] hover:bg-[#FFF0EA] transition-colors cursor-pointer"
             >
-              <span className="flex items-center gap-2 text-xs font-medium text-[#C41B2E]">
+              <span className="flex items-center gap-2 text-xs font-medium text-[#C3151B]">
                 <FolderOpen className="w-3.5 h-3.5 flex-shrink-0" />
                 {stats.familiasPendientes} familia{stats.familiasPendientes !== 1 ? 's' : ''} pendiente{stats.familiasPendientes !== 1 ? 's' : ''} · sin productos todavía
               </span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#C41B2E] flex-shrink-0" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#C3151B] flex-shrink-0" />
             </button>
           )}
         </div>
@@ -442,7 +442,7 @@ export function Dashboard() {
               variant="ghost"
               size="sm"
               onClick={() => navigate('/admin/productos')}
-              className="text-xs text-[#C41B2E] hover:text-[#B51426] font-semibold bg-[#FFF0F1] hover:bg-[#FFE4E6] rounded-lg"
+              className="text-xs text-[#C3151B] hover:text-[#A51116] font-semibold bg-[#FDF2F2] hover:bg-[#FFE4E6] rounded-lg"
             >
               Ver todos <ArrowRight className="w-3 h-3" />
             </Button>

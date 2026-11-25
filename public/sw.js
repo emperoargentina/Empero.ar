@@ -1,5 +1,5 @@
 const IMG_CACHE = 'empero-images-v2';
-const ASSET_CACHE = 'empero-static-v2';
+const ASSET_CACHE = 'empero-static-v3';
 const CLOUDINARY_HOST = 'res.cloudinary.com';
 const IMG_TTL_MS = 2 * 24 * 60 * 60 * 1000;
 const STATIC_EXT = ['.js', '.css', '.woff', '.woff2', '.ttf'];
@@ -20,7 +20,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
+  if (url.origin === self.location.origin && url.pathname.startsWith('/api/')) return;
 
   if (url.hostname.includes(CLOUDINARY_HOST)) {
     event.respondWith(cacheThenNetwork(event.request, IMG_CACHE));
@@ -93,10 +95,13 @@ async function cacheStatic(request) {
 
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
+    // A missing bundle can receive the SPA fallback with a successful status.
+    const contentType = response.headers.get('content-type') ?? '';
+    if (response.ok && !contentType.toLowerCase().includes('text/html')) {
+      await cache.put(request, response.clone()).catch(() => {});
+    }
     return response;
   } catch {
-    if (cached) return cached;
     return new Response('', { status: 503 });
   }
 }

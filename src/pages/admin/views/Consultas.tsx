@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { normalizeText, searchTokens, matchesAllTokens } from '@/lib/text'
+import { getWhatsAppURL } from '@/lib/whatsapp'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon'
 import type { Consulta, EstadoConsulta } from '@/types/consulta'
@@ -21,7 +22,7 @@ const FILTROS: { value: Filtro; label: string }[] = [
 ]
 
 const ESTADO_STYLE: Record<EstadoConsulta, { label: string; cls: string }> = {
-  nueva:      { label: 'Nueva',      cls: 'bg-[#FFF0F1] text-[#C41B2E] border-[#F5C5C9]' },
+  nueva:      { label: 'Nueva',      cls: 'bg-[#FDF2F2] text-[#C3151B] border-[#F7C7C8]' },
   leida:      { label: 'Leída',      cls: 'bg-[#F4F0E8] text-[#6B6159] border-[#EBE5DC]' },
   respondida: { label: 'Respondida', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   archivada:  { label: 'Archivada',  cls: 'bg-white text-[#9E9080] border-[#EBE5DC]' },
@@ -127,13 +128,13 @@ export function Consultas() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#1A1613] tracking-tight flex items-center gap-2.5">
-            <Inbox className="w-6 h-6 text-[#C41B2E]" />
+            <Inbox className="w-6 h-6 text-[#C3151B]" />
             Consultas
           </h1>
           <p className="text-sm text-[#9E9080] mt-1">
             Mensajes del formulario de contacto del sitio.
             {counts.nueva > 0 && (
-              <strong className="text-[#C41B2E] ml-1">
+              <strong className="text-[#C3151B] ml-1">
                 {counts.nueva} {counts.nueva === 1 ? 'nueva' : 'nuevas'}.
               </strong>
             )}
@@ -175,7 +176,7 @@ export function Consultas() {
               aria-pressed={filtro === f.value}
               className={`flex-shrink-0 inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl border text-[13px] font-semibold cursor-pointer transition-colors ${
                 filtro === f.value
-                  ? 'bg-[#C41B2E] border-[#C41B2E] text-white'
+                  ? 'bg-[#C3151B] border-[#C3151B] text-white'
                   : 'bg-white border-[#EBE5DC] text-[#6B6159] hover:bg-[#F4F0E8]'
               }`}
             >
@@ -190,7 +191,7 @@ export function Consultas() {
 
       {loading ? (
         <div className="flex items-center justify-center h-60">
-          <Loader2 className="w-6 h-6 animate-spin text-[#C41B2E]" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#C3151B]" />
         </div>
       ) : visibles.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-20 rounded-2xl border border-dashed border-[#D8D0C6] bg-white/60">
@@ -215,7 +216,7 @@ export function Consultas() {
               <li
                 key={q.id}
                 className={`rounded-2xl border bg-white shadow-sm transition-shadow ${
-                  open ? 'border-[#C41B2E]/30 shadow-md' : 'border-[#EBE5DC] hover:shadow-md'
+                  open ? 'border-[#C3151B]/30 shadow-md' : 'border-[#EBE5DC] hover:shadow-md'
                 }`}
               >
                 <h2 className="m-0 font-sans">
@@ -228,7 +229,7 @@ export function Consultas() {
                   >
                     <span
                       aria-hidden="true"
-                      className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${q.estado === 'nueva' ? 'bg-[#C41B2E]' : 'bg-transparent'}`}
+                      className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${q.estado === 'nueva' ? 'bg-[#C3151B]' : 'bg-transparent'}`}
                     />
                     <span className="flex-1 min-w-0">
                       <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -255,21 +256,21 @@ export function Consultas() {
                   <div id={panelId} className="px-4 sm:px-5 pb-5 pt-1 border-t border-[#F0EAE2]">
                     <dl className="grid sm:grid-cols-3 gap-3 py-4 text-[13px]">
                       <div className="flex items-center gap-2 min-w-0">
-                        <dt><Mail className="w-4 h-4 text-[#C41B2E]" aria-label="Email" /></dt>
+                        <dt><Mail className="w-4 h-4 text-[#C3151B]" aria-label="Email" /></dt>
                         <dd className="min-w-0 truncate">
-                          <a href={`mailto:${q.email}`} className="font-medium text-[#1A1613] hover:text-[#C41B2E] underline-offset-2 hover:underline">{q.email}</a>
+                          <a href={`mailto:${q.email}`} className="font-medium text-[#1A1613] hover:text-[#C3151B] underline-offset-2 hover:underline">{q.email}</a>
                         </dd>
                       </div>
                       <div className="flex items-center gap-2 min-w-0">
-                        <dt><Phone className="w-4 h-4 text-[#C41B2E]" aria-label="Teléfono" /></dt>
+                        <dt><Phone className="w-4 h-4 text-[#C3151B]" aria-label="Teléfono" /></dt>
                         <dd className="min-w-0 truncate">
                           {q.telefono
-                            ? <a href={`tel:${q.telefono.replace(/[^\d+]/g, '')}`} className="font-medium text-[#1A1613] hover:text-[#C41B2E] underline-offset-2 hover:underline">{q.telefono}</a>
+                            ? <a href={`tel:${q.telefono.replace(/[^\d+]/g, '')}`} className="font-medium text-[#1A1613] hover:text-[#C3151B] underline-offset-2 hover:underline">{q.telefono}</a>
                             : <span className="text-[#9E9080]">Sin teléfono</span>}
                         </dd>
                       </div>
                       <div className="flex items-center gap-2 min-w-0">
-                        <dt><Building2 className="w-4 h-4 text-[#C41B2E]" aria-label="Empresa" /></dt>
+                        <dt><Building2 className="w-4 h-4 text-[#C3151B]" aria-label="Empresa" /></dt>
                         <dd className="min-w-0 truncate text-[#1A1613] font-medium">{q.empresa || <span className="text-[#9E9080] font-normal">Sin empresa</span>}</dd>
                       </div>
                     </dl>
@@ -291,13 +292,13 @@ export function Consultas() {
                       <a
                         href={`mailto:${q.email}?subject=${encodeURIComponent('Re: Tu consulta a Empero Argentina')}`}
                         onClick={() => setEstado(q, 'respondida', true)}
-                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-[#C41B2E] text-white text-[13px] font-semibold hover:bg-[#B51426]"
+                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-[#C3151B] text-white text-[13px] font-semibold hover:bg-[#A51116]"
                       >
                         <Mail className="w-4 h-4" aria-hidden="true" /> Responder por email
                       </a>
                       {wa && (
                         <a
-                          href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hola ${q.nombre}, te escribimos de Empero Argentina por tu consulta.`)}`}
+                          href={getWhatsAppURL(`Hola ${q.nombre}, te escribimos de Empero Argentina por tu consulta.`, wa)}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => setEstado(q, 'respondida', true)}
@@ -323,7 +324,7 @@ export function Consultas() {
                       <button
                         type="button"
                         onClick={() => setDeleteCandidate(q)}
-                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg text-[13px] font-medium text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1] cursor-pointer sm:ml-auto"
+                        className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg text-[13px] font-medium text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2] cursor-pointer sm:ml-auto"
                       >
                         <Trash2 className="w-4 h-4" aria-hidden="true" /> Eliminar
                       </button>

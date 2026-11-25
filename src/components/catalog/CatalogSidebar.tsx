@@ -57,25 +57,25 @@ function FilterContent({
     <div className="flex flex-col gap-5 p-4 overflow-y-auto">
       {/* Categoría */}
       <fieldset>
-        <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-2.5 px-1">
+        <legend className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-ink-500 mb-2 px-2">
           Categoría
         </legend>
         <div className="flex flex-col gap-0.5">
-          <label className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors duration-150 ${
-            selectedCategory === null ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+          <label className={`filter-row ${
+            selectedCategory === null ? 'filter-row--active' : ''
           }`}>
             <input
               type="radio"
               name="catalog-category"
               checked={selectedCategory === null}
               onChange={() => onCategoryChange(null)}
-              className="w-3.5 h-3.5 accent-[#C41B2E] flex-shrink-0"
+              className="filter-row__radio"
             />
-            <LayoutGrid className={`w-3.5 h-3.5 flex-shrink-0 ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#7B7064]'}`} />
-            <span className={`flex-1 text-[12.5px] font-medium ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+            <LayoutGrid className={`w-3.5 h-3.5 flex-shrink-0 ${selectedCategory === null ? 'text-brand' : 'text-ink-500'}`} />
+            <span className={`flex-1 text-[0.8438rem] ${selectedCategory === null ? 'text-brand font-semibold' : 'text-ink-700'}`}>
               Todas
             </span>
-            <span className="text-[11px] text-[#7B7064] flex-shrink-0">({totalProducts})</span>
+            <span className="font-mono text-[0.7188rem] text-ink-500 flex-shrink-0 tabular-nums">({totalProducts})</span>
           </label>
 
           {orderedCategories.map(cat => {
@@ -85,8 +85,8 @@ function FilterContent({
             return (
               <label
                 key={cat.id}
-                className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors duration-150 ${
-                  active ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                className={`filter-row ${
+                  active ? 'filter-row--active' : ''
                 }`}
               >
                 <input
@@ -94,34 +94,34 @@ function FilterContent({
                   name="catalog-category"
                   checked={active}
                   onChange={() => onCategoryChange(cat.id)}
-                  className="w-3.5 h-3.5 accent-[#C41B2E] flex-shrink-0"
+                  className="filter-row__radio"
                 />
                 {Icon && (
-                  <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#7B7064]'}`} />
+                  <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${active ? 'text-brand' : 'text-ink-500'}`} />
                 )}
-                <span className={`flex-1 text-[12.5px] font-medium truncate ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>
+                <span className={`flex-1 text-[0.8438rem] truncate ${active ? 'text-brand font-semibold' : 'text-ink-700'}`}>
                   {cat.name}
                 </span>
-                <span className="text-[11px] text-[#7B7064] flex-shrink-0">({count})</span>
+                <span className="font-mono text-[0.7188rem] text-ink-500 flex-shrink-0 tabular-nums">({count})</span>
               </label>
             );
           })}
         </div>
       </fieldset>
 
-      <div className="h-px bg-[#EBE5DC]" />
+      <div className="h-px bg-ink-200" />
 
       {/* Disponibilidad */}
       <fieldset>
-        <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-2.5 px-1">
+        <legend className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-ink-500 mb-2 px-2">
           Disponibilidad
         </legend>
         <div className="flex flex-col gap-0.5">
           {AVAILABILITY_OPTIONS.map(opt => (
             <label
               key={opt.value}
-              className={`flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer transition-colors duration-150 ${
-                availabilityFilter === opt.value ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+              className={`filter-row ${
+                availabilityFilter === opt.value ? 'filter-row--active' : ''
               }`}
             >
               <input
@@ -129,10 +129,10 @@ function FilterContent({
                 name="catalog-availability"
                 checked={availabilityFilter === opt.value}
                 onChange={() => onAvailabilityChange(opt.value)}
-                className="w-3.5 h-3.5 accent-[#C41B2E] flex-shrink-0"
+                className="filter-row__radio"
               />
-              <span className={`flex-1 text-[12.5px] font-medium ${
-                availabilityFilter === opt.value ? 'text-[#C41B2E]' : 'text-[#3A3530]'
+              <span className={`flex-1 text-[0.8438rem] ${
+                availabilityFilter === opt.value ? 'text-brand font-semibold' : 'text-ink-700'
               }`}>
                 {opt.label}
               </span>
@@ -152,7 +152,7 @@ function FilterContent({
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
             onClick={onClearFilters}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[12px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer w-full"
+            className="btn btn-sm btn-secondary w-full"
           >
             <X className="w-3.5 h-3.5" aria-hidden="true" />
             Limpiar filtros
@@ -170,13 +170,13 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
     <>
       {/* ── Desktop: static 240px sidebar ── */}
       <aside
-        className="hidden lg:block w-60 flex-shrink-0 sticky self-start"
+        className="hidden lg:block w-56 flex-shrink-0 sticky self-start"
         style={{ top: 'var(--sidebar-top)', maxHeight: 'var(--sidebar-max-height)' }}
       >
-        <div className="bg-white border border-[#EBE5DC] rounded-2xl overflow-hidden shadow-sm flex flex-col h-full">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#F0EAE2] flex-shrink-0">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-[#C41B2E]" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1A1613]">Filtros</span>
+        <div className="bg-white border border-ink-200 rounded-2xl overflow-hidden flex flex-col h-full shadow-[var(--shadow-sm)]">
+          <div className="flex items-center gap-2 px-4 h-12 border-b border-ink-150 flex-shrink-0 bg-ink-50/60">
+            <SlidersHorizontal className="w-4 h-4 text-brand" aria-hidden="true" />
+            <span className="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-ink-900">Filtros</span>
           </div>
           <div className="thin-scroll overflow-y-auto overscroll-contain flex-1" data-lenis-prevent>
             <FilterContent {...props} />
@@ -187,9 +187,9 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
       {/* ── Tablet: narrow icon bar ── */}
       <aside
         className="hidden md:block lg:hidden w-14 flex-shrink-0 sticky"
-        style={{ top: '80px', maxHeight: 'calc(100dvh - 96px)', alignSelf: 'flex-start' }}
+        style={{ top: '5rem', maxHeight: 'calc(100dvh - 6rem)', alignSelf: 'flex-start' }}
       >
-        <div className="bg-white border border-[#EBE5DC] rounded-2xl overflow-hidden shadow-sm flex flex-col h-full">
+        <div className="bg-white border border-ink-200 rounded-2xl overflow-hidden flex flex-col h-full shadow-[var(--shadow-sm)]">
           {/* Header icon — opens full panel */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -197,9 +197,9 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                 type="button"
                 onClick={() => setTabletOpen(true)}
                 aria-label="Abrir filtros"
-                className="w-full flex items-center justify-center py-3 border-b border-[#F0EAE2] hover:bg-[#F5F0EA] transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center py-3 border-b border-ink-150 hover:bg-ink-100 transition-colors cursor-pointer"
               >
-                <SlidersHorizontal className="w-4 h-4 text-[#C41B2E]" />
+                <SlidersHorizontal className="w-4 h-4 text-brand" aria-hidden="true" />
               </button>
             </TooltipTrigger>
             <TooltipContent side="right">Abrir filtros</TooltipContent>
@@ -217,8 +217,8 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                   aria-label="Todas las categorías"
                   className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                     props.selectedCategory === null
-                      ? 'text-[#C41B2E] bg-[#FFF0F1]'
-                      : 'text-[#7B7064] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
+                      ? 'text-brand bg-brand-50'
+                      : 'text-ink-500 hover:bg-ink-100 hover:text-brand'
                   }`}
                 >
                   <LayoutGrid className="w-4 h-4" />
@@ -241,8 +241,8 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
                       aria-label={cat.name}
                       className={`w-full flex items-center justify-center py-2.5 transition-colors duration-150 cursor-pointer ${
                         active
-                          ? 'text-[#C41B2E] bg-[#FFF0F1]'
-                          : 'text-[#7B7064] hover:bg-[#F5F0EA] hover:text-[#C41B2E]'
+                          ? 'text-brand bg-brand-50'
+                          : 'text-ink-500 hover:bg-ink-100 hover:text-brand'
                       }`}
                     >
                       {Icon && <Icon className="w-4 h-4" />}
@@ -261,8 +261,8 @@ export function CatalogSidebar(props: CatalogSidebarProps) {
       {/* ── Tablet: Sheet panel (slides from left) ── */}
       <Sheet open={tabletOpen} onOpenChange={setTabletOpen}>
         <SheetContent side="left" className="w-72 p-0 flex flex-col gap-0 lg:hidden">
-          <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC]">
-            <SheetTitle className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1A1613]">
+          <SheetHeader className="px-4 py-3 border-b border-ink-200">
+            <SheetTitle className="text-[0.9375rem] font-semibold text-ink-900">
               Filtros
             </SheetTitle>
             <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>

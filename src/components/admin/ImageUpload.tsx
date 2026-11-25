@@ -170,8 +170,8 @@ export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = f
           onDrop={disabled ? undefined : handleDrop}
           className={`flex flex-col items-center justify-center gap-2 mx-auto rounded-xl border-2 border-dashed transition-colors p-3 text-center ${disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} ${SIZE_CLS[size]}`}
           style={{
-            borderColor: dragging ? '#C41B2E' : '#EBE5DC',
-            background: dragging ? 'rgba(196,27,46,0.04)' : '#FAF8F4',
+            borderColor: dragging ? '#C3151B' : '#EBE5DC',
+            background: dragging ? 'rgba(195,21,27,0.04)' : '#FAF8F4',
           }}
         >
           <ImageIcon className="w-6 h-6 text-[#C0B5A8]" />
@@ -187,7 +187,7 @@ export function ImageUpload({ url, publicId, onChange, size = 'md', disabled = f
             <span>{progress}%</span>
           </div>
           <div className="w-full h-1.5 rounded-full overflow-hidden bg-[#EBE5DC]">
-            <div className="h-full rounded-full bg-[#C41B2E] transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-[#C3151B] transition-all" style={{ width: `${progress}%` }} />
           </div>
         </div>
       )}

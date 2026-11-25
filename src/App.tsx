@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, useLayoutEffect, useMemo, lazy, Suspense } from 'react';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import { Navigation } from './sections/Navigation';
 import { Hero, HERO_IMAGE_SRC } from './sections/Hero';
@@ -21,6 +21,13 @@ const Footer = lazy(() => import('./sections/Footer').then(m => ({ default: m.Fo
 
 function App() {
   useLenis();
+  // Escala del sitio público (ver html.site-scale en index.css); antes de
+  // pintar, para que no se vea un salto de tamaño.
+  useLayoutEffect(() => {
+    const html = document.documentElement;
+    html.classList.add('site-scale');
+    return () => html.classList.remove('site-scale');
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [isDataReady, setIsDataReady] = useState(false);
   // Objeto nuevo en cada click: elegir dos veces la misma categoría desde el
@@ -85,7 +92,10 @@ function App() {
     }, 200);
   }, []);
 
-  const quoteListIds = useMemo(() => quoteItems.map(item => item.product.id), [quoteItems]);
+  const quoteQuantities = useMemo(
+    () => Object.fromEntries(quoteItems.map(item => [item.product.id, item.quantity])),
+    [quoteItems]
+  );
 
   return (
     <MotionConfig reducedMotion="user">
@@ -121,7 +131,8 @@ function App() {
               categoryRequest={categoryRequest}
               onAddToQuote={addItem}
               onRemoveFromQuote={removeItem}
-              quoteListIds={quoteListIds}
+              onUpdateQuoteQuantity={updateQuantity}
+              quoteQuantities={quoteQuantities}
             />
 
             <Suspense fallback={null}><Nosotros /></Suspense>
@@ -145,7 +156,8 @@ function App() {
           onClose={handleCloseQuoteModal}
           onAddToQuote={addItem}
           onRemoveFromQuote={removeItem}
-          quoteListIds={quoteListIds}
+          onUpdateQuoteQuantity={updateQuantity}
+          quoteQuantities={quoteQuantities}
         />
       </TooltipProvider>
     </MotionConfig>

@@ -14,9 +14,11 @@ import { groupProducts } from '@/lib/groupProducts';
 import { CatalogSidebar } from '@/components/catalog/CatalogSidebar';
 import { ProductCard } from '@/components/catalog/ProductCard';
 import { ProductModal } from '@/components/catalog/ProductModal';
+import type { QuoteQuantities } from '@/hooks/useQuoteList';
 import { Pagination } from '@/components/catalog/Pagination';
 import { FeaturedCarousel } from '@/components/catalog/FeaturedCarousel';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
+import { SectionHeader } from '@/components/SectionHeader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
@@ -42,27 +44,22 @@ const orderedCategories = CATEGORY_ORDER
 
 function getItemsPerPage(): number {
   const w = window.innerWidth;
-  if (w >= 1536) return 16;
-  if (w >= 1280) return 12;
-  if (w >= 1024) return 12;
-  if (w >= 640)  return 8;
-  return 6;
+  if (w >= 1536) return 15; // 5 × 3
+  if (w >= 1280) return 16; // 4 × 4
+  if (w >= 768)  return 12; // 3 × 4
+  return 10;                // 2 × 5
 }
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-2xl border border-[#E8E2D9] overflow-hidden shadow-sm animate-pulse">
-      <div className="aspect-[3/4] bg-[#F0EAE2]" />
-      <div className="p-3 space-y-2">
-        <div className="h-3 w-20 bg-[#EBE5DC] rounded-full" />
-        <div className="h-4 bg-[#EBE5DC] rounded w-full" />
-        <div className="h-3.5 bg-[#EBE5DC] rounded w-3/4" />
-        <div className="h-3 w-16 bg-[#F0EAE2] rounded mt-1" />
-        <div className="h-px bg-[#F0EAE2] !mt-2" />
-        <div className="flex justify-between items-center">
-          <div className="h-3.5 w-14 bg-[#EBE5DC] rounded" />
-          <div className="h-5 w-16 bg-[#EBE5DC] rounded-full" />
-        </div>
+    <div className="bg-white rounded-[0.875rem] border border-ink-200 overflow-hidden">
+      <div className="aspect-[4/5] skeleton" />
+      <div className="px-3.5 pt-3.5 pb-3.5 space-y-2 border-t border-ink-150">
+        <div className="h-2.5 w-16 skeleton rounded" />
+        <div className="h-3.5 w-full skeleton rounded" />
+        <div className="h-3.5 w-2/3 skeleton rounded" />
+        <div className="h-2.5 w-20 skeleton rounded" />
+        <div className="h-9 w-full skeleton rounded-[0.5625rem] !mt-3" />
       </div>
     </div>
   );
@@ -103,19 +100,23 @@ export interface CategoryRequest {
   id: string;
 }
 
+const NO_QUANTITIES: QuoteQuantities = {};
+
 interface ProductCatalogProps {
   /** Pedido de categoría desde la navbar/footer (objeto nuevo en cada click). */
   categoryRequest?: CategoryRequest | null;
   onAddToQuote?: (product: Product) => void;
   onRemoveFromQuote?: (productId: string) => void;
-  quoteListIds?: string[];
+  onUpdateQuoteQuantity?: (productId: string, quantity: number) => void;
+  quoteQuantities?: QuoteQuantities;
 }
 
 export function ProductCatalog({
   categoryRequest = null,
   onAddToQuote,
   onRemoveFromQuote,
-  quoteListIds = [],
+  onUpdateQuoteQuantity,
+  quoteQuantities = NO_QUANTITIES,
 }: ProductCatalogProps) {
   const {
     allProducts,
@@ -276,38 +277,29 @@ export function ProductCatalog({
         <FeaturedCarousel
           products={featuredProducts}
           onViewDetails={(product) => handleViewDetails(product, [product])}
-          onAddToQuote={onAddToQuote}
-          onRemoveFromQuote={onRemoveFromQuote}
-          quoteListIds={quoteListIds}
+          quoteQuantities={quoteQuantities}
         />
       )}
-    <section ref={catalogRef} id="catalogo" aria-labelledby="catalogo-title" className="py-20 lg:py-24 bg-[var(--page-bg)] relative">
-      <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
+    <section ref={catalogRef} id="catalogo" aria-labelledby="catalogo-title" className="py-16 lg:py-24 bg-[var(--page-bg)] relative">
+      <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
+      <div className="container-custom">
 
         {/* ── Header ── */}
-        <div className="text-center mb-10">
-          <AnimatedSection direction="up">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
-                Catálogo completo
-              </span>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
-            </div>
-          </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.08}>
-            <h2 id="catalogo-title" className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
-              Nuestros <em className="not-italic text-[#C41B2E]">productos</em>
-            </h2>
-          </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#6B6159] mt-4 max-w-xl mx-auto text-base leading-relaxed text-pretty">
-              {loading ? 'Cargando productos...' : `${totalProducts} productos. Agregá los que te interesan y cotizá por WhatsApp.`}
+        <SectionHeader
+          eyebrow="Catálogo completo"
+          titleId="catalogo-title"
+          title="Nuestros"
+          accent="productos"
+          description={
+            <p>
+              {loading
+                ? 'Cargando productos…'
+                : <><strong className="font-semibold text-ink-900 tabular-nums">{totalProducts}</strong> productos. Agregá los que te interesan y cotizá por WhatsApp.</>}
             </p>
-          </AnimatedSection>
-        </div>
+          }
+          className="mb-8 lg:mb-10"
+        />
 
         {/* ── Error state ── */}
         {error && (
@@ -320,7 +312,7 @@ export function ProductCatalog({
             <button
               type="button"
               onClick={refetch}
-              className="text-xs px-4 py-1.5 border border-[#C41B2E] text-[#C41B2E] rounded-lg hover:bg-[rgba(196,27,46,0.06)] transition-colors cursor-pointer"
+              className="btn btn-sm btn-secondary"
             >
               Reintentar
             </button>
@@ -329,19 +321,19 @@ export function ProductCatalog({
 
         {/* ── Search topbar ── */}
         <AnimatedSection direction="up" delay={0.1}>
-          <search ref={searchRef} className="block mb-6">
+          <search ref={searchRef} className="block mb-5 lg:mb-6">
             <form className="flex gap-3 items-center" onSubmit={e => { e.preventDefault(); setSearchQuery(localSearch); }}>
               <div className="relative flex-1 group/search">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none" aria-hidden="true">
-                  <Search className="w-4 h-4 text-[#9A8E82] group-focus-within/search:text-[#C41B2E] transition-colors duration-200" />
-                  <div className="w-px h-4 bg-[#E8E2D9] group-focus-within/search:bg-[#C41B2E]/20 transition-colors duration-200" />
+                  <Search className="w-[1.125rem] h-[1.125rem] text-ink-400 group-focus-within/search:text-brand transition-colors duration-200" />
+                  <span className="w-px h-4 bg-ink-200 group-focus-within/search:bg-brand/25 transition-colors duration-200" />
                 </div>
                 <label htmlFor="catalog-search" className="sr-only">Buscar productos</label>
                 <input
                   id="catalog-search"
                   type="search"
                   name="q"
-                  placeholder="Buscar por nombre o código…"
+                  placeholder="Buscar productos…"
                   value={localSearch}
                   onChange={e => handleSearchChange(e.target.value)}
                   autoComplete="off"
@@ -349,7 +341,7 @@ export function ProductCatalog({
                   autoCapitalize="none"
                   spellCheck={false}
                   enterKeyHint="search"
-                  className="search-input w-full pl-12 pr-11 py-3 bg-white border border-[#E8E2D9] rounded-2xl text-base sm:text-[14px] text-[#1A1613] placeholder:text-[#7B7064] focus:border-[#C41B2E]/40 transition-[border-color,box-shadow] duration-200 shadow-sm"
+                  className="search-input w-full h-12 pl-14 pr-12 bg-white border border-ink-300 rounded-2xl text-base sm:text-[0.9062rem] text-ink-900 placeholder:text-ink-500 shadow-[var(--shadow-sm)] hover:border-ink-400 focus:border-brand/50 focus:shadow-[0_0_0_4px_rgb(var(--brand-600)/0.08)] transition-[border-color,box-shadow] duration-200"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
                   <AnimatePresence mode="wait">
@@ -363,7 +355,7 @@ export function ProductCatalog({
                         type="button"
                         onClick={() => { setLocalSearch(''); setSearchQuery(''); document.getElementById('catalog-search')?.focus(); }}
                         aria-label="Limpiar búsqueda"
-                        className="w-7 h-7 flex items-center justify-center rounded-lg bg-[#F0EAE2] text-[#6B6159] hover:bg-[#EBE5DC] hover:text-[#1A1613] transition-colors cursor-pointer"
+                        className="w-7 h-7 flex items-center justify-center rounded-lg bg-ink-150 text-ink-600 hover:bg-ink-200 hover:text-ink-900 transition-colors cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" aria-hidden="true" />
                       </motion.button>
@@ -377,16 +369,17 @@ export function ProductCatalog({
                 onClick={() => setMobileSheetOpen(true)}
                 aria-haspopup="dialog"
                 aria-label={activeFilterCount > 0 ? `Filtros, ${activeFilterCount} activos` : 'Filtros'}
-                className={`flex md:hidden items-center gap-2 px-4 py-3 rounded-2xl text-[13px] font-semibold border transition-all duration-150 cursor-pointer flex-shrink-0 ${
+                className={`flex md:hidden items-center gap-2 h-12 px-4 max-[359px]:px-3.5 rounded-2xl text-[0.875rem] font-semibold border transition-colors duration-150 cursor-pointer flex-shrink-0 ${
                   hasActiveFilters
-                    ? 'bg-[#C41B2E] text-white border-[#C41B2E] shadow-sm'
-                    : 'bg-white text-[#1A1613] border-[#E8E2D9] hover:border-[#C41B2E]/30 shadow-sm'
+                    ? 'bg-brand text-white border-brand shadow-[var(--shadow-sm)]'
+                    : 'bg-white text-ink-900 border-ink-300 hover:border-brand/40 shadow-[var(--shadow-sm)]'
                 }`}
               >
                 <Filter className="w-4 h-4" aria-hidden="true" />
-                Filtros
+                {/* En pantallas muy angostas, solo el ícono (el nombre está en aria-label) */}
+                <span className="max-[359px]:hidden">Filtros</span>
                 {activeFilterCount > 0 && (
-                  <span aria-hidden="true" className="w-5 h-5 rounded-full bg-white/25 text-white text-[10px] font-bold flex items-center justify-center ring-1 ring-white/40">
+                  <span aria-hidden="true" className="w-5 h-5 rounded-full bg-white/25 text-white text-[0.625rem] font-bold flex items-center justify-center ring-1 ring-white/40">
                     {activeFilterCount}
                   </span>
                 )}
@@ -396,17 +389,17 @@ export function ProductCatalog({
         </AnimatedSection>
 
         {/* ── 2-column layout ── */}
-        <div className="flex gap-6 items-stretch">
+        <div className="flex gap-6 xl:gap-8 items-stretch">
 
           <CatalogSidebar {...sidebarProps} />
 
           <div className="flex-1 min-w-0">
 
             {/* Región de estado: anuncia la cantidad de resultados al filtrar o buscar. */}
-            <p role="status" className="text-[12px] text-[#6B6159] mb-4 font-medium min-h-[1lh]">
+            <p role="status" className="text-[0.75rem] text-ink-600 mb-4 font-medium min-h-[1lh]">
               {!loading && (
                 <>
-                  Mostrando <span className="text-[#1A1613] font-semibold">{filteredCount}</span> producto{filteredCount !== 1 ? 's' : ''}
+                  Mostrando <span className="text-ink-900 font-semibold">{filteredCount}</span> producto{filteredCount !== 1 ? 's' : ''}
                   {filteredCount !== totalProducts && (
                     <span className="font-normal"> de {totalProducts}</span>
                   )}
@@ -416,7 +409,7 @@ export function ProductCatalog({
             </p>
 
             {loading && (
-              <div aria-hidden="true" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              <div aria-hidden="true" className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-3 gap-y-4 sm:gap-x-4 sm:gap-y-5">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
@@ -435,11 +428,12 @@ export function ProductCatalog({
                     initial="initial"
                     animate="enter"
                     exit="exit"
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 mb-10"
+                    className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-3 gap-y-4 sm:gap-x-4 sm:gap-y-5 mb-10"
                   >
                     {paginatedGroups.map(group => (
                       <motion.div
                         key={group.key}
+                        className="product-card-cell"
                         variants={{
                           initial: { opacity: 0, y: 12 },
                           enter: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
@@ -449,9 +443,7 @@ export function ProductCatalog({
                         <ProductCard
                           variants={group.variants}
                           onViewDetails={handleViewDetails}
-                          onAddToQuote={onAddToQuote}
-                          onRemoveFromQuote={onRemoveFromQuote}
-                          quoteListIds={quoteListIds}
+                          quoteQuantities={quoteQuantities}
                         />
                       </motion.div>
                     ))}
@@ -478,19 +470,19 @@ export function ProductCatalog({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-16 h-16 bg-white border border-[#EBE5DC] rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
-                    <Package className="w-7 h-7 text-[#7B7064]" />
+                  <div className="w-16 h-16 bg-white border border-ink-200 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
+                    <Package className="w-7 h-7 text-ink-500" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#1A1613] mb-2">Sin resultados</h3>
-                  <p className="text-[#7B7064] mb-7 max-w-xs mx-auto text-sm leading-relaxed">
+                  <h3 className="text-lg font-semibold text-ink-900 mb-2">Sin resultados</h3>
+                  <p className="text-ink-500 mb-7 max-w-xs mx-auto text-sm leading-relaxed">
                     Ningún producto coincide con tu búsqueda o filtros activos.
                   </p>
                   <button
                     type="button"
                     onClick={handleClearFilters}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#C41B2E] text-sm font-medium rounded-xl border border-[rgba(196,27,46,0.3)] hover:bg-[rgba(196,27,46,0.04)] transition-colors cursor-pointer"
+                    className="btn btn-secondary"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                     Limpiar filtros
                   </button>
                 </motion.div>
@@ -503,47 +495,47 @@ export function ProductCatalog({
       {/* ── Mobile filter sheet ── */}
       <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
         <SheetContent side="bottom" className="h-[85dvh] max-h-[85dvh] rounded-t-2xl p-0 flex flex-col gap-0 md:hidden">
-          <SheetHeader className="px-4 py-3 border-b border-[#EBE5DC] flex-shrink-0">
-            <SheetTitle className="text-[13px] font-bold text-[#1A1613]">Filtros</SheetTitle>
+          <SheetHeader className="px-4 py-3 border-b border-ink-200 flex-shrink-0">
+            <SheetTitle className="text-[0.8125rem] font-bold text-ink-900">Filtros</SheetTitle>
             <SheetDescription className="sr-only">Filtrá el catálogo de productos</SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" data-lenis-prevent>
             <fieldset className="px-4 pt-4 pb-2">
-              <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-3">Categoría</legend>
+              <legend className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-ink-500 mb-2">Categoría</legend>
               <div className="flex flex-col gap-0.5">
-                <label className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${
-                  selectedCategory === null ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'
+                <label className={`filter-row ${
+                  selectedCategory === null ? 'filter-row--active' : ''
                 }`}>
-                  <input type="radio" name="mobile-category" checked={selectedCategory === null} onChange={() => handleCategoryChange(null)} className="w-4 h-4 accent-[#C41B2E]" />
-                  <LayoutGrid className={`w-4 h-4 flex-shrink-0 ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />
-                  <span className={`flex-1 text-[13px] font-medium ${selectedCategory === null ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>Todas</span>
-                  <span className="text-[11px] text-[#7B7064]">({totalProducts})</span>
+                  <input type="radio" name="mobile-category" checked={selectedCategory === null} onChange={() => handleCategoryChange(null)} className="filter-row__radio" />
+                  <LayoutGrid className={`w-4 h-4 flex-shrink-0 ${selectedCategory === null ? 'text-brand' : 'text-ink-500'}`} />
+                  <span className={`flex-1 text-[0.875rem] ${selectedCategory === null ? 'text-brand font-semibold' : 'text-ink-700'}`}>Todas</span>
+                  <span className="font-mono text-[0.7188rem] text-ink-500 tabular-nums">({totalProducts})</span>
                 </label>
                 {orderedCategories.map(cat => {
                   const Icon = ICON_MAP[cat.icon];
                   const active = selectedCategory === cat.id;
                   return (
-                    <label key={cat.id} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${active ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
-                      <input type="radio" name="mobile-category" checked={active} onChange={() => handleCategoryChange(cat.id)} className="w-4 h-4 accent-[#C41B2E]" />
-                      {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-[#C41B2E]' : 'text-[#9A8E82]'}`} />}
-                      <span className={`flex-1 text-[13px] font-medium ${active ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{cat.name}</span>
-                      <span className="text-[11px] text-[#7B7064]">({categoryCounts[cat.id] ?? 0})</span>
+                    <label key={cat.id} className={`filter-row ${active ? 'filter-row--active' : ''}`}>
+                      <input type="radio" name="mobile-category" checked={active} onChange={() => handleCategoryChange(cat.id)} className="filter-row__radio" />
+                      {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${active ? 'text-brand' : 'text-ink-500'}`} />}
+                      <span className={`flex-1 text-[0.875rem] ${active ? 'text-brand font-semibold' : 'text-ink-700'}`}>{cat.name}</span>
+                      <span className="font-mono text-[0.7188rem] text-ink-500 tabular-nums">({categoryCounts[cat.id] ?? 0})</span>
                     </label>
                   );
                 })}
               </div>
             </fieldset>
 
-            <div className="h-px bg-[#EBE5DC] mx-4 my-2" />
+            <div className="h-px bg-ink-200 mx-4 my-2" />
 
             <fieldset className="px-4 pb-4">
-              <legend className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#6B6159] mb-3">Disponibilidad</legend>
+              <legend className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-ink-500 mb-2">Disponibilidad</legend>
               <div className="flex flex-col gap-0.5">
                 {AVAILABILITY_OPTIONS.map(opt => (
-                  <label key={opt.value} className={`flex items-center gap-3 px-2 py-2 rounded-xl cursor-pointer transition-colors ${availabilityFilter === opt.value ? 'bg-[#FFF0F1]' : 'hover:bg-[#F5F0EA]'}`}>
-                    <input type="radio" name="mobile-availability" checked={availabilityFilter === opt.value} onChange={() => handleAvailabilityChange(opt.value)} className="w-4 h-4 accent-[#C41B2E]" />
-                    <span className={`flex-1 text-[13px] font-medium ${availabilityFilter === opt.value ? 'text-[#C41B2E]' : 'text-[#3A3530]'}`}>{opt.label}</span>
+                  <label key={opt.value} className={`filter-row ${availabilityFilter === opt.value ? 'filter-row--active' : ''}`}>
+                    <input type="radio" name="mobile-availability" checked={availabilityFilter === opt.value} onChange={() => handleAvailabilityChange(opt.value)} className="filter-row__radio" />
+                    <span className={`flex-1 text-[0.875rem] ${availabilityFilter === opt.value ? 'text-brand font-semibold' : 'text-ink-700'}`}>{opt.label}</span>
                     {opt.dot && <span className={`w-2.5 h-2.5 rounded-full ${opt.dot}`} />}
                   </label>
                 ))}
@@ -551,11 +543,11 @@ export function ProductCatalog({
             </fieldset>
           </div>
 
-          <SheetFooter className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#EBE5DC] flex-row gap-3 flex-shrink-0">
-            <button type="button" onClick={handleClearFilters} className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold text-[#C41B2E] bg-[rgba(196,27,46,0.06)] hover:bg-[rgba(196,27,46,0.1)] border border-[rgba(196,27,46,0.2)] transition-colors cursor-pointer">
+          <SheetFooter className="px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-ink-200 flex-row gap-3 flex-shrink-0">
+            <button type="button" onClick={handleClearFilters} className="btn btn-secondary flex-1">
               Limpiar
             </button>
-            <button type="button" onClick={() => setMobileSheetOpen(false)} className="flex-[2] py-2.5 rounded-xl text-[13px] font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer shadow-sm">
+            <button type="button" onClick={() => setMobileSheetOpen(false)} className="btn btn-primary flex-[2]">
               Ver {filteredCount} producto{filteredCount !== 1 ? 's' : ''}
             </button>
           </SheetFooter>
@@ -569,7 +561,8 @@ export function ProductCatalog({
         onClose={handleCloseModal}
         onAddToQuote={onAddToQuote}
         onRemoveFromQuote={onRemoveFromQuote}
-        quoteListIds={quoteListIds}
+        onUpdateQuoteQuantity={onUpdateQuoteQuantity}
+        quoteQuantities={quoteQuantities}
       />
     </section>
     </>

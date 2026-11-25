@@ -22,11 +22,11 @@ const buttonVariants = cva(
         // CTA roja de marca (Empero) — reemplaza el gradiente hardcodeado que
         // se repetía en cada botón principal del admin.
         brand:
-          "bg-gradient-to-r from-[#C41B2E] to-[#B51426] text-white shadow-lg shadow-[#C41B2E]/25 hover:from-[#B51426] hover:to-[#A0101F]",
+          "bg-gradient-to-r from-[#C3151B] to-[#A51116] text-white shadow-lg shadow-[#C3151B]/25 hover:from-[#A51116] hover:to-[#A0101F]",
         brandOutline:
           "border border-[#EBE5DC] bg-white text-[#1A1613] shadow-sm hover:bg-[#F4F0E8]",
         brandGhost:
-          "text-[#9E9080] hover:text-[#C41B2E] hover:bg-[#FFF0F1]",
+          "text-[#9E9080] hover:text-[#C3151B] hover:bg-[#FDF2F2]",
       },
       size: {
         default: "h-9 px-4 py-2",

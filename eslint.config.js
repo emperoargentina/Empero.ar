@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // src/vendor: código de terceros copiado tal cual (kit de Stageshow)
+  globalIgnores(['dist', 'src/vendor']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

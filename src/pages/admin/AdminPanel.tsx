@@ -109,7 +109,7 @@ function SidebarInner({
                       onClick={() => goTo(item.path)}
                       className={`rounded-lg px-3 py-2.5 h-auto text-sm font-medium ${
                         active
-                          ? 'bg-white text-[#C41B2E] hover:bg-white hover:text-[#C41B2E] shadow-md shadow-black/10'
+                          ? 'bg-white text-[#C3151B] hover:bg-white hover:text-[#C3151B] shadow-md shadow-black/10'
                           : 'text-white/80 hover:bg-white/10 hover:text-white'
                       }`}
                     >
@@ -190,8 +190,8 @@ export function AdminPanel({ session }: Props) {
       <Toaster richColors position="top-right" />
 
       <SidebarProvider defaultOpen={typeof window !== 'undefined' ? window.innerWidth >= 1440 : true}>
-        <div className="fixed top-0 right-0 w-[600px] max-w-[100vw] h-[600px] rounded-full bg-[#C41B2E]/[0.03] blur-[120px] pointer-events-none -z-0" />
-        <div className="fixed bottom-0 left-0 w-[400px] max-w-[100vw] h-[400px] rounded-full bg-[#C41B2E]/[0.02] blur-[100px] pointer-events-none -z-0" />
+        <div className="fixed top-0 right-0 w-[600px] max-w-[100vw] h-[600px] rounded-full bg-[#C3151B]/[0.03] blur-[120px] pointer-events-none -z-0" />
+        <div className="fixed bottom-0 left-0 w-[400px] max-w-[100vw] h-[400px] rounded-full bg-[#C3151B]/[0.02] blur-[100px] pointer-events-none -z-0" />
 
         <Sidebar collapsible="icon" className="border-r border-white/10">
           <SidebarInner
@@ -203,7 +203,7 @@ export function AdminPanel({ session }: Props) {
 
         <SidebarInset className="relative bg-transparent">
           <header className="bg-white/80 backdrop-blur-lg border-b border-[#EBE5DC] px-4 lg:px-8 h-16 flex items-center gap-3 flex-shrink-0 sticky top-0 z-10 shadow-sm">
-            <SidebarTrigger className="md:hidden text-white bg-[#C41B2E] hover:bg-[#B51426] hover:text-white rounded-lg w-9 h-9 shadow-sm shadow-[#C41B2E]/25" />
+            <SidebarTrigger className="md:hidden text-white bg-[#C3151B] hover:bg-[#A51116] hover:text-white rounded-lg w-9 h-9 shadow-sm shadow-[#C3151B]/25" />
 
             <div className="flex items-center gap-2 text-sm">
               <span className="text-[#9E9080] font-medium">Empero Admin</span>

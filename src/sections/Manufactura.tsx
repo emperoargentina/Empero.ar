@@ -1,108 +1,100 @@
-import { Check, Award, Users, Shield, Zap } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { companyConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
-import { motion } from 'framer-motion';
+import { SectionHeader } from '@/components/SectionHeader';
 
-// srcSet chico + grande por imagen — en mobile el mosaico muestra cada foto a
-// ~45vw, no tiene sentido bajar el archivo de escritorio (900px) para eso.
-function unsplashSrcSet(id: string, w: number, h: number) {
-  const half = { w: Math.round(w / 2), h: Math.round(h / 2) };
-  const base = `https://images.unsplash.com/${id}?fit=crop&auto=format&q=75`;
+// Fotos oficiales de Empero (planta de Konya y sede), optimizadas en WebP en
+// dos tamaños: en mobile el mosaico muestra cada foto a ~45vw, no hace falta
+// bajar la versión de escritorio para eso.
+function localSrcSet(name: string, w: number) {
+  const base = `/images/nosotros/${name}`;
   return {
-    src: `${base}&w=${w}&h=${h}`,
-    srcSet: `${base}&w=${half.w}&h=${half.h} ${half.w}w, ${base}&w=${w}&h=${h} ${w}w`,
+    src: `${base}.webp`,
+    srcSet: `${base}-sm.webp ${Math.round(w / 2)}w, ${base}.webp ${w}w`,
   };
 }
 
 const IMAGES = {
-  main:     unsplashSrcSet('photo-1581349485608-9469926a8e5e', 900, 1100),
-  topRight: unsplashSrcSet('photo-1556910103-1c02745aae4d', 600, 500),
-  botRight: unsplashSrcSet('photo-1565538810643-b5bdb714032a', 600, 500),
-  gal1:     unsplashSrcSet('photo-1577219491135-ce391730fb2c', 700, 500),
-  gal2:     unsplashSrcSet('photo-1544025162-d76694265947', 700, 500),
-  gal3:     unsplashSrcSet('photo-1590794056226-79ef3a8147e1', 700, 500),
+  main:     localSrcSet('produccion-hornos', 900),
+  topRight: localSrcSet('equipo-empero', 600),
+  botRight: localSrcSet('linea-heladeras', 600),
 };
 
+const GALLERY = [
+  { ...localSrcSet('plegado-chapa', 700), alt: 'Operarios en las plegadoras de chapa de la planta de Empero' },
+  { ...localSrcSet('corte-laser', 700), alt: 'Corte láser de chapa de acero inoxidable' },
+  { ...localSrcSet('deposito', 700), alt: 'Depósito de producto terminado de Empero' },
+];
+
 const stats = [
-  { value: '1983', label: 'Año de fundación', icon: Award },
-  { value: '3.000+', label: 'Tipos de productos', icon: Zap },
-  { value: '90+', label: 'Países de exportación', icon: Users },
-  { value: '60K m²', label: 'Planta de producción', icon: Shield },
+  { value: '1983', unit: '', label: 'Año de fundación, en Turquía' },
+  { value: '3.000', unit: '+', label: 'Tipos de productos' },
+  { value: '90', unit: '+', label: 'Países de exportación' },
+  { value: '60.000', unit: 'm²', label: 'Planta de producción en Konya' },
 ];
 
 export function Nosotros() {
   return (
-    <section id="nosotros" aria-labelledby="nosotros-title" className="py-20 lg:py-28 bg-white relative">
-      <div className="absolute top-0 inset-x-0 h-px divider-gradient" />
+    <section id="nosotros" aria-labelledby="nosotros-title" className="py-16 lg:py-24 bg-white relative">
+      <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px divider-gradient" />
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
-
-        {/* Header */}
-        <div className="text-center mb-14">
-          <AnimatedSection direction="up">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C41B2E]/40" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C41B2E]">
-                Nosotros
-              </span>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C41B2E]/40" />
-            </div>
-          </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.08}>
-            <h2 id="nosotros-title" className="text-4xl md:text-5xl font-serif font-[560] text-[#1A1613]">
-              Quiénes <em className="not-italic text-[#C41B2E]">somos</em>
-            </h2>
-          </AnimatedSection>
-          <AnimatedSection direction="up" delay={0.14}>
-            <p className="text-[#6B6159] mt-4 max-w-2xl mx-auto text-base leading-relaxed text-pretty">
-              Somos distribuidores oficiales de <strong className="text-[#1A1613]">Empero</strong> en Argentina &mdash;
+      <div className="container-custom">
+        <SectionHeader
+          eyebrow="Nosotros"
+          titleId="nosotros-title"
+          title="Quiénes"
+          accent="somos"
+          description={
+            <p>
+              Somos distribuidores oficiales de <strong className="font-semibold text-ink-900">Empero</strong> en Argentina &mdash;
               una de las marcas líder en equipamiento gastronómico industrial a nivel mundial, con más de 40 años de historia y presencia en más de 90 países.
             </p>
-          </AnimatedSection>
-        </div>
+          }
+          className="mb-12 lg:mb-14"
+        />
 
-        {/* Split: mosaic + story */}
-        <div className="grid lg:grid-cols-2 gap-8 xl:gap-14 mb-12 items-start">
+        {/* Mosaico + historia */}
+        <div className="grid lg:grid-cols-2 gap-10 xl:gap-16 mb-14 items-center">
 
-          {/* Mosaic */}
           <AnimatedSection direction="left">
-            <div className="grid grid-cols-2 gap-3 h-[480px] sm:h-[540px]">
-              <div className="row-span-2 overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.main.src} srcSet={IMAGES.main.srcSet} sizes="(min-width: 1024px) 380px, 45vw" alt="Cocina industrial profesional en funcionamiento" width={900} height={1100} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
-              </div>
-              <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.topRight.src} srcSet={IMAGES.topRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Horno industrial en una cocina profesional" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
-              </div>
-              <div className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={IMAGES.botRight.src} srcSet={IMAGES.botRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Equipamiento gastronómico de acero inoxidable" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
-              </div>
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 h-[25rem] sm:h-[28.75rem]">
+              <figure className="row-span-2 photo-frame">
+                <img src={IMAGES.main.src} srcSet={IMAGES.main.srcSet} sizes="(min-width: 1024px) 380px, 45vw" alt="Operario armando hornos en la línea de producción de Empero, en Konya" width={900} height={1100} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
+              </figure>
+              <figure className="photo-frame">
+                <img src={IMAGES.topRight.src} srcSet={IMAGES.topRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="El equipo de Empero frente a la sede de la empresa" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
+              </figure>
+              <figure className="photo-frame">
+                <img src={IMAGES.botRight.src} srcSet={IMAGES.botRight.srcSet} sizes="(min-width: 1024px) 280px, 45vw" alt="Heladeras industriales en la línea de producción de Empero" width={600} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
+              </figure>
             </div>
           </AnimatedSection>
 
-          {/* Story */}
           <AnimatedSection direction="right" delay={0.1}>
-            <div className="flex flex-col justify-center lg:pt-4">
-              <p className="text-[11px] font-semibold text-[#C41B2E] uppercase tracking-[0.12em] mb-4">
+            <div className="flex flex-col justify-center">
+              <p className="inline-flex items-center gap-2 text-[0.6875rem] font-semibold text-brand uppercase tracking-[0.14em] mb-4">
+                <span aria-hidden="true" className="h-px w-6 bg-brand" />
                 Historia de la marca
               </p>
-              <h3 className="text-2xl md:text-3xl font-serif font-[560] text-[#1A1613] leading-tight mb-6">
-                40 años fabricando equipamiento gastronómico de clase mundial
+              <h3 className="font-display font-[560] text-[1.5rem] md:text-[1.75rem] text-ink-900 leading-[1.18] mb-5">
+                40 años fabricando equipamiento gastronómico de <em className="not-italic text-brand">clase mundial</em>
               </h3>
-              <p className="text-[#6B6159] leading-relaxed mb-5 text-[15px] text-pretty">
-                Empero nació en <strong className="text-[#4A4540]">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="text-[#4A4540]">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="text-[#4A4540]">Empero Group</strong>, consolidando una planta de producción de más de <strong className="text-[#4A4540]">60.000 m²</strong> en Konya, Turquía.
-              </p>
-              <p className="text-[#6B6159] leading-relaxed mb-8 text-[15px] text-pretty">
-                Hoy Empero fabrica más de <strong className="text-[#4A4540]">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="text-[#4A4540]">90 países</strong>. <strong className="text-[#1A1613]">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
-              </p>
+              <div className="space-y-5 mb-8 max-w-[62ch] text-[0.9375rem] leading-relaxed text-ink-600 text-pretty">
+                <p>
+                  Empero nació en <strong className="font-semibold text-ink-800">1983</strong> en Turquía bajo el nombre <em>Ersöz Mutfak Makineleri</em>, fabricando equipos de preparación de alimentos. En <strong className="font-semibold text-ink-800">2005</strong>, unificó cinco empresas productoras bajo el nombre <strong className="font-semibold text-ink-800">Empero Group</strong>, consolidando una planta de producción de más de <strong className="font-semibold text-ink-800">60.000 m²</strong> en Konya, Turquía.
+                </p>
+                <p>
+                  Hoy Empero fabrica más de <strong className="font-semibold text-ink-800">3.000 tipos de productos</strong> &mdash; desde hornos y cocinas hasta lavavajillas, equipos de refrigeración y módulos de cafetería &mdash; y exporta el 60% de su producción a más de <strong className="font-semibold text-ink-800">90 países</strong>. <strong className="font-semibold text-ink-900">Empero Argentina</strong> es el distribuidor oficial autorizado de la marca en el país.
+                </p>
+              </div>
 
-              {/* Values */}
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 pt-6 border-t border-ink-150">
                 {companyConfig.values.map((val) => (
-                  <li key={val} className="flex items-center gap-2.5">
-                    <span aria-hidden="true" className="w-5 h-5 bg-[rgba(196,27,46,0.1)] rounded-full flex items-center justify-center flex-shrink-0 border border-[rgba(196,27,46,0.25)]">
-                      <Check className="w-2.5 h-2.5 text-[#C41B2E]" />
+                  <li key={val} className="flex items-start gap-2.5">
+                    <span aria-hidden="true" className="mt-0.5 w-5 h-5 bg-brand-50 rounded-full flex items-center justify-center flex-shrink-0 border border-brand-200">
+                      <Check className="w-2.5 h-2.5 text-brand" strokeWidth={3} />
                     </span>
-                    <span className="text-sm text-[#4A4540] font-medium leading-snug">{val}</span>
+                    <span className="text-[0.875rem] text-ink-700 font-medium leading-snug">{val}</span>
                   </li>
                 ))}
               </ul>
@@ -110,63 +102,31 @@ export function Nosotros() {
           </AnimatedSection>
         </div>
 
-        {/* Gallery strip */}
+        {/* Galería */}
         <AnimatedSection direction="up" delay={0.1}>
-          <div className="grid grid-cols-3 gap-3 h-52 sm:h-64 mb-14">
-            {[IMAGES.gal1, IMAGES.gal2, IMAGES.gal3].map((img, i) => (
-              <div key={i} className="overflow-hidden rounded-2xl bg-[#F4F0E8]">
-                <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 350px, 30vw" alt="" width={700} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
-              </div>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 h-40 sm:h-56 mb-12 lg:mb-14">
+            {GALLERY.map((img) => (
+              <figure key={img.src} className="photo-frame">
+                <img src={img.src} srcSet={img.srcSet} sizes="(min-width: 1024px) 350px, 30vw" alt={img.alt} width={700} height={500} className="zoom-on-hover w-full h-full object-cover" loading="lazy" decoding="async" />
+              </figure>
             ))}
           </div>
         </AnimatedSection>
 
-        {/* Stats banner — brand red block */}
+        {/* Cifras de la marca: como una ficha técnica — filete fuerte arriba,
+            separadores finos, números en serif y la unidad en rojo. */}
         <AnimatedSection direction="up">
-          <div
-            className="rounded-3xl p-10 md:p-14 relative overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, #D32638 0%, #C41B2E 45%, #f03e50 100%)',
-              boxShadow: '0 20px 60px rgba(196,27,46,0.25), 0 1px 0 rgba(255,255,255,0.08) inset',
-            }}
-          >
-            <div className="absolute -top-24 -left-10 w-80 h-80 bg-white/[0.06] rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 right-0 w-96 h-96 bg-black/[0.12] rounded-full blur-3xl pointer-events-none" />
-            <div
-              className="absolute inset-0 opacity-[0.05] pointer-events-none"
-              style={{
-                backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
-                backgroundSize: '40px 40px',
-              }}
-            />
-
-            <dl className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  className="flex flex-col-reverse items-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.08 * i, duration: 0.4 }}
-                >
-                  <dt className="text-sm text-white font-medium">{stat.label}</dt>
-                  <dd className="flex flex-col items-center mb-1">
-                    <span
-                      aria-hidden="true"
-                      className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4"
-                      style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)' }}
-                    >
-                      <stat.icon className="w-[18px] h-[18px] text-white" />
-                    </span>
-                    <span className="text-4xl font-serif font-[560] text-white tracking-tight leading-none">
-                      {stat.value}
-                    </span>
-                  </dd>
-                </motion.div>
-              ))}
-            </dl>
-          </div>
+          <dl className="brand-figures">
+            {stats.map((stat) => (
+              <div key={stat.label} className="brand-figures__item">
+                <dt className="brand-figures__label">{stat.label}</dt>
+                <dd className="brand-figures__value">
+                  {stat.value}
+                  {stat.unit && <span className="brand-figures__unit">{stat.unit}</span>}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </AnimatedSection>
 
       </div>

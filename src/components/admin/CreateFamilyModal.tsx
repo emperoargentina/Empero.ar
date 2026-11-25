@@ -32,7 +32,7 @@ export function CreateFamilyModal({ open, onOpenChange, onConfirm }: CreateFamil
       <DialogContent className="bg-white border-[#EBE5DC] max-w-md p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-5 pt-5 pb-4 border-b border-[#EBE5DC] text-left">
           <DialogTitle className="text-base font-bold text-[#1A1613] flex items-center gap-2">
-            <FolderPlus className="w-4 h-4 text-[#C41B2E]" />
+            <FolderPlus className="w-4 h-4 text-[#C3151B]" />
             Crear familia
           </DialogTitle>
           <DialogDescription className="text-xs text-[#9E9080]">
@@ -48,7 +48,7 @@ export function CreateFamilyModal({ open, onOpenChange, onConfirm }: CreateFamil
             onChange={e => setNombre(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); void handleConfirm() } }}
             placeholder="Ej: Lavavajillas Industrial LV-500"
-            className="border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
+            className="border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B]"
           />
         </div>
 

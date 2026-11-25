@@ -6,19 +6,39 @@ interface PreloaderProps {
   isDataReady: boolean;
 }
 
-const MIN_MS = 1000;
+type Phase = 'loading' | 'finishing' | 'opening';
 
+const MIN_MS = 1300;
+const FINISH_MS = 250; // la línea de progreso llega al 100 %
+const SEAM_MS = 480;   // la línea cruza la pantalla
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const EASE_IN_OUT = [0.65, 0, 0.35, 1] as const;
+const EASE_CURTAIN = [0.76, 0, 0.24, 1] as const;
+
+// Secuencia (todo se abre desde el centro, como el logo):
+//  1. El logo se revela de adentro hacia afuera; debajo, el progreso.
+//  2. Al cargar, el progreso se completa, la marca se desvanece y la línea
+//     roja cruza toda la pantalla.
+//  3. La pantalla se abre en dos hojas desde esa línea y deja ver el hero,
+//     cuyo contenido (centrado) entra mientras se abren.
+// Con "reducir movimiento", MotionConfig (App.tsx) anula los desplazamientos.
 export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
-  const [progressDone, setProgressDone] = useState(false);
+  const [phase, setPhase] = useState<Phase>('loading');
   const resolved = useRef({ minDone: false, dataReady: false, exited: false });
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const tryExit = useCallback(() => {
     const r = resolved.current;
-    if (r.minDone && r.dataReady && !r.exited) {
-      r.exited = true;
-      setProgressDone(true);
-      setTimeout(onComplete, 280);
-    }
+    if (!r.minDone || !r.dataReady || r.exited) return;
+    r.exited = true;
+    // Todo por timers: tryExit se llama desde efectos y un setState
+    // sincrónico ahí provoca renders en cascada.
+    timers.current.push(
+      setTimeout(() => setPhase('finishing'), 0),
+      setTimeout(() => setPhase('opening'), FINISH_MS),
+      // Al desmontarse corren los exit: las hojas se abren
+      setTimeout(onComplete, FINISH_MS + SEAM_MS),
+    );
   }, [onComplete]);
 
   useEffect(() => {
@@ -26,7 +46,11 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
       resolved.current.minDone = true;
       tryExit();
     }, MIN_MS);
-    return () => clearTimeout(t);
+    const pending = timers.current;
+    return () => {
+      clearTimeout(t);
+      pending.forEach(clearTimeout);
+    };
   }, [tryExit]);
 
   useEffect(() => {
@@ -34,139 +58,87 @@ export function Preloader({ onComplete, isDataReady }: PreloaderProps) {
     if (isDataReady) tryExit();
   }, [isDataReady, tryExit]);
 
+  const opening = phase === 'opening';
+
   return (
     <motion.div
       role="status"
       aria-label="Cargando Empero Argentina"
-      className="fixed inset-0 z-[9999] overflow-hidden select-none flex flex-col"
-      style={{ backgroundColor: '#000000' }}
-      exit={{ y: '-100%' }}
-      transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+      className="fixed inset-0 z-[9999] select-none"
     >
-      {/* Heating element sweep — funciona igual sobre blanco */}
+      {/* Hojas: un mismo resplandor tenue centrado, partido en dos */}
       <motion.div
-        className="absolute left-0 right-0 pointer-events-none"
-        style={{
-          top: '50%',
-          height: '1px',
-          transformOrigin: 'left',
-          background: 'linear-gradient(to right, transparent 0%, #C41B2E 15%, #ff4d5e 50%, #C41B2E 85%, transparent 100%)',
-          boxShadow: '0 0 10px 2px rgba(196,27,46,0.5), 0 0 30px 6px rgba(196,27,46,0.15)',
-        }}
-        initial={{ scaleX: 0, opacity: 0 }}
-        animate={{ scaleX: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-        transition={{ duration: 0.5, delay: 0, ease: 'easeInOut', times: [0, 0.4, 0.7, 1] }}
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[calc(50%+1px)] bg-[radial-gradient(ellipse_55%_90%_at_50%_100%,rgb(34_28_24)_0%,rgb(13_11_9)_100%)]"
+        exit={{ y: '-100%' }}
+        transition={{ duration: 0.8, ease: EASE_CURTAIN }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-[calc(50%+1px)] bg-[radial-gradient(ellipse_55%_90%_at_50%_0%,rgb(34_28_24)_0%,rgb(13_11_9)_100%)]"
+        exit={{ y: '100%' }}
+        transition={{ duration: 0.8, ease: EASE_CURTAIN }}
       />
 
-      {/* Contenido central */}
-      <div className="flex-1 flex flex-col items-center justify-center">
-
-        {/* Círculo + logo */}
-        <div
-          className="relative flex items-center justify-center"
-          style={{ width: 'clamp(320px, 48vw, 520px)', height: 'clamp(320px, 48vw, 520px)' }}
-        >
-          {/* SVG ring — empieza desde arriba (rotate -90deg), se dibuja en sentido horario */}
-          <motion.svg
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full"
-            viewBox="0 0 100 100"
-            style={{ rotate: '-90deg' }}
-          >
-            <motion.circle
-              cx="50" cy="50" r="45"
-              stroke="#C41B2E"
-              strokeWidth="1.8"
-              fill="none"
-              strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.9 }}
-              transition={{
-                pathLength: { duration: 0.65, delay: 0.55, ease: [0.16, 1, 0.3, 1] },
-                opacity:   { duration: 0.15, delay: 0.55 },
-              }}
-            />
-            {/* Punto en el cierre del círculo */}
-            <motion.circle
-              cx="50" cy="5"
-              r="2.4"
-              fill="#C41B2E"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 0.9 }}
-              transition={{ duration: 0.2, delay: 1.15 }}
-            />
-          </motion.svg>
-
-          {/* Logo */}
+      {/* Marca: logo arriba de la línea central, leyenda abajo */}
+      <motion.div
+        className="absolute inset-0"
+        animate={opening ? { opacity: 0, scale: 0.97 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, ease: 'easeIn' }}
+        exit={{ opacity: 0 }}
+      >
+        <div className="absolute inset-x-0 bottom-[calc(50%+2rem)] flex justify-center">
           <motion.img
             src="/images/logo/Logo.png"
             alt=""
             width={480}
             height={333}
-            className="brightness-0 invert relative z-10"
-            style={{ width: 'clamp(230px, 32vw, 360px)', objectFit: 'contain' }}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            // Interior transparente y texto negro: en blanco monocromo se lee
+            // sobre el fondo oscuro.
+            className="w-[clamp(170px,20vw,240px)] h-auto object-contain brightness-0 invert"
+            initial={{ opacity: 0, clipPath: 'inset(0% 50% 0% 50%)' }}
+            animate={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0%)' }}
+            transition={{ duration: 0.85, ease: EASE_OUT }}
           />
         </div>
 
-        {/* Línea roja bajo el logo */}
-        <motion.div
-          style={{
-            marginTop: '1.75rem',
-            height: '2px',
-            background: 'linear-gradient(to right, transparent, rgba(196,27,46,0.85) 30%, rgba(196,27,46,0.85) 70%, transparent)',
-            transformOrigin: 'center',
-          }}
-          initial={{ width: 0, opacity: 0 }}
-          animate={{ width: 160, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
-        />
+        {/* Progreso, centrado sobre la línea media */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-[calc(50%-0.5px)] h-px w-36 -translate-x-1/2 bg-white/[0.12]"
+        >
+          <motion.div
+            className="h-full origin-left bg-brand"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: phase === 'loading' ? 0.85 : 1 }}
+            transition={
+              phase === 'loading'
+                ? { duration: MIN_MS / 1000, delay: 0.2, ease: [0.2, 0, 0.3, 1] }
+                : { duration: FINISH_MS / 1000, ease: 'easeOut' }
+            }
+          />
+        </div>
 
-        {/* Tagline */}
         <motion.p
-          className="font-sans font-light uppercase tracking-[0.18em] text-center mt-6 px-6"
-          style={{ fontSize: 'clamp(1.3rem, 2.8vw, 1.7rem)', color: 'rgba(255,255,255,1)' }}
+          className="absolute inset-x-0 top-[calc(50%+1.6rem)] px-6 text-center text-[0.6562rem] sm:text-[0.6875rem] font-semibold uppercase tracking-[0.32em] text-white/45"
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 1.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.7, delay: 0.35, ease: EASE_OUT }}
         >
-          Equipamiento gastronómico profesional
+          Distribuidor oficial · Argentina
         </motion.p>
+      </motion.div>
 
-        {/* Sub-label */}
-        <motion.p
-          className="font-sans font-light uppercase text-center mt-3 px-6"
-          style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.85)' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.45, delay: 1.42 }}
-        >
-          <span className="block sm:inline">Distribuidores oficiales</span>
-          <span className="hidden sm:inline"> · </span>
-          <span className="block sm:inline">Argentina</span>
-        </motion.p>
-
-      </div>
-
-      {/* Barra de progreso */}
-      <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)' }}>
-        <motion.div
-          style={{
-            height: '100%',
-            background: '#C41B2E',
-            transformOrigin: 'left',
-          }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: progressDone ? 1 : 0.88 }}
-          transition={
-            progressDone
-              ? { duration: 0.2, ease: 'easeOut' }
-              : { duration: (MIN_MS / 1000) - 0.2, delay: 0.1, ease: [0.2, 0, 0.4, 1] }
-          }
-        />
-      </div>
+      {/* Línea de corte: crece desde el centro y se apaga al abrirse */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[calc(50%-0.5px)] h-px origin-center bg-brand shadow-[0_0_14px_2px_rgb(195_21_27/0.45)]"
+        // Oculta hasta usarse: con scaleX 0 el resplandor igual dejaba una marca
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={opening ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }}
+        transition={{ duration: SEAM_MS / 1000, ease: EASE_IN_OUT, opacity: { duration: 0.12 } }}
+        exit={{ opacity: 0, transition: { duration: 0.5, ease: 'easeOut' } }}
+      />
     </motion.div>
   );
 }

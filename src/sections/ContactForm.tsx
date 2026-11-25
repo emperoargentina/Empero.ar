@@ -67,7 +67,7 @@ function Field({ label, name, icon, error, hint, required, multiline, inputProps
     <div className="field">
       <label htmlFor={id} className="field-label">
         {label}
-        {required && <span className="ml-1 text-[#C41B2E]/70" aria-hidden="true">*</span>}
+        {required && <span className="ml-1 text-brand/70" aria-hidden="true">*</span>}
       </label>
       {hint && <p id={hintId} className="field-hint">{hint}</p>}
       <div className="relative">
@@ -155,50 +155,49 @@ export function ContactForm() {
     {
       key: 'phone', label: 'Teléfono', value: companyConfig.contact.phone,
       sub: 'Lun – Vie · 9 a 18 hs', icon: <Phone className="w-5 h-5" />,
-      href: `tel:${companyConfig.contact.phone.replace(/[^\d+]/g, '')}`, external: false, color: '#C41B2E',
+      href: `tel:${companyConfig.contact.phone.replace(/[^\d+]/g, '')}`, external: false, color: 'rgb(var(--brand-600))',
     },
     {
       key: 'email', label: 'Email', value: companyConfig.contact.email,
       sub: 'Respuesta en < 24 hs', icon: <Mail className="w-5 h-5" />,
-      href: `mailto:${companyConfig.contact.email}`, external: false, color: '#C41B2E',
+      href: `mailto:${companyConfig.contact.email}`, external: false, color: 'rgb(var(--brand-600))',
     },
     {
       key: 'whatsapp', label: 'WhatsApp', value: 'Escribinos ahora',
       sub: 'Respuesta inmediata', icon: <WhatsAppIcon className="w-5 h-5" />,
-      href: getWhatsAppURL(), external: true, color: '#25D366',
+      href: getWhatsAppURL(), external: true, color: 'rgb(var(--whatsapp-600))',
     },
   ];
 
   return (
-    <section id="contacto" aria-labelledby="contacto-title" className="relative overflow-hidden bg-[#F4F0E8]">
-      <div className="absolute top-0 inset-x-0 h-px bg-black/[0.08]" />
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-grain" />
+    <section id="contacto" aria-labelledby="contacto-title" className="relative overflow-hidden bg-ink-100">
+      <div aria-hidden="true" className="absolute top-0 inset-x-0 h-px bg-ink-900/[0.08]" />
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.035] bg-grain" />
+      <div aria-hidden="true" className="absolute -top-40 right-[-10%] w-[40rem] h-[40rem] rounded-full bg-brand/[0.05] blur-[120px] pointer-events-none" />
 
-      <div className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-24 lg:py-36">
-        <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 items-start">
+      <div className="relative container-custom py-20 lg:py-28">
+        <div className="grid lg:grid-cols-[2fr_3fr] gap-10 lg:gap-12 items-start">
 
           {/* ── LEFT ── */}
           <AnimatedSection direction="up">
             <div className="lg:sticky lg:top-28">
-              <div className="flex items-center gap-3 mb-10">
-                <div className="h-px w-8 bg-[#C41B2E]" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C41B2E]">
-                  Contacto
-                </span>
-              </div>
+              <p className="inline-flex items-center gap-3 mb-8 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-brand">
+                <span aria-hidden="true" className="h-px w-8 bg-brand" />
+                Contacto
+              </p>
 
               <h2
                 id="contacto-title"
-                className="font-serif font-[560] leading-none mb-8 text-[#1A1613] tracking-[-0.02em] text-[clamp(2.75rem,1.6rem+3.2vw,4.5rem)]"
+                className="font-display font-[560] leading-none mb-7 text-ink-900 tracking-[-0.025em] text-[clamp(2.4rem,1.6rem+2.4vw,3.6rem)]"
               >
-                Hablemos<span className="text-[#C41B2E]">.</span>
+                Hablemos<span className="text-brand">.</span>
               </h2>
 
-              <p className="text-lg leading-relaxed mb-14 max-w-[400px] text-[#7A6E65]">
+              <p className="text-[1rem] leading-relaxed mb-10 max-w-[25rem] text-ink-600 text-pretty">
                 Consultas sobre equipamiento, precios y disponibilidad. Respondemos en menos de 24&nbsp;hs.
               </p>
 
-              <ul className="flex flex-col gap-2.5">
+              <ul className="flex flex-col gap-3">
                 {channels.map((ch) => (
                   <li key={ch.key}>
                     <a
@@ -206,13 +205,13 @@ export function ContactForm() {
                       {...(ch.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       className="contact-channel group"
                     >
-                      <span className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-[#C41B2E] transition-transform duration-200 motion-safe:group-hover:scale-105">
+                      <span aria-hidden="true" className="contact-channel__icon">
                         {ch.icon}
                       </span>
                       <span className="flex-1 min-w-0">
-                        <span className="block text-[10.5px] font-semibold uppercase tracking-[0.1em] mb-0.5 text-[#857870]">{ch.label}</span>
-                        <span className="block text-sm font-semibold truncate text-[#1A1613]">{ch.value}</span>
-                        <span className="block text-[11.5px] mt-0.5 text-[#857870]">{ch.sub}</span>
+                        <span className="block text-[0.6562rem] font-semibold uppercase tracking-[0.12em] mb-0.5 text-ink-500">{ch.label}</span>
+                        <span className="block text-[0.9375rem] font-semibold truncate text-ink-900">{ch.value}</span>
+                        <span className="block text-[0.75rem] mt-0.5 text-ink-500">{ch.sub}</span>
                       </span>
                       <ChevronRight
                         className="w-4 h-4 flex-shrink-0 transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
@@ -225,13 +224,13 @@ export function ContactForm() {
                 ))}
               </ul>
 
-              <div className="contact-channel mt-2.5 cursor-default hover:translate-y-0">
-                <span className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-[#C41B2E]">
-                  <ShieldCheck className="w-6 h-6" />
+              <div className="contact-channel contact-channel--static mt-3">
+                <span aria-hidden="true" className="contact-channel__icon">
+                  <ShieldCheck className="w-5 h-5" />
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-sm font-semibold text-[#1A1613]">Tus datos están seguros</span>
-                  <span className="block text-[11.5px] mt-0.5 leading-snug text-[#857870]">
+                  <span className="block text-[0.9375rem] font-semibold text-ink-900">Tus datos están seguros</span>
+                  <span className="block text-[0.75rem] mt-0.5 leading-snug text-ink-500">
                     Solo los usamos para responder tu consulta. No los compartimos con terceros.
                   </span>
                 </span>
@@ -240,17 +239,17 @@ export function ContactForm() {
           </AnimatedSection>
 
           {/* ── RIGHT: Form card ── */}
-          <AnimatedSection direction="up" delay={0.1} className="lg:max-w-[660px] lg:ml-auto w-full">
-            <div className="rounded-2xl overflow-hidden bg-white border border-black/[0.06] shadow-[0_32px_90px_rgba(26,22,19,0.14),0_10px_30px_rgba(26,22,19,0.07),0_20px_60px_rgba(196,27,46,0.06)]">
-              <div className="px-6 sm:px-10 py-7">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C41B2E] mb-2">Consulta</p>
-                <div className="flex items-center gap-2.5 mb-3">
-                  <Send className="w-[18px] h-[18px] flex-shrink-0 text-[#C41B2E]" aria-hidden="true" />
-                  <h3 id="consulta-form-title" className="font-serif font-[560] text-[1.3rem] text-[#1A1613]">
+          <AnimatedSection direction="up" delay={0.1} className="lg:max-w-[42.5rem] lg:ml-auto w-full">
+            <div className="form-card">
+              <div className="px-6 sm:px-10 pt-8 pb-6">
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-brand mb-2">Consulta</p>
+                <div className="flex items-center gap-2.5 mb-4">
+                  <Send className="w-[1.125rem] h-[1.125rem] flex-shrink-0 text-brand" aria-hidden="true" />
+                  <h3 id="consulta-form-title" className="font-display font-[560] text-[1.25rem] text-ink-900">
                     Envianos tu mensaje
                   </h3>
                 </div>
-                <div className="w-[120px] h-0.5 bg-[#C41B2E] opacity-35" />
+                <div aria-hidden="true" className="w-28 h-0.5 rounded-full bg-gradient-to-r from-brand to-brand/0" />
               </div>
 
               <div className="px-6 sm:px-10 pb-9 pt-2">
@@ -266,23 +265,23 @@ export function ContactForm() {
                       transition={{ duration: 0.3 }}
                     >
                       <motion.div
-                        className="w-16 h-16 rounded-full flex items-center justify-center mb-6 bg-[#C41B2E]/[0.06] border border-[#C41B2E]/15"
+                        className="w-14 h-14 rounded-full flex items-center justify-center mb-6 bg-emerald-50 border border-emerald-200"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 360, damping: 16, delay: 0.1 }}
                       >
-                        <CheckCircle2 className="w-7 h-7 text-[#C41B2E]" aria-hidden="true" />
+                        <CheckCircle2 className="w-7 h-7 text-emerald-600" aria-hidden="true" />
                       </motion.div>
-                      <h4 ref={successHeadingRef} tabIndex={-1} className="font-serif font-[560] mb-2 text-[1.2rem] text-[#1A1613] outline-none">
-                        ¡Recibimos tu consulta!
+                      <h4 ref={successHeadingRef} tabIndex={-1} className="font-display font-[560] mb-2 text-xl text-ink-900 outline-none">
+                        Recibimos tu consulta
                       </h4>
-                      <p className="text-sm text-[#6B6159] max-w-xs text-pretty">
+                      <p className="text-sm text-ink-600 max-w-xs text-pretty">
                         Te respondemos al email que dejaste en menos de 24&nbsp;hs hábiles.
                       </p>
                       <button
                         type="button"
                         onClick={() => setStatus('idle')}
-                        className="mt-7 inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-[#EBE5DC] text-[13px] font-semibold text-[#6B6159] hover:bg-[#F4F0E8] cursor-pointer"
+                        className="mt-7 btn btn-secondary"
                       >
                         <RotateCcw className="w-4 h-4" aria-hidden="true" />
                         Enviar otra consulta
@@ -337,7 +336,7 @@ export function ContactForm() {
                         icon={<Building2 className="w-4 h-4" />}
                         error="Revisá el nombre de la empresa."
                         onInvalidField={handleInvalidField}
-                        inputProps={{ type: 'text', autoComplete: 'organization', maxLength: 120, placeholder: 'Nombre de tu empresa (opcional)', enterKeyHint: 'next' }}
+                        inputProps={{ type: 'text', autoComplete: 'organization', maxLength: 120, placeholder: 'Opcional', enterKeyHint: 'next' }}
                       />
 
                       <Field
@@ -356,15 +355,15 @@ export function ContactForm() {
                       </div>
 
                       {status === 'error' && (
-                        <div role="alert" className="flex gap-3 rounded-xl border border-[#F5C5C9] bg-[#FFF6F6] p-4 text-[13px] text-[#3A3530]">
-                          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#C41B2E]" aria-hidden="true" />
+                        <div role="alert" className="flex gap-3 rounded-xl border border-brand-200 bg-brand-50 p-4 text-[0.8125rem] text-ink-700">
+                          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-brand" aria-hidden="true" />
                           <div className="space-y-2">
-                            <p><strong className="text-[#1A1613]">No se pudo enviar.</strong> {errorMsg} Probá de nuevo o mandanos la consulta por WhatsApp.</p>
+                            <p><strong className="text-ink-900">No se pudo enviar.</strong> {errorMsg} Probá de nuevo o mandanos la consulta por WhatsApp.</p>
                             <a
                               href={getWhatsAppURL(lastPayload.current ? whatsappFallbackMessage(lastPayload.current) : undefined)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 font-semibold text-[#128C4A] underline underline-offset-2"
+                              className="inline-flex items-center gap-1.5 font-semibold text-whatsapp-700 underline underline-offset-2"
                             >
                               <WhatsAppIcon className="w-4 h-4" />
                               Enviar por WhatsApp
@@ -374,13 +373,10 @@ export function ContactForm() {
                       )}
 
                       <div className="pt-1">
-                        <motion.button
+                        <button
                           type="submit"
                           disabled={status === 'sending'}
-                          className="relative w-full h-[52px] rounded-xl text-[14px] font-semibold text-white cursor-pointer disabled:opacity-60 disabled:cursor-wait overflow-hidden flex items-center justify-center gap-2.5 bg-gradient-to-br from-[#C41B2E] to-[#9e1424] shadow-[0_4px_20px_rgba(196,27,46,0.25),inset_0_1px_0_rgba(255,255,255,0.1)]"
-                          whileHover={status !== 'sending' ? { boxShadow: '0 8px 32px rgba(196,27,46,0.35), inset 0 1px 0 rgba(255,255,255,0.1)' } : {}}
-                          whileTap={status !== 'sending' ? { scale: 0.99 } : {}}
-                          transition={{ duration: 0.15 }}
+                          className="btn btn-lg btn-primary w-full disabled:cursor-wait"
                         >
                           {status === 'sending' ? (
                             <>
@@ -393,15 +389,15 @@ export function ContactForm() {
                               Enviar consulta
                             </>
                           )}
-                        </motion.button>
+                        </button>
 
-                        <p className="text-center mt-4 text-[12px] text-[#857870]">
+                        <p className="text-center mt-4 text-[0.8438rem] text-ink-500">
                           También podés escribirnos por{' '}
                           <a
                             href={getWhatsAppURL()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="underline underline-offset-2 font-semibold text-[#C41B2E] hover:text-[#9E1424]"
+                            className="underline underline-offset-2 font-semibold text-brand hover:text-brand-800"
                           >
                             WhatsApp
                           </a>

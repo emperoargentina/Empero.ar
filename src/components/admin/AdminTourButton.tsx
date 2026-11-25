@@ -129,8 +129,8 @@ export function AdminTourButton() {
         hasFixedSubmitBar ? 'bottom-20 lg:bottom-24' : 'bottom-6'
       }`}
       style={{
-        background: 'linear-gradient(135deg, #C41B2E 0%, #B51426 100%)',
-        boxShadow: '0 4px 20px rgba(196,27,46,0.35), 0 1px 4px rgba(0,0,0,0.12)',
+        background: 'linear-gradient(135deg, #C3151B 0%, #A51116 100%)',
+        boxShadow: '0 4px 20px rgba(195,21,27,0.35), 0 1px 4px rgba(0,0,0,0.12)',
         height: '52px',
         paddingLeft: '14px',
         paddingRight: '14px',

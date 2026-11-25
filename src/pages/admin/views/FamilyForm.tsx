@@ -33,7 +33,7 @@ function Hint({ children }: { children: React.ReactNode }) {
   return <p className="mt-1 text-xs text-[#9E9080]">{children}</p>
 }
 
-const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C41B2E]/15 focus-visible:border-[#C41B2E]'
+const fieldCls = 'border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] h-10 focus-visible:ring-2 focus-visible:ring-[#C3151B]/15 focus-visible:border-[#C3151B]'
 
 // Card de sección con icono de color — mismo lenguaje visual que ProductForm.
 function SectionCard({
@@ -204,7 +204,7 @@ export function FamilyForm() {
   if (loading) {
     return (
       <div className="flex items-center gap-3 py-24 justify-center">
-        <Loader2 className="w-5 h-5 animate-spin text-[#C41B2E]" />
+        <Loader2 className="w-5 h-5 animate-spin text-[#C3151B]" />
         <span className="text-sm text-[#9E9080]">Cargando familia...</span>
       </div>
     )
@@ -214,7 +214,7 @@ export function FamilyForm() {
     return (
       <div className="space-y-4">
         <div className="p-4 rounded-lg text-sm bg-red-50 text-red-600">{loadError || 'Familia no encontrada'}</div>
-        <Link to="/admin/productos" className="inline-flex items-center gap-2 text-sm font-medium text-[#C41B2E]">
+        <Link to="/admin/productos" className="inline-flex items-center gap-2 text-sm font-medium text-[#C3151B]">
           <ArrowLeft className="w-4 h-4" /> Volver al listado
         </Link>
       </div>
@@ -235,7 +235,7 @@ export function FamilyForm() {
         </Button>
         <div>
           <h1 className="text-lg font-bold text-[#1A1613] flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#C41B2E]" />
+            <Layers className="w-4 h-4 text-[#C3151B]" />
             Editar familia
           </h1>
           <p className="text-xs text-[#9E9080]">
@@ -249,7 +249,7 @@ export function FamilyForm() {
           <SectionCard
             dataTour="tour-family-form-identity"
             icon={Tag}
-            tint="bg-[#FFE4E6] text-[#C41B2E]"
+            tint="bg-[#FFE4E6] text-[#C3151B]"
             title="Datos de la familia"
             description="Nombre, categoría, imagen y características compartidas"
             className="h-full flex flex-col"
@@ -274,7 +274,7 @@ export function FamilyForm() {
                         {CATEGORIAS.map(c => {
                           const Icon = CATEGORIA_ICONS[c]
                           return (
-                            <SelectItem key={c} value={c} className="focus:bg-[#FFF0F1] focus:text-[#C41B2E]">
+                            <SelectItem key={c} value={c} className="focus:bg-[#FDF2F2] focus:text-[#C3151B]">
                               <span className="flex items-center gap-2">
                                 <Icon className="w-3.5 h-3.5 opacity-70" />
                                 {c}
@@ -331,7 +331,7 @@ export function FamilyForm() {
               type="button"
               variant="ghost"
               onClick={() => setPickerOpen(true)}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C41B2E] hover:bg-[#FFF0F1] hover:text-[#C41B2E] w-fit px-3"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C3151B] hover:bg-[#FDF2F2] hover:text-[#C3151B] w-fit px-3"
             >
               <Plus className="w-3.5 h-3.5" /> Agregar variante
             </Button>

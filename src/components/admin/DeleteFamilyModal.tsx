@@ -35,7 +35,7 @@ export function DeleteFamilyModal({
       <DialogContent className="bg-white border-[#EBE5DC] max-w-md p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-5 pt-5 pb-4 border-b border-[#EBE5DC] text-left">
           <DialogTitle className="text-base font-bold text-[#1A1613] flex items-center gap-2">
-            <Trash2 className="w-4 h-4 text-[#C41B2E]" />
+            <Trash2 className="w-4 h-4 text-[#C3151B]" />
             Eliminar familia «{familyName}»
           </DialogTitle>
           <DialogDescription className="text-xs text-[#9E9080]">

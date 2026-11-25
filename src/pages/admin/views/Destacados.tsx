@@ -117,7 +117,7 @@ export function Destacados() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-72">
-        <Loader2 className="w-6 h-6 animate-spin text-[#C41B2E]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[#C3151B]" />
       </div>
     )
   }
@@ -126,12 +126,12 @@ export function Destacados() {
     <div className="flex flex-col gap-6 max-w-full">
       <div>
         <h1 className="text-2xl font-bold text-[#1A1613] tracking-tight flex items-center gap-2.5">
-          <Star className="w-6 h-6 text-[#C41B2E] fill-[#C41B2E]" />
+          <Star className="w-6 h-6 text-[#C3151B] fill-[#C3151B]" />
           Productos Destacados
         </h1>
         <p className="text-sm text-[#9E9080] mt-1">
           Seleccioná hasta <strong className="text-[#6B6159]">{MAX_DESTACADOS}</strong> productos para mostrar en el carrusel del inicio.
-          {seleccionLlena && <span className="text-[#C41B2E] ml-1">Límite alcanzado.</span>}
+          {seleccionLlena && <span className="text-[#C3151B] ml-1">Límite alcanzado.</span>}
         </p>
       </div>
 
@@ -160,15 +160,15 @@ export function Destacados() {
               className={`group relative rounded-xl overflow-hidden transition-all duration-200 aspect-[3/4] ${
                 prod
                   ? `border bg-white shadow-sm cursor-grab active:cursor-grabbing ${
-                      isDragOver ? 'border-[#C41B2E] ring-2 ring-[#C41B2E]/30' : 'border-[#E8E2D9] hover:shadow-md hover:-translate-y-0.5'
+                      isDragOver ? 'border-[#C3151B] ring-2 ring-[#C3151B]/30' : 'border-[#E8E2D9] hover:shadow-md hover:-translate-y-0.5'
                     } ${isDragging ? 'opacity-40' : ''}`
-                  : 'border border-dashed border-[#D8D0C6] bg-white/50 flex items-center justify-center cursor-pointer hover:border-[#C41B2E]/40 hover:bg-[#C41B2E]/[0.02]'
+                  : 'border border-dashed border-[#D8D0C6] bg-white/50 flex items-center justify-center cursor-pointer hover:border-[#C3151B]/40 hover:bg-[#C3151B]/[0.02]'
               }`}
             >
               {prod ? (
                 <>
                   <div className="absolute top-2 left-2 z-10">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#C41B2E] text-white text-sm font-bold shadow-sm">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#C3151B] text-white text-sm font-bold shadow-sm">
                       {i + 1}
                     </span>
                   </div>
@@ -200,7 +200,7 @@ export function Destacados() {
                       <span className="font-mono text-[10px] text-[#9E9080] bg-[#F4F0E8] px-1.5 py-0.5 rounded self-start">{prod.codigo}</span>
                       <p className="text-sm font-semibold text-[#1A1613] line-clamp-2 leading-snug">{prod.nombre}</p>
                       <div className="mt-auto flex items-center justify-between gap-1">
-                        <p className="text-[11px] text-[#C41B2E] font-medium uppercase tracking-wide truncate">{prod.categoria}</p>
+                        <p className="text-[11px] text-[#C3151B] font-medium uppercase tracking-wide truncate">{prod.categoria}</p>
                         {/* Reordenar por toque — el drag & drop no funciona en touch */}
                         <div className="sm:hidden flex items-center gap-0.5 flex-shrink-0">
                           <button
@@ -226,7 +226,7 @@ export function Destacados() {
                 </>
               ) : (
                 <div className="text-center p-4">
-                  <Star className="w-6 h-6 text-[#D8D0C6] mx-auto mb-1 group-hover:text-[#C41B2E]/40 transition-colors" />
+                  <Star className="w-6 h-6 text-[#D8D0C6] mx-auto mb-1 group-hover:text-[#C3151B]/40 transition-colors" />
                   <p className="text-[11px] text-[#C0B5A8] font-medium">Slot {i + 1}</p>
                   <p className="text-[10px] text-[#D8D0C6]">Vacío</p>
                 </div>
@@ -248,7 +248,7 @@ export function Destacados() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Buscá productos para agregar como destacados..."
-                className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
+                className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B]"
               />
             </div>
           </div>
@@ -273,9 +273,9 @@ export function Destacados() {
                     <span className="font-mono text-[10px] text-[#9E9080] bg-[#F4F0E8] px-1.5 py-0.5 rounded">{p.codigo}</span>
                     <span className="text-[10px] text-[#C0B5A8] ml-2">{p.categoria}</span>
                   </div>
-                  <div className="w-8 h-8 rounded-full border-2 border-[#D8D0C6] flex items-center justify-center flex-shrink-0 group-hover:border-[#C41B2E] group-hover:bg-[#C41B2E] transition-colors">
+                  <div className="w-8 h-8 rounded-full border-2 border-[#D8D0C6] flex items-center justify-center flex-shrink-0 group-hover:border-[#C3151B] group-hover:bg-[#C3151B] transition-colors">
                     {savingId === p.id
-                      ? <Loader2 className="w-3.5 h-3.5 text-[#C41B2E] group-hover:text-white animate-spin" />
+                      ? <Loader2 className="w-3.5 h-3.5 text-[#C3151B] group-hover:text-white animate-spin" />
                       : <Plus className="w-4 h-4 text-[#D8D0C6] group-hover:text-white transition-colors" />
                     }
                   </div>
@@ -301,7 +301,7 @@ export function Destacados() {
                 key={i}
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
                   destacados[i]
-                    ? 'bg-[#C41B2E] text-white'
+                    ? 'bg-[#C3151B] text-white'
                     : 'bg-[#F0EAE2] text-[#C0B5A8]'
                 }`}
               >

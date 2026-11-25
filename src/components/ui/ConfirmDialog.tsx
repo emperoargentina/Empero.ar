@@ -68,12 +68,12 @@ export function ConfirmDialog({
     >
       <div className="confirm-dialog__box">
         <div className="px-6 pt-6 pb-5 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#FFF0F1] border border-[#F5C5C9] flex items-center justify-center mx-auto mb-4" aria-hidden="true">
-            <AlertTriangle className="w-5 h-5 text-[#C41B2E]" strokeWidth={2.25} />
+          <div className="w-12 h-12 rounded-full bg-brand-50 border border-brand-200 flex items-center justify-center mx-auto mb-4" aria-hidden="true">
+            <AlertTriangle className="w-5 h-5 text-brand" strokeWidth={2.25} />
           </div>
-          <h2 id={titleId} className="font-sans text-[15px] font-semibold text-[#1A1613] mb-1.5 leading-snug text-balance">{title}</h2>
+          <h2 id={titleId} className="font-sans text-[1rem] font-semibold text-ink-900 mb-1.5 leading-snug text-balance">{title}</h2>
           {description && (
-            <p id={descId} className="text-[13px] text-[#6B6159] leading-relaxed text-pretty">{description}</p>
+            <p id={descId} className="text-[0.875rem] text-ink-600 leading-relaxed text-pretty">{description}</p>
           )}
         </div>
 
@@ -82,14 +82,14 @@ export function ConfirmDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 h-11 rounded-xl text-[13px] font-semibold text-[#6B6159] border border-[#E8E2D9] hover:bg-[#F5F0EA] transition-colors cursor-pointer"
+            className="btn btn-secondary flex-1"
           >
             {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 h-11 rounded-xl text-[13px] font-semibold text-white bg-[#C41B2E] hover:bg-[#B51426] transition-colors cursor-pointer shadow-sm shadow-red-900/20"
+            className="btn btn-primary flex-1"
           >
             {confirmLabel}
           </button>

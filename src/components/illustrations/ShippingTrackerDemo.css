@@ -1,0 +1,197 @@
+/* Seguimiento de envío (Stageshow). Todo bajo .ship-demo. */
+.ship-demo {
+  & .ss-stage {
+    --ss-font: 'DM Sans', system-ui, sans-serif;
+    --ss-accent: #c3151b;
+    --ss-success: #16a34a;
+    --ship-ink: #1a1613;
+    --ship-text: #6b6159;
+    --ship-line: #ebe5dc;
+    --ship-ease: cubic-bezier(0.45, 0, 0.15, 1);
+    overflow: hidden;
+    background: #f1ece3;
+    font: 12.5px/1.4 var(--ss-font);
+    color: var(--ship-ink);
+  }
+
+  /* Ficha fijada arriba, con el pie bajo el corte (bottom bleed) */
+  .ship-card {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: var(--ss-shadow-hero);
+    /* En su propia capa: el texto no salta al terminar de moverse */
+    will-change: transform;
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Sale por el corte inferior (y vuelve a entrar desde ahí) */
+  .ship-card[data-out] {
+    transform: translateY(300px);
+    transition: transform 0.45s cubic-bezier(0.55, 0, 0.75, 0.2);
+  }
+
+  .ship-head {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ship-line);
+  }
+
+  .ship-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: contain;
+    background: #fff;
+    box-shadow: inset 0 0 0 1px var(--ship-line);
+  }
+
+  .ship-title {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .ship-name {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ship-badge { font-size: 11.5px; }
+
+  /* Pasos: cuatro columnas iguales; el riel va de centro a centro */
+  .ship-steps {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ship-track {
+    position: absolute;
+    top: 8px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ship-line);
+  }
+
+  .ship-track__fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ss-accent);
+    transform-origin: left center;
+    transform: scaleX(0.8);
+    transition: transform 2.4s var(--ship-ease);
+  }
+
+  /* El camión viaja con el borde del relleno y se va al llegar */
+  .ship-truck {
+    position: absolute;
+    top: 50%;
+    left: 80%;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 18px;
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ss-accent);
+    box-shadow: 0 0 0 1px var(--ship-line), 0 2px 6px -2px rgb(26 22 19 / 0.25);
+    transform: translate(-50%, -50%);
+    transition: left 2.4s var(--ship-ease), opacity 0.25s ease;
+  }
+
+  .ship-steps[data-arrived] .ship-track__fill { transform: scaleX(1); }
+  /* Se detiene antes del círculo final y se va al llegar */
+  .ship-steps[data-arrived] .ship-truck { left: 90%; }
+  .ship-steps:has(.ship-step[data-current]) .ship-truck { opacity: 0; }
+
+  .ship-step {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  /* Los checks en el rojo de la marca, sobre un disco blanco que tapa el riel */
+  .ship-step .ss-check {
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px #fff;
+  }
+  .ship-step .ss-check__ring { stroke: #d8d0c6; }
+  .ship-step .ss-check__arc { stroke: var(--ss-accent); }
+  .ship-step .ss-check__fill { fill: var(--ss-accent); }
+
+  .ship-step__label {
+    color: var(--ship-text);
+    font-size: 11.5px;
+    line-height: 1.3;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+  }
+
+  .ship-step[data-current] .ship-step__label {
+    color: var(--ship-ink);
+    font-weight: 600;
+  }
+
+  .ship-info {
+    display: grid;
+    padding: 2px 14px;
+    border-radius: 10px;
+    background: #f8f5f0;
+  }
+
+  .ship-info__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+  }
+
+  .ship-info__row + .ship-info__row { border-top: 1px solid var(--ship-line); }
+
+  .ship-info__icon {
+    flex: none;
+    color: #9a8e82;
+  }
+
+  .ship-info__text { min-width: 0; }
+
+  .ship-free {
+    margin-left: auto;
+    color: #15803d;
+    font-weight: 600;
+  }
+
+  .ship-info__end { margin-left: auto; }
+
+  /* Celular: misma ficha, más cerca de los bordes */
+  & .ss-stage[data-layout='compact'] .ship-card {
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    padding: 16px;
+  }
+  & .ss-stage[data-layout='compact'] .ship-step__label { font-size: 11px; }
+  & .ss-stage[data-layout='compact'] .ship-name { font-size: 13px; }
+  & .ss-stage[data-layout='compact'] .ship-head { gap: 10px; }
+  & .ss-stage[data-layout='compact'] .ship-steps[data-arrived] .ship-truck { left: 88%; }
+}

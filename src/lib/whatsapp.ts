@@ -1,9 +1,11 @@
 import { whatsappConfig } from '@/data/company'
 
-// Único lugar que arma links de WhatsApp — los mensajes salen de whatsappConfig.
-
-export function getWhatsAppURL(message: string = whatsappConfig.defaultMessage): string {
-  return `https://wa.me/${whatsappConfig.phoneNumber}?text=${encodeURIComponent(message)}`
+export function getWhatsAppURL(
+  message: string = whatsappConfig.defaultMessage,
+  phoneNumber: string = whatsappConfig.phoneNumber,
+): string {
+  const cleanMessage = message.replaceAll('\uFFFD', '')
+  return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(cleanMessage)}`
 }
 
 export function getProductWhatsAppURL(productName: string, productCode?: string): string {
@@ -24,7 +26,7 @@ export interface QuoteMessageItem {
 export function buildQuoteMessage(items: QuoteMessageItem[]): string {
   const total = items.reduce((sum, item) => sum + item.quantity, 0)
   const lines = [
-    'Hola, buenos días. 👋',
+    'Hola, buenos días.',
     '',
     'Quisiera solicitar una cotización para los siguientes productos:',
     '',

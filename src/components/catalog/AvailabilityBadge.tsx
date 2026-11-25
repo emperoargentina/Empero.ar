@@ -1,51 +1,34 @@
-import { Clock } from 'lucide-react';
-
 interface AvailabilityBadgeProps {
   modo: 'en_stock' | 'por_encargo';
   size?: 'sm' | 'md' | 'lg';
+  /** inline = punto + texto, sin caja (para filas de datos). */
+  variant?: 'chip' | 'inline';
+  /** @deprecated se mantiene por compatibilidad; todas las variantes son chips. */
   pill?: boolean;
 }
 
-export function AvailabilityBadge({ modo, size = 'md', pill = false }: AvailabilityBadgeProps) {
-  const base = size === 'lg' ? 'pl-3.5 pr-4 py-2 text-[13px]' : size === 'md' ? 'pl-2.5 pr-3 py-1 text-[10.5px]' : 'pl-2 pr-2.5 py-0.5 text-[10px]';
-  const iconSz = size === 'lg' ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5';
+const LABEL = { en_stock: 'En stock', por_encargo: 'Por encargo' } as const;
+// Nombres completos (no armados con template strings) para que Tailwind no los purgue.
+const SIZE_CLASS = { sm: 'avail-badge--sm', md: 'avail-badge--md', lg: 'avail-badge--lg' } as const;
 
-  if (modo === 'en_stock') {
-    if (pill) {
-      return (
-        <span className={`inline-flex items-center gap-1.5 bg-white text-emerald-700 font-semibold uppercase tracking-[0.08em] rounded-full border border-emerald-200 shadow-sm ${base}`}>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-          En Stock
-        </span>
-      );
-    }
-    return (
-      <span
-        className={`inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 font-semibold uppercase tracking-[0.08em] ${base}`}
-        style={{ borderRadius: 2, borderLeft: '2px solid #10b981' }}
-      >
-        <span className="w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
-        En Stock
-      </span>
-    );
-  }
+// Estado con punto de color + texto (nunca solo color). Verde = entrega
+// inmediata desde depósito, ámbar = se importa a pedido.
+export function AvailabilityBadge({ modo, size = 'md', variant = 'chip' }: AvailabilityBadgeProps) {
+  const inStock = modo === 'en_stock';
 
-  if (pill) {
+  if (variant === 'inline') {
     return (
-      <span className={`inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 font-semibold uppercase tracking-[0.08em] rounded-full border border-amber-300 shadow-sm ${base}`}>
-        <Clock className={`${iconSz} text-amber-600 flex-shrink-0`} />
-        Por Encargo
+      <span className={`inline-flex items-center gap-1.5 font-medium ${size === 'sm' ? 'text-[0.75rem]' : 'text-[0.8125rem]'} ${inStock ? 'text-emerald-700' : 'text-amber-700'}`}>
+        <span aria-hidden="true" className={`avail-dot ${inStock ? 'avail-dot--stock' : 'avail-dot--order'}`} />
+        {LABEL[modo]}
       </span>
     );
   }
 
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 font-semibold uppercase tracking-[0.08em] ${base}`}
-      style={{ borderRadius: 2, borderLeft: '2px solid #f59e0b' }}
-    >
-      <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0" />
-      Por Encargo
+    <span className={`avail-badge ${SIZE_CLASS[size]} ${inStock ? 'avail-badge--stock' : 'avail-badge--order'}`}>
+      <span aria-hidden="true" className={`avail-dot ${inStock ? 'avail-dot--stock' : 'avail-dot--order'}`} />
+      {LABEL[modo]}
     </span>
   );
 }

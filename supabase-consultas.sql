@@ -13,6 +13,8 @@
 --     /admin/consultas.
 -- ============================================================================
 
+begin;
+
 create table if not exists public.consultas (
   id            uuid primary key default gen_random_uuid(),
   created_at    timestamptz not null default now(),
@@ -32,6 +34,10 @@ create index if not exists consultas_created_at_idx on public.consultas (created
 create index if not exists consultas_email_created_idx on public.consultas (email, created_at desc);
 
 alter table public.consultas enable row level security;
+
+revoke all on table public.consultas from anon, authenticated;
+grant select, update, delete on table public.consultas to authenticated;
+grant select, insert, update on table public.consultas to service_role;
 
 drop policy if exists "consultas_auth_read" on public.consultas;
 create policy "consultas_auth_read"
@@ -54,3 +60,7 @@ create policy "consultas_auth_delete"
 
 -- Sin políticas para `anon` ni de `insert`: el alta solo ocurre desde
 -- /api/consultas con la service key.
+
+notify pgrst, 'reload schema';
+
+commit;

@@ -9,6 +9,9 @@ interface FooterProps {
   onCategorySelect?: (categoryId: string) => void;
 }
 
+// Líneas principales (no las primeras alfabéticas).
+const FOOTER_CATEGORIES = ['Hornos', 'Cocinas', 'Refrigeración', 'Lavado', 'Freidoras'];
+
 const QUICK_LINKS = [
   { name: 'Inicio', href: '#inicio' },
   { name: 'Catálogo', href: '#catalogo' },
@@ -30,15 +33,15 @@ export function Footer({ onCategorySelect }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-[#0D0B09] text-white relative overflow-hidden">
+    <footer className="bg-ink-950 text-white relative overflow-hidden">
       <div aria-hidden="true">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#C41B2E]/80 to-transparent" />
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#C41B2E]/25 to-transparent translate-y-px" />
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#C41B2E]/[0.07] to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] max-w-full h-[200px] bg-[#C41B2E]/[0.03] blur-[80px] pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/80 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[0.1875rem] bg-gradient-to-r from-transparent via-brand/25 to-transparent translate-y-px" />
+        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-brand/[0.07] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[37.5rem] max-w-full h-[12.5rem] bg-brand/[0.03] blur-[80px] pointer-events-none" />
       </div>
 
-      <div className="container-custom py-16 lg:py-20 relative">
+      <div className="container-custom pt-16 pb-24 sm:pb-16 lg:py-20 relative">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-6 mb-8">
 
           {/* Brand */}
@@ -78,7 +81,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
             <ul className="space-y-3">
               {contactInfo.map((item) => (
                 <li key={item.text} className="flex items-start gap-2.5">
-                  <item.icon className="w-3.5 h-3.5 text-[#E0485A] mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <item.icon className="w-3.5 h-3.5 text-brand-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                   {item.href ? (
                     <a href={item.href} className="text-white/70 hover:text-white text-sm leading-snug underline-offset-2 hover:underline break-all">
                       {item.text}
@@ -109,7 +112,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
           <div className="col-span-1 sm:col-span-1 lg:col-span-3 flex flex-col h-full">
             <h2 className="footer-heading">Categorías</h2>
             <ul className="space-y-2.5">
-              {categories.slice(0, 5).map((category) => (
+              {FOOTER_CATEGORIES.map(id => categories.find(c => c.id === id)).filter(c => c !== undefined).map((category) => (
                 <li key={category.id}>
                   <button
                     type="button"
@@ -123,7 +126,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
             </ul>
 
             <div className="mt-auto pt-6 flex justify-end">
-              <a href="#inicio" onClick={handleAnchorClick} aria-label="Volver arriba" className="footer-icon-btn w-10 h-10">
+              <a href="#inicio" onClick={handleAnchorClick} aria-label="Volver arriba" className="footer-icon-btn">
                 <ArrowUp className="w-4 h-4" aria-hidden="true" />
               </a>
             </div>
@@ -136,7 +139,7 @@ export function Footer({ onCategorySelect }: FooterProps) {
             © {new Date().getFullYear()} {companyConfig.name} Argentina. Todos los derechos reservados.
           </p>
           <a
-            href="https://arcynox.com.ar"
+            href="https://www.arcynox.com.ar/?utm_source=empero.ar&utm_medium=referral&utm_campaign=footer_credit"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 hover:text-white transition-colors duration-200"

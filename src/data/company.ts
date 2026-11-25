@@ -41,13 +41,13 @@ export const whatsappConfig = {
   phoneNumber: companyConfig.contact.whatsapp,
   messageTemplate: (productName: string, productCode?: string) => {
     const lines = [
-      'Hola, buenos días. 👋',
+      'Hola, buenos días.',
       '',
       'Estoy interesado/a en el siguiente producto y quisiera recibir más información:',
       '',
-      `🔹 *Producto:* ${productName}`,
+      `*Producto:* ${productName}`,
     ];
-    if (productCode) lines.push(`🔹 *Código:* ${productCode}`);
+    if (productCode) lines.push(`*Código:* ${productCode}`);
     lines.push('', 'Quedo atento/a a su respuesta. ¡Muchas gracias!');
     return lines.join('\n');
   },

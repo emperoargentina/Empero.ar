@@ -44,7 +44,7 @@ export function AdminLogin() {
           width: '800px',
           height: '800px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(196,27,46,0.06) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(195,21,27,0.06) 0%, transparent 60%)',
           filter: 'blur(120px)',
         }}
       />
@@ -56,11 +56,11 @@ export function AdminLogin() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <div className="h-1 bg-gradient-to-r from-transparent via-[#C41B2E] to-transparent" />
+          <div className="h-1 bg-gradient-to-r from-transparent via-[#C3151B] to-transparent" />
 
           <div className="px-6 sm:px-10 pt-10 pb-8">
             <div className="text-center mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C41B2E] to-[#B51426] flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#C41B2E]/25">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C3151B] to-[#A51116] flex items-center justify-center mx-auto mb-5 shadow-lg shadow-[#C3151B]/25">
                 <Package className="w-7 h-7 text-white" />
               </div>
               <h1 className="text-xl font-bold text-[#1A1613] tracking-tight">Empero</h1>
@@ -82,7 +82,7 @@ export function AdminLogin() {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="admin@empero.com"
-                    className="pl-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
+                    className="pl-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B]"
                   />
                 </div>
               </div>
@@ -99,7 +99,7 @@ export function AdminLogin() {
                     onChange={e => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="pl-10 pr-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
+                    className="pl-10 pr-10 h-12 rounded-xl border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B]"
                   />
                   <Button
                     type="button"

@@ -13,6 +13,9 @@ export interface QuoteItem {
   notes: string;
 }
 
+/** Cantidad en la lista por id de producto (los que no están, no aparecen). */
+export type QuoteQuantities = Record<string, number>;
+
 interface UseQuoteListReturn {
   items: QuoteItem[];
   addItem: (product: Product) => void;

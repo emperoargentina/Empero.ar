@@ -60,7 +60,7 @@ export function FamilyChildPickerModal({
       <DialogContent className="bg-white border-[#EBE5DC] max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-5 pt-5 pb-4 border-b border-[#EBE5DC] text-left">
           <DialogTitle className="text-base font-bold text-[#1A1613] flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-[#C41B2E]" />
+            <UserPlus className="w-4 h-4 text-[#C3151B]" />
             Agregar producto hijo a «{family.nombre}»
           </DialogTitle>
           <DialogDescription className="text-xs text-[#9E9080]">
@@ -77,7 +77,7 @@ export function FamilyChildPickerModal({
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Buscar por nombre o código..."
-              className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C41B2E]/10 focus-visible:border-[#C41B2E]"
+              className="w-full pl-9 h-10 border-[#EBE5DC] bg-white text-[#1A1613] placeholder:text-[#C0B5A8] focus-visible:ring-2 focus-visible:ring-[#C3151B]/10 focus-visible:border-[#C3151B]"
             />
           </div>
         </div>
@@ -101,7 +101,7 @@ export function FamilyChildPickerModal({
                     mismatched
                       ? 'opacity-40 cursor-not-allowed border-[#EBE5DC]'
                       : isSelected
-                        ? 'border-[#C41B2E]/50 bg-[#FFF0F1] cursor-pointer'
+                        ? 'border-[#C3151B]/50 bg-[#FDF2F2] cursor-pointer'
                         : 'border-[#EBE5DC] hover:bg-[#FAF8F4] cursor-pointer'
                   }`}
                 >
@@ -110,7 +110,7 @@ export function FamilyChildPickerModal({
                     checked={isSelected}
                     disabled={mismatched}
                     onChange={() => toggle(p)}
-                    className="w-4 h-4 accent-[#C41B2E] rounded flex-shrink-0 cursor-pointer disabled:cursor-not-allowed"
+                    className="w-4 h-4 accent-[#C3151B] rounded flex-shrink-0 cursor-pointer disabled:cursor-not-allowed"
                   />
                   <div className="w-9 h-9 rounded-lg bg-[#F4F0E8] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#EBE5DC]">
                     {p.cloudinary_url

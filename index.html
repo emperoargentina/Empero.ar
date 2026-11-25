@@ -22,7 +22,17 @@
     <link rel="canonical" href="https://www.empero.com.ar/" />
 
     <!-- Mobile Status Bar Configuration -->
-    <meta name="theme-color" content="#15120F" />
+    <meta name="theme-color" content="#0D0B09" />
+    <script>
+      if (/^\/admin(?:\/|$)/i.test(window.location.pathname)) {
+        document.documentElement.dataset.initialPage = 'admin'
+        document.querySelector('meta[name="theme-color"]').content = '#FAF8F5'
+      }
+    </script>
+    <style>
+      body { background-color: #0D0B09; }
+      html[data-initial-page="admin"] body { background-color: #FAF8F5; }
+    </style>
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -146,7 +156,7 @@
       - Si en el futuro sumás Facebook/LinkedIn propios de Argentina, agregalos al array "sameAs".
     -->
   </head>
-  <body style="background-color: #15120F">
+  <body>
     <div id="root">
       <!-- H1 para crawlers sin JS. React (createRoot) reemplaza este contenido al montar,
            por lo que en la app renderizada el único H1 es el del Hero. -->

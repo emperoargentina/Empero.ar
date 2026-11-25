@@ -46,7 +46,7 @@
 
 .empero-tour-popover .driver-popover-next-btn,
 .empero-tour-popover .driver-popover-done-btn {
-  background: linear-gradient(135deg, #c41b2e 0%, #b51426 100%);
+  background: linear-gradient(135deg, #C3151B 0%, #A51116 100%);
   color: #ffffff;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .empero-tour-popover .driver-popover-close-btn:hover {
-  color: #c41b2e;
+  color: #C3151B;
 }
 
 .empero-tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
