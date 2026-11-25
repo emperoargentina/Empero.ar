@@ -1,6 +1,6 @@
 import { useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { Phone, Mail, Send, CheckCircle2, ChevronRight, User, Building2, MessageSquare, ShieldCheck, AlertCircle, RotateCcw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Phone, Mail, Send, ChevronRight, User, Building2, MessageSquare, ShieldCheck, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { companyConfig } from '@/data/company';
 import { AnimatedSection } from '@/components/animations/AnimatedSection';
 import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
@@ -110,6 +110,7 @@ function whatsappFallbackMessage(c: ConsultaInput): string {
 }
 
 export function ContactForm() {
+  const reduceMotion = useReducedMotion();
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const lastPayload = useRef<ConsultaInput | null>(null);
@@ -138,11 +139,12 @@ export function ContactForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const body: { error?: string } = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || 'No pudimos enviar tu consulta.');
+      const body: { ok?: boolean; error?: string } | null = await res.json().catch(() => null);
+      if (!res.ok || body?.ok !== true) {
+        throw new Error(body?.error || 'No pudimos enviar tu consulta.');
+      }
       form.reset();
       setStatus('sent');
-      requestAnimationFrame(() => successHeadingRef.current?.focus());
     } catch (err) {
       setErrorMsg(err instanceof Error && err.message !== 'Failed to fetch'
         ? err.message
@@ -239,8 +241,12 @@ export function ContactForm() {
           </AnimatedSection>
 
           {/* ── RIGHT: Form card ── */}
-          <AnimatedSection direction="up" delay={0.1} className="lg:max-w-[42.5rem] lg:ml-auto w-full">
-            <div className="form-card">
+          <AnimatedSection
+            direction="up"
+            delay={0.1}
+            className={`flex w-full lg:ml-auto lg:max-w-[42.5rem] ${status === 'sent' ? 'lg:self-stretch' : ''}`}
+          >
+            <div className="form-card flex w-full flex-col">
               <div className="px-6 sm:px-10 pt-8 pb-6">
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-brand mb-2">Consulta</p>
                 <div className="flex items-center gap-2.5 mb-4">
@@ -252,38 +258,49 @@ export function ContactForm() {
                 <div aria-hidden="true" className="w-28 h-0.5 rounded-full bg-gradient-to-r from-brand to-brand/0" />
               </div>
 
-              <div className="px-6 sm:px-10 pb-9 pt-2">
+              <div className={`px-6 pb-9 pt-2 sm:px-10 ${status === 'sent' ? 'flex flex-1 flex-col' : ''}`}>
                 <AnimatePresence mode="wait" initial={false}>
                   {status === 'sent' ? (
                     <motion.div
                       key="success"
                       role="status"
-                      className="flex flex-col items-center justify-center py-16 text-center"
-                      initial={{ opacity: 0, scale: 0.97 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex flex-1 flex-col items-center justify-center py-8 text-center sm:py-12"
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      onAnimationComplete={() => successHeadingRef.current?.focus({ preventScroll: true })}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
                       <motion.div
-                        className="w-14 h-14 rounded-full flex items-center justify-center mb-6 bg-emerald-50 border border-emerald-200"
-                        initial={{ scale: 0 }}
+                        className="mb-4 grid h-12 w-12 shrink-0 place-items-center rounded-full bg-green-700 text-white"
+                        initial={reduceMotion ? false : { scale: 0.9 }}
                         animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 360, damping: 16, delay: 0.1 }}
+                        transition={{ duration: 0.23, ease: 'easeOut' }}
                       >
-                        <CheckCircle2 className="w-7 h-7 text-emerald-600" aria-hidden="true" />
+                        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden="true">
+                          <motion.path
+                            d="m5 12 4.5 4.5L19 7"
+                            stroke="currentColor"
+                            strokeWidth={2.75}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            initial={reduceMotion ? false : { pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.34, delay: 0.09, ease: 'easeOut' }}
+                          />
+                        </svg>
                       </motion.div>
                       <h4 ref={successHeadingRef} tabIndex={-1} className="font-display font-[560] mb-2 text-xl text-ink-900 outline-none">
                         Recibimos tu consulta
                       </h4>
                       <p className="text-sm text-ink-600 max-w-xs text-pretty">
-                        Te respondemos al email que dejaste en menos de 24&nbsp;hs hábiles.
+                        Te vamos a responder por email en menos de 24&nbsp;horas hábiles.
                       </p>
                       <button
                         type="button"
                         onClick={() => setStatus('idle')}
-                        className="mt-7 btn btn-secondary"
+                        className="mt-4 min-h-11 px-2 text-sm font-semibold text-brand underline-offset-4 hover:underline"
                       >
-                        <RotateCcw className="w-4 h-4" aria-hidden="true" />
                         Enviar otra consulta
                       </button>
                     </motion.div>

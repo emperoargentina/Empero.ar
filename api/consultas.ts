@@ -103,8 +103,11 @@ function buildEmail(c: Consulta, id: string): { subject: string; html: string; t
 }
 
 async function sendEmail(c: Consulta, id: string): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) return false
+  const apiKey = process.env.RESEND_API_KEY?.trim()
+  if (!apiKey) {
+    console.warn('consultas: falta RESEND_API_KEY', { id })
+    return false
+  }
 
   const { subject, html, text } = buildEmail(c, id)
   const res = await fetch('https://api.resend.com/emails', {
@@ -116,8 +119,8 @@ async function sendEmail(c: Consulta, id: string): Promise<boolean> {
       'Idempotency-Key': `consulta-${id}`,
     },
     body: JSON.stringify({
-      from: process.env.CONSULTAS_FROM_EMAIL || 'Empero Web <onboarding@resend.dev>',
-      to: [process.env.CONSULTAS_TO_EMAIL || 'empero.argentina@gmail.com'],
+      from: process.env.CONSULTAS_FROM_EMAIL?.trim() || 'Empero Web <onboarding@resend.dev>',
+      to: [process.env.CONSULTAS_TO_EMAIL?.trim() || 'empero.argentina@gmail.com'],
       reply_to: c.email,
       subject,
       html,
@@ -125,7 +128,8 @@ async function sendEmail(c: Consulta, id: string): Promise<boolean> {
     }),
   })
   if (!res.ok) {
-    console.error('consultas: Resend respondió', res.status, await res.text())
+    const error = await res.json().catch(() => null)
+    console.error('consultas: Resend rechazó el aviso', { id, status: res.status, name: error?.name })
     return false
   }
   return true
@@ -197,7 +201,8 @@ export async function POST(req: Request): Promise<Response> {
     console.error('consultas: error al enviar email', err)
   }
   if (emailSent) {
-    await supabase.from('consultas').update({ email_enviado: true }).eq('id', id)
+    const { error } = await supabase.from('consultas').update({ email_enviado: true }).eq('id', id)
+    if (error) console.error('consultas: no se pudo marcar el aviso como enviado', { id, code: error.code })
   }
 
   return json({ ok: true, id }, 201, cors)

@@ -76,6 +76,7 @@ export function Navigation({
 }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [areMobileCategoriesOpen, setAreMobileCategoriesOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -83,6 +84,7 @@ export function Navigation({
   const productsItemRef = useRef<HTMLDivElement>(null);
   const hoverPreview = useRef(false);
   const dropdownId = useId();
+  const mobileCategoriesId = useId();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,12 +95,6 @@ export function Navigation({
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Barra de estado del navegador acompaña el color de la navbar
-  useEffect(() => {
-    document.querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', isScrolled ? '#FAFAF8' : '#000000');
-  }, [isScrolled]);
 
   // Dropdown "Productos": Escape lo cierra y devuelve el foco al botón.
   useEffect(() => {
@@ -147,9 +143,15 @@ export function Navigation({
     : 'text-white/85 hover:text-white hover:bg-white/10';
 
   return (
-    <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+    <Sheet open={isMobileMenuOpen} onOpenChange={(open) => {
+      if (open) setAreMobileCategoriesOpen(false);
+      setIsMobileMenuOpen(open);
+    }}>
+      {!isScrolled && !isMobileMenuOpen && !isQuoteOpen && (
+        <div aria-hidden="true" className="fixed inset-x-0 top-0 z-[46] h-[max(env(safe-area-inset-top),5px)] bg-ink-950 lg:hidden" />
+      )}
       {/* ── Navbar ─────────────────────────────────────────────── */}
-      <header data-site-header data-dark-surface={isScrolled ? undefined : true} className="fixed top-0 left-0 right-0 z-[45]">
+      <header data-site-header data-dark-surface={isScrolled ? undefined : true} className={`fixed top-0 left-0 right-0 z-[45] pt-[env(safe-area-inset-top)] ${isScrolled ? 'bg-[#FAFAF8] lg:bg-transparent' : ''}`}>
         <div className="w-full max-w-[100rem] mx-auto px-0 sm:px-6 lg:px-8 xl:px-10">
           <motion.div
             animate={isScrolled ? {
@@ -375,7 +377,7 @@ export function Navigation({
         side="right"
         closeLabel="Cerrar menú"
         overlayClassName="bg-ink-950/45 duration-200 motion-reduce:animate-none"
-        className="lg:hidden w-[min(22rem,88dvw)] max-w-none sm:max-w-none p-0 flex flex-col gap-0 bg-ink-50 border-l border-ink-200 data-[state=open]:duration-300 data-[state=closed]:duration-200 motion-reduce:!animate-none [&>button:first-child]:top-2.5 [&>button:first-child]:right-4 [&>button:first-child]:w-11 [&>button:first-child]:h-11 [&>button:first-child]:flex [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-xl [&>button:first-child]:opacity-100 [&>button:first-child]:text-ink-600 [&>button:first-child]:bg-transparent [&>button:first-child:hover]:bg-ink-100 [&>button:first-child_svg]:w-5 [&>button:first-child_svg]:h-5"
+        className="lg:hidden w-[min(22rem,88dvw)] max-w-none sm:max-w-none p-0 pt-[env(safe-area-inset-top)] flex flex-col gap-0 bg-ink-50 border-l border-ink-200 data-[state=open]:duration-300 data-[state=closed]:duration-200 motion-reduce:!animate-none [&>button:first-child]:top-[calc(0.625rem+env(safe-area-inset-top))] [&>button:first-child]:right-4 [&>button:first-child]:w-11 [&>button:first-child]:h-11 [&>button:first-child]:flex [&>button:first-child]:items-center [&>button:first-child]:justify-center [&>button:first-child]:rounded-xl [&>button:first-child]:opacity-100 [&>button:first-child]:text-ink-600 [&>button:first-child]:bg-transparent [&>button:first-child:hover]:bg-ink-100 [&>button:first-child_svg]:w-5 [&>button:first-child_svg]:h-5"
       >
         <SheetHeader className="flex-row items-center h-16 px-5 border-b border-ink-200 space-y-0 flex-shrink-0">
           <SheetTitle>
@@ -395,7 +397,7 @@ export function Navigation({
           initial={reduceMotion ? false : 'hidden'}
           animate="visible"
           aria-label="Menú móvil"
-          className="p-5 flex flex-col flex-1 min-h-0 overflow-y-auto overscroll-contain"
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           data-lenis-prevent
         >
           <motion.button
@@ -403,7 +405,7 @@ export function Navigation({
             custom={0}
             type="button"
             onClick={() => { closeMobile(); setIsQuoteOpen(true); }}
-            className="flex items-center gap-3 w-full p-3.5 bg-white hover:bg-ink-100 rounded-xl mb-4 transition-colors cursor-pointer border border-ink-200 text-left"
+            className="mb-2 flex w-full cursor-pointer items-center gap-3 rounded-xl border border-ink-200 bg-white p-2.5 text-left transition-colors hover:bg-ink-100"
           >
             <span className="relative w-9 h-9 border border-ink-200 rounded-lg flex items-center justify-center flex-shrink-0" aria-hidden="true">
               <ClipboardList className="w-4 h-4 text-brand" />
@@ -424,16 +426,30 @@ export function Navigation({
           <ul className="space-y-0.5">
             {NAV_LINKS.map((link, index) => (
               <motion.li key={link.name} variants={mobileMenuItem} custom={index + 1}>
-                <a
-                  href={link.href}
-                  onClick={(e) => handleAnchorClick(e, closeMobile)}
-                  className="group flex items-center justify-between gap-3 w-full text-base font-semibold text-ink-900 px-3 py-3 rounded-lg hover:bg-ink-100 hover:text-brand transition-colors"
-                >
-                  {link.name}
-                  <ArrowRight aria-hidden="true" className="h-4 w-4 text-ink-500 group-hover:text-brand" />
-                </a>
+                <div className="flex items-center">
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleAnchorClick(e, closeMobile)}
+                    className="group flex min-h-11 flex-1 items-center justify-between gap-3 rounded-lg px-3 text-base font-semibold text-ink-900 transition-colors hover:bg-ink-100 hover:text-brand"
+                  >
+                    {link.name}
+                    {!link.hasDropdown && <ArrowRight aria-hidden="true" className="h-4 w-4 text-ink-500 group-hover:text-brand" />}
+                  </a>
+                  {link.hasDropdown && (
+                    <button
+                      type="button"
+                      aria-expanded={areMobileCategoriesOpen}
+                      aria-controls={mobileCategoriesId}
+                      aria-label="Categorías de productos"
+                      onClick={() => setAreMobileCategoriesOpen((open) => !open)}
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-brand hover:bg-ink-100"
+                    >
+                      <ChevronDown aria-hidden="true" className={`h-5 w-5 motion-safe:transition-transform ${areMobileCategoriesOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                  )}
+                </div>
                 {link.hasDropdown && (
-                  <ul className="mb-2 grid grid-cols-2 gap-1.5 rounded-2xl bg-ink-100/75 p-1.5" aria-label="Categorías de productos">
+                  <ul id={mobileCategoriesId} className={`mb-2 grid-cols-2 gap-1.5 rounded-2xl bg-ink-100/75 p-1.5 ${areMobileCategoriesOpen ? 'grid' : 'hidden'}`} aria-label="Categorías de productos">
                     {categories.map((cat) => {
                       const Icon = CATEGORY_ICONS[cat.icon] ?? Package;
 
@@ -458,7 +474,7 @@ export function Navigation({
             ))}
           </ul>
 
-          <motion.div variants={mobileMenuItem} custom={NAV_LINKS.length + 1} className="mt-auto pt-5 border-t border-ink-200">
+          <motion.div variants={mobileMenuItem} custom={NAV_LINKS.length + 1} className="mt-auto border-t border-ink-200 pt-3">
             <a
               href={getWhatsAppURL()}
               target="_blank"

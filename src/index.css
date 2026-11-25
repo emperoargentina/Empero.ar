@@ -1255,7 +1255,7 @@ img {
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding: max(1.1rem, env(safe-area-inset-top)) 1.25rem 1rem;
+    padding: calc(1.1rem + env(safe-area-inset-top)) 1.25rem 1rem;
     border-bottom: 1px solid rgb(var(--ink-150));
   }
   @media (min-width: 640px) {
@@ -1472,73 +1472,6 @@ img {
   }
   .quote-panel__text-btn:hover { background: rgb(var(--ink-100)); color: rgb(var(--ink-900)); }
   .quote-panel__text-btn--danger:hover { background: rgb(var(--brand-50)); color: rgb(var(--brand-700)); }
-
-  /* Lista vacía: qué es y cómo se usa */
-  .quote-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-block: auto; /* centrada en la pantalla completa */
-    padding: 1.5rem 0 1.25rem;
-    text-align: center;
-  }
-  .quote-empty__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 1.25rem;
-    background: rgb(var(--brand-50));
-    color: rgb(var(--brand-600));
-  }
-  .quote-empty__title {
-    margin-top: 1rem;
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 1.25rem;
-    font-weight: 560;
-    color: rgb(var(--ink-900));
-  }
-  .quote-empty__text {
-    max-width: 19rem;
-    margin-top: 0.4rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: rgb(var(--ink-600));
-    text-wrap: pretty;
-  }
-  .quote-steps {
-    display: grid;
-    gap: 0.5rem;
-    width: 100%;
-    margin: 1.25rem 0 1.5rem;
-    text-align: left;
-  }
-  .quote-steps li {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.7rem 0.85rem;
-    border-radius: 0.75rem;
-    border: 1px solid rgb(var(--ink-150));
-    background: rgb(var(--ink-50));
-    font-size: 0.8125rem;
-    color: rgb(var(--ink-700));
-  }
-  .quote-steps__n {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 1.375rem;
-    height: 1.375rem;
-    border-radius: 624.9375rem;
-    background: rgb(var(--ink-900));
-    color: #fff;
-    font-size: 0.6875rem;
-    font-weight: 700;
-  }
-  .quote-steps__icon { display: flex; flex-shrink: 0; color: rgb(var(--brand-600)); }
 
   /* Pantallas táctiles: controles de al menos 44px */
   @media (pointer: coarse) {

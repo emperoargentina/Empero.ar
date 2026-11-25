@@ -22,11 +22,13 @@
     <link rel="canonical" href="https://www.empero.com.ar/" />
 
     <!-- Mobile Status Bar Configuration -->
-    <meta name="theme-color" content="#0D0B09" />
     <script>
       if (/^\/admin(?:\/|$)/i.test(window.location.pathname)) {
         document.documentElement.dataset.initialPage = 'admin'
-        document.querySelector('meta[name="theme-color"]').content = '#FAF8F5'
+        const themeColor = document.createElement('meta')
+        themeColor.name = 'theme-color'
+        themeColor.content = '#FAF8F5'
+        document.head.append(themeColor)
       }
     </script>
     <style>

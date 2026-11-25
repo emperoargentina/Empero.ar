@@ -2,7 +2,7 @@ import { useId, useState, useSyncExternalStore } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  ClipboardList, Minus, Plus, Trash2, X, StickyNote, ArrowRight, MousePointerClick, ListChecks,
+  Minus, Plus, Trash2, X, StickyNote, ArrowRight,
 } from 'lucide-react';
 import type { Product } from '@/data/products';
 import type { QuoteItem } from '@/hooks/useQuoteList';
@@ -11,7 +11,6 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 import { AvailabilityBadge } from '@/components/catalog/AvailabilityBadge';
 import { disponibilidadDeStock } from '@/lib/availability';
-import { handleAnchorClick } from '@/lib/scroll';
 
 interface QuoteListPanelProps {
   open: boolean;
@@ -47,12 +46,6 @@ function useMediaQuery(query: string): boolean {
     () => false,
   );
 }
-
-const STEPS = [
-  { icon: MousePointerClick, text: 'Abrí un producto y elegí la variante' },
-  { icon: ListChecks, text: 'Agregalo a tu lista y ajustá cantidades' },
-  { icon: WhatsAppIcon, text: 'Enviá la lista por WhatsApp y cotizamos' },
-];
 
 // "Mi lista": en mobile ocupa la pantalla completa y entra desde la derecha
 // como una página; desde 640px es un panel flotante a la derecha. Se cierra
@@ -117,11 +110,11 @@ export function QuoteListPanel({
                 <header className="quote-panel__header">
                   <div className="min-w-0">
                     <Dialog.Title className="quote-panel__title">Mi lista</Dialog.Title>
-                    <p className="quote-panel__subtitle">
-                      {items.length > 0
-                        ? `${plural(items.length, 'producto', 'productos')} · ${plural(totalUnits, 'unidad', 'unidades')}`
-                        : 'Todavía no agregaste productos'}
-                    </p>
+                    {items.length > 0 && (
+                      <p className="quote-panel__subtitle">
+                        {plural(items.length, 'producto', 'productos')} · {plural(totalUnits, 'unidad', 'unidades')}
+                      </p>
+                    )}
                   </div>
                   <Dialog.Close className="quote-panel__close" aria-label="Cerrar mi lista">
                     <X className="w-5 h-5" aria-hidden="true" />
@@ -133,34 +126,7 @@ export function QuoteListPanel({
 
                 <div className="quote-panel__body" data-lenis-prevent>
                   {items.length === 0 ? (
-                    <div className="quote-empty">
-                      <span className="quote-empty__icon" aria-hidden="true">
-                        <ClipboardList className="w-7 h-7" />
-                      </span>
-                      <p className="quote-empty__title">Tu lista está vacía</p>
-                      <p className="quote-empty__text">
-                        Armá una lista con los equipos que necesitás y pedí la cotización de todo junto.
-                      </p>
-                      <ol className="quote-steps">
-                        {STEPS.map(({ icon: Icon, text }, i) => (
-                          <li key={text}>
-                            <span className="quote-steps__n" aria-hidden="true">{i + 1}</span>
-                            <span className="quote-steps__icon" aria-hidden="true">
-                              <Icon className="w-4 h-4" />
-                            </span>
-                            <span>{text}</span>
-                          </li>
-                        ))}
-                      </ol>
-                      <a
-                        href="#catalogo"
-                        onClick={(e) => handleAnchorClick(e, close)}
-                        className="btn btn-primary w-full sm:w-auto"
-                      >
-                        Explorar catálogo
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                      </a>
-                    </div>
+                    <p className="my-auto py-8 text-center text-sm text-ink-600">Tu lista está vacía.</p>
                   ) : (
                     <>
                       <p className="quote-panel__hint">

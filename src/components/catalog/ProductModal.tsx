@@ -405,7 +405,7 @@ export function ProductModal({
                   role="dialog"
                   aria-modal="true"
                   aria-labelledby={titleId}
-                  className="product-modal relative flex flex-col w-full h-[100dvh] bg-white pointer-events-auto lg:h-[min(86dvh,800px)] lg:w-[min(92vw,1180px)] lg:rounded-3xl lg:overflow-hidden"
+                  className="product-modal relative flex flex-col w-full h-[100dvh] bg-white pt-[env(safe-area-inset-top)] pointer-events-auto lg:h-[min(86dvh,800px)] lg:w-[min(92vw,1180px)] lg:rounded-3xl lg:overflow-hidden lg:pt-0"
                   initial={{ opacity: 0, scale: 0.94, y: 28 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.97, y: -10, transition: { duration: 0.2, ease: [0.5, 0, 0.75, 0] } }}
@@ -417,7 +417,7 @@ export function ProductModal({
                     data-autofocus
                     onClick={onClose}
                     aria-label="Cerrar"
-                    className="absolute top-3 right-3 z-30 flex h-10 w-10 lg:h-11 lg:w-11 items-center justify-center rounded-full lg:rounded-xl border border-ink-200 bg-white/95 text-ink-600 shadow-[var(--shadow-sm)] transition-colors hover:border-brand/30 hover:bg-brand-50 hover:text-brand cursor-pointer lg:top-5 lg:right-5"
+                    className="absolute top-[calc(0.75rem+env(safe-area-inset-top))] right-3 z-30 flex h-10 w-10 lg:h-11 lg:w-11 items-center justify-center rounded-full lg:rounded-xl border border-ink-200 bg-white/95 text-ink-600 shadow-[var(--shadow-sm)] transition-colors hover:border-brand/30 hover:bg-brand-50 hover:text-brand cursor-pointer lg:top-5 lg:right-5"
                   >
                     <X className="w-5 h-5" strokeWidth={2.25} aria-hidden="true" />
                   </button>
@@ -541,7 +541,7 @@ export function ProductModal({
                             Elegí una variante para continuar
                           </p>
                         )}
-                        <div className="flex gap-2.5 lg:gap-3">
+                        <div className="grid grid-cols-2 gap-2.5 lg:gap-3 [&_.btn]:min-w-0 [&_.btn]:whitespace-normal [&_.btn]:px-2 [&_.btn]:text-center sm:[&_.btn]:px-4">
                           {product ? (
                             <a
                               href={getProductWhatsAppURL(product.nombre, product.codigo)}
@@ -560,7 +560,7 @@ export function ProductModal({
                             </button>
                           )}
                           {/* Un solo lugar para los tres estados: se reemplazan sin mover nada */}
-                          <div className="relative flex flex-1 min-w-0">
+                          <div className="relative flex min-w-0">
                             <AnimatePresence mode="popLayout" initial={false}>
                               {showAdded ? (
                                 <motion.div
