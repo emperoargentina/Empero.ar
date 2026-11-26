@@ -34,6 +34,16 @@
     <style>
       body { background-color: #0D0B09; }
       html[data-initial-page="admin"] body { background-color: #FAF8F5; }
+      @media (max-width: 1023px) {
+        html[data-site-canvas] { background-color: #0D0B09; }
+        html[data-site-canvas="content"],
+        html[data-site-canvas="content"] body { background-color: #FAFAF8; }
+        html[data-site-canvas="panel"],
+        html[data-site-canvas="panel"] body { background-color: #FFF; }
+      }
+      @media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+        html[data-site-canvas] { transition: background-color 300ms ease-out; }
+      }
     </style>
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

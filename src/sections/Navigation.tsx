@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { useState, useEffect, useRef, useId } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useId } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import {
@@ -85,16 +85,43 @@ export function Navigation({
   const hoverPreview = useRef(false);
   const dropdownId = useId();
   const mobileCategoriesId = useId();
+  const isPanelOpen = isMobileMenuOpen || isQuoteOpen;
+  const [keepPanelCanvas, setKeepPanelCanvas] = useState(false);
+  const isPanelVisible = isPanelOpen || keepPanelCanvas;
 
   useEffect(() => {
-    const handleScroll = () => {
+    let frame: number | null = null;
+    const updateScroll = () => {
+      frame = null;
       const y = window.scrollY;
-      setIsScrolled(prev => (prev ? y > 10 : y > 50));
+      setIsScrolled(prev => (prev ? y > 15 : y > 40));
     };
-    handleScroll();
+    const handleScroll = () => {
+      if (frame === null) frame = requestAnimationFrame(updateScroll);
+    };
+    updateScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
   }, []);
+
+  useEffect(() => {
+    if (isPanelOpen) {
+      setKeepPanelCanvas(true);
+      return;
+    }
+    // Safari toma el color del borde mientras el panel todavía está saliendo.
+    const timeout = window.setTimeout(() => setKeepPanelCanvas(false), reduceMotion ? 0 : 350);
+    return () => window.clearTimeout(timeout);
+  }, [isPanelOpen, reduceMotion]);
+
+  useLayoutEffect(() => {
+    const html = document.documentElement;
+    html.dataset.siteCanvas = isPanelVisible ? 'panel' : isScrolled ? 'content' : 'hero';
+    return () => { delete html.dataset.siteCanvas; };
+  }, [isPanelVisible, isScrolled]);
 
   // Dropdown "Productos": Escape lo cierra y devuelve el foco al botón.
   useEffect(() => {
@@ -141,7 +168,7 @@ export function Navigation({
   const linkTone = isScrolled
     ? 'text-ink-600 hover:text-ink-900 hover:bg-ink-100'
     : 'text-white/85 hover:text-white hover:bg-white/10';
-  const showHeroSafeArea = !isScrolled && !isMobileMenuOpen && !isQuoteOpen;
+  const showHeroSafeArea = !isScrolled && !isPanelVisible;
 
   return (
     <Sheet open={isMobileMenuOpen} onOpenChange={(open) => {
