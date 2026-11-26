@@ -141,14 +141,18 @@ export function Navigation({
   const linkTone = isScrolled
     ? 'text-ink-600 hover:text-ink-900 hover:bg-ink-100'
     : 'text-white/85 hover:text-white hover:bg-white/10';
+  const showHeroSafeArea = !isScrolled && !isMobileMenuOpen && !isQuoteOpen;
 
   return (
     <Sheet open={isMobileMenuOpen} onOpenChange={(open) => {
       if (open) setAreMobileCategoriesOpen(false);
       setIsMobileMenuOpen(open);
     }}>
-      {!isScrolled && !isMobileMenuOpen && !isQuoteOpen && (
-        <div aria-hidden="true" className="fixed inset-x-0 top-0 z-[46] h-[max(env(safe-area-inset-top),5px)] bg-ink-950 lg:hidden" />
+      {showHeroSafeArea && (
+        <>
+          <div aria-hidden="true" className="fixed inset-x-0 top-0 z-[46] h-[max(env(safe-area-inset-top,0px),5px)] bg-ink-950 lg:hidden" />
+          <div aria-hidden="true" className="fixed inset-x-0 bottom-0 z-30 h-[max(env(safe-area-inset-bottom,0px),8px)] bg-ink-950 lg:hidden" />
+        </>
       )}
       {/* ── Navbar ─────────────────────────────────────────────── */}
       <header data-site-header data-dark-surface={isScrolled ? undefined : true} className={`fixed top-0 left-0 right-0 z-[45] pt-[env(safe-area-inset-top)] ${isScrolled ? 'bg-[#FAFAF8] lg:bg-transparent' : ''}`}>

@@ -11,6 +11,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { WhatsAppIcon } from '@/components/icons/WhatsAppIcon';
 import { AvailabilityBadge } from '@/components/catalog/AvailabilityBadge';
 import { disponibilidadDeStock } from '@/lib/availability';
+import { handleAnchorClick } from '@/lib/scroll';
 
 interface QuoteListPanelProps {
   open: boolean;
@@ -126,7 +127,17 @@ export function QuoteListPanel({
 
                 <div className="quote-panel__body" data-lenis-prevent>
                   {items.length === 0 ? (
-                    <p className="my-auto py-8 text-center text-sm text-ink-600">Tu lista está vacía.</p>
+                    <div className="my-auto flex flex-col items-center gap-4 py-8 text-center">
+                      <p className="text-base font-medium text-ink-800">Tu lista está vacía.</p>
+                      <a
+                        href="#catalogo"
+                        onClick={(event) => handleAnchorClick(event, close)}
+                        className="btn btn-secondary"
+                      >
+                        Ver catálogo
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </div>
                   ) : (
                     <>
                       <p className="quote-panel__hint">
