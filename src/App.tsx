@@ -4,6 +4,7 @@ import { Navigation } from './sections/Navigation';
 import { Hero, HERO_IMAGE_SRC } from './sections/Hero';
 import { ProductCatalog, type CategoryRequest } from './sections/ProductCatalog';
 import { WhatsAppFloat } from './components/WhatsAppFloat';
+import { PageScrollbar } from './components/PageScrollbar';
 import { Preloader } from './components/Preloader';
 import { ProductModal } from './components/catalog/ProductModal';
 import { useQuoteList } from './hooks/useQuoteList';
@@ -147,6 +148,7 @@ function App() {
           </Suspense>
 
           <WhatsAppFloat />
+          <PageScrollbar />
         </div>
 
         <ProductModal

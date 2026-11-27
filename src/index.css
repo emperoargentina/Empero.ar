@@ -221,6 +221,61 @@ img {
   }
 }
 
+/* ── Barra de desplazamiento propia de la página (PageScrollbar) ──────────
+   Solo con mouse; la nativa se oculta únicamente mientras la propia está
+   montada. En px a propósito: no escala con el sitio. */
+html.has-page-scrollbar { scrollbar-width: none; }
+html.has-page-scrollbar::-webkit-scrollbar { display: none; }
+html.is-dragging-scrollbar,
+html.is-dragging-scrollbar * { user-select: none; cursor: grabbing !important; }
+
+.page-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 46; /* sobre la barra de navegación, bajo modales y paneles */
+  width: 16px;
+  opacity: 0.45;
+  transition: opacity 0.45s ease;
+}
+.page-scrollbar[data-active],
+.page-scrollbar[data-dragging],
+.page-scrollbar:hover {
+  opacity: 1;
+  transition-duration: 0.15s;
+}
+.page-scrollbar[data-empty] { display: none; }
+
+.page-scrollbar__thumb {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  width: 6px;
+  border-radius: 9999px;
+  background: rgb(var(--ink-500) / 0.8);
+  /* Filete claro: se ve igual sobre el hero oscuro y sobre el crema */
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4);
+  cursor: grab;
+  will-change: transform;
+  transition: width 0.2s ease, right 0.2s ease, background-color 0.2s ease;
+}
+.page-scrollbar:hover .page-scrollbar__thumb {
+  right: 3px;
+  width: 9px;
+  background: rgb(var(--ink-700) / 0.85);
+}
+.page-scrollbar[data-dragging] .page-scrollbar__thumb {
+  right: 3px;
+  width: 9px;
+  background: rgb(var(--brand-600));
+  cursor: grabbing;
+}
+@media (prefers-contrast: more) {
+  .page-scrollbar { opacity: 1; }
+  .page-scrollbar__thumb { background: #000; box-shadow: 0 0 0 1px #fff; }
+}
+
 /* Fallback de scrollbar para navegadores sin scrollbar-color */
 @supports not (scrollbar-color: auto) {
   ::-webkit-scrollbar { width: 0.5rem; height: 0.5rem; }

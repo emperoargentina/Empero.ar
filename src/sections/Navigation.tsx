@@ -87,6 +87,10 @@ export function Navigation({
   const mobileCategoriesId = useId();
   const isPanelOpen = isMobileMenuOpen || isQuoteOpen;
   const [keepPanelCanvas, setKeepPanelCanvas] = useState(false);
+  // Al abrir un panel, el lienzo queda marcado: se ajusta durante el render
+  // (no en un efecto, que provocaría un render en cascada). El efecto de abajo
+  // solo lo apaga, con demora, cuando el panel ya cerró.
+  if (isPanelOpen && !keepPanelCanvas) setKeepPanelCanvas(true);
   const isPanelVisible = isPanelOpen || keepPanelCanvas;
 
   useEffect(() => {
@@ -108,10 +112,7 @@ export function Navigation({
   }, []);
 
   useEffect(() => {
-    if (isPanelOpen) {
-      setKeepPanelCanvas(true);
-      return;
-    }
+    if (isPanelOpen) return;
     // Safari toma el color del borde mientras el panel todavía está saliendo.
     const timeout = window.setTimeout(() => setKeepPanelCanvas(false), reduceMotion ? 0 : 350);
     return () => window.clearTimeout(timeout);
